@@ -21,26 +21,8 @@
 ###########################################################################
 # Simple FAQ module
 
-faq_INIT() {
-	echo "before_connect on_PRIVMSG"
-}
-
-
-# Load or reload FAQ items
-load_faq() {
-	local i=0
-	unset faq_array
-	while read -d $'\n' line ;do
-		i=$((i+1))
-		faq_array[$i]="$line"
-	done < "${faq_file}"
-	log 'Loaded FAQ items'
-}
-
-# Called after bot has connected
-# Loads FAQ items
-faq_before_connect() {
-	load_faq
+say_INIT() {
+	echo "on_PRIVMSG"
 }
 
 # Called on a PRIVMSG
@@ -48,48 +30,24 @@ faq_before_connect() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-faq_on_PRIVMSG() {
-	# Only respond in channel.
-	[[ $2 =~ ^# ]] || return 0
+say_on_PRIVMSG() {
+	# Only accept say command in /msg
+	[[ $2 =~ ^# ]] && return 0
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}faq.* ]]; then
-		query="${query//\;faq/}"
+	if [[ "$query" =~ ^${listenchar}say.* ]]; then
+		query="${query//\;say/}"
 		query="${query/^ /}"
-		if [[ "$query" =~ reload ]]; then
-			if access_check_owner "$sender"; then
-				send_msg "$channel" "Reloading FAQ items..."
-				load_faq
-				send_msg "$channel" "Done."
-				sleep 2
-			else
-				access_fail "$sender" "reload faq items" "owner"
+		if access_check_owner "$sender"; then
+			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+				local channel="${BASH_REMATCH[1]}"
+				local message="${BASH_REMATCH[2]}"
+				send_msg "$channel" "$message"
 			fi
-			return 1
-		fi
-		query_time="$(date +%H%M)$line"
-		if [[ "$last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
-			last_query="$(date +%H%M)$line"
-			if [[ "$query" -gt 0 ]]; then
-				log "$channel :$query is numeric"
-				send_msg "$channel" "${faq_array[$query]}"
-				# Very simple way to prevent flooding ourself off.
-				sleep 1
-			elif [[ "${#query}" -ge 3 ]] ; then
-				i=0
-				while [[ $i -lt "${#faq_array[*]}" ]] ; do
-					i=$((i+1))
-					if echo ${faq_array[$i]} | cut -d " " -f 3- | /bin/grep -i -F -m 1 "$query" ; then
-						log "$channel :${faq_array[$i]}"
-						send_msg "$channel" "${faq_array[$i]}"
-						sleep 1
-						break 1
-					fi
-				done
-			fi
+			sleep 2
 		else
-			log "ERROR : FLOOD DETECTED"
+			access_fail "$sender" "make the bot talk with say" "owner"
 		fi
 		return 1
 	fi
