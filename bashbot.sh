@@ -67,11 +67,9 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 		handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
 			ghost=1
-			if [ -n "$passwd" ]; then
-				IRC_CONNECT $1-crap NULL 1 #i'm lazy, this works :/
-				sleep 2
-				break
-			fi
+			IRC_CONNECT $secondnick NULL 1 #i'm lazy, this works :/
+			sleep 2
+			break
 		fi
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			if [[ $3 == 1 ]]; then
@@ -145,10 +143,6 @@ while true; do
 	done
 	IRC_CONNECT $nick $passwd 0
 	trap 'echo -e "QUIT : ctrl-C" ; exit 123 >&3 ; sleep 2 ; exit 1' TERM INT
-	unset count
-	unset i
-	unset last_query
-	last_query='null'
 	for module in $modules_after_connect; do
 		${module}_after_connect
 	done

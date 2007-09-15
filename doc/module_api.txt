@@ -113,6 +113,12 @@ modulename_on_server_ERROR (TODO)
 	Return code not checked.
 		Reason: There isn't much point in swallowing this.
 
+modulename_on_disconnect (TODO)
+	Called when the bot gets disconnected from server.
+	No parameters.
+	Return code not checked.
+		Reason: A module may need clean up, don't let it desync.
+
 modulename_on_RAW
 	Called when the bot gets *ANY* line from the server after the inital connect.
 	With this a module can hook onto something not supported by a more specific hook.

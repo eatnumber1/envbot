@@ -40,6 +40,10 @@ load_faq() {
 # Called after bot has connected
 # Loads FAQ items
 faq_before_connect() {
+	unset count
+	unset i
+	unset last_query
+	last_query='null'
 	load_faq
 }
 
