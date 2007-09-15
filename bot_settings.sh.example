@@ -24,6 +24,7 @@
 nick="BOTNICK"
 channel='#channel'
 identstring='ietf.org/rfc/rfc3092'
+# If this is empty don't use nickserv.
 passwd='nickserv password here'
 # Format should be hostname.foo/port
 server='irc.kuonet.org/6667'

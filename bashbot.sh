@@ -59,9 +59,11 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 		handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
 			ghost=1
-			IRC_CONNECT $1-crap NULL 1 #i'm lazy, this works :/
-			sleep 2
-			break
+			if [ -n "$passwd" ]; then
+				IRC_CONNECT $1-crap NULL 1 #i'm lazy, this works :/
+				sleep 2
+				break
+			fi
 		fi
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			if [[ $3 == 1 ]]; then
@@ -71,7 +73,7 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 				send_raw "NICK $nick"
 			fi
 			log "identifying..."
-			send_msg "Nickserv" "IDENTIFY $passwd"
+			[ -n "$passwd" ] && send_msg "Nickserv" "IDENTIFY $passwd"
 			sleep 1
 			send_raw "JOIN $channel"
 			break
