@@ -36,7 +36,8 @@ passwd='nickserv password here'
 server='irc.kuonet.org/6667'
 
 
-channel='#channel'
+autojoin_channels[1]='#channel'
+autojoin_channels[1]='#otherchannel'
 
 
 # If a message is prefixed with this, treat is as a command.

@@ -20,7 +20,7 @@
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
 
-channels=""
+CurrentChannels=""
 
 # Join a channel
 # $1 the channel to join
@@ -42,10 +42,19 @@ channels_part() {
 	send_raw "PART ${channel}${reason}"
 }
 
+channels_join_config_channels() {
+	local channel
+	for channel in "${autojoin_channels[@]}"; do
+		# No quotes here because then second arugment can be a key
+		channels_join $channel
+		sleep 2
+	done
+}
+
 # Internal function
 # Adds channels to the list
 channels_add() {
-	channels="$channels $1"
+	CurrentChannels="$CurrentChannels $1"
 }
 
 # Internal function
@@ -53,12 +62,12 @@ channels_add() {
 channels_remove() {
 	set -x
 	local newchannels=""
-	for channel in $channels; do
+	for channel in $CurrentChannels; do
 		if [[ "$channel" != "$1" ]]; then
 			newchannels="$channel"
 		fi
 	done
-	channels="$newchannels"
+	CurrentChannels="$newchannels"
 	set +x
 }
 

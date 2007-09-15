@@ -118,7 +118,7 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 			log "identifying..."
 			[ -n "$passwd" ] && send_msg "Nickserv" "IDENTIFY $passwd"
 			sleep 1
-			channels_join "$channel"
+			channels_join_config_channels
 			break
 		fi
 	done;
