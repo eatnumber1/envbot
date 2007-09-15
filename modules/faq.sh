@@ -9,7 +9,7 @@ faq_init() {
 	while read -d $'\n' line ;do
 		i=$((i+1))
 		faq_array[$i]="$line"
-	done < ./faq.txt
+	done < "${faq_file}"
 }
 
 # Called on a PRIVMSG
@@ -25,7 +25,7 @@ faq_on_PRIVMSG() {
 		return
 	fi
 	local query="$3"
-	if [[ "$query" =~ ^\;faq.* ]]; then
+	if [[ "$query" =~ ^${listenchar}faq.* ]]; then
 		query="${query//\;faq/}"
 		query="${query/^ /}"
 		query_time="$(date +%H%M)$line"
