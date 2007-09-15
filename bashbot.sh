@@ -106,8 +106,14 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 }
 
 # Load modules
+loaded_modules=""
 for module in $modules; do
-	. modules/${module}.sh
+	if [ -f "modules/${module}.sh" ]; then
+		. modules/${module}.sh
+		loaded_modules="$loaded_modules $module"
+	else
+		log "WARNING: $module doesn't exist! Removing it from list"
+	fi
 done
 
 
@@ -119,7 +125,7 @@ while true; do
 	unset i
 	unset last_query
 	last_query='null'
-	for module in $modules; do
+	for module in $loaded_modules; do
 		${module}_init
 	done
 
@@ -133,7 +139,7 @@ while true; do
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
 			query="${query#*:}"
-			for module in $modules; do
+			for module in $loaded_modules; do
 				${module}_on_PRIVMSG "$sender" "$target" "$query"
 			done
 		elif [[ $line =~ ^[^:] ]] ;then
