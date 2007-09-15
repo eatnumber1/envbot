@@ -25,7 +25,8 @@ nick="BOTNICK"
 # Nick if first is in use
 secondnick="BOTNICK_"
 channel='#channel'
-identstring='ietf.org/rfc/rfc3092'
+ident='rfc3092'
+gecos='ietf.org/rfc/rfc3092'
 # If this is empty don't use nickserv.
 passwd='nickserv password here'
 # Format should be hostname.foo/port

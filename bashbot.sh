@@ -62,7 +62,7 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
 			log "logging in as $1..."
 			send_raw "NICK $1"
-			send_raw "USER rfc3092 0 * :${identstring}"
+			send_raw "USER $ident 0 * :${gecos}"
 		fi
 		handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
