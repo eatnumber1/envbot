@@ -31,8 +31,7 @@ say_INIT() {
 # $2 = to who (channel or botnick)
 # $3 = the message
 say_on_PRIVMSG() {
-	# Only accept say command in /msg
-	[[ $2 =~ ^# ]] && return 0
+	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
 	local query="$3"

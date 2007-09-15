@@ -32,8 +32,7 @@ assign_mode_INIT() {
 # $2 = to who (channel)
 # $3 = nick
 assign_mode_on_PRIVMSG() {
-	# Only accept op command in /msg
-	[[ $2 =~ ^# ]] && return 0
+	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
