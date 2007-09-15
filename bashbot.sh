@@ -70,7 +70,6 @@ handle_ping() {
 	fi
 }
 
-
 IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 	ghost=0
 	echo "Connecting..."
@@ -83,7 +82,7 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 			irc_raw "NICK $1"
 			irc_raw "USER rfc3092 0 * :${identstring}"
 		fi
-		handle_ping $line
+		handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
 			ghost=1
 			IRC_CONNECT $1-crap NULL 1 #i'm lazy, this works :/
@@ -106,6 +105,13 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 	done;
 }
 
+# space separated list
+modules="faq"
+for module in $modules; do
+	. modules/${module}.sh
+done
+
+
 while true
 	do
 	sleep 1
@@ -115,50 +121,23 @@ while true
 	unset i
 	unset last_query
 	last_query='null'
-	i=0
-	unset faq_array
-	while read -d $'\n' line ;do
-		i=$((i+1))
-		faq_array[$i]="$line"
-		done < ./faq.txt
-	
-	
+	for module in $modules; do
+		${module}_init
+	done
+
+
 	while read -u 3 -t 600 line ; do #-d $'\n'
 		line=${line//$'\r'/}
 		log_raw_in "$line"
-		if [[ "$line" =~ "[:][^:]*PRIVMSG $channel" ]]; then #eval =~ '=~' ?
+		if [[ "$line" =~ [:][^:]*PRIVMSG ]]; then #eval =~ '=~' ?
 			query="${line/:/}"
 			query="${query#*:}"
-			if [[ "$query" =~ '^;faq.*' ]] ;then	#spaghetti...yummie :)
-				query="${query//\;faq/}"
-				query="${query/^ /}"
-				query_time="$(date +%H%M)$line"
-				if [[ "$last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
-					last_query="$(date +%H%M)$line"
-					if [[ "$query" -gt 0 ]] && [[ "$query" -lt 54 ]] ; then
-						log "$channel :$query is numeric"
-						irc_msg "$channel" "${faq_array[$query]}"
-						sleep 1
-					elif [[ "${#query}" -ge 3 ]] ; then
-						i=0
-						while [[ $i -lt "${#faq_array[*]}" ]] ; do
-							i=$((i+1))
-							if echo ${faq_array[$i]} | cut -d " " -f 3- | /bin/grep -i -F -m 1 "$query" ; then
-								log "$channel :${faq_array[$i]}"
-								irc_raw "$channel" "${faq_array[$i]}"
-								sleep 1
-								break 1
-							fi
-						done
-					fi
-				else
-					log "ERROR : FLOOD DETECTED"
-				fi
-			fi
-	
+			for module in $modules; do
+				${module}_on_channel_PRIVMSG "foo" "$channel" "$query"
+			done
 		elif [[ $line =~ ^[^:] ]] ;then
 			log "handling this ..."
-			handle_ping $line
+			handle_ping "$line"
 		fi
 	done
 
