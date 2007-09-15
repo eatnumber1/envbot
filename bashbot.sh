@@ -118,6 +118,18 @@ add_hooks() {
 			"on_PRIVMSG")
 				modules_on_PRIVMSG="$modules_on_PRIVMSG $module"
 				;;
+			"on_KICK")
+				modules_on_KICK="$modules_on_KICK $module"
+				;;
+			"on_JOIN")
+				modules_on_="$modules_on_JOIN $module"
+				;;
+			"on_PART")
+				modules_on_PART="$modules_on_PART $module"
+				;;
+			"on_NICK")
+				modules_on_NICK="$modules_on_NICK $module"
+				;;
 			"on_raw")
 				modules_on_raw="$modules_on_raw $module"
 				;;
@@ -219,7 +231,6 @@ while true; do
 				${module}_on_PART "$sender" "$channel" "$reason"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+KICK\ (#[^ ]+)\ ([^ ]+)(\ :(.*))? ]]; then
-			# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test bashbot :another test
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			kicked="${BASH_REMATCH[3]}"

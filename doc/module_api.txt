@@ -61,7 +61,7 @@ modulename_on_NOTICE
 		1 = I have taken care of this, and don't
 		    consult other modules about this.
 
-modulename_on_NICK (TODO)
+modulename_on_NICK
 	# :AnMaster!AnMaster@staff.kuonet-ng.org NICK AnMaster_test
 	Called when someone changes nick in a channel the bot is in
 	$1 = from who (n!u@h)
@@ -70,7 +70,7 @@ modulename_on_NICK (TODO)
 		Reason: A module with a list of users could get desynced if it didn't
 		get the nick change.
 
-modulename_on_JOIN (TODO)
+modulename_on_JOIN
 	# :AnMaster!AnMaster@staff.kuonet-ng.org JOIN :#test
 	Called when someone joins a channel the bot is in
 	$1 = who did it (n!u@h)
@@ -79,7 +79,7 @@ modulename_on_JOIN (TODO)
 		Reason: A module with a list of users could get desynced if it didn't
 		get the join.
 
-modulename_on_PART (TODO)
+modulename_on_PART
 	# :AnMaster!AnMaster@staff.kuonet-ng.org PART #test
 	# :AnMaster!AnMaster@staff.kuonet-ng.org PART #test :with a reason
 	Called when someone parts a channel the bot is in
@@ -90,7 +90,7 @@ modulename_on_PART (TODO)
 		Reason: A module with a list of users could get desynced if it didn't
 		get the part.
 
-modulename_on_KICK (TODO)
+modulename_on_KICK
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test AnMaster_test :this is a test
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test bashbot :another test
 	Called when someone parts a channel the bot is in
