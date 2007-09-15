@@ -30,9 +30,8 @@ modulename_on_PRIVMSG
 	$3 = the message
 	Return code:
 		0 = pass it on to next module
-		1 = I have taken care of this,
-		    don't consult other modules
-		    about this.
+		1 = I have taken care of this, and don't
+		    consult other modules about this.
 
 modulename_on_NOTICE
 	Called when bot gets a NOTICE
@@ -41,7 +40,23 @@ modulename_on_NOTICE
 	$3 = the message
 	Return code:
 		0 = pass it on to next module
-		1 = I have taken care of this,
-		    don't consult other modules
-		    about this.
+		1 = I have taken care of this, and don't
+		    consult other modules about this.
+
+modulename_on_RAW
+	Called when the bot gets *ANY* line from the server after the inital connect.
+	With this a module can hook onto something not supported by a more specific hook.
+	The downsides:
+	* Potentially speed as it has to be called for any message.
+	* You have to parse more on your own.
+	Parameters:
+		$1 = The raw line
+	Return code:
+		0 = pass it on to next module
+		1 = I have taken care of this, and don't
+		    consult other modules about this.
+		    For raw this means no normal hooks
+		    will be called on the line either.
+
+
 

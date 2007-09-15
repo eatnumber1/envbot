@@ -73,7 +73,7 @@ faq_on_PRIVMSG() {
 		query_time="$(date +%H%M)$line"
 		if [[ "$last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
 			last_query="$(date +%H%M)$line"
-			if [[ "$query" -gt 0 ]] && [[ "$query" -lt 54 ]] ; then
+			if [[ "$query" -gt 0 ]]; then
 				log "$channel :$query is numeric"
 				send_msg "$channel" "${faq_array[$query]}"
 				# Very simple way to prevent flooding ourself off.

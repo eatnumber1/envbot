@@ -92,11 +92,14 @@ add_hooks() {
 			"after_connect")
 				modules_after_connect="$modules_after_connect $module"
 				;;
+			"on_NOTICE")
+				modules_on_NOTICE="$modules_on_NOTICE $module"
+				;;
 			"on_PRIVMSG")
 				modules_on_PRIVMSG="$modules_on_PRIVMSG $module"
 				;;
-			"on_NOTICE")
-				modules_on_NOTICE="$modules_on_NOTICE $module"
+			"on_raw")
+				modules_on_raw="$modules_on_raw $module"
 				;;
 			*)
 				log "ERROR: Unknown hook $hook requested. Module may malfunction. Shutting down bot to prevent damage"
@@ -110,8 +113,9 @@ add_hooks() {
 loaded_modules=""
 modules_before_connect=""
 modules_after_connect=""
-modules_on_PRIVMSG=""
 modules_on_NOTICE=""
+modules_on_PRIVMSG=""
+modules_on_raw=""
 
 for module in $modules; do
 	if [ -f "modules/${module}.sh" ]; then
@@ -143,6 +147,13 @@ while true; do
 	while read -u 3 -t 600 line ; do #-d $'\n'
 		line=${line//$'\r'/}
 		log_raw_in "$line"
+		for module in $modules_on_raw; do
+			${module}_on_raw "$line"
+			if [[ $? -ne 0 ]]; then
+				# TODO: Check that this does what it should.
+				continue 2
+			fi
+		done
 		# :Brain!brain@staff.kuonet.org PRIVMSG #test :aj
 		if [[ "$line" =~ :([^:]*)\ PRIVMSG\ ([^:]*)(.*) ]]; then #eval =~ '=~' ?
 			sender="${BASH_REMATCH[1]}"
