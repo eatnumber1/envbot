@@ -36,14 +36,18 @@ source lib/misc.sh
 CurrentNick=""
 ServerName=""
 Server004=""
+# See http://www.irc.org/tech_docs/005.html for an incomplete list.
 Server005=""
 # NAMES output with UHNAMES and NAMESX
 #  :photon.kuonet-ng.org 353 bashbot = #bots :@%+AnMaster!AnMaster@staff.kuonet-ng.org @ChanServ!ChanServ@services.kuonet-ng.org bashbot!rfc3092@1F1794B2:769091B3
 # NAMES output with NAMESX only:
 #  :hurricane.KuoNET.org 353 bashbot = #test :bashbot ~@Brain ~@EmErgE &@AnMaster/kng
-
 Server_UHNAMES=0
 Server_NAMESX=0
+ServerPREFIXES=""
+ServerCHANMODES=""
+ServerEXCEPTS=""
+ServerINVEX=""
 
 quit_bot() {
 	for module in $modules_FINALISE; do
@@ -55,6 +59,48 @@ quit_bot() {
 		exit $2
 	else
 		exit 0
+	fi
+}
+
+# Get some common data out of 005, the whole will also be saved to
+# $Server005 for any module to use.
+# This should be called directly after recieving a part of the 005!
+# $1 = That part.
+parse_005() {
+	line="$1"
+	if [[ $line =~ PREFIX=(\([^\)]+\)[^ ]+) ]]; then
+		ServerPREFIXES="${BASH_REMATCH[1]}"
+	fi
+	if [[ $line =~ CHANMODES=([^ ]+) ]]; then
+		ServerCHANMODES="${BASH_REMATCH[1]}"
+	fi
+	if [[ $line =~ EXCEPTS(=([^ ]+))? ]]; then
+		# Some, but not all also send what char the modes for EXCEPTS is.
+		# If it isn't sent, guess one +e
+		if [[ ${BASH_REMATCH[1]} ]]; then
+			ServerEXCEPTS="${BASH_REMATCH[2]}"
+		else
+			ServerEXCEPTS="e"
+		fi
+	fi
+	if [[ $line =~ INVEX(=([^ ]+))? ]]; then
+		# Some, but not all also send what char the modes for INVEX is.
+		# If it isn't sent, guess one +I
+		if [[ ${BASH_REMATCH[1]} ]]; then
+			ServerINVEX="${BASH_REMATCH[2]}"
+		else
+			ServerINVEX="I"
+		fi
+	fi
+	# Enable NAMESX is supported.
+	if [[ $line =~ NAMESX ]]; then
+		send_raw "PROTOCTL NAMESX"
+		Server_NAMESX=1
+	fi
+	# Enable UHNAMES if it is there.
+	if [[ $line =~ UHNAMES ]]; then
+		send_raw "PROTOCTL UHNAMES"
+		Server_UHNAMES=1
 	fi
 }
 
@@ -99,15 +145,9 @@ IRC_CONNECT(){ #$1=nick $2=passwd
 			Server004="$( echo $line | cut -d' ' -f4- )"
 		elif  [[ $( echo $line | cut -d' ' -f2 ) == '005' ]]; then
 			Server005="$Server005 $( echo $line | cut -d' ' -f4- )"
-			# Enable NAMESX is supported.
-			if [[ $line =~ NAMESX ]]; then
-				send_raw "PROTOCTL NAMESX"
-				Server_NAMESX=1
-			fi
-			if [[ $line =~ UHNAMES ]]; then
-				send_raw "PROTOCTL UHNAMES"
-				Server_UHNAMES=1
-			fi
+			Server005=$(tr -d $'\r\n' <<< "$Server005") # Get rid of newlines
+			Server005="${Server005/ :are supported by this server/}" # Get rid of :are supported by this server
+			parse_005 "$line"
 		fi
 		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
 			log "logging in as $firstnick..."
