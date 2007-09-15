@@ -3,6 +3,7 @@
 #                                                                         #
 #   Copyright (c)                                                         #
 #     Arvid Norlander <anmaster@kuonet.org>                               #
+#     EmErgE <halt.system@gmail.com>                                      #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -38,11 +39,9 @@ die_on_PRIVMSG() {
 	local query="$3"
 	if [[ "$query" =~ ^${listenchar}die.* ]]; then
 		query="${query//\;die/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
-				local message="${BASH_REMATCH[1]}"
-				send_raw "QUIT $message"
+				send_quit "$query"
 				killall "./bashbot"
 			fi
 			sleep 2
@@ -50,32 +49,28 @@ die_on_PRIVMSG() {
 			access_fail "$sender" "make the bot die" "owner"
 		fi
 		return 1
-	fi
-
-	if [[ "$query" =~ ^${listenchar}part.* ]]; then
+	elif [[ "$query" =~ ^${listenchar}part.* ]]; then
 		query="${query//\;part/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local message="${BASH_REMATCH[2]}"
-				send_raw "PART $channel $message"
+				channels_part "$channel $message"
 			fi
 			sleep 2
 		else
 			access_fail "$sender" "make the bot part channel" "owner"
 		fi
 		return 1
-	fi
-
-	if [[ "$query" =~ ^${listenchar}join.* ]]; then
+	elif [[ "$query" =~ ^${listenchar}join.* ]]; then
 		query="${query//\;join/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+			if [[ $query =~ ([^ ]+)(\ .*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
-				local message="${BASH_REMATCH[2]}"
-				send_raw "JOIN $channel"
+				local key="${BASH_REMATCH[2]}"
+				channels_join "${channel}${key}"
 			fi
 			sleep 2
 		else

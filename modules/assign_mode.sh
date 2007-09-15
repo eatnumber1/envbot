@@ -3,6 +3,7 @@
 #                                                                         #
 #   Copyright (c)                                                         #
 #     Arvid Norlander <anmaster@kuonet.org>                               #
+#     EmErgE <halt.system@gmail.com>                                      #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -156,7 +157,7 @@ assign_mode_on_PRIVMSG() {
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local nick="${BASH_REMATCH[2]}"
-				send_raw "MODE $channel -h $nick"
+				send_raw "MODE $channel -a $nick"
 			fi
 			sleep 2
 		else
