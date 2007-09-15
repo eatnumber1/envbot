@@ -44,8 +44,7 @@ Server005=""
 #  :hurricane.KuoNET.org 353 bashbot = #test :bashbot ~@Brain ~@EmErgE &@AnMaster/kng
 Server_UHNAMES=0
 Server_NAMESX=0
-ServerPREFIXES=""
-ServerCHANMODES=""
+# These are passed in a slightly odd way in 005 so we do them here.
 ServerEXCEPTS=""
 ServerINVEX=""
 
@@ -63,21 +62,20 @@ quit_bot() {
 }
 
 # Get some common data out of 005, the whole will also be saved to
-# $Server005 for any module to use.
+# $Server005 for any module to use via parse_005.
+# This function is for cases that needs special action, like NAMESX
+# and UHNAMES.
 # This should be called directly after recieving a part of the 005!
 # $1 = That part.
-parse_005() {
+handle_005() {
+	# Example from freenode:
+	# :heinlein.freenode.net 005 bashbot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
+	# :heinlein.freenode.net 005 bashbot SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
 	line="$1"
-	if [[ $line =~ PREFIX=(\([^\)]+\)[^ ]+) ]]; then
-		ServerPREFIXES="${BASH_REMATCH[1]}"
-	fi
-	if [[ $line =~ CHANMODES=([^ ]+) ]]; then
-		ServerCHANMODES="${BASH_REMATCH[1]}"
-	fi
 	if [[ $line =~ EXCEPTS(=([^ ]+))? ]]; then
 		# Some, but not all also send what char the modes for EXCEPTS is.
 		# If it isn't sent, guess one +e
-		if [[ ${BASH_REMATCH[1]} ]]; then
+		if [[ ${BASH_REMATCH[2]} ]]; then
 			ServerEXCEPTS="${BASH_REMATCH[2]}"
 		else
 			ServerEXCEPTS="e"
@@ -86,7 +84,7 @@ parse_005() {
 	if [[ $line =~ INVEX(=([^ ]+))? ]]; then
 		# Some, but not all also send what char the modes for INVEX is.
 		# If it isn't sent, guess one +I
-		if [[ ${BASH_REMATCH[1]} ]]; then
+		if [[ ${BASH_REMATCH[2]} ]]; then
 			ServerINVEX="${BASH_REMATCH[2]}"
 		else
 			ServerINVEX="I"
@@ -147,7 +145,7 @@ IRC_CONNECT(){ #$1=nick $2=passwd
 			Server005="$Server005 $( echo $line | cut -d' ' -f4- )"
 			Server005=$(tr -d $'\r\n' <<< "$Server005") # Get rid of newlines
 			Server005="${Server005/ :are supported by this server/}" # Get rid of :are supported by this server
-			parse_005 "$line"
+			handle_005 "$line"
 		fi
 		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
 			log "logging in as $firstnick..."

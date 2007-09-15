@@ -34,3 +34,21 @@ parse_get_colon_arg() {
 parse_hostmask_nick() {
 	cut -d'!' -f1 <<< "$1"
 }
+
+# $1 = Name of data to get
+# Returns 0 if found, otherwise 1.
+# Returns on STDOUT the variable data in question, if any
+#         Note that if the variable doesn't have any data,
+#         but still exist it will return nothing on STDOUT
+#         but 0 as error code
+parse_005() {
+	if [[ $Server005 =~ ${1}(=([^ ]+))? ]]; then
+		# Some, but not all also send what char the modes for INVEX is.
+		# If it isn't sent, guess one +I
+		if [[ ${BASH_REMATCH[2]} ]]; then
+			echo -n "${BASH_REMATCH[2]}"
+		fi
+		return 0
+	fi
+	return 1
+}
