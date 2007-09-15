@@ -32,7 +32,7 @@ die_INIT() {
 # $2 = to who (channel or botnick)
 # $3 = the message
 die_on_PRIVMSG() {
-	# Only accept say command in /msg
+	# Only accept die command in /msg
 	[[ $2 =~ ^# ]] && return 0
 	local sender="$1"
 	local channel="$2"
