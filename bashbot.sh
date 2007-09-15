@@ -151,6 +151,9 @@ while true; do
 			query="${query#*:}"
 			for module in $modules_on_PRIVMSG; do
 				${module}_on_PRIVMSG "$sender" "$target" "$query"
+				if [[ $? -ne 0 ]]; then
+					break
+				fi
 			done
 		elif [[ "$line" =~ :([^:]*)\ NOTICE\ ([^:]*)(.*) ]]; then #eval =~ '=~' ?
 			sender="${BASH_REMATCH[1]}"
@@ -159,6 +162,9 @@ while true; do
 			query="${query#*:}"
 			for module in $modules_on_NOTICE; do
 				${module}_on_PRIVMSG "$sender" "$target" "$query"
+				if [[ $? -ne 0 ]]; then
+					break
+				fi
 			done
 		elif [[ $line =~ ^[^:] ]] ;then
 			log "handling this ..."

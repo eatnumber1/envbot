@@ -68,7 +68,7 @@ faq_on_PRIVMSG() {
 			else
 				access_fail "$sender" "reload faq items" "owner"
 			fi
-			return
+			return 1
 		fi
 		query_time="$(date +%H%M)$line"
 		if [[ "$last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
@@ -93,5 +93,6 @@ faq_on_PRIVMSG() {
 		else
 			log "ERROR : FLOOD DETECTED"
 		fi
+		return 1
 	fi
 }
