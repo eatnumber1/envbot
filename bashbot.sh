@@ -50,8 +50,16 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 	exec 3<&-
 	exec 3<> "/dev/tcp/${server}"
 	while read -d $'\n' -u 3 line; do
+		# Part of motd, that goes to dev null.
+		if  [[ $( echo $line | cut -d' ' -f2 ) == '372'  ]]; then
+			continue
+		fi
 		log_raw_in "$line"
-		if [[ $line =~ "response" ]] || [[ $line =~ "Found your hostname" ]]; then #en galant entré :P
+		# Start of motd, note that we don't display that.
+		if  [[ $( echo $line | cut -d' ' -f2 ) == '375'  ]]; then
+			log "Motd is not displayed in log"
+		fi
+		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
 			log "logging in as $1..."
 			send_raw "NICK $1"
 			send_raw "USER rfc3092 0 * :${identstring}"
