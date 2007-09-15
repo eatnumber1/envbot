@@ -19,39 +19,18 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
-
-
-# Nick to use
-firstnick="BOTNICK"
-# Nick if first is in use
-secondnick="BOTNICK_"
-# Nick if second is in use
-thirdnick="BOTNICK_"
-
-ident='rfc3092'
-gecos='ietf.org/rfc/rfc3092'
-# If this is empty don't use nickserv.
-passwd='nickserv password here'
-# Format should be hostname.foo/port
-server='irc.kuonet.org/6667'
-
-
-autojoin_channels[1]='#channel'
-autojoin_channels[1]='#otherchannel'
-
-
-# If a message is prefixed with this, treat is as a command.
-listenchar=';'
-
-# Owner regexes.
-# THESE ARE EXAMPLES, don't use these, replace them
-# Without one set, the bot won't start
-#owners[1]='.*!brain@staff\.kuonet\.org'
-#owners[2]='.*!brain@staff\.kuonet-ng\.org'
-
-# What modules to load, space separated list
-# For a list of modules see the modules dir.
-modules="faq"
-
-# Module specific settings
-faq_file='./faq.txt'
+validate_config() {
+	if [ -z "$firstnick" ]; then
+		echo "ERROR: YOU MUST SET A firstnick IN THE CONFIG"
+		exit 1
+	fi
+	if [ -z "${owners[1]}" ]; then
+		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
+		echo "       AND THAT OWNER MUST BE THE FIRST ONE (owners[1] that is)."
+		exit 1
+	fi
+	if [ -z "${autojoin_channels[1]}" ]; then
+		echo "WARNING: You probably want at least one autojoin channel"
+		echo "         Set autojoin_channels[1] at least."
+	fi
+}

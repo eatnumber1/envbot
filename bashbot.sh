@@ -19,14 +19,19 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
+echo "Loading... Please wait"
+
+echo "Loading config"
 source bot_settings.sh
 
+echo "Loading library functions"
 # Load library functions.
 source lib/log.sh
 source lib/send.sh
 source lib/channels.sh
 source lib/parse.sh
 source lib/access.sh
+source lib/misc.sh
 
 CurrentNick=""
 
@@ -59,14 +64,9 @@ handle_ping() {
 	fi
 }
 
-if [ -z "${owners[1]}" ]; then
-	echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
-	echo "       AND THAT OWNER MUST BE THE FIRST ONE (owners[1] that is)."
-	exit 1
-fi
+validate_config
 
-
-IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
+IRC_CONNECT(){ #$1=nick $2=passwd
 	local ghost=0
 	local on_nick=1
 	echo "Connecting..."
@@ -83,10 +83,10 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 			log "Motd is not displayed in log"
 		fi
 		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
-			log "logging in as $1..."
-			send_nick "$1"
+			log "logging in as $firstnick..."
+			send_nick "$firstnick"
 			# FIXME: THIS IS HACKISH AND MAY BREAK
-			CurrentNick="$1"
+			CurrentNick="$firstnick"
 			send_raw "USER $ident 0 * :${gecos}"
 		fi
 		handle_ping "$line"
@@ -111,9 +111,9 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			if [[ $ghost == 1 ]]; then
 				log "recovering ghost"
-				send_msg "Nickserv" "GHOST $nick $passwd"
+				send_msg "Nickserv" "GHOST $firstnick $passwd"
 				sleep 2
-				send_nick "$nick"
+				send_nick "$firstnick"
 			fi
 			log "identifying..."
 			[ -n "$passwd" ] && send_msg "Nickserv" "IDENTIFY $passwd"
@@ -169,6 +169,7 @@ add_hooks() {
 	done
 }
 
+echo "Loading modules"
 # Load modules
 for module in $modules; do
 	if [ -f "modules/${module}.sh" ]; then
@@ -188,7 +189,7 @@ while true; do
 	for module in $modules_before_connect; do
 		${module}_before_connect
 	done
-	IRC_CONNECT $nick $passwd 0
+	IRC_CONNECT
 	trap 'send_quit "ctrl-C" ; quit_bot 1' TERM INT
 	for module in $modules_after_connect; do
 		${module}_after_connect
