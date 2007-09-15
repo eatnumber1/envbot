@@ -146,6 +146,8 @@ modulename_on_RAW
 	* You can desync other modules! Imagine a module that keep a list of
 	  users in the channel. If you swallow a message about a join, part,
 	  quit, nickchange, or other ones it may get desynced!
+	* Even worse, you can desync the bot itself if you swallow NICK, JOIN
+	  PART, KICK or possibly others.
 	Parameters:
 		$1 = The raw line
 	Return code:
