@@ -67,7 +67,8 @@ fi
 
 
 IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
-	ghost=0
+	local ghost=0
+	local on_nick=1
 	echo "Connecting..."
 	exec 3<&-
 	exec 3<> "/dev/tcp/${server}"
@@ -91,12 +92,24 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 		handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
 			ghost=1
-			#IRC_CONNECT $secondnick NULL 1 #i'm lazy, this works :/
+			if [[ $on_nick -eq 3 ]]; then
+				log "Third nick is ALSO in use. I give up"
+				quit_bot 2
+			fi
+			if [[ $on_nick -eq 2 ]]; then
+				log "Second nick is ALSO in use, trying third"
+				send_nick "$thirdnick"
+				on_nick=3
+			fi
+			log "First nick is in use, trying second"
 			send_nick "$secondnick"
+			on_nick=2
+			# FIXME: THIS IS HACKISH AND MAY BREAK
+			CurrentNick="$secondnick"
 			sleep 1
 		fi
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
-			if [[ $3 == 1 ]]; then
+			if [[ $ghost == 1 ]]; then
 				log "recovering ghost"
 				send_msg "Nickserv" "GHOST $nick $passwd"
 				sleep 2

@@ -21,16 +21,23 @@
 ###########################################################################
 
 
+# Nick to use
 nick="BOTNICK"
 # Nick if first is in use
 secondnick="BOTNICK_"
-channel='#channel'
+# Nick if second is in use
+thirdnick="BOTNICK_"
+
 ident='rfc3092'
 gecos='ietf.org/rfc/rfc3092'
 # If this is empty don't use nickserv.
 passwd='nickserv password here'
 # Format should be hostname.foo/port
 server='irc.kuonet.org/6667'
+
+
+channel='#channel'
+
 
 # If a message is prefixed with this, treat is as a command.
 listenchar=';'
