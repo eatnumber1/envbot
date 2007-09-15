@@ -1,15 +1,20 @@
 #!/bin/bash
 # Simple FAQ module
 
-# Called after bot has connected
-# Loads FAQ items
-faq_init() {
+# Load or reload FAQ items
+load_faq() {
 	local i=0
 	unset faq_array
 	while read -d $'\n' line ;do
 		i=$((i+1))
 		faq_array[$i]="$line"
 	done < "${faq_file}"
+}
+
+# Called after bot has connected
+# Loads FAQ items
+faq_init() {
+	load_faq
 }
 
 # Called on a PRIVMSG
@@ -28,6 +33,13 @@ faq_on_PRIVMSG() {
 	if [[ "$query" =~ ^${listenchar}faq.* ]]; then
 		query="${query//\;faq/}"
 		query="${query/^ /}"
+		if [[ "$query" =~ reload ]]; then
+			irc_msg "$channel" "Reloading FAQ items..."
+			load_faq
+			irc_msg "$channel" "Done."
+			sleep 2
+			return
+		fi
 		query_time="$(date +%H%M)$line"
 		if [[ "$last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
 			last_query="$(date +%H%M)$line"
