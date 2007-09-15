@@ -47,9 +47,8 @@ send_nick() {
 
 # $1 = if set, a quit reason
 send_quit() {
-	local nick="$1"
 	local reason=""
-	[ -n "$2" ] && reason=" :$2"
+	[ -n "$1" ] && reason=" :$1"
 	send_raw "QUIT${reason}"
 }
 

@@ -38,7 +38,7 @@ die_on_PRIVMSG() {
 	local channel="$2"
 	local query="$3"
 	if [[ "$query" =~ ^${listenchar}die.* ]]; then
-		query="${query//\;die/}"
+		query="${query//${listenchar}die/}"
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
 				send_quit "$query"
@@ -49,9 +49,9 @@ die_on_PRIVMSG() {
 			access_fail "$sender" "make the bot die" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${listenchar}part.* ]]; then
-		query="${query//\;part/}"
-		query="${query/^ /}"
+	if [[ "$query" =~ ^${listenchar}part.* ]]; then
+		query="${query//${listenchar}part/}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
@@ -64,8 +64,8 @@ die_on_PRIVMSG() {
 		fi
 		return 1
 	elif [[ "$query" =~ ^${listenchar}join.* ]]; then
-		query="${query//\;join/}"
-		query="${query/^ /}"
+		query="${query//${listenchar}oin/}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)(\ .*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
