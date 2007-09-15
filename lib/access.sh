@@ -33,6 +33,7 @@ access_check_owner() {
 	return 1
 }
 
+# Return error, and log it
 # $1  n!u@h
 # $2 what they tried to do
 # $3 what access they need

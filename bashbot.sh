@@ -21,10 +21,12 @@
 ###########################################################################
 source bot_settings.sh
 
+# Load library functions.
 source lib/log.sh
 source lib/send.sh
 source lib/parse.sh
 source lib/access.sh
+
 
 handle_ping() {
 	if [[ "$1" =~ ^PING.* ]] ;then
@@ -34,6 +36,13 @@ handle_ping() {
 		send_raw "PONG :$pingdata"
 	fi
 }
+
+if [ -z "${owners[1]}" ]; then
+	echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
+	echo "       AND THAT OWNER MUST BE THE FIRST ONE (owners[1] that is)."
+	exit 1
+fi
+
 
 IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 	ghost=0
