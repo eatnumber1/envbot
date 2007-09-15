@@ -142,7 +142,7 @@ modulename_on_channel_modechange (TODO)
 		get the mode change.
 
 
-modulename_on_numeric (TODO)
+modulename_on_numeric
 	Called on any numeric after connect.
 	$1 = the numeric
 	$2 = it's data
