@@ -129,11 +129,14 @@ while true
 	while read -u 3 -t 600 line ; do #-d $'\n'
 		line=${line//$'\r'/}
 		log_raw_in "$line"
-		if [[ "$line" =~ [:][^:]*PRIVMSG ]]; then #eval =~ '=~' ?
-			query="${line/:/}"
+		# :Brain!brain@staff.kuonet.org PRIVMSG #test :aj
+		if [[ "$line" =~ :([^:]*)\ PRIVMSG\ ([^:]*)(.*) ]]; then #eval =~ '=~' ?
+			sender="${BASH_REMATCH[1]}"
+			target="${BASH_REMATCH[2]}"
+			query="${BASH_REMATCH[3]}"
 			query="${query#*:}"
 			for module in $modules; do
-				${module}_on_channel_PRIVMSG "foo" "$channel" "$query"
+				${module}_on_PRIVMSG "$sender" "$target" "$query"
 			done
 		elif [[ $line =~ ^[^:] ]] ;then
 			log "handling this ..."

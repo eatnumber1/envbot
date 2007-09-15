@@ -10,11 +10,15 @@ faq_init() {
 }
 
 # $1 = from who (n!u@h)
-# $2 = what channel
+# $2 = to who (channel or botnick)
 # $3 = the message
-faq_on_channel_PRIVMSG() {
+faq_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
+	echo "$@"
+	if ! [[ $2 =~ ^# ]]; then
+		return
+	fi
 	local query="$3"
 	if [[ "$query" =~ ^\;faq.* ]]; then
 		query="${query//\;faq/}"
@@ -42,5 +46,4 @@ faq_on_channel_PRIVMSG() {
 			log "ERROR : FLOOD DETECTED"
 		fi
 	fi
-
 }
