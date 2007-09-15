@@ -45,6 +45,17 @@ send_nick() {
 	send_raw "NICK ${nick}"
 }
 
+# $1 = modes to set
+send_umodes() {
+	send_raw "MODE $CurrentNick $1"
+}
+
+# $1 = channel to set them on
+# $2 = modes to set
+send_modes() {
+	send_raw "MODE $1 $2"
+}
+
 # $1 = if set, a quit reason
 send_quit() {
 	local reason=""

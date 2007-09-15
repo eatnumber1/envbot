@@ -23,11 +23,19 @@ Functions marked with TODO may change, get renamed or removed and may not work
 even in current code.
 
 modulename_INIT (REQUIERD)
-	Called directly after loading the module. No parameters.
+	Called directly after loading the module.
+	No parameters.
 	If return code isn't 0 the module is considered as failed to load.
 	The module should clean up after itself in this case.
 	On STDOUT should be returned a space separated list of functions the 
 	module implements. FAQ would return "before_connect on_PRIVMSG"
+
+modulename_FINALISE
+	Called directly before the bot quits. The bot has already closed
+	the connection to the irc server at this point. This is for saving
+	stuff.
+	No parameters.
+	Return code isn't checked.
 
 modulename_before_connect
 	If implemented, called before the bot connected.

@@ -41,7 +41,7 @@ die_on_PRIVMSG() {
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			send_quit "$query"
-			killall "./bashbot"
+			quit_bot
 			sleep 2
 		else
 			access_fail "$sender" "make the bot die" "owner"

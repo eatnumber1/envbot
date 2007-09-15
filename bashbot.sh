@@ -30,6 +30,20 @@ source lib/access.sh
 
 CurrentNick=""
 
+quit_bot() {
+	for module in $modules_FINALISE; do
+		${module}_FINALISE
+	done
+	log "Bot quit gracefully"
+	exec 3<&-
+	if [[ $2 ]]; then
+		exit $2
+	else
+		exit 0
+	fi
+}
+
+
 handle_nick() {
 	local oldnick="$(parse_hostmask_nick "$1")"
 	if [[ $oldnick == $CurrentNick ]]; then
@@ -41,7 +55,6 @@ handle_ping() {
 	if [[ "$1" =~ ^PING.* ]] ;then
 		local pingdata="$(parse_get_colon_arg "$1")"
 		log "$pingdata pinged me, answering ..."
-		log_raw_out "PONG :$pingdata"
 		send_raw "PONG :$pingdata"
 	fi
 }
@@ -71,15 +84,16 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
 			log "logging in as $1..."
 			send_nick "$1"
+			# FIXME: THIS IS HACKISH AND MAY BREAK
 			CurrentNick="$1"
 			send_raw "USER $ident 0 * :${gecos}"
 		fi
 		handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
 			ghost=1
-			IRC_CONNECT $secondnick NULL 1 #i'm lazy, this works :/
-			sleep 2
-			break
+			#IRC_CONNECT $secondnick NULL 1 #i'm lazy, this works :/
+			send_nick "$secondnick"
+			sleep 1
 		fi
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			if [[ $3 == 1 ]]; then
@@ -87,8 +101,6 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 				send_msg "Nickserv" "GHOST $nick $passwd"
 				sleep 2
 				send_nick "$nick"
-				# FIXME: THIS IS HACKISH AND MAY BREAK
-				CurrentNick="$nick"
 			fi
 			log "identifying..."
 			[ -n "$passwd" ] && send_msg "Nickserv" "IDENTIFY $passwd"
@@ -106,6 +118,9 @@ add_hooks() {
 	local hook
 	for hook in $hooks; do
 		case $hook in
+			"FINALISE")
+				modules_FINALISE="$modules_before_connect $module"
+				;;
 			"before_connect")
 				modules_before_connect="$modules_before_connect $module"
 				;;
@@ -142,18 +157,13 @@ add_hooks() {
 }
 
 # Load modules
-loaded_modules=""
-modules_before_connect=""
-modules_after_connect=""
-modules_on_NOTICE=""
-modules_on_PRIVMSG=""
-modules_on_raw=""
-
 for module in $modules; do
 	if [ -f "modules/${module}.sh" ]; then
 		. modules/${module}.sh
-		loaded_modules="$loaded_modules $module"
-		add_hooks "$module"
+		if [[ $? -eq 0 ]]; then
+			loaded_modules="$loaded_modules $module"
+			add_hooks "$module"
+		fi
 	else
 		log "WARNING: $module doesn't exist! Removing it from list"
 	fi
@@ -166,7 +176,7 @@ while true; do
 		${module}_before_connect
 	done
 	IRC_CONNECT $nick $passwd 0
-	trap 'send_raw "QUIT :ctrl-C" ; exit 123 >&3 ; sleep 2 ; exit 1' TERM INT
+	trap 'send_quit "ctrl-C" ; quit_bot 1' TERM INT
 	for module in $modules_after_connect; do
 		${module}_after_connect
 	done
