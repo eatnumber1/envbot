@@ -105,15 +105,13 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 	done;
 }
 
-# space separated list
-modules="faq"
+# Load modules
 for module in $modules; do
 	. modules/${module}.sh
 done
 
 
-while true
-	do
+while true; do
 	sleep 1
 	IRC_CONNECT $nick $passwd 0
 	trap 'echo -e "QUIT : ctrl-C" ; exit 123 >&3 ; sleep 2 ; exit 1' TERM INT
