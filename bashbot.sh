@@ -21,85 +21,19 @@
 ###########################################################################
 source bot_settings.sh
 
-
-log="---------------"
-log_raw_in() {
-	echo "< $(date +'%Y-%m-%d %k:%M:%S') $@"
-}
-log_raw_out() {
-	echo "> $(date +'%Y-%m-%d %k:%M:%S') $@"
-}
-log() {
-	echo "$log $(date +'%Y-%m-%d %k:%M:%S') $@"
-}
-
-
-irc_raw() {
-	echo -e "$@\r" >&3
-}
-# $1 = who (channel or nick)
-# $* = message
-irc_msg() {
-	local nick="$1"
-	shift 1
-	irc_raw "PRIVMSG ${nick} :${@}"
-}
-# $1 = who (channel or nick)
-# $* = message
-irc_notice() {
-	local nick="$1"
-	shift 1
-	irc_raw "NOTICE ${nick} :${@}"
-}
-
-# Bad name of function, it gets the argument
-# after a ":", the last multiword argument
-# Only reads FIRST as data
-# Returns on STDOUT
-# FIXME: Can't handle a ":" in a word before the place to split
-parse_get_colon_arg() {
-	cut -d':' -f2- <<< "$1"
-}
-
-# Returns on STDOUT: nick
-# parameter: n!u@h mask
-parse_hostmask_nick() {
-	cut -d'!' -f1 <<< "$1"
-}
-
+source lib/log.sh
+source lib/send.sh
+source lib/parse.sh
+source lib/access.sh
 
 handle_ping() {
 	if [[ "$1" =~ ^PING.* ]] ;then
 		local pingdata="$(parse_get_colon_arg "$1")"
 		log "$pingdata pinged me, answering ..."
 		log_raw_out "PONG :$pingdata"
-		irc_raw "PONG :$pingdata"
+		send_raw "PONG :$pingdata"
 	fi
 }
-
-# Check for owner access.
-# Returns 0 on owner
-#         1 otherwise
-# parameter: n!u@h mask
-access_check_owner() {
-	for owner in "${owners[@]}"; do
-		if [[ "$1" =~ $owner ]]; then
-			return 0
-		fi
-	done
-	return 1
-}
-
-# $1  n!u@h
-# $2 what they tried to do
-# $3 what access they need
-access_fail() {
-	log "$1 tried to \"$2\" but lacks access"
-	irc_msg "$(parse_hostmask_nick $sender)" "Permission denied. You need $3 access for this."
-	sleep 1
-}
-
-
 
 IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 	ghost=0
@@ -110,8 +44,8 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 		log_raw_in "$line"
 		if [[ $line =~ "response" ]] || [[ $line =~ "Found your hostname" ]]; then #en galant entré :P
 			log "logging in as $1..."
-			irc_raw "NICK $1"
-			irc_raw "USER rfc3092 0 * :${identstring}"
+			send_raw "NICK $1"
+			send_raw "USER rfc3092 0 * :${identstring}"
 		fi
 		handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
@@ -123,14 +57,14 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			if [[ $3 == 1 ]]; then
 				log "recovering ghost"
-				irc_msg "Nickserv" "GHOST $nick $passwd"
+				send_msg "Nickserv" "GHOST $nick $passwd"
 				sleep 2
-				irc_raw "NICK $nick"
+				send_raw "NICK $nick"
 			fi
 			log "identifying..."
-			irc_msg "Nickserv" "IDENTIFY $passwd"
+			send_msg "Nickserv" "IDENTIFY $passwd"
 			sleep 1
-			irc_raw "JOIN $channel"
+			send_raw "JOIN $channel"
 			break
 		fi
 	done;

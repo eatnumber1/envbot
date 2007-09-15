@@ -1,4 +1,24 @@
 #!/bin/bash
+###########################################################################
+#                                                                         #
+#   Copyright (c)                                                         #
+#     Arvid Norlander <anmaster@kuonet.org>                               #
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+#   This program is distributed in the hope that it will be useful,       #
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+#   GNU General Public License for more details.                          #
+#                                                                         #
+#   You should have received a copy of the GNU General Public License     #
+#   along with this program; if not, write to the                         #
+#   Free Software Foundation, Inc.,                                       #
+#   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
+###########################################################################
 # Simple FAQ module
 
 # Load or reload FAQ items
@@ -36,9 +56,9 @@ faq_on_PRIVMSG() {
 		query="${query/^ /}"
 		if [[ "$query" =~ reload ]]; then
 			if access_check_owner "$sender"; then
-				irc_msg "$channel" "Reloading FAQ items..."
+				send_msg "$channel" "Reloading FAQ items..."
 				load_faq
-				irc_msg "$channel" "Done."
+				send_msg "$channel" "Done."
 				sleep 2
 			else
 				access_fail "$sender" "reload faq items" "owner"
@@ -50,7 +70,7 @@ faq_on_PRIVMSG() {
 			last_query="$(date +%H%M)$line"
 			if [[ "$query" -gt 0 ]] && [[ "$query" -lt 54 ]] ; then
 				log "$channel :$query is numeric"
-				irc_msg "$channel" "${faq_array[$query]}"
+				send_msg "$channel" "${faq_array[$query]}"
 				# Very simple way to prevent flooding ourself off.
 				sleep 1
 			elif [[ "${#query}" -ge 3 ]] ; then
@@ -59,7 +79,7 @@ faq_on_PRIVMSG() {
 					i=$((i+1))
 					if echo ${faq_array[$i]} | cut -d " " -f 3- | /bin/grep -i -F -m 1 "$query" ; then
 						log "$channel :${faq_array[$i]}"
-						irc_raw "$channel" "${faq_array[$i]}"
+						send_msg "$channel" "${faq_array[$i]}"
 						sleep 1
 						break 1
 					fi
