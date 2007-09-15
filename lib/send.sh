@@ -39,23 +39,18 @@ send_notice() {
 	send_raw "NOTICE ${nick} :${@}"
 }
 
-# Join a channel
-# $1 the channel to join
-# $2 is a channel key, if any.
-send_join() {
-	local channel="$1"
-	local key=""
-	[ -n $2 ] && key=" $2"
-	send_raw "JOIN ${channel}${key}"
+# $1 = new nick
+send_nick() {
+	local nick="$1"
+	send_raw "NICK ${nick}"
 }
 
-# Part a channel
-# $1 the channel to part
-# $2 is a reason.
-send_part() {
-	local channel="$1"
+# $1 = if set, a quit reason
+send_quit() {
+	local nick="$1"
 	local reason=""
-	[ -n $2 ] && reason=" :$2"
-	send_raw "PART ${channel}${reason}"
+	[ -n "$2" ] && reason=" :$2"
+	send_raw "QUIT${reason}"
 }
+
 

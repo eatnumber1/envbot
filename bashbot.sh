@@ -24,9 +24,18 @@ source bot_settings.sh
 # Load library functions.
 source lib/log.sh
 source lib/send.sh
+source lib/channels.sh
 source lib/parse.sh
 source lib/access.sh
 
+CurrentNick=""
+
+handle_nick() {
+	local oldnick="$(parse_hostmask_nick "$1")"
+	if [[ $oldnick == $CurrentNick ]]; then
+		CurrentNick="$2"
+	fi
+}
 
 handle_ping() {
 	if [[ "$1" =~ ^PING.* ]] ;then
@@ -61,7 +70,8 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 		fi
 		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
 			log "logging in as $1..."
-			send_raw "NICK $1"
+			send_nick "$1"
+			CurrentNick="$1"
 			send_raw "USER $ident 0 * :${gecos}"
 		fi
 		handle_ping "$line"
@@ -76,12 +86,14 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 				log "recovering ghost"
 				send_msg "Nickserv" "GHOST $nick $passwd"
 				sleep 2
-				send_raw "NICK $nick"
+				send_nick "$nick"
+				# FIXME: THIS IS HACKISH AND MAY BREAK
+				CurrentNick="$nick"
 			fi
 			log "identifying..."
 			[ -n "$passwd" ] && send_msg "Nickserv" "IDENTIFY $passwd"
 			sleep 1
-			send_raw "JOIN $channel"
+			channels_join "$channel"
 			break
 		fi
 	done;
@@ -109,7 +121,11 @@ add_hooks() {
 			"on_raw")
 				modules_on_raw="$modules_on_raw $module"
 				;;
-			*)
+			*)	$
+		oldnick="$(parse_hostmask_nick "$1")"
+	if [[ $oldnick == $CurrentNick ]]; then
+		CurrentNick="$2"
+	fi
 				log "ERROR: Unknown hook $hook requested. Module may malfunction. Shutting down bot to prevent damage"
 				exit 1
 				;;
@@ -159,7 +175,7 @@ while true; do
 			fi
 		done
 		# :Brain!brain@staff.kuonet.org PRIVMSG #test :aj
-		if [[ "$line" =~ :([^:]*)\ PRIVMSG\ ([^:]*)(.*) ]]; then #eval =~ '=~' ?
+		if [[ "$line" =~ ^:([^ ]*)[\ ]+PRIVMSG\ ([^:]*)(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
@@ -170,7 +186,7 @@ while true; do
 					break
 				fi
 			done
-		elif [[ "$line" =~ :([^:]*)\ NOTICE\ ([^:]*)(.*) ]]; then #eval =~ '=~' ?
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NOTICE\ ([^:]*)(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
@@ -180,6 +196,41 @@ while true; do
 				if [[ $? -ne 0 ]]; then
 					break
 				fi
+			done
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NICK\ (.*) ]]; then
+			sender="${BASH_REMATCH[1]}"
+			newnick="${BASH_REMATCH[2]}"
+			# Check if it was our own nick
+			handle_nick "$sender" "$newnick"
+			for module in $modules_on_NICK; do
+				${module}_on_NICK "$sender" "$newnick"
+			done
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+JOIN\ :(.*) ]]; then
+			sender="${BASH_REMATCH[1]}"
+			channel="${BASH_REMATCH[2]}"
+			# Check if it was our own nick that joined
+			channels_handle_join "$sender" "$channel"
+			for module in $modules_on_JOIN; do
+				${module}_on_JOIN "$sender" "$channel"
+			done
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+PART\ (#[^ ]+)(\ :(.*))? ]]; then
+			sender="${BASH_REMATCH[1]}"
+			channel="${BASH_REMATCH[2]}"
+			reason="${BASH_REMATCH[4]}"
+			# Check if it was our own nick that joined
+			channels_handle_part "$sender" "$channel" "$reason"
+			for module in $modules_on_JOIN; do
+				${module}_on_PART "$sender" "$channel" "$reason"
+			done
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+KICK\ (#[^ ]+)\ ([^ ]+)(\ :(.*))? ]]; then
+			sender="${BASH_REMATCH[1]}"
+			channel="${BASH_REMATCH[2]}"
+			kicked="${BASH_REMATCH[3]}"
+			reason="${BASH_REMATCH[5]}"
+			# Check if it was our own nick that joined
+			channels_handle_kick "$sender" "$channel" "$kicked" "$reason"
+			for module in $modules_on_KICK; do
+				${module}_on_KICK "$sender" "$channel" "$kicked" "$reason"
 			done
 		elif [[ $line =~ ^[^:] ]] ;then
 			log "handling this ..."

@@ -19,33 +19,70 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
-# THIS IS FOR DEBUGGING ONLY!!!! Don't use it in other cases
-# Allow owners to make the bot eval any code
 
-eval_INIT() {
-	echo "on_PRIVMSG"
+channels=""
+
+# Join a channel
+# $1 the channel to join
+# $2 is a channel key, if any.
+channels_join() {
+	local channel="$1"
+	local key=""
+	[ -n "$2" ] && key=" $2"
+	send_raw "JOIN ${channel}${key}"
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-eval_on_PRIVMSG() {
-	# Accept anywhere
-	local sender="$1"
-	local channel="$2"
-	local query="$3"
-	if [[ "$query" =~ ^${listenchar}eval* ]]; then
-		query="${query//${listenchar}eval/}"
-		query="${query/^ /}"
-		if access_check_owner "$sender"; then
-			eval "$query"
-			sleep 2
-		else
-			access_fail "$sender" "send a raw line" "owner"
+# Part a channel
+# $1 the channel to part
+# $2 is a reason.
+channels_part() {
+	local channel="$1"
+	local reason=""
+	[ -n "$2" ] && reason=" :$2"
+	send_raw "PART ${channel}${reason}"
+}
+
+# Internal function
+# Adds channels to the list
+channels_add() {
+	channels="$channels $1"
+}
+
+# Internal function
+# Removes channels to the list
+channels_remove() {
+	set -x
+	local newchannels=""
+	for channel in $channels; do
+		if [[ "$channel" != "$1" ]]; then
+			newchannels="$channel"
 		fi
-		return 1
-	fi
-	return 0
+	done
+	channels="$newchannels"
+	set +x
 }
+
+# Check if we parted
+channels_handle_part() {
+	local whoparted="$(parse_hostmask_nick "$1")"
+	if [[ $whoparted == $CurrentNick ]]; then
+		channels_remove "$2"
+	fi
+}
+
+# Check if we got kicked
+channels_handle_kick() {
+	local whogotkicked="$3"
+	if [[ $whogotkicked == $CurrentNick ]]; then
+		channels_remove "$2"
+	fi
+}
+
+# Check if we joined
+channels_handle_join() {
+	local whojoined="$(parse_hostmask_nick "$1")"
+	if [[ $whojoined == $CurrentNick ]]; then
+		channels_add "$2"
+	fi
+}
+
