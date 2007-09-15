@@ -62,13 +62,18 @@ die_on_PRIVMSG() {
 		fi
 		return 1
 	elif [[ "$query" =~ ^${listenchar}join.* ]]; then
-		query="${query//${listenchar}oin/}"
+		query="${query//${listenchar}join/}"
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)(\ .*)? ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local key="${BASH_REMATCH[2]}"
-				channels_join "${channel}${key}"
+				key="${key/# /}"
+				if [[ -z "$key" ]]; then
+					channels_join "${channel}"
+				else
+					channels_join "${channel}" "$key"
+				fi
 			fi
 			sleep 2
 		else
