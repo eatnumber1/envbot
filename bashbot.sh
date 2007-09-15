@@ -355,5 +355,6 @@ while true; do
 	done
 
 	log "DIED FOR SOME REASON"
-	sleep 1
+	# Don't reconnect right away. We might get throttled and other nasty stuff.
+	sleep 10
 done
