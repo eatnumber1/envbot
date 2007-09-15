@@ -25,6 +25,7 @@
 #         1 otherwise
 # parameter: n!u@h mask
 access_check_owner() {
+	local owner
 	for owner in "${owners[@]}"; do
 		if [[ "$1" =~ $owner ]]; then
 			return 0

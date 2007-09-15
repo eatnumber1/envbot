@@ -1,0 +1,47 @@
+This file describes the functions that should be in a module.
+Each function should start with the module name.
+So if the module is faq.sh the modules should start with faq_ like faq_INIT.
+
+If not mentioned otherwise the function is optional.
+
+modulename_INIT (REQUIERD)
+	Called directly after loading the module. No parameters.
+	If return code isn't 0 the module is considered as failed to load.
+	The module should clean up after itself in this case.
+	On STDOUT should be returned a space separated list of functions the 
+	module implements. FAQ would return "before_connect on_PRIVMSG"
+
+modulename_before_connect
+	If implemented, called before the bot connected.
+	No parameters
+	Return code not checked.
+	Note: This is useful for stuff that needs to echo log messages
+	      as that can't be done in modulename_INIT.
+
+modulename_after_connect
+	If implemented, called after the bot connected.
+	No parameters
+	Return code not checked.
+
+modulename_on_PRIVMSG
+	Called when bot gets a PRIVMSG
+	$1 = from who (n!u@h)
+	$2 = to who (channel or botnick)
+	$3 = the message
+	Return code:
+		0 = pass it on to next module
+		1 = I have taken care of this,
+		    don't consult other modules
+		    about this.
+
+modulename_on_NOTICE
+	Called when bot gets a NOTICE
+	$1 = from who (n!u@h)
+	$2 = to who (channel or botnick)
+	$3 = the message
+	Return code:
+		0 = pass it on to next module
+		1 = I have taken care of this,
+		    don't consult other modules
+		    about this.
+

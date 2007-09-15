@@ -79,12 +79,45 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 	done;
 }
 
+
+add_hooks() {
+	local module="$1"
+	local hooks="$(${module}_INIT)"
+	local hook
+	for hook in $hooks; do
+		case $hook in
+			"before_connect")
+				modules_before_connect="$modules_before_connect $module"
+				;;
+			"after_connect")
+				modules_after_connect="$modules_after_connect $module"
+				;;
+			"on_PRIVMSG")
+				modules_on_PRIVMSG="$modules_on_PRIVMSG $module"
+				;;
+			"on_NOTICE")
+				modules_on_NOTICE="$modules_on_NOTICE $module"
+				;;
+			*)
+				log "ERROR: Unknown hook $hook requested. Module may malfunction. Shutting down bot to prevent damage"
+				exit 1
+				;;
+		esac
+	done
+}
+
 # Load modules
 loaded_modules=""
+modules_before_connect=""
+modules_after_connect=""
+modules_on_PRIVMSG=""
+modules_on_NOTICE=""
+
 for module in $modules; do
 	if [ -f "modules/${module}.sh" ]; then
 		. modules/${module}.sh
 		loaded_modules="$loaded_modules $module"
+		add_hooks "$module"
 	else
 		log "WARNING: $module doesn't exist! Removing it from list"
 	fi
@@ -93,14 +126,17 @@ done
 
 while true; do
 	sleep 1
+	for module in $modules_before_connect; do
+		${module}_before_connect
+	done
 	IRC_CONNECT $nick $passwd 0
 	trap 'echo -e "QUIT : ctrl-C" ; exit 123 >&3 ; sleep 2 ; exit 1' TERM INT
 	unset count
 	unset i
 	unset last_query
 	last_query='null'
-	for module in $loaded_modules; do
-		${module}_init
+	for module in $modules_after_connect; do
+		${module}_after_connect
 	done
 
 
@@ -113,7 +149,15 @@ while true; do
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
 			query="${query#*:}"
-			for module in $loaded_modules; do
+			for module in $modules_on_PRIVMSG; do
+				${module}_on_PRIVMSG "$sender" "$target" "$query"
+			done
+		elif [[ "$line" =~ :([^:]*)\ NOTICE\ ([^:]*)(.*) ]]; then #eval =~ '=~' ?
+			sender="${BASH_REMATCH[1]}"
+			target="${BASH_REMATCH[2]}"
+			query="${BASH_REMATCH[3]}"
+			query="${query#*:}"
+			for module in $modules_on_NOTICE; do
 				${module}_on_PRIVMSG "$sender" "$target" "$query"
 			done
 		elif [[ $line =~ ^[^:] ]] ;then

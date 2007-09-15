@@ -21,6 +21,11 @@
 ###########################################################################
 # Simple FAQ module
 
+faq_INIT() {
+	echo "before_connect on_PRIVMSG"
+}
+
+
 # Load or reload FAQ items
 load_faq() {
 	local i=0
@@ -34,7 +39,7 @@ load_faq() {
 
 # Called after bot has connected
 # Loads FAQ items
-faq_init() {
+faq_before_connect() {
 	load_faq
 }
 
