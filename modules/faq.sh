@@ -29,10 +29,10 @@ faq_INIT() {
 # Load or reload FAQ items
 load_faq() {
 	local i=0
-	unset faq_array
+	unset module_faq_array
 	while read -d $'\n' line ;do
 		i=$((i+1))
-		faq_array[$i]="$line"
+		module_faq_array[$i]="$line"
 	done < "${faq_file}"
 	log 'Loaded FAQ items'
 }
@@ -40,10 +40,8 @@ load_faq() {
 # Called after bot has connected
 # Loads FAQ items
 faq_before_connect() {
-	unset count
-	unset i
-	unset last_query
-	last_query='null'
+	unset module_faq_last_query
+	module_faq_last_query='null'
 	load_faq
 }
 
@@ -72,21 +70,21 @@ faq_on_PRIVMSG() {
 			fi
 			return 1
 		fi
-		query_time="$(date +%H%M)$line"
-		if [[ "$last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
-			last_query="$(date +%H%M)$line"
+		local query_time="$(date +%H%M)$line"
+		if [[ "$module_faq_last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
+			module_faq_last_query="$(date +%H%M)$line"
 			if [[ "$query" -gt 0 ]]; then
 				log "$channel :$query is numeric"
-				send_msg "$channel" "${faq_array[$query]}"
+				send_msg "$channel" "${module_faq_array[$query]}"
 				# Very simple way to prevent flooding ourself off.
 				sleep 1
 			elif [[ "${#query}" -ge 3 ]] ; then
-				i=0
-				while [[ $i -lt "${#faq_array[*]}" ]] ; do
+				local i=0
+				while [[ $i -lt "${#module_faq_array[*]}" ]] ; do
 					i=$((i+1))
-					if echo ${faq_array[$i]} | cut -d " " -f 3- | /bin/grep -i -F -m 1 "$query" ; then
-						log "$channel :${faq_array[$i]}"
-						send_msg "$channel" "${faq_array[$i]}"
+					if echo ${module_faq_array[$i]} | cut -d " " -f 3- | /bin/grep -i -F -m 1 "$query" ; then
+						log "$channel :${module_faq_array[$i]}"
+						send_msg "$channel" "${module_faq_array[$i]}"
 						sleep 1
 						break 1
 					fi

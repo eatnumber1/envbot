@@ -19,9 +19,9 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
-# Allow owners to make to bot say something
+# Debug module, dump all variables to console.
 
-say_INIT() {
+dumpvars_INIT() {
 	echo "on_PRIVMSG"
 }
 
@@ -30,24 +30,18 @@ say_INIT() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-say_on_PRIVMSG() {
-	# Only accept say command in /msg
-	[[ $2 =~ ^# ]] && return 0
+dumpvars_on_PRIVMSG() {
+	# Accept both in /msg and channel
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}say.* ]]; then
-		query="${query//\;say/}"
-		query="${query/^ /}"
+	if [[ "$query" =~ ^${listenchar}dumpvars ]]; then
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
-				local channel="${BASH_REMATCH[1]}"
-				local message="${BASH_REMATCH[2]}"
-				send_msg "$channel" "$message"
-			fi
-			sleep 2
+			# This is hackish, we only display
+			# lines unique to "file" 1.
+			comm -2 -3 <(declare) <(declare -f)
 		else
-			access_fail "$sender" "make the bot talk with say" "owner"
+			access_fail "$sender" "dump variables to STDOUT" "owner"
 		fi
 		return 1
 	fi

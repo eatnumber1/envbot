@@ -1,8 +1,26 @@
-This file describes the functions that should be in a module.
+This file contains info needed to write a module.
+
+Variables
+---------
+All bash variables in the module that are global MUST follow the format
+module_modulename_variablename to prevent overwriting other modules, or
+global bot variables. FAQ module may use: module_faq_last_query for example
+as a variable.
+
+Variables that are local to the function (using the local directive) may have
+other names. Don't forget variables created in for loops and such 
+(for foo in bar bash; do echo $foo; done the $foo variable is global here,
+ do local foo on the line before it)
+
+
+Functions
+---------
 Each function should start with the module name.
 So if the module is faq.sh the modules should start with faq_ like faq_INIT.
 
 If not mentioned otherwise the function is optional.
+Functions marked with TODO may change, get renamed or removed and may not work
+even in current code.
 
 modulename_INIT (REQUIERD)
 	Called directly after loading the module. No parameters.
