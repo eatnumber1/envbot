@@ -51,9 +51,7 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot op somebody" "owner"
 		fi
 		return 1
-	fi
-
-	if [[ "$query" =~ ^${listenchar}deop.* ]]; then
+	elif [[ "$query" =~ ^${listenchar}deop.* ]]; then
 		query="${query//\;deop/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
@@ -67,9 +65,7 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot deop somebody" "owner"
 		fi
 		return 1
-	fi
-
-	if [[ "$query" =~ ^${listenchar}halfop.* ]]; then
+	elif [[ "$query" =~ ^${listenchar}halfop.* ]]; then
 		query="${query//\;halfop/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
@@ -83,10 +79,7 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot halfop somebody" "owner"
 		fi
 		return 1
-	fi
-
-
-	if [[ "$query" =~ ^${listenchar}dehalfop.* ]]; then
+	elif [[ "$query" =~ ^${listenchar}dehalfop.* ]]; then
 		query="${query//\;dehalfop/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
@@ -100,9 +93,7 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot dehalfop somebody" "owner"
 		fi
 		return 1
-	fi
-
-	if [[ "$query" =~ ^${listenchar}voice.* ]]; then
+	elif [[ "$query" =~ ^${listenchar}voice.* ]]; then
 		query="${query//\;voice/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
@@ -116,9 +107,7 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot give voice to somebody" "owner"
 		fi
 		return 1
-	fi
-
-	if [[ "$query" =~ ^${listenchar}devoiced.* ]]; then
+	elif [[ "$query" =~ ^${listenchar}devoiced.* ]]; then
 		query="${query//\;devoice/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
@@ -132,9 +121,7 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot take voice from somebody" "owner"
 		fi
 		return 1
-	fi
-
-	if [[ "$query" =~ ^${listenchar}protect.* ]]; then
+	elif [[ "$query" =~ ^${listenchar}protect.* ]]; then
 		query="${query//\;protect/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
@@ -148,9 +135,7 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot protect somebody" "owner"
 		fi
 		return 1
-	fi
-
-	if [[ "$query" =~ ^${listenchar}deprotect.* ]]; then
+	elif [[ "$query" =~ ^${listenchar}deprotect.* ]]; then
 		query="${query//\;deprotect/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
