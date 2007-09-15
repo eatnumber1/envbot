@@ -34,6 +34,16 @@ source lib/access.sh
 source lib/misc.sh
 
 CurrentNick=""
+ServerName=""
+Server004=""
+Server005=""
+# NAMES output with UHNAMES and NAMESX
+#  :photon.kuonet-ng.org 353 bashbot = #bots :@%+AnMaster!AnMaster@staff.kuonet-ng.org @ChanServ!ChanServ@services.kuonet-ng.org bashbot!rfc3092@1F1794B2:769091B3
+# NAMES output with NAMESX only:
+#  :hurricane.KuoNET.org 353 bashbot = #test :bashbot ~@Brain ~@EmErgE &@AnMaster/kng
+
+Server_UHNAMES=0
+Server_NAMESX=0
 
 quit_bot() {
 	for module in $modules_FINALISE; do
@@ -81,6 +91,23 @@ IRC_CONNECT(){ #$1=nick $2=passwd
 		# Start of motd, note that we don't display that.
 		if  [[ $( echo $line | cut -d' ' -f2 ) == '375'  ]]; then
 			log "Motd is not displayed in log"
+		elif  [[ $( echo $line | cut -d' ' -f2 ) == '002'  ]]; then
+			if [[ $line =~ Your\ host\ is\ ([^ ,]*)  ]]; then # just to get the regex, this should always be true
+				ServerName="${BASH_REMATCH[1]}"
+			fi
+		elif  [[ $( echo $line | cut -d' ' -f2 ) == '004' ]]; then
+			Server004="$( echo $line | cut -d' ' -f4- )"
+		elif  [[ $( echo $line | cut -d' ' -f2 ) == '005' ]]; then
+			Server005="$Server005 $( echo $line | cut -d' ' -f4- )"
+			# Enable NAMESX is supported.
+			if [[ $line =~ NAMESX ]]; then
+				send_raw "PROTOCTL NAMESX"
+				Server_NAMESX=1
+			fi
+			if [[ $line =~ UHNAMES ]]; then
+				send_raw "PROTOCTL UHNAMES"
+				Server_UHNAMES=1
+			fi
 		fi
 		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
 			log "logging in as $firstnick..."
@@ -158,6 +185,9 @@ add_hooks() {
 			"on_NICK")
 				modules_on_NICK="$modules_on_NICK $module"
 				;;
+			"on_numeric")
+				modules_on_numeric="$modules_on_numeric $module"
+				;;
 			"on_raw")
 				modules_on_raw="$modules_on_raw $module"
 				;;
@@ -185,7 +215,6 @@ done
 
 
 while true; do
-	sleep 1
 	for module in $modules_before_connect; do
 		${module}_before_connect
 	done
@@ -206,8 +235,25 @@ while true; do
 				continue 2
 			fi
 		done
-		# :Brain!brain@staff.kuonet.org PRIVMSG #test :aj
-		if [[ "$line" =~ ^:([^ ]*)[\ ]+PRIVMSG\ ([^:]*)(.*) ]]; then
+		if [[ $line =~ :${ServerName}\ ([0-9]{3})\ ([^ ]+)\ (.*) ]]; then
+			# this is a numeric
+			numeric="${BASH_REMATCH[1]}"
+			mynick="${BASH_REMATCH[2]}"
+			# Slight sanity check
+			if [[ $mynick != $CurrentNick ]]; then
+				log 'WARNING: Own nick desynced!'
+				log "WARNING: It should be $CurrentNick but is $mynick"
+				log "WARNING: Correcting own nick and lets hope that doesn't break anything"
+				CurrentNick="$mynick"
+			fi
+			numericdata="${BASH_REMATCH[2]}"
+			for module in $modules_on_numeric; do
+				${module}_on_numeric "$numeric" "$numericdata"
+				if [[ $? -ne 0 ]]; then
+					break
+				fi
+			done
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+PRIVMSG\ ([^:]*)(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
@@ -271,4 +317,5 @@ while true; do
 	done
 
 	log "DIED FOR SOME REASON"
+	sleep 1
 done

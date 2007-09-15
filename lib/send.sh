@@ -24,6 +24,7 @@ send_raw() {
 	log_raw_out "$@"
 	echo -e "$@\r" >&3
 }
+
 # $1 = who (channel or nick)
 # $* = message
 send_msg() {
@@ -31,6 +32,7 @@ send_msg() {
 	shift 1
 	send_raw "PRIVMSG ${nick} :${@}"
 }
+
 # $1 = who (channel or nick)
 # $* = message
 send_notice() {

@@ -119,6 +119,15 @@ modulename_on_QUIT (TODO)
 		Reason: A module with a list of users could get desynced if it didn't
 		get the quit.
 
+modulename_on_TOPIC (TODO)
+	# :AnMaster!AnMaster@staff.kuonet-ng.org TOPIC #test :Bash bot testing channel
+	Called when a topic is set or on channel join
+	$1 = who did it (n!u@h)
+	$2 = What channel
+	$3 = New topic
+	Return code not checked.
+		Reason: We don't want to get desynced modules.
+
 modulename_on_channel_modechange (TODO)
 	# :ChanServ!ChanServ@services.kuonet-ng.org MODE #test +o AnMaster
 	# :AnMaster!AnMaster@staff.kuonet-ng.org MODE #test +sk 5
@@ -131,6 +140,17 @@ modulename_on_channel_modechange (TODO)
 	Return code not checked.
 		Reason: A module with a list of users could get desynced if it didn't
 		get the mode change.
+
+
+modulename_on_numeric (TODO)
+	Called on any numeric after connect.
+	$1 = the numeric
+	$2 = it's data
+	Return code:
+		0 = pass it on to next module
+		1 = I have taken care of this, and don't
+		    consult other modules about this.
+	Note: In most cases you DON'T want to return 1 for this. If you do be very very careful.
 
 modulename_on_server_ERROR (TODO)
 	# ERROR :Closing link (rfc3092@2001:16d8:fff2::) [Killed (AnMaster (testing a kill))]
@@ -155,7 +175,7 @@ modulename_on_RAW
 	  users in the channel. If you swallow a message about a join, part,
 	  quit, nickchange, or other ones it may get desynced!
 	* Even worse, you can desync the bot itself if you swallow NICK, JOIN
-	  PART, KICK or possibly others.
+	  PART, KICK or possibly others. Or make it ping out by swallowing PING.
 	Parameters:
 		$1 = The raw line
 	Return code:
