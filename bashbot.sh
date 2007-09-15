@@ -121,11 +121,7 @@ add_hooks() {
 			"on_raw")
 				modules_on_raw="$modules_on_raw $module"
 				;;
-			*)	$
-		oldnick="$(parse_hostmask_nick "$1")"
-	if [[ $oldnick == $CurrentNick ]]; then
-		CurrentNick="$2"
-	fi
+			*)
 				log "ERROR: Unknown hook $hook requested. Module may malfunction. Shutting down bot to prevent damage"
 				exit 1
 				;;
@@ -223,6 +219,7 @@ while true; do
 				${module}_on_PART "$sender" "$channel" "$reason"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+KICK\ (#[^ ]+)\ ([^ ]+)(\ :(.*))? ]]; then
+			# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test bashbot :another test
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			kicked="${BASH_REMATCH[3]}"
