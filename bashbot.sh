@@ -52,6 +52,25 @@ irc_notice() {
 	irc_raw "NOTICE ${nick} :${@}"
 }
 
+# Bad name of function, it gets the argument
+# after a ":", the last multiword argument
+# Only reads FIRST as data
+# Returns on STDOUT
+# FIXME: Can't handle a ":" in a word before the place to split
+parse_get_colon_arg() {
+	cut -d':' -f2- <<< "$1"
+}
+
+handle_ping() {
+	if [[ "$1" =~ ^PING.* ]] ;then
+		local pingdata="$(parse_get_colon_arg "$1")"
+		log "$pingdata pinged me, answering ..."
+		log_raw_out "PONG :$pingdata"
+		irc_raw "PONG :$pingdata"
+	fi
+}
+
+
 IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 	ghost=0
 	echo "Connecting..."
@@ -64,11 +83,7 @@ IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 			irc_raw "NICK $1"
 			irc_raw "USER rfc3092 0 * :${identstring}"
 		fi
-		if [[ $line =~ ^PING.* ]] ;then
-			log "${line//PING*:/} pinged me, answering ..."
-			log_raw_out "PONG :${line//PING*:/}"
-			irc_raw "PONG :${line//PING*:/}"
-		fi
+		handle_ping $line
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
 			ghost=1
 			IRC_CONNECT $1-crap NULL 1 #i'm lazy, this works :/
@@ -143,11 +158,7 @@ while true
 	
 		elif [[ $line =~ ^[^:] ]] ;then
 			log "handling this ..."
-			if [[ "$line" =~ ^PING.* ]] ;then
-				log "${line//PING*:/} pinged me, answering ..."
-				log_raw_out "PONG :${line//PING*:/}"
-				irc_raw "PONG :${line//PING*:/}"
-			fi
+			handle_ping $line
 		fi
 	done
 
