@@ -1,5 +1,8 @@
 #!/bin/bash
+# Simple FAQ module
 
+# Called after bot has connected
+# Loads FAQ items
 faq_init() {
 	local i=0
 	unset faq_array
@@ -9,13 +12,15 @@ faq_init() {
 	done < ./faq.txt
 }
 
+# Called on a PRIVMSG
+#
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
 faq_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
-	echo "$@"
+	# Only respond in channel.
 	if ! [[ $2 =~ ^# ]]; then
 		return
 	fi
@@ -29,6 +34,7 @@ faq_on_PRIVMSG() {
 			if [[ "$query" -gt 0 ]] && [[ "$query" -lt 54 ]] ; then
 				log "$channel :$query is numeric"
 				irc_msg "$channel" "${faq_array[$query]}"
+				# Very simple way to prevent flooding ourself off.
 				sleep 1
 			elif [[ "${#query}" -ge 3 ]] ; then
 				i=0
