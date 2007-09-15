@@ -142,7 +142,7 @@ while true; do
 		${module}_before_connect
 	done
 	IRC_CONNECT $nick $passwd 0
-	trap 'echoirc "QUIT : ctrl-C" ; exit 123 >&3 ; sleep 2 ; exit 1' TERM INT
+	trap 'send_raw "QUIT :ctrl-C" ; exit 123 >&3 ; sleep 2 ; exit 1' TERM INT
 	for module in $modules_after_connect; do
 		${module}_after_connect
 	done

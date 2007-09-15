@@ -58,7 +58,7 @@ faq_on_PRIVMSG() {
 	local query="$3"
 	if [[ "$query" =~ ^${listenchar}faq.* ]]; then
 		query="${query//\;faq/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if [[ "$query" =~ reload ]]; then
 			if access_check_owner "$sender"; then
 				send_msg "$channel" "Reloading FAQ items..."

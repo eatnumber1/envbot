@@ -21,6 +21,7 @@
 ###########################################################################
 
 send_raw() {
+	log_raw_out "$@"
 	echo -e "$@\r" >&3
 }
 # $1 = who (channel or nick)
@@ -37,3 +38,24 @@ send_notice() {
 	shift 1
 	send_raw "NOTICE ${nick} :${@}"
 }
+
+# Join a channel
+# $1 the channel to join
+# $2 is a channel key, if any.
+send_join() {
+	local channel="$1"
+	local key=""
+	[ -n $2 ] && key=" $2"
+	send_raw "JOIN ${channel}${key}"
+}
+
+# Part a channel
+# $1 the channel to part
+# $2 is a reason.
+send_part() {
+	local channel="$1"
+	local reason=""
+	[ -n $2 ] && reason=" :$2"
+	send_raw "PART ${channel}${reason}"
+}
+

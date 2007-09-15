@@ -19,9 +19,10 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
-# Allow owners to make to bot say something
+# THIS IS FOR DEBUGGING ONLY!!!! Don't use it in other cases
+# Allow owners to make the bot eval any code
 
-say_INIT() {
+eval_INIT() {
 	echo "on_PRIVMSG"
 }
 
@@ -30,24 +31,19 @@ say_INIT() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-say_on_PRIVMSG() {
-	# Only accept say command in /msg
-	[[ $2 =~ ^# ]] && return 0
+eval_on_PRIVMSG() {
+	# Accept anywhere
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}say.* ]]; then
-		query="${query//${listenchar}say/}"
-		query="${query/# /}"
+	if [[ "$query" =~ ^${listenchar}raw.* ]]; then
+		query="${query//${listenchar}raw/}"
+		query="${query/^ /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
-				local channel="${BASH_REMATCH[1]}"
-				local message="${BASH_REMATCH[2]}"
-				send_msg "$channel" "$message"
-			fi
+			eval "$query"
 			sleep 2
 		else
-			access_fail "$sender" "make the bot talk with say" "owner"
+			access_fail "$sender" "send a raw line" "owner"
 		fi
 		return 1
 	fi
