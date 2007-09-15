@@ -9,6 +9,7 @@ load_faq() {
 		i=$((i+1))
 		faq_array[$i]="$line"
 	done < "${faq_file}"
+	log 'Loaded FAQ items'
 }
 
 # Called after bot has connected
@@ -34,10 +35,14 @@ faq_on_PRIVMSG() {
 		query="${query//\;faq/}"
 		query="${query/^ /}"
 		if [[ "$query" =~ reload ]]; then
-			irc_msg "$channel" "Reloading FAQ items..."
-			load_faq
-			irc_msg "$channel" "Done."
-			sleep 2
+			if access_check_owner "$sender"; then
+				irc_msg "$channel" "Reloading FAQ items..."
+				load_faq
+				irc_msg "$channel" "Done."
+				sleep 2
+			else
+				access_fail "$sender" "reload faq items" "owner"
+			fi
 			return
 		fi
 		query_time="$(date +%H%M)$line"

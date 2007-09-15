@@ -61,6 +61,13 @@ parse_get_colon_arg() {
 	cut -d':' -f2- <<< "$1"
 }
 
+# Returns on STDOUT: nick
+# parameter: n!u@h mask
+parse_hostmask_nick() {
+	cut -d'!' -f1 <<< "$1"
+}
+
+
 handle_ping() {
 	if [[ "$1" =~ ^PING.* ]] ;then
 		local pingdata="$(parse_get_colon_arg "$1")"
@@ -69,6 +76,30 @@ handle_ping() {
 		irc_raw "PONG :$pingdata"
 	fi
 }
+
+# Check for owner access.
+# Returns 0 on owner
+#         1 otherwise
+# parameter: n!u@h mask
+access_check_owner() {
+	for owner in "${owners[@]}"; do
+		if [[ "$1" =~ $owner ]]; then
+			return 0
+		fi
+	done
+	return 1
+}
+
+# $1  n!u@h
+# $2 what they tried to do
+# $3 what access they need
+access_fail() {
+	log "$1 tried to \"$2\" but lacks access"
+	irc_msg "$(parse_hostmask_nick $sender)" "Permission denied. You need $3 access for this."
+	sleep 1
+}
+
+
 
 IRC_CONNECT(){ #$1=nick $2=passwd $3=flag if nick should be recovered :P
 	ghost=0
