@@ -120,7 +120,7 @@ handle_ping() {
 
 validate_config
 
-IRC_CONNECT(){ #$1=nick $2=passwd
+IRC_CONNECT(){
 	local ghost=0
 	local on_nick=1
 	echo "Connecting..."
@@ -153,6 +153,8 @@ IRC_CONNECT(){ #$1=nick $2=passwd
 			send_nick "$firstnick"
 			# FIXME: THIS IS HACKISH AND MAY BREAK
 			CurrentNick="$firstnick"
+			# If a server password is set, send it.
+			[[ $serverpasswd ]] && send_raw "PASS $serverpasswd"
 			send_raw "USER $ident 0 * :${gecos}"
 		fi
 		handle_ping "$line"
@@ -177,12 +179,12 @@ IRC_CONNECT(){ #$1=nick $2=passwd
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			if [[ $ghost == 1 ]]; then
 				log "recovering ghost"
-				send_msg "Nickserv" "GHOST $firstnick $passwd"
+				send_msg "Nickserv" "GHOST $firstnick $nickservpasswd"
 				sleep 2
 				send_nick "$firstnick"
 			fi
 			log "identifying..."
-			[ -n "$passwd" ] && send_msg "Nickserv" "IDENTIFY $passwd"
+			[ -n "$nickservpasswd" ] && send_msg "Nickserv" "IDENTIFY $nickservpasswd"
 			sleep 1
 			channels_join_config_channels
 			break

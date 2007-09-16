@@ -30,15 +30,18 @@ thirdnick="BOTNICK_"
 
 ident='rfc3092'
 gecos='ietf.org/rfc/rfc3092'
+
 # If this is empty don't use nickserv.
-passwd='nickserv password here'
+nickservpasswd='nickserv password here'
+
 # Format should be hostname.foo/port
 server='irc.kuonet.org/6667'
+# If this is empty don't use a server passwd.
+serverpasswd=""
 
-
+# Channels to autojoin on connect
 autojoin_channels[1]='#channel'
 autojoin_channels[1]='#otherchannel'
-
 
 # If a message is prefixed with this, treat is as a command.
 listenchar=';'
