@@ -41,9 +41,26 @@ module_modulename_INIT (REQUIRED)
 	If return code isn't 0 the module is considered as failed to load.
 	The module should clean up after itself in this case before it returns
 	from INIT.
-	On STDOUT should be returned a space separated list of functions the
-	module implements. FAQ would return "before_connect on_PRIVMSG"
+	On STDOUT should be returned a space separated list of the optional functions
+	that the module implements. FAQ would return "before_connect on_PRIVMSG"
 
+module_modulename_UNLOAD (REQUIRED) (TODO)
+	Called to make the module unload itself.
+	In this function it should clean up after itself and undefine all
+	it's functions and variables except the unload functuon itself.
+	The unload function will be undefined after it finished.
+	The module may or may not get reloaded after this.
+	No parameters
+	Return code:
+		0 = Unloaded correctly
+		1 = Failed to unload. On this the bot will quit.
+
+module_modulename_REHASH (REQUIRED) (TODO)
+	Called to make the module reparse any config options.
+	No parameters
+		0 = Rehashed correctly
+		1 = Non fatal error for the bot itself. The bot will call UNLOAD on the module.
+		2 = Fatal error of some kind. On this the bot will quit.
 
 module_modulename_FINALISE
 	Called directly before the bot quits. The bot has already closed
@@ -53,12 +70,18 @@ module_modulename_FINALISE
 	Return code isn't checked.
 
 
-module_modulename_before_connect
-	Called before the bot connected.
+module_modulename_after_load
+	Called after all the hooks are added for the module.
 	No parameters
 	Return code not checked.
 	Note: This is useful for stuff that needs to echo log messages
 	      as that can't be done in modulename_INIT.
+
+
+module_modulename_before_connect
+	Called before the bot connected.
+	No parameters
+	Return code not checked.
 
 
 module_modulename_on_connect

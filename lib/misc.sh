@@ -59,6 +59,6 @@ validate_config() {
 list_remove() {
 	local oldlist="${!1}"
 	local newlist=${oldlist//$2}
-	echo "$newlist"
+	echo "$(sed 's/^ \+//;s/ \+$//;s/ \{2,\}/ /g' <<< "$newlist")" # Get rid of the unneeded spaces.
 }
 

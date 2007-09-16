@@ -42,7 +42,7 @@ channels_part() {
 	send_raw "PART ${channel}${reason}"
 }
 
-channels_join_config_channels() {
+channels_join_from_config() {
 	local channel
 	for channel in "${config_autojoin_channels[@]}"; do
 		# No quotes here because then second arugment can be a key

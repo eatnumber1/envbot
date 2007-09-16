@@ -38,6 +38,7 @@ source lib/channels.sh
 source lib/parse.sh
 source lib/access.sh
 source lib/misc.sh
+source lib/modules.sh
 
 validate_config
 log_init
@@ -236,98 +237,16 @@ IRC_CONNECT(){
 			sleep 1
 			log_stdout 'Connected'
 			log_stdout 'Joining autojoin channels'
-			channels_join_config_channels
+			channels_join_from_config
 			log_stdout 'Finished joining'
 			break
 		fi
 	done;
 }
 
-
-add_hooks() {
-	local module="$1"
-	local hooks="$(module_${module}_INIT)"
-	local hook
-	for hook in $hooks; do
-		case $hook in
-			"FINALISE")
-				modules_FINALISE="$modules_before_connect $module"
-				;;
-			"before_connect")
-				modules_before_connect="$modules_before_connect $module"
-				;;
-			"on_connect")
-				modules_on_connect="$modules_on_connect $module"
-				;;
-			"after_connect")
-				modules_after_connect="$modules_after_connect $module"
-				;;
-			"before_disconnect")
-				modules_before_disconnect="$modules_before_disconnect $module"
-				;;
-			"after_disconnect")
-				modules_after_disconnect="$modules_after_disconnect $module"
-				;;
-			"on_server_ERROR")
-				modules_on_server_ERROR="$modules_on_server_ERROR $module"
-				;;
-			"on_NOTICE")
-				modules_on_NOTICE="$modules_on_NOTICE $module"
-				;;
-			"on_PRIVMSG")
-				modules_on_PRIVMSG="$modules_on_PRIVMSG $module"
-				;;
-			"on_TOPIC")
-				modules_on_TOPIC="$modules_on_TOPIC $module"
-				;;
-			"on_channel_MODE")
-				modules_on_channel_MODE="$modules_on_channel_MODE $module"
-				;;
-			"on_JOIN")
-				modules_on_="$modules_on_JOIN $module"
-				;;
-			"on_PART")
-				modules_on_PART="$modules_on_PART $module"
-				;;
-			"on_KICK")
-				modules_on_KICK="$modules_on_KICK $module"
-				;;
-			"on_QUIT")
-				modules_on_QUIT="$modules_on_QUIT $module"
-				;;
-			"on_KILL")
-				modules_on_KILL="$modules_on_KILL $module"
-				;;
-			"on_NICK")
-				modules_on_NICK="$modules_on_NICK $module"
-				;;
-			"on_numeric")
-				modules_on_numeric="$modules_on_numeric $module"
-				;;
-			"on_raw")
-				modules_on_raw="$modules_on_raw $module"
-				;;
-			*)
-				log "ERROR: Unknown hook $hook requested. Module may malfunction. Shutting down bot to prevent damage"
-				exit 1
-				;;
-		esac
-	done
-}
-
 echo "Loading modules"
 # Load modules
-for module in $config_modules; do
-	if [ -f "modules/${module}.sh" ]; then
-		source modules/${module}.sh
-		if [[ $? -eq 0 ]]; then
-			modules_loaded="$modules_loaded $module"
-			add_hooks "$module"
-		fi
-	else
-		log "WARNING: $module doesn't exist! Removing it from list"
-	fi
-done
+modules_load_from_config
 
 
 while true; do

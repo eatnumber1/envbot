@@ -22,9 +22,17 @@
 # Simple FAQ module
 
 module_faq_INIT() {
-	echo "before_connect on_PRIVMSG"
+	echo "after_load on_PRIVMSG"
 }
 
+module_faq_UNLOAD() {
+	unset module_faq_array module_faq_last_query
+	unset module_faq_load module_faq_before_connect module_faq_on_PRIVMSG module_faq_INIT
+}
+
+module_faq_REHASH() {
+	module_faq_load
+}
 
 # Load or reload FAQ items
 module_faq_load() {
@@ -39,7 +47,7 @@ module_faq_load() {
 
 # Called after bot has connected
 # Loads FAQ items
-module_faq_before_connect() {
+module_faq_after_load() {
 	unset module_faq_last_query
 	module_faq_last_query='null'
 	module_faq_load
