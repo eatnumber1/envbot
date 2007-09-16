@@ -33,7 +33,7 @@ load_faq() {
 	while read -d $'\n' line ;do
 		i=$((i+1))
 		module_faq_array[$i]="$line"
-	done < "${faq_file}"
+	done < "${config_module_faq_file}"
 	log 'Loaded FAQ items'
 }
 
@@ -56,8 +56,8 @@ faq_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}faq.* ]]; then
-		query="${query//\;faq/}"
+	if [[ "$query" =~ ^${config_listenchar}faq.* ]]; then
+		query="${query//${config_listenchar}faq/}"
 		query="${query/# /}"
 		if [[ "$query" =~ reload ]]; then
 			if access_check_owner "$sender"; then

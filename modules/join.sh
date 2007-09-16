@@ -36,8 +36,8 @@ join_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}part.* ]]; then
-		query="${query//${listenchar}part/}"
+	if [[ "$query" =~ ^${config_listenchar}part.* ]]; then
+		query="${query//${config_listenchar}part/}"
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)(\ (.*))? ]]; then
@@ -54,8 +54,8 @@ join_on_PRIVMSG() {
 			access_fail "$sender" "make the bot part channel" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${listenchar}join.* ]]; then
-		query="${query//${listenchar}join/}"
+	elif [[ "$query" =~ ^${config_listenchar}join.* ]]; then
+		query="${query//${config_listenchar}join/}"
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)(\ .*)? ]]; then

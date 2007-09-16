@@ -35,8 +35,8 @@ say_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}say.* ]]; then
-		query="${query//${listenchar}say/}"
+	if [[ "$query" =~ ^${config_listenchar}say.* ]]; then
+		query="${query//${config_listenchar}say/}"
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then

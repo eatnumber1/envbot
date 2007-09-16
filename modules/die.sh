@@ -36,8 +36,8 @@ die_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}die.* ]]; then
-		query="${query//${listenchar}die/}"
+	if [[ "$query" =~ ^${config_listenchar}die.* ]]; then
+		query="${query//${config_listenchar}die/}"
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			send_quit "$query"

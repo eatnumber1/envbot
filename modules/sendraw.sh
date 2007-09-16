@@ -36,8 +36,8 @@ sendraw_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}raw.* ]]; then
-		query="${query//${listenchar}raw/}"
+	if [[ "$query" =~ ^${config_listenchar}raw.* ]]; then
+		query="${query//${config_listenchar}raw/}"
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			send_raw "$query"

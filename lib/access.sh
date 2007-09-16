@@ -26,7 +26,7 @@
 # parameter: n!u@h mask
 access_check_owner() {
 	local owner
-	for owner in "${owners[@]}"; do
+	for owner in "${config_owners[@]}"; do
 		if [[ "$1" =~ $owner ]]; then
 			return 0
 		fi

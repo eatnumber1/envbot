@@ -36,8 +36,8 @@ assign_mode_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}op.* ]]; then
-		query="${query//\;op/}"
+	if [[ "$query" =~ ^${config_listenchar}op.* ]]; then
+		query="${query//${config_listenchar}op/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
@@ -50,8 +50,8 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot op somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${listenchar}deop.* ]]; then
-		query="${query//\;deop/}"
+	elif [[ "$query" =~ ^${config_listenchar}deop.* ]]; then
+		query="${query//${config_listenchar}deop/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
@@ -64,8 +64,8 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot deop somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${listenchar}halfop.* ]]; then
-		query="${query//\;halfop/}"
+	elif [[ "$query" =~ ^${config_listenchar}halfop.* ]]; then
+		query="${query//${config_listenchar}halfop/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
@@ -78,8 +78,8 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot halfop somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${listenchar}dehalfop.* ]]; then
-		query="${query//\;dehalfop/}"
+	elif [[ "$query" =~ ^${config_listenchar}dehalfop.* ]]; then
+		query="${query//${config_listenchar}dehalfop/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
@@ -92,8 +92,8 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot dehalfop somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${listenchar}voice.* ]]; then
-		query="${query//\;voice/}"
+	elif [[ "$query" =~ ^${config_listenchar}voice.* ]]; then
+		query="${query//${config_listenchar}voice/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
@@ -106,8 +106,8 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot give voice to somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${listenchar}devoiced.* ]]; then
-		query="${query//\;devoice/}"
+	elif [[ "$query" =~ ^${config_listenchar}devoiced.* ]]; then
+		query="${query//${config_listenchar}devoice/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
@@ -120,8 +120,8 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot take voice from somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${listenchar}protect.* ]]; then
-		query="${query//\;protect/}"
+	elif [[ "$query" =~ ^${config_listenchar}protect.* ]]; then
+		query="${query//${config_listenchar}protect/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
@@ -134,8 +134,8 @@ assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot protect somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${listenchar}deprotect.* ]]; then
-		query="${query//\;deprotect/}"
+	elif [[ "$query" =~ ^${config_listenchar}deprotect.* ]]; then
+		query="${query//${config_listenchar}deprotect/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ ([^ ]+)\ (.*) ]]; then

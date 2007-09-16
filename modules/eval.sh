@@ -36,8 +36,8 @@ eval_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}eval* ]]; then
-		query="${query//${listenchar}eval/}"
+	if [[ "$query" =~ ^${config_listenchar}eval* ]]; then
+		query="${query//${config_listenchar}eval/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
 			eval "$query"

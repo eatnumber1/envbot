@@ -28,7 +28,7 @@ if [[ $? -ne 0 ]]; then
 	exit 1
 fi
 
-config_current_version=1
+config_current_version=2
 
 echo "Loading library functions"
 # Load library functions.
@@ -152,7 +152,7 @@ IRC_CONNECT(){
 	local on_nick=1
 	log_stdout "Connecting..."
 	exec 3<&-
-	exec 3<> "/dev/tcp/${server}"
+	exec 3<> "/dev/tcp/${config_server}"
 	while read -d $'\n' -u 3 line; do
 		for module in $modules_on_connect; do
 			${module}_on_connect $line
@@ -179,13 +179,13 @@ IRC_CONNECT(){
 			handle_005 "$line"
 		fi
 		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
-			log_stdout "logging in as $firstnick..."
-			send_nick "$firstnick"
+			log_stdout "logging in as $config_firstnick..."
+			send_nick "$config_firstnick"
 			# FIXME: THIS IS HACKISH AND MAY BREAK
-			CurrentNick="$firstnick"
+			CurrentNick="$config_firstnick"
 			# If a server password is set, send it.
-			[[ $serverpasswd ]] && send_raw "PASS $serverpasswd"
-			send_raw "USER $ident 0 * :${gecos}"
+			[[ $config_server_passwd ]] && send_raw "PASS $config_server_passwd"
+			send_raw "USER $config_ident 0 * :${config_gecos}"
 		fi
 		handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
@@ -196,25 +196,26 @@ IRC_CONNECT(){
 			fi
 			if [[ $on_nick -eq 2 ]]; then
 				log_stdout "Second nick is ALSO in use, trying third"
-				send_nick "$thirdnick"
+				send_nick "$config_thirdnick"
+				CurrentNick="$config_thirdnick"
 				on_nick=3
 			fi
 			log_stdout "First nick is in use, trying second"
-			send_nick "$secondnick"
+			send_nick "$config_secondnick"
 			on_nick=2
 			# FIXME: THIS IS HACKISH AND MAY BREAK
-			CurrentNick="$secondnick"
+			CurrentNick="$config_secondnick"
 			sleep 1
 		fi
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			if [[ $ghost == 1 ]]; then
 				log_stdout "Recovering ghost"
-				send_msg "Nickserv" "GHOST $firstnick $nickservpasswd"
+				send_msg "Nickserv" "GHOST $config_firstnick $config_nickserv_passwd"
 				sleep 2
-				send_nick "$firstnick"
+				send_nick "$config_firstnick"
 			fi
 			log_stdout "Identifying..."
-			[ -n "$nickservpasswd" ] && send_msg "Nickserv" "IDENTIFY $nickservpasswd"
+			[ -n "$config_nickserv_passwd" ] && send_msg "Nickserv" "IDENTIFY $config_nickserv_passwd"
 			sleep 1
 			log_stdout 'Connected'
 			log_stdout 'Joining autojoin channels'
@@ -287,11 +288,11 @@ add_hooks() {
 
 echo "Loading modules"
 # Load modules
-for module in $modules; do
+for module in $config_modules; do
 	if [ -f "modules/${module}.sh" ]; then
 		source modules/${module}.sh
 		if [[ $? -eq 0 ]]; then
-			loaded_modules="$loaded_modules $module"
+			modules_loaded="$modules_loaded $module"
 			add_hooks "$module"
 		fi
 	else

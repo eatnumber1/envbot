@@ -29,25 +29,25 @@ validate_config() {
 		echo "PLEASE UPDATE YOUR CONFIG."
 		exit 1
 	fi
-	if [ -z "$firstnick" ]; then
-		echo "ERROR: YOU MUST SET A firstnick IN THE CONFIG"
+	if [ -z "$config_firstnick" ]; then
+		echo "ERROR: YOU MUST SET A config_firstnick IN THE CONFIG"
 		exit 1
 	fi
-	if [ -z "$logdir" ]; then
-		echo "ERROR: YOU MUST SET A logdir IN THE CONFIG"
+	if [ -z "$config_logdir" ]; then
+		echo "ERROR: YOU MUST SET A config_logdir IN THE CONFIG"
 		exit 1
 	fi
-	if [ -z "$logstdout" ]; then
-		echo "ERROR: YOU MUST SET logstdout IN THE CONFIG"
+	if [ -z "$config_logstdout" ]; then
+		echo "ERROR: YOU MUST SET config_logstdout IN THE CONFIG"
 		exit 1
 	fi
-	if [ -z "${owners[1]}" ]; then
+	if [ -z "${config_owners[1]}" ]; then
 		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
-		echo "       AND THAT OWNER MUST BE THE FIRST ONE (owners[1] that is)."
+		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_owners[1] that is)."
 		exit 1
 	fi
-	if [ -z "${autojoin_channels[1]}" ]; then
+	if [ -z "${config_autojoin_channels[1]}" ]; then
 		echo "WARNING: You probably want at least one autojoin channel"
-		echo "         Set autojoin_channels[1] at least."
+		echo "         Set config_autojoin_channels[1] at least."
 	fi
 }

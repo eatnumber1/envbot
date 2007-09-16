@@ -23,7 +23,7 @@
 # Internal function to this file
 do_log() {
 	echo $1 >> "$logfile"
-	if [[ $logstdout -eq 1 ]]; then
+	if [[ $config_logstdout -eq 1 ]]; then
 		echo "$1"
 	fi
 }
@@ -48,7 +48,7 @@ log_stdout() {
 
 log_init() {
 	# This creates logfile for this run:
-	logfile="${logdir}/$(date -u +%s).log"
+	logfile="${config_logdir}/$(date -u +%s).log"
 	touch "$logfile"
 	if [[ $? -ne 0 ]]; then
 		echo "Error: couldn't create logfile"
