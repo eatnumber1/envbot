@@ -46,7 +46,7 @@ module_assign_mode_on_PRIVMSG() {
 	local query="$3"
 	if [[ "$query" =~ ^${config_listenchar}op.* ]]; then
 		query="${query//${config_listenchar}op/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
@@ -60,7 +60,7 @@ module_assign_mode_on_PRIVMSG() {
 		return 1
 	elif [[ "$query" =~ ^${config_listenchar}deop.* ]]; then
 		query="${query//${config_listenchar}deop/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
@@ -74,7 +74,7 @@ module_assign_mode_on_PRIVMSG() {
 		return 1
 	elif [[ "$query" =~ ^${config_listenchar}halfop.* ]]; then
 		query="${query//${config_listenchar}halfop/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
@@ -88,7 +88,7 @@ module_assign_mode_on_PRIVMSG() {
 		return 1
 	elif [[ "$query" =~ ^${config_listenchar}dehalfop.* ]]; then
 		query="${query//${config_listenchar}dehalfop/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
@@ -102,7 +102,7 @@ module_assign_mode_on_PRIVMSG() {
 		return 1
 	elif [[ "$query" =~ ^${config_listenchar}voice.* ]]; then
 		query="${query//${config_listenchar}voice/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
@@ -116,7 +116,7 @@ module_assign_mode_on_PRIVMSG() {
 		return 1
 	elif [[ "$query" =~ ^${config_listenchar}devoiced.* ]]; then
 		query="${query//${config_listenchar}devoice/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
@@ -130,7 +130,7 @@ module_assign_mode_on_PRIVMSG() {
 		return 1
 	elif [[ "$query" =~ ^${config_listenchar}protect.* ]]; then
 		query="${query//${config_listenchar}protect/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
@@ -144,7 +144,7 @@ module_assign_mode_on_PRIVMSG() {
 		return 1
 	elif [[ "$query" =~ ^${config_listenchar}deprotect.* ]]; then
 		query="${query//${config_listenchar}deprotect/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
