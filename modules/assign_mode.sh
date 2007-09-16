@@ -156,6 +156,20 @@ module_assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot deprotect somebody" "owner"
 		fi
 		return 1
+	elif [[ "$query" =~ ^${config_listenchar}topic.* ]]; then
+		query="${query//${config_listenchar}topic/}"
+		query="${query/# /}"
+		if access_check_owner "$sender"; then
+			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
+				local channel="${BASH_REMATCH[1]}"
+				local message="${BASH_REMATCH[2]}"
+				send_raw "TOPIC $channel :$message"
+			fi
+			sleep 2
+		else
+			access_fail "$sender" "make the bot protect somebody" "owner"
+		fi
+		return 1
 	fi
 
 	return 0
