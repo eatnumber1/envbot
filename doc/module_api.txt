@@ -196,7 +196,7 @@ module_modulename_on_server_ERROR
 	Return code not checked.
 		Reason: There isn't much point in swallowing this.
 
-module_modulename_on_KILL (TODO)
+module_modulename_on_KILL
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KILL bashbot :photon.kuonet-ng.org!staff.kuonet-ng.org!AnMaster (killing to test on inspircd)
 	# :Brain!brain@staff.kuonet.org KILL bashbot :staff.kuonet.org!Brain (testing kill on unrealircd)
 	# :Brain!brain@staff.kuonet.org KILL bashbot :hurricane!staff.kuonet.org!Brain (testing kill on unrealircd, remote one)

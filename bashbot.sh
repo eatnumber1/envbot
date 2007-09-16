@@ -295,6 +295,9 @@ add_hooks() {
 			"on_QUIT")
 				modules_on_QUIT="$modules_on_QUIT $module"
 				;;
+			"on_KILL")
+				modules_on_KILL="$modules_on_KILL $module"
+				;;
 			"on_NICK")
 				modules_on_NICK="$modules_on_NICK $module"
 				;;
@@ -435,6 +438,16 @@ while true; do
 			reason="${BASH_REMATCH[3]}"
 			for module in $modules_on_QUIT; do
 				module_${module}_on_QUIT "$sender" "$reason"
+			done
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+KILL\ ([^ ]*)\ :([^ ]*)\ \((.*)\) ]]; then
+			sender="${BASH_REMATCH[1]}"
+			target="${BASH_REMATCH[2]}"
+			path="${BASH_REMATCH[3]}"
+			reason="${BASH_REMATCH[4]}"
+			# I don't think we need to check if we were the target or not,
+			# the bot doesn't need to care as far as I can see.
+			for module in $modules_on_KILL; do
+				module_${module}_on_KILL "$sender" "$target" "$path" "$reason"
 			done
 		elif [[ $line =~ ^[^:] ]] ;then
 			handle_ping "$line"
