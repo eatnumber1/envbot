@@ -67,6 +67,14 @@ server_PREFIX_modes="ov"
 server_PREFIX_prefixes="@+"
 
 quit_bot() {
+	for module in $modules_before_disconnect; do
+		module_${module}_before_disconnect
+	done
+	local reason=$1
+	send_quit "$reason"
+	for module in $modules_after_disconnect; do
+		module_${module}_after_disconnect
+	done
 	for module in $modules_FINALISE; do
 		${module}_FINALISE
 	done
@@ -254,6 +262,12 @@ add_hooks() {
 			"after_connect")
 				modules_after_connect="$modules_after_connect $module"
 				;;
+			"before_disconnect")
+				modules_before_disconnect="$modules_before_disconnect $module"
+				;;
+			"after_disconnect")
+				modules_after_disconnect="$modules_after_disconnect $module"
+				;;
 			"on_NOTICE")
 				modules_on_NOTICE="$modules_on_NOTICE $module"
 				;;
@@ -426,6 +440,9 @@ while true; do
 	done
 
 	log "DIED FOR SOME REASON"
+	for module in $modules_after_disconnect; do
+		module_${module}_after_disconnect
+	done
 	# Don't reconnect right away. We might get throttled and other nasty stuff.
 	sleep 10
 done

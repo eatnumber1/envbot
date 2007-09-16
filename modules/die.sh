@@ -40,8 +40,7 @@ module_die_on_PRIVMSG() {
 		query="${query//${config_listenchar}die/}"
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
-			send_quit "$query"
-			quit_bot
+			quit_bot "$query"
 			sleep 2
 		else
 			access_fail "$sender" "make the bot die" "owner"

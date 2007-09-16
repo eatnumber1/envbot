@@ -26,7 +26,7 @@ If not mentioned otherwise the function is optional.
 Functions marked with TODO may change, get renamed or removed and may not work
 even in current code.
 
-module_modulename_INIT (REQUIERD)
+module_modulename_INIT (REQUIRED)
 	Called directly after loading the module.
 	No parameters.
 	If return code isn't 0 the module is considered as failed to load.
@@ -37,7 +37,7 @@ module_modulename_INIT (REQUIERD)
 
 module_modulename_FINALISE
 	Called directly before the bot quits. The bot has already closed
-	the connection to the irc server at this point. This is for saving
+	the connection to the IRC server at this point. This is for saving
 	stuff.
 	No parameters.
 	Return code isn't checked.
@@ -51,7 +51,7 @@ module_modulename_before_connect
 
 module_modulename_on_connect
 	If implemented, called for each line that the bot
-	recieves from the server during connecting.
+	receives from the server during connecting.
 	$1 = raw line.
 	Return code not checked.
 
@@ -170,14 +170,25 @@ module_modulename_on_server_ERROR (TODO)
 	Return code not checked.
 		Reason: There isn't much point in swallowing this.
 
-module_modulename_on_disconnect (TODO)
+module_modulename_before_disconnect
+	Called when the bot is about to disconnect from server.
+	The bot may or may not reconnect after this depending on what caused this.
+	Note that this won't be called if the disconnect wasn't planned, like
+	a ping timeout, getting killed, and so on.
+	the disconnect.
+	No parameters.
+	Return code not checked.
+
+module_modulename_after_disconnect
 	Called when the bot gets disconnected from server.
+	The bot may or may not reconnect after this depending on what caused
+	the disconnect.
 	No parameters.
 	Return code not checked.
 		Reason: A module may need clean up, don't let it desync.
 
 module_modulename_on_RAW
-	Called when the bot gets *ANY* line from the server after the inital connect.
+	Called when the bot gets *ANY* line from the server after the initial connect.
 	With this a module can hook onto something not supported by a more specific hook.
 	The downsides:
 	* Potentially speed as it has to be called for any message.
