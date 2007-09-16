@@ -23,6 +23,10 @@ echo "Loading... Please wait"
 
 echo "Loading config"
 source bot_settings.sh
+if [[ $? -ne 0 ]]; then
+	echo "Error: couldn't load config from bot_settings.sh"
+	exit 1
+fi
 
 echo "Loading library functions"
 # Load library functions.
@@ -32,6 +36,9 @@ source lib/channels.sh
 source lib/parse.sh
 source lib/access.sh
 source lib/misc.sh
+
+validate_config
+log_init
 
 CurrentNick=""
 ServerName=""
@@ -117,8 +124,6 @@ handle_ping() {
 		send_raw "PONG :$pingdata"
 	fi
 }
-
-validate_config
 
 IRC_CONNECT(){
 	local ghost=0
@@ -244,7 +249,7 @@ echo "Loading modules"
 # Load modules
 for module in $modules; do
 	if [ -f "modules/${module}.sh" ]; then
-		. modules/${module}.sh
+		source modules/${module}.sh
 		if [[ $? -eq 0 ]]; then
 			loaded_modules="$loaded_modules $module"
 			add_hooks "$module"
