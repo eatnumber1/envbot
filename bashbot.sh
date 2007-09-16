@@ -39,6 +39,7 @@ source lib/misc.sh
 
 validate_config
 log_init
+# Now logging functions can be used.
 
 CurrentNick=""
 ServerName=""
@@ -183,12 +184,12 @@ IRC_CONNECT(){
 		fi
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			if [[ $ghost == 1 ]]; then
-				log_stdout "recovering ghost"
+				log_stdout "Recovering ghost"
 				send_msg "Nickserv" "GHOST $firstnick $nickservpasswd"
 				sleep 2
 				send_nick "$firstnick"
 			fi
-			log_stdout "identifying..."
+			log_stdout "Identifying..."
 			[ -n "$nickservpasswd" ] && send_msg "Nickserv" "IDENTIFY $nickservpasswd"
 			sleep 1
 			log_stdout 'Connected'

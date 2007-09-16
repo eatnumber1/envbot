@@ -60,7 +60,6 @@ channels_add() {
 # Internal function
 # Removes channels to the list
 channels_remove() {
-	set -x
 	local newchannels=""
 	for channel in $CurrentChannels; do
 		if [[ "$channel" != "$1" ]]; then
@@ -68,7 +67,6 @@ channels_remove() {
 		fi
 	done
 	CurrentChannels="$newchannels"
-	set +x
 }
 
 # Check if we parted
