@@ -132,10 +132,10 @@ module_modulename_on_KICK
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test AnMaster_test :this is a test
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test bashbot :another test
 	Called when someone parts a channel the bot is in
-	$1 = who did it (n!u@h)
-	$2 = what channel
-	$3 = who got kicked
-	$4 = a reason if one exists.
+	$1 = Who did it (n!u@h).
+	$2 = What channel.
+	$3 = Who got kicked.
+	$4 = A reason if one exists.
 	Return code not checked.
 		Reason: A module with a list of users could get desynced if it didn't
 		get the kick.
@@ -144,8 +144,8 @@ module_modulename_on_KICK
 module_modulename_on_QUIT
 	# :AnMaster_test!AnMaster@staff.kuonet-ng.org QUIT :Quit: ERC Version 5.2 (IRC client for Emacs)
 	Called when someone quits
-	$1 = who did it (n!u@h)
-	$2 = a reason if one exists.
+	$1 = Who did it (n!u@h).
+	$2 = A reason if one exists.
 	Return code not checked.
 		Reason: A module with a list of users could get desynced if it didn't
 		get the quit.
@@ -154,9 +154,9 @@ module_modulename_on_QUIT
 module_modulename_on_TOPIC
 	# :AnMaster!AnMaster@staff.kuonet-ng.org TOPIC #test :Bash bot testing channel
 	Called when a topic is set or on channel join
-	$1 = who did it (n!u@h)
-	$2 = What channel
-	$3 = New topic
+	$1 = Who did it (n!u@h).
+	$2 = What channel.
+	$3 = New topic.
 	Return code not checked.
 		Reason: We don't want to get desynced modules.
 
@@ -167,9 +167,9 @@ module_modulename_on_channel_MODE
 	# :ChanServ!ChanServ@services.kuonet-ng.org MODE #test +nt-k 5
 	# :AnMaster!AnMaster@staff.kuonet-ng.org MODE #test -s
 	Called when someone changes a mode in the channel
-	$1 = who did it (n!u@h)
-	$2 = on what channel
-	$3 = the mode change with it's parameters.
+	$1 = Who did it (n!u@h).
+	$2 = On what channel.
+	$3 = The mode change with it's parameters.
 	Return code not checked.
 		Reason: A module with a list of users could get desynced if it didn't
 		get the mode change.
@@ -177,8 +177,8 @@ module_modulename_on_channel_MODE
 
 module_modulename_on_numeric
 	Called on any numeric after connect.
-	$1 = the numeric
-	$2 = it's data
+	$1 = The numeric.
+	$2 = It's data.
 	Return code:
 		0 = pass it on to next module
 		1 = I have taken care of this, and don't
@@ -186,13 +186,25 @@ module_modulename_on_numeric
 	Note: In most cases you DON'T want to return 1 for this. If you do be very very careful.
 
 
-module_modulename_on_server_ERROR (TODO)
-	# ERROR :Closing link (rfc3092@2001:16d8:fff2::) [Killed (AnMaster (testing a kill))]
+module_modulename_on_server_ERROR
+	# ERROR :Closing link (rfc3092@1.2.3.4) [Killed (AnMaster (testing a kill on inspircd))]
+	# ERROR :Closing Link: [1.2.3.4] (Throttled: Reconnecting too fast) -Email staff@kuonet.org for more information.
+	# ERROR :Closing Link: bashbot[host.name.se] Brain ([hurricane.KuoNET.org] Local kill by Brain (testing kill on unrealircd))
+	# ERROR :Closing Link: bashbot[host.name.se] hurricane.KuoNET.org (Killed (Brain (testing kill on unrealircd, remote one)))
 	Called when the bot get an ERROR from the server.
-	$1 = the ERROR message.
+	$1 = The ERROR message.
 	Return code not checked.
 		Reason: There isn't much point in swallowing this.
 
+module_modulename_on_KILL (TODO)
+	# :AnMaster!AnMaster@staff.kuonet-ng.org KILL bashbot :photon.kuonet-ng.org!staff.kuonet-ng.org!AnMaster (killing to test on inspircd)
+	# :Brain!brain@staff.kuonet.org KILL bashbot :staff.kuonet.org!Brain (testing kill on unrealircd)
+	# :Brain!brain@staff.kuonet.org KILL bashbot :hurricane!staff.kuonet.org!Brain (testing kill on unrealircd, remote one)
+	Called when the bot get a KILL message from the server.
+	$1 = The sender of the kill.
+	$2 = The target of the kill.
+	$3 = The KILL path.
+	$4 = The reason.
 
 module_modulename_before_disconnect
 	Called when the bot is about to disconnect from server.

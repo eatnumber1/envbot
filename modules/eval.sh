@@ -38,7 +38,7 @@ module_eval_on_PRIVMSG() {
 	local query="$3"
 	if [[ "$query" =~ ^${config_listenchar}eval* ]]; then
 		query="${query//${config_listenchar}eval/}"
-		query="${query/^ /}"
+		query="${query/# /}"
 		if access_check_owner "$sender"; then
 			eval "$query"
 			sleep 2

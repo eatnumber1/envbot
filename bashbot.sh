@@ -268,6 +268,9 @@ add_hooks() {
 			"after_disconnect")
 				modules_after_disconnect="$modules_after_disconnect $module"
 				;;
+			"on_server_ERROR")
+				modules_on_server_ERROR="$modules_on_server_ERROR $module"
+				;;
 			"on_NOTICE")
 				modules_on_NOTICE="$modules_on_NOTICE $module"
 				;;
@@ -434,8 +437,14 @@ while true; do
 				module_${module}_on_QUIT "$sender" "$reason"
 			done
 		elif [[ $line =~ ^[^:] ]] ;then
-			log "handling this ..."
 			handle_ping "$line"
+			if [[ "$line" =~ ^ERROR\ :(.*) ]]; then
+				error="${BASH_REMATCH[1]}"
+				log_stdout "Got ERROR from server: $error"
+				for module in $modules_on_server_ERROR; do
+						module_${module}_on_server_ERROR "$error"
+				done
+			fi
 		fi
 	done
 
