@@ -164,7 +164,7 @@ IRC_CONNECT(){
 	exec 3<> "/dev/tcp/${config_server}"
 	while read -d $'\n' -u 3 line; do
 		for module in $modules_on_connect; do
-			${module}_on_connect $line
+			module_${module}_on_connect $line
 		done
 		# Part of motd, that goes to dev null.
 		if  [[ $( echo $line | cut -d' ' -f2 ) == '372'  ]]; then
@@ -238,7 +238,7 @@ IRC_CONNECT(){
 
 add_hooks() {
 	local module="$1"
-	local hooks="$(${module}_INIT)"
+	local hooks="$(module_${module}_INIT)"
 	local hook
 	for hook in $hooks; do
 		case $hook in
@@ -312,12 +312,12 @@ done
 
 while true; do
 	for module in $modules_before_connect; do
-		${module}_before_connect
+		module_${module}_before_connect
 	done
 	IRC_CONNECT
 	trap 'send_quit "ctrl-C" ; quit_bot 1' TERM INT
 	for module in $modules_after_connect; do
-		${module}_after_connect
+		module_${module}_after_connect
 	done
 
 
@@ -325,7 +325,7 @@ while true; do
 		line=${line//$'\r'/}
 		log_raw_in "$line"
 		for module in $modules_on_raw; do
-			${module}_on_raw "$line"
+			module_${module}_on_raw "$line"
 			if [[ $? -ne 0 ]]; then
 				# TODO: Check that this does what it should.
 				continue 2
@@ -337,7 +337,7 @@ while true; do
 			numericdata="${BASH_REMATCH[3]}"
 			handle_numerics "$numeric" "${BASH_REMATCH[2]}" "$numericdata"
 			for module in $modules_on_numeric; do
-				${module}_on_numeric "$numeric" "$numericdata"
+				module_${module}_on_numeric "$numeric" "$numericdata"
 				if [[ $? -ne 0 ]]; then
 					break
 				fi
@@ -348,7 +348,7 @@ while true; do
 			query="${BASH_REMATCH[3]}"
 			query="${query#*:}"
 			for module in $modules_on_PRIVMSG; do
-				${module}_on_PRIVMSG "$sender" "$target" "$query"
+				module_${module}_on_PRIVMSG "$sender" "$target" "$query"
 				if [[ $? -ne 0 ]]; then
 					break
 				fi
@@ -359,7 +359,7 @@ while true; do
 			query="${BASH_REMATCH[3]}"
 			query="${query#*:}"
 			for module in $modules_on_NOTICE; do
-				${module}_on_PRIVMSG "$sender" "$target" "$query"
+				module_${module}_on_PRIVMSG "$sender" "$target" "$query"
 				if [[ $? -ne 0 ]]; then
 					break
 				fi
@@ -369,14 +369,14 @@ while true; do
 			channel="${BASH_REMATCH[2]}"
 			topic="${BASH_REMATCH[4]}"
 			for module in $modules_on_TOPIC; do
-				${module}_on_TOPIC "$sender" "$channel" "$topic"
+				module_${module}_on_TOPIC "$sender" "$channel" "$topic"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+MODE\ (#[^ ]+)\ (.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			modes="${BASH_REMATCH[3]}"
 			for module in $modules_on_channel_MODE ; do
-				${module}_on_channel_MODE "$sender" "$channel" "$modes"
+				module_${module}_on_channel_MODE "$sender" "$channel" "$modes"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NICK\ (.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
@@ -384,7 +384,7 @@ while true; do
 			# Check if it was our own nick
 			handle_nick "$sender" "$newnick"
 			for module in $modules_on_NICK; do
-				${module}_on_NICK "$sender" "$newnick"
+				module_${module}_on_NICK "$sender" "$newnick"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+JOIN\ :(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
@@ -392,7 +392,7 @@ while true; do
 			# Check if it was our own nick that joined
 			channels_handle_join "$sender" "$channel"
 			for module in $modules_on_JOIN; do
-				${module}_on_JOIN "$sender" "$channel"
+				module_${module}_on_JOIN "$sender" "$channel"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+PART\ (#[^ ]+)(\ :(.*))? ]]; then
 			sender="${BASH_REMATCH[1]}"
@@ -401,7 +401,7 @@ while true; do
 			# Check if it was our own nick that joined
 			channels_handle_part "$sender" "$channel" "$reason"
 			for module in $modules_on_JOIN; do
-				${module}_on_PART "$sender" "$channel" "$reason"
+				module_${module}_on_PART "$sender" "$channel" "$reason"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+KICK\ (#[^ ]+)\ ([^ ]+)(\ :(.*))? ]]; then
 			sender="${BASH_REMATCH[1]}"
@@ -411,13 +411,13 @@ while true; do
 			# Check if it was our own nick that joined
 			channels_handle_kick "$sender" "$channel" "$kicked" "$reason"
 			for module in $modules_on_KICK; do
-				${module}_on_KICK "$sender" "$channel" "$kicked" "$reason"
+				module_${module}_on_KICK "$sender" "$channel" "$kicked" "$reason"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+QUIT(\ :(.*))? ]]; then
 			sender="${BASH_REMATCH[1]}"
 			reason="${BASH_REMATCH[3]}"
 			for module in $modules_on_QUIT; do
-				${module}_on_QUIT "$sender" "$reason"
+				module_${module}_on_QUIT "$sender" "$reason"
 			done
 		elif [[ $line =~ ^[^:] ]] ;then
 			log "handling this ..."

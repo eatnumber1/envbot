@@ -21,7 +21,7 @@
 ###########################################################################
 # Debug module, dump all variables to console.
 
-dumpvars_INIT() {
+module_dumpvars_INIT() {
 	echo "on_PRIVMSG"
 }
 
@@ -30,7 +30,7 @@ dumpvars_INIT() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-dumpvars_on_PRIVMSG() {
+module_dumpvars_on_PRIVMSG() {
 	# Accept both in /msg and channel
 	local sender="$1"
 	local channel="$2"

@@ -22,7 +22,7 @@
 ###########################################################################
 # Join/part
 
-join_INIT() {
+module_join_INIT() {
 	echo "on_PRIVMSG"
 }
 
@@ -31,7 +31,7 @@ join_INIT() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-join_on_PRIVMSG() {
+module_join_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"

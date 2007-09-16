@@ -21,7 +21,7 @@
 ###########################################################################
 # Allow owners to make to bot say something
 
-say_INIT() {
+module_say_INIT() {
 	echo "on_PRIVMSG"
 }
 
@@ -30,7 +30,7 @@ say_INIT() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-say_on_PRIVMSG() {
+module_say_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"

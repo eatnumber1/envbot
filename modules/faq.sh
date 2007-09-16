@@ -21,13 +21,13 @@
 ###########################################################################
 # Simple FAQ module
 
-faq_INIT() {
+module_faq_INIT() {
 	echo "before_connect on_PRIVMSG"
 }
 
 
 # Load or reload FAQ items
-load_faq() {
+module_faq_load() {
 	local i=0
 	unset module_faq_array
 	while read -d $'\n' line ;do
@@ -39,10 +39,10 @@ load_faq() {
 
 # Called after bot has connected
 # Loads FAQ items
-faq_before_connect() {
+module_faq_before_connect() {
 	unset module_faq_last_query
 	module_faq_last_query='null'
-	load_faq
+	module_faq_load
 }
 
 # Called on a PRIVMSG
@@ -50,7 +50,7 @@ faq_before_connect() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-faq_on_PRIVMSG() {
+module_faq_on_PRIVMSG() {
 	# Only respond in channel.
 	[[ $2 =~ ^# ]] || return 0
 	local sender="$1"
@@ -62,7 +62,7 @@ faq_on_PRIVMSG() {
 		if [[ "$query" =~ reload ]]; then
 			if access_check_owner "$sender"; then
 				send_msg "$channel" "Reloading FAQ items..."
-				load_faq
+				module_faq_load
 				send_msg "$channel" "Done."
 				sleep 2
 			else

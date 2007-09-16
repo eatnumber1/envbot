@@ -22,7 +22,7 @@
 ###########################################################################
 # Channel modes
 
-assign_mode_INIT() {
+module_assign_mode_INIT() {
 	echo "on_PRIVMSG"
 }
 
@@ -31,7 +31,7 @@ assign_mode_INIT() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel)
 # $3 = nick
-assign_mode_on_PRIVMSG() {
+module_assign_mode_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local sendon_channel="$2"

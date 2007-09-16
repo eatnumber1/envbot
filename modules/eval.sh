@@ -22,7 +22,7 @@
 # THIS IS FOR DEBUGGING ONLY!!!! Don't use it in other cases
 # Allow owners to make the bot eval any code
 
-eval_INIT() {
+module_eval_INIT() {
 	echo "on_PRIVMSG"
 }
 
@@ -31,7 +31,7 @@ eval_INIT() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-eval_on_PRIVMSG() {
+module_eval_on_PRIVMSG() {
 	# Accept anywhere
 	local sender="$1"
 	local channel="$2"

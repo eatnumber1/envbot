@@ -22,7 +22,7 @@
 # THIS IS FOR DEBUGGING!
 # Allow owners to make bot send any line.
 
-sendraw_INIT() {
+module_sendraw_INIT() {
 	echo "on_PRIVMSG"
 }
 
@@ -31,7 +31,7 @@ sendraw_INIT() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-sendraw_on_PRIVMSG() {
+module_sendraw_on_PRIVMSG() {
 	# Accept anywhere
 	local sender="$1"
 	local channel="$2"
