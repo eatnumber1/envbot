@@ -131,6 +131,15 @@ handle_005() {
 	fi
 }
 
+handle_numerics() { # $1 = numeric, $2 = target (self), $3 = data
+	# Slight sanity check
+	if [[ $2 != $CurrentNick ]]; then
+		log_stdout 'WARNING: Own nick desynced!'
+		log_stdout "WARNING: It should be $CurrentNick but is $2"
+		log_stdout "WARNING: Correcting own nick and lets hope that doesn't break anything"
+		CurrentNick="$2"
+	fi
+}
 
 handle_nick() {
 	local oldnick="$(parse_hostmask_nick "$1")"
@@ -325,15 +334,8 @@ while true; do
 		if [[ $line =~ :${server_name}\ ([0-9]{3})\ ([^ ]+)\ (.*) ]]; then
 			# this is a numeric
 			numeric="${BASH_REMATCH[1]}"
-			mynick="${BASH_REMATCH[2]}"
-			# Slight sanity check
-			if [[ $mynick != $CurrentNick ]]; then
-				log 'WARNING: Own nick desynced!'
-				log "WARNING: It should be $CurrentNick but is $mynick"
-				log "WARNING: Correcting own nick and lets hope that doesn't break anything"
-				CurrentNick="$mynick"
-			fi
 			numericdata="${BASH_REMATCH[3]}"
+			handle_numerics "$numeric" "${BASH_REMATCH[2]}" "$numericdata"
 			for module in $modules_on_numeric; do
 				${module}_on_numeric "$numeric" "$numericdata"
 				if [[ $? -ne 0 ]]; then
