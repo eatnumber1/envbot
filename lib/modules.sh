@@ -31,6 +31,7 @@
 modules_add_hooks() {
 	local module="$1"
 	local hooks="$(module_${module}_INIT)"
+	[[ $? -ne 0 ]] && { log "Failed to get hooks for $module"; return 1; }
 	local hook
 	for hook in $hooks; do
 		case $hook in
@@ -124,7 +125,7 @@ modules_unload() {
 		eval "modules_$hook=\"$newval\""
 	done
 	module_${module}_UNLOAD || \
-		{ log_stdout "ERROR: Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"; quit_bot; }
+		{ log_stdout "ERROR: Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"; quit_bot "Fatal error in unload"; }
 	unset module_${module}_UNLOAD
 	unset module_${module}_INIT
 	unset module_${module}_REHASH
@@ -136,21 +137,31 @@ modules_unload() {
 # Returns 0 = Loaded ok
 #         1 = Other errors
 #         2 = Module already loaded
+#         3 = Failed to source it
+#         4 = No such module
+#         5 = Getting hooks failed
 modules_load() {
 	module="$1"
 	if grep -qw "$module" <<< "${modules_loaded}"; then
-		log_stdout "Module $1 is already loaded."
+		log_stdout "Module ${module} is already loaded."
 		return 2
 	fi
 	if [ -f "modules/${module}.sh" ]; then
 		source modules/${module}.sh
 		if [[ $? -eq 0 ]]; then
 			modules_loaded="$modules_loaded $module"
-			modules_add_hooks "$module"
+			modules_add_hooks "$module" || \
+				{ log_stdout "Hooks failed"; return 5; }
 			if grep -qw "$module" <<< "$modules_after_load"; then
 				module_${module}_after_load
 			fi
+		else
+			log_stdout "Could not load ${module}, failed to source it."
+			return 3
 		fi
+	else
+		log_stdout "No such module as ${module} exists."
+		return 4
 	fi
 }
 

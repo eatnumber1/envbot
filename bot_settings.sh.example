@@ -55,7 +55,7 @@ config_log_stdout=1
 
 # What modules to load, space separated list
 # For a list of modules see the modules dir.
-config_modules="services umodes autojoin faq"
+config_modules="load services umodes autojoin faq"
 
 # Module specific settings
 
