@@ -46,7 +46,7 @@ module_join_on_PRIVMSG() {
 	local channel="$2"
 	local query="$3"
 	if [[ "$query" =~ ^${config_listenchar}part\ (#[^ ]+)(\ (.*))? ]]; then
-		local channel="${bash_rematch[1]}"
+		local channel="${BASH_REMATCH[1]}"
 		local message="${BASH_REMATCH[3]}"
 		if access_check_owner "$sender"; then
 			if [[ -z "$reason" ]]; then
