@@ -44,7 +44,8 @@ module_modulename_INIT (REQUIRED)
 	On STDOUT should be returned a space separated list of the optional functions
 	that the module implements. FAQ would return "before_connect on_PRIVMSG"
 
-module_modulename_UNLOAD (REQUIRED) (TODO)
+
+module_modulename_UNLOAD (REQUIRED)
 	Called to make the module unload itself.
 	In this function it should clean up after itself and undefine all
 	it's functions and variables except the REQUIRED functions.
@@ -56,12 +57,14 @@ module_modulename_UNLOAD (REQUIRED) (TODO)
 		0 = Unloaded correctly
 		1 = Failed to unload. On this the bot will quit.
 
+
 module_modulename_REHASH (REQUIRED) (TODO)
 	Called to make the module reparse any config options.
 	No parameters
 		0 = Rehashed correctly
 		1 = Non fatal error for the bot itself. The bot will call UNLOAD on the module.
 		2 = Fatal error of some kind. On this the bot will quit.
+
 
 module_modulename_FINALISE
 	Called directly before the bot quits. The bot has already closed
