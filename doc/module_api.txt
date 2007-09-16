@@ -8,7 +8,7 @@ global bot variables. FAQ module may use: module_faq_last_query for example
 as a variable.
 
 Variables that are local to the function (using the local directive) may have
-other names. Don't forget variables created in for loops and such 
+other names. Don't forget variables created in for loops and such
 (for foo in bar bash; do echo $foo; done the $foo variable is global here,
  do local foo on the line before it)
 
@@ -28,7 +28,7 @@ modulename_INIT (REQUIERD)
 	If return code isn't 0 the module is considered as failed to load.
 	The module should clean up after itself in this case before it returns
 	from INIT.
-	On STDOUT should be returned a space separated list of functions the 
+	On STDOUT should be returned a space separated list of functions the
 	module implements. FAQ would return "before_connect on_PRIVMSG"
 
 modulename_FINALISE
@@ -191,6 +191,3 @@ modulename_on_RAW
 		    consult other modules about this.
 		    For raw this means no normal hooks
 		    will be called on the line either.
-
-
-
