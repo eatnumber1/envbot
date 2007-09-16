@@ -51,3 +51,14 @@ validate_config() {
 		echo "         Set config_autojoin_channels[1] at least."
 	fi
 }
+
+# Remove a value from a space separated list
+# $1 = list to remove from
+# $2 = value to remove
+# Returns new list on STDOUT
+list_remove() {
+	local oldlist="${!1}"
+	local newlist=${oldlist//$2}
+	echo "$newlist"
+}
+
