@@ -42,7 +42,7 @@ parse_hostmask_nick() {
 #         but still exist it will return nothing on STDOUT
 #         but 0 as error code
 parse_005() {
-	if [[ $Server005 =~ ${1}(=([^ ]+))? ]]; then
+	if [[ $server_005 =~ ${1}(=([^ ]+))? ]]; then
 		# Some, but not all also send what char the modes for INVEX is.
 		# If it isn't sent, guess one +I
 		if [[ ${BASH_REMATCH[2]} ]]; then

@@ -44,27 +44,27 @@ log_init
 # Now logging functions can be used.
 
 CurrentNick=""
-ServerName=""
-Server004=""
+server_name=""
+server_004=""
 # See http://www.irc.org/tech_docs/005.html for an incomplete list.
-Server005=""
+server_005=""
 # NAMES output with UHNAMES and NAMESX
 #  :photon.kuonet-ng.org 353 bashbot = #bots :@%+AnMaster!AnMaster@staff.kuonet-ng.org @ChanServ!ChanServ@services.kuonet-ng.org bashbot!rfc3092@1F1794B2:769091B3
 # NAMES output with NAMESX only:
 #  :hurricane.KuoNET.org 353 bashbot = #test :bashbot ~@Brain ~@EmErgE &@AnMaster/kng
-Server_UHNAMES=0
-Server_NAMESX=0
+server_UHNAMES=0
+server_NAMESX=0
 # These are passed in a slightly odd way in 005 so we do them here.
-ServerEXCEPTS=""
-ServerINVEX=""
+server_EXCEPTS=""
+server_INVEX=""
 
 # In case we don't get a 005, make some sane defaults.
-ServerCHMODES_LISTMODES="b"
-ServerCHMODES_ALWAYSPARAM="k"
-ServerCHMODES_PARAMONSET="l"
-ServerCHMODES_SIMPLE="imnpst"
-ServerPREFIX_modes="ov"
-ServerPREFIX_prefixes="@+"
+server_CHMODES_LISTMODES="b"
+server_CHMODES_ALWAYSPARAM="k"
+server_CHMODES_PARAMONSET="l"
+server_CHMODES_SIMPLE="imnpst"
+server_PREFIX_modes="ov"
+server_PREFIX_prefixes="@+"
 
 quit_bot() {
 	for module in $modules_FINALISE; do
@@ -80,7 +80,7 @@ quit_bot() {
 }
 
 # Get some common data out of 005, the whole will also be saved to
-# $Server005 for any module to use via parse_005().
+# $server_005 for any module to use via parse_005().
 # This function is for cases that needs special action, like NAMESX
 # and UHNAMES.
 # This should be called directly after recieving a part of the 005!
@@ -103,31 +103,31 @@ handle_005() {
 		# Some, but not all also send what char the modes for INVEX is.
 		# If it isn't sent, guess one +I
 		if [[ ${BASH_REMATCH[2]} ]]; then
-			ServerINVEX="${BASH_REMATCH[2]}"
+			server_INVEX="${BASH_REMATCH[2]}"
 		else
-			ServerINVEX="I"
+			server_INVEX="I"
 		fi
 	fi
 	if [[ $line =~ PREFIX=(\(([^ \)]+)\)([^ ]+)) ]]; then
-		ServerPREFIX="${BASH_REMATCH[1]}"
-		ServerPREFIX_modes="${BASH_REMATCH[2]}"
-		ServerPREFIX_prefixes="${BASH_REMATCH[3]}"
+		server_PREFIX="${BASH_REMATCH[1]}"
+		server_PREFIX_modes="${BASH_REMATCH[2]}"
+		server_PREFIX_prefixes="${BASH_REMATCH[3]}"
 	fi
 	if [[ $line =~ CHANMODES=([^ ,]+),([^ ,]+),([^ ,]+),([^ ,]+) ]]; then
-		ServerCHMODES_LISTMODES="${BASH_REMATCH[1]}"
-		ServerCHMODES_ALWAYSPARAM="${BASH_REMATCH[2]}"
-		ServerCHMODES_PARAMONSET="${BASH_REMATCH[3]}"
-		ServerCHMODES_SIMPLE="${BASH_REMATCH[4]}"
+		server_CHMODES_LISTMODES="${BASH_REMATCH[1]}"
+		server_CHMODES_ALWAYSPARAM="${BASH_REMATCH[2]}"
+		server_CHMODES_PARAMONSET="${BASH_REMATCH[3]}"
+		server_CHMODES_SIMPLE="${BASH_REMATCH[4]}"
 	fi
 	# Enable NAMESX is supported.
 	if [[ $line =~ NAMESX ]]; then
 		send_raw "PROTOCTL NAMESX"
-		Server_NAMESX=1
+		server_NAMESX=1
 	fi
 	# Enable UHNAMES if it is there.
 	if [[ $line =~ UHNAMES ]]; then
 		send_raw "PROTOCTL UHNAMES"
-		Server_UHNAMES=1
+		server_UHNAMES=1
 	fi
 }
 
@@ -167,15 +167,15 @@ IRC_CONNECT(){
 			log "Motd is not displayed in log"
 		elif  [[ $( echo $line | cut -d' ' -f2 ) == '002'  ]]; then
 			if [[ $line =~ Your\ host\ is\ ([^ ,]*)  ]]; then # just to get the regex, this should always be true
-				ServerName="${BASH_REMATCH[1]}"
+				server_name="${BASH_REMATCH[1]}"
 			fi
 		elif  [[ $( echo $line | cut -d' ' -f2 ) == '004' ]]; then
-			Server004="$( echo $line | cut -d' ' -f4- )"
-			Server004=$(tr -d $'\r\n' <<< "$Server004")  # Get rid of ending newline
+			server_004="$( echo $line | cut -d' ' -f4- )"
+			server_004=$(tr -d $'\r\n' <<< "$server_004")  # Get rid of ending newline
 		elif  [[ $( echo $line | cut -d' ' -f2 ) == '005' ]]; then
-			Server005="$Server005 $( echo $line | cut -d' ' -f4- )"
-			Server005=$(tr -d $'\r\n' <<< "$Server005") # Get rid of newlines
-			Server005="${Server005/ :are supported by this server/}" # Get rid of :are supported by this server
+			server_005="$server_005 $( echo $line | cut -d' ' -f4- )"
+			server_005=$(tr -d $'\r\n' <<< "$server_005") # Get rid of newlines
+			server_005="${server_005/ :are supported by this server/}" # Get rid of :are supported by this server
 			handle_005 "$line"
 		fi
 		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
@@ -322,7 +322,7 @@ while true; do
 				continue 2
 			fi
 		done
-		if [[ $line =~ :${ServerName}\ ([0-9]{3})\ ([^ ]+)\ (.*) ]]; then
+		if [[ $line =~ :${server_name}\ ([0-9]{3})\ ([^ ]+)\ (.*) ]]; then
 			# this is a numeric
 			numeric="${BASH_REMATCH[1]}"
 			mynick="${BASH_REMATCH[2]}"
