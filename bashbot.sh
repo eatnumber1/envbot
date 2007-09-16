@@ -43,7 +43,7 @@ validate_config
 log_init
 # Now logging functions can be used.
 
-CurrentNick=""
+nick_current=""
 server_name=""
 server_004=""
 # See http://www.irc.org/tech_docs/005.html for an incomplete list.
@@ -133,18 +133,18 @@ handle_005() {
 
 handle_numerics() { # $1 = numeric, $2 = target (self), $3 = data
 	# Slight sanity check
-	if [[ $2 != $CurrentNick ]]; then
+	if [[ $2 != $nick_current ]]; then
 		log_stdout 'WARNING: Own nick desynced!'
-		log_stdout "WARNING: It should be $CurrentNick but is $2"
+		log_stdout "WARNING: It should be $nick_current but is $2"
 		log_stdout "WARNING: Correcting own nick and lets hope that doesn't break anything"
-		CurrentNick="$2"
+		nick_current="$2"
 	fi
 }
 
 handle_nick() {
 	local oldnick="$(parse_hostmask_nick "$1")"
-	if [[ $oldnick == $CurrentNick ]]; then
-		CurrentNick="$2"
+	if [[ $oldnick == $nick_current ]]; then
+		nick_current="$2"
 	fi
 }
 
@@ -191,7 +191,7 @@ IRC_CONNECT(){
 			log_stdout "logging in as $config_firstnick..."
 			send_nick "$config_firstnick"
 			# FIXME: THIS IS HACKISH AND MAY BREAK
-			CurrentNick="$config_firstnick"
+			nick_current="$config_firstnick"
 			# If a server password is set, send it.
 			[[ $config_server_passwd ]] && send_raw "PASS $config_server_passwd"
 			send_raw "USER $config_ident 0 * :${config_gecos}"
@@ -206,14 +206,14 @@ IRC_CONNECT(){
 			if [[ $on_nick -eq 2 ]]; then
 				log_stdout "Second nick is ALSO in use, trying third"
 				send_nick "$config_thirdnick"
-				CurrentNick="$config_thirdnick"
+				nick_current="$config_thirdnick"
 				on_nick=3
 			fi
 			log_stdout "First nick is in use, trying second"
 			send_nick "$config_secondnick"
 			on_nick=2
 			# FIXME: THIS IS HACKISH AND MAY BREAK
-			CurrentNick="$config_secondnick"
+			nick_current="$config_secondnick"
 			sleep 1
 		fi
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd

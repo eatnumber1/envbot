@@ -49,7 +49,7 @@ send_nick() {
 
 # $1 = modes to set
 send_umodes() {
-	send_raw "MODE $CurrentNick $1"
+	send_raw "MODE $nick_current $1"
 }
 
 # $1 = channel to set them on
