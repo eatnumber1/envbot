@@ -223,14 +223,17 @@ add_hooks() {
 			"on_PRIVMSG")
 				modules_on_PRIVMSG="$modules_on_PRIVMSG $module"
 				;;
-			"on_KICK")
-				modules_on_KICK="$modules_on_KICK $module"
-				;;
 			"on_JOIN")
 				modules_on_="$modules_on_JOIN $module"
 				;;
 			"on_PART")
 				modules_on_PART="$modules_on_PART $module"
+				;;
+			"on_KICK")
+				modules_on_KICK="$modules_on_KICK $module"
+				;;
+			"on_QUIT")
+				modules_on_QUIT="$modules_on_QUIT $module"
 				;;
 			"on_NICK")
 				modules_on_NICK="$modules_on_NICK $module"
@@ -359,6 +362,12 @@ while true; do
 			channels_handle_kick "$sender" "$channel" "$kicked" "$reason"
 			for module in $modules_on_KICK; do
 				${module}_on_KICK "$sender" "$channel" "$kicked" "$reason"
+			done
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+QUIT(\ :(.*))? ]]; then
+			sender="${BASH_REMATCH[1]}"
+			reason="${BASH_REMATCH[3]}"
+			for module in $modules_on_QUIT; do
+				${module}_on_QUIT "$sender" "$reason"
 			done
 		elif [[ $line =~ ^[^:] ]] ;then
 			log "handling this ..."

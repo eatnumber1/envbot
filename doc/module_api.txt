@@ -110,7 +110,7 @@ modulename_on_KICK
 		Reason: A module with a list of users could get desynced if it didn't
 		get the kick.
 
-modulename_on_QUIT (TODO)
+modulename_on_QUIT
 	# :AnMaster_test!AnMaster@staff.kuonet-ng.org QUIT :Quit: ERC Version 5.2 (IRC client for Emacs)
 	Called when someone quits
 	$1 = who did it (n!u@h)
