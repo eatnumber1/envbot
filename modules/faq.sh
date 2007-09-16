@@ -64,9 +64,8 @@ module_faq_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenchar}faq.* ]]; then
-		query="${query//${config_listenchar}faq/}"
-		query="${query/# /}"
+	if [[ "$query" =~ ^${config_listenchar}faq (.*) ]]; then
+		query="${BASH_REMATCH[1]}"
 		if [[ "$query" =~ reload ]]; then
 			if access_check_owner "$sender"; then
 				send_msg "$channel" "Reloading FAQ items..."

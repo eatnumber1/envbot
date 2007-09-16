@@ -45,8 +45,7 @@ module_sendraw_on_PRIVMSG() {
 	local channel="$2"
 	local query="$3"
 	if [[ "$query" =~ ^${config_listenchar}raw.* ]]; then
-		query="${query//${config_listenchar}raw/}"
-		query="${query/# /}"
+		query="${BASH_REMATCH[1]}"
 		if access_check_owner "$sender"; then
 			send_raw "$query"
 			sleep 2

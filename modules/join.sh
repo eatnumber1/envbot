@@ -45,39 +45,29 @@ module_join_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenchar}part\ .* ]]; then
-		query="${query//${config_listenchar}part/}"
-		query="${query/# /}"
+	if [[ "$query" =~ ^${config_listenchar}part\ (#[^ ]+)(\ (.*))? ]]; then
+		local channel="${bash_rematch[1]}"
+		local message="${BASH_REMATCH[3]}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)(\ (.*))? ]]; then
-				local channel="${BASH_REMATCH[1]}"
-				local message="${BASH_REMATCH[3]}"
-				if [[ -z "$reason" ]]; then
-					channels_part "$channel"
-				else
-					channels_part "$channel" "$message"
-				fi
+			if [[ -z "$reason" ]]; then
+				channels_part "$channel"
+			else
+				channels_part "$channel" "$message"
 			fi
-			sleep 2
 		else
 			access_fail "$sender" "make the bot part channel" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}join\ .* ]]; then
-		query="${query//${config_listenchar}join/}"
-		query="${query/# /}"
+	elif [[ "$query" =~ ^${config_listenchar}join\ (#[^ ]+)(\ .*)? ]]; then
+		local channel="${BASH_REMATCH[1]}"
+		local key="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)(\ .*)? ]]; then
-				local channel="${BASH_REMATCH[1]}"
-				local key="${BASH_REMATCH[2]}"
-				key="${key/# /}"
-				if [[ -z "$key" ]]; then
-					channels_join "${channel}"
-				else
-					channels_join "${channel}" "$key"
-				fi
+			key="${key/# /}"
+			if [[ -z "$key" ]]; then
+				channels_join "${channel}"
+			else
+				channels_join "${channel}" "$key"
 			fi
-			sleep 2
 		else
 			access_fail "$sender" "make the join channel" "owner"
 		fi

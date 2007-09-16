@@ -43,16 +43,12 @@ module_say_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenchar}say.* ]]; then
-		query="${query//${config_listenchar}say/}"
-		query="${query/# /}"
+	if [[ "$query" =~ ^${config_listenchar}say\ ([^ ]+)\ (.*) ]]; then
+		local channel="${BASH_REMATCH[1]}"
+		local message="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
-				local channel="${BASH_REMATCH[1]}"
-				local message="${BASH_REMATCH[2]}"
-				send_msg "$channel" "$message"
-			fi
-			sleep 2
+			send_msg "$channel" "$message"
+			sleep 1
 		else
 			access_fail "$sender" "make the bot talk with say" "owner"
 		fi

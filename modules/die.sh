@@ -44,9 +44,8 @@ module_die_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenchar}die.* ]]; then
-		query="${query//${config_listenchar}die/}"
-		query="${query/# /}"
+	if [[ "$query" =~ ^${config_listenchar}die\ (.*) ]]; then
+		query="${BASH_REMATCH[1]}"
 		if access_check_owner "$sender"; then
 			quit_bot "$query"
 			sleep 2
