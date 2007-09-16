@@ -44,7 +44,7 @@ module_assign_mode_on_PRIVMSG() {
 	local sender="$1"
 	local sendon_channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenchar}op\ ([^ ]+)\ ([^ ]+) ]]; then
+	if [[ "$query" =~ ^${config_listenregex}op\ ([^ ]+)\ ([^ ]+) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local nick="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then
@@ -53,7 +53,7 @@ module_assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot op somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}deop\ ([^ ]+)\ ([^ ]+) ]]; then
+	elif [[ "$query" =~ ^${config_listenregex}deop\ ([^ ]+)\ ([^ ]+) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local nick="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then
@@ -62,7 +62,7 @@ module_assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot deop somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}halfop\ ([^ ]+)\ ([^ ]+) ]]; then
+	elif [[ "$query" =~ ^${config_listenregex}halfop\ ([^ ]+)\ ([^ ]+) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local nick="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then
@@ -71,7 +71,7 @@ module_assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot halfop somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}dehalfop\ ([^ ]+)\ ([^ ]+) ]]; then
+	elif [[ "$query" =~ ^${config_listenregex}dehalfop\ ([^ ]+)\ ([^ ]+) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local nick="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then
@@ -80,7 +80,7 @@ module_assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot dehalfop somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}voice\ ([^ ]+)\ ([^ ]+) ]]; then
+	elif [[ "$query" =~ ^${config_listenregex}voice\ ([^ ]+)\ ([^ ]+) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local nick="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then
@@ -89,7 +89,7 @@ module_assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot give voice to somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}devoiced\ ([^ ]+)\ ([^ ]+) ]]; then
+	elif [[ "$query" =~ ^${config_listenregex}devoiced\ ([^ ]+)\ ([^ ]+) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local nick="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then
@@ -98,7 +98,7 @@ module_assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot take voice from somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}protect\ ([^ ]+)\ ([^ ]+) ]]; then
+	elif [[ "$query" =~ ^${config_listenregex}protect\ ([^ ]+)\ ([^ ]+) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local nick="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then
@@ -107,7 +107,7 @@ module_assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot protect somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}deprotect\ ([^ ]+)\ ([^ ]+) ]]; then
+	elif [[ "$query" =~ ^${config_listenregex}deprotect\ ([^ ]+)\ ([^ ]+) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local nick="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then
@@ -116,7 +116,7 @@ module_assign_mode_on_PRIVMSG() {
 			access_fail "$sender" "make the bot deprotect somebody" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}topic\ (#[^ ]+)\ (.*) ]]; then
+	elif [[ "$query" =~ ^${config_listenregex}topic\ (#[^ ]+)\ (.*) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local message="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then

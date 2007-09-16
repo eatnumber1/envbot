@@ -45,7 +45,7 @@ module_join_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenchar}part\ (#[^ ]+)(\ (.*))? ]]; then
+	if [[ "$query" =~ ^${config_listenregex}part\ (#[^ ]+)(\ (.*))? ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local message="${BASH_REMATCH[3]}"
 		if access_check_owner "$sender"; then
@@ -58,7 +58,7 @@ module_join_on_PRIVMSG() {
 			access_fail "$sender" "make the bot part channel" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}join\ (#[^ ]+)(\ .*)? ]]; then
+	elif [[ "$query" =~ ^${config_listenregex}join\ (#[^ ]+)(\ .*)? ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local key="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then

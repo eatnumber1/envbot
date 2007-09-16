@@ -22,7 +22,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=5
+config_version=6
 
 # Nick to use
 config_firstnick="BOTNICK"
@@ -39,8 +39,8 @@ config_server='irc.kuonet-ng.org/6667'
 # If this is empty don't use a server passwd.
 config_server_passwd=""
 
-# If a message is prefixed with this, treat is as a command.
-config_listenchar=';'
+# A regex of prefixes we should listen to.
+config_listenregex=';'
 
 # Owner regexes.
 # THESE ARE EXAMPLES, don't use these, replace them

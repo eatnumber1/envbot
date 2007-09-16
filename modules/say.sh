@@ -43,7 +43,7 @@ module_say_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenchar}say\ ([^ ]+)\ (.*) ]]; then
+	if [[ "$query" =~ ^${config_listenregex}say\ ([^ ]+)\ (.*) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local message="${BASH_REMATCH[2]}"
 		if access_check_owner "$sender"; then

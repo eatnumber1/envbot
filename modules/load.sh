@@ -46,7 +46,7 @@ module_load_on_PRIVMSG() {
 	local channel="$2"
 	local query="$3"
 	local target_module status_message status
-	if [[ "$query" =~ ^${config_listenchar}modload\ ([^ ]+) ]]; then
+	if [[ "$query" =~ ^${config_listenregex}modload\ ([^ ]+) ]]; then
 		target_module="${BASH_REMATCH[1]}"
 		if access_check_owner "$sender"; then
 			modules_load "$target_module"
@@ -64,7 +64,7 @@ module_load_on_PRIVMSG() {
 			access_fail "$sender" "load a module" "owner"
 		fi
 		return 1
-	elif [[ "$query" =~ ^${config_listenchar}modunload\ ([^ ]+) ]]; then
+	elif [[ "$query" =~ ^${config_listenregex}modunload\ ([^ ]+) ]]; then
 		target_module="${BASH_REMATCH[1]}"
 		if access_check_owner "$sender"; then
 			modules_unload "$target_module"
