@@ -45,6 +45,12 @@ modulename_before_connect
 	Note: This is useful for stuff that needs to echo log messages
 	      as that can't be done in modulename_INIT.
 
+modulename_on_connect
+	If implemented, called for each line that the bot
+	recieves from the server during connecting.
+	$1 = raw line.
+	Return code not checked.
+
 modulename_after_connect
 	If implemented, called after the bot connected.
 	No parameters

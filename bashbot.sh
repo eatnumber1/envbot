@@ -133,6 +133,9 @@ IRC_CONNECT(){
 	exec 3<&-
 	exec 3<> "/dev/tcp/${server}"
 	while read -d $'\n' -u 3 line; do
+		for module in $modules_on_connect; do
+			${module}_on_connect $line
+		done
 		# Part of motd, that goes to dev null.
 		if  [[ $( echo $line | cut -d' ' -f2 ) == '372'  ]]; then
 			continue
@@ -213,6 +216,9 @@ add_hooks() {
 				;;
 			"before_connect")
 				modules_before_connect="$modules_before_connect $module"
+				;;
+			"on_connect")
+				modules_on_connect="$modules_on_connect $module"
 				;;
 			"after_connect")
 				modules_after_connect="$modules_after_connect $module"
