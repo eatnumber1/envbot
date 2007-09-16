@@ -20,6 +20,15 @@
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
 validate_config() {
+	if [ -z "$config_version" ]; then
+		echo "ERROR: YOU MUST SET THE CORRECT config_version IN THE CONFIG"
+		exit 1
+	fi
+	if [ $config_version -ne $config_current_version ]; then
+		echo "ERROR: YOUR config_version IS $config_version BUT THE BOT'S CONFIG VERSION IS $config_current_version."
+		echo "PLEASE UPDATE YOUR CONFIG."
+		exit 1
+	fi
 	if [ -z "$firstnick" ]; then
 		echo "ERROR: YOU MUST SET A firstnick IN THE CONFIG"
 		exit 1

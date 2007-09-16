@@ -28,6 +28,8 @@ if [[ $? -ne 0 ]]; then
 	exit 1
 fi
 
+config_current_version=1
+
 echo "Loading library functions"
 # Load library functions.
 source lib/log.sh
