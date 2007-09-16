@@ -41,7 +41,8 @@ serverpasswd=""
 
 # Channels to autojoin on connect
 autojoin_channels[1]='#channel'
-autojoin_channels[1]='#otherchannel'
+# A channel can have a key as showed in the example below
+autojoin_channels[1]='#otherchannel channelkey'
 
 # If a message is prefixed with this, treat is as a command.
 listenchar=';'
@@ -54,6 +55,8 @@ listenchar=';'
 
 # Directory for logfiles
 logdir="logs"
+# Should we always log to STDOUT as well?
+logstdout=0
 
 # What modules to load, space separated list
 # For a list of modules see the modules dir.

@@ -51,10 +51,14 @@ die_on_PRIVMSG() {
 		query="${query//${listenchar}part/}"
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+			if [[ $query =~ ([^ ]+)(\ (.*))? ]]; then
 				local channel="${BASH_REMATCH[1]}"
-				local message="${BASH_REMATCH[2]}"
-				channels_part "$channel $message"
+				local message="${BASH_REMATCH[3]}"
+				if [[ -z "$reason" ]]; then
+					channels_part "$channel"
+				else
+					channels_part "$channel" "$message"
+				fi
 			fi
 			sleep 2
 		else

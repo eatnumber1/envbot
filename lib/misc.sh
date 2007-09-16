@@ -28,6 +28,10 @@ validate_config() {
 		echo "ERROR: YOU MUST SET A logdir IN THE CONFIG"
 		exit 1
 	fi
+	if [ -z "$logstdout" ]; then
+		echo "ERROR: YOU MUST SET logstdout IN THE CONFIG"
+		exit 1
+	fi
 	if [ -z "${owners[1]}" ]; then
 		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
 		echo "       AND THAT OWNER MUST BE THE FIRST ONE (owners[1] that is)."

@@ -20,18 +20,26 @@
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
 
-log="---------------"
-log_raw_in() {
-	echo "< $(date +'%Y-%m-%d %k:%M:%S') $@" >> "$logfile"
-}
-log_raw_out() {
-	echo "> $(date +'%Y-%m-%d %k:%M:%S') $@" >> "$logfile"
-}
-log() {
-	echo "$log $(date +'%Y-%m-%d %k:%M:%S') $@" >> "$logfile"
+# Internal function to this file
+do_log() {
+	echo $1 >> "$logfile"
+	if [[ $logstdout -eq 1 ]]; then
+		echo "$1"
+	fi
 }
 
-# Print to STDOUT as well
+log="---------------"
+log_raw_in() {
+	do_log "< $(date +'%Y-%m-%d %k:%M:%S') $@"
+}
+log_raw_out() {
+	do_log "> $(date +'%Y-%m-%d %k:%M:%S') $@"
+}
+log() {
+	do_log "$log $(date +'%Y-%m-%d %k:%M:%S') $@"
+}
+
+# Allways print to STDOUT as well
 log_stdout() {
 	local logstring="$log $(date +'%Y-%m-%d %k:%M:%S') $@"
 	echo "$logstring" >> "$logfile"
