@@ -94,9 +94,9 @@ handle_005() {
 		# Some, but not all also send what char the modes for EXCEPTS is.
 		# If it isn't sent, guess one +e
 		if [[ ${BASH_REMATCH[2]} ]]; then
-			ServerEXCEPTS="${BASH_REMATCH[2]}"
+			server_EXCEPTS="${BASH_REMATCH[2]}"
 		else
-			ServerEXCEPTS="e"
+			server_EXCEPTS="e"
 		fi
 	fi
 	if [[ $line =~ INVEX(=([^ ]+))? ]]; then
