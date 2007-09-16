@@ -128,7 +128,7 @@ handle_ping() {
 IRC_CONNECT(){
 	local ghost=0
 	local on_nick=1
-	echo "Connecting..."
+	log_stdout "Connecting..."
 	exec 3<&-
 	exec 3<> "/dev/tcp/${server}"
 	while read -d $'\n' -u 3 line; do
@@ -154,7 +154,7 @@ IRC_CONNECT(){
 			handle_005 "$line"
 		fi
 		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
-			log "logging in as $firstnick..."
+			log_stdout "logging in as $firstnick..."
 			send_nick "$firstnick"
 			# FIXME: THIS IS HACKISH AND MAY BREAK
 			CurrentNick="$firstnick"
@@ -166,15 +166,15 @@ IRC_CONNECT(){
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
 			ghost=1
 			if [[ $on_nick -eq 3 ]]; then
-				log "Third nick is ALSO in use. I give up"
+				log_stdout "Third nick is ALSO in use. I give up"
 				quit_bot 2
 			fi
 			if [[ $on_nick -eq 2 ]]; then
-				log "Second nick is ALSO in use, trying third"
+				log_stdout "Second nick is ALSO in use, trying third"
 				send_nick "$thirdnick"
 				on_nick=3
 			fi
-			log "First nick is in use, trying second"
+			log_stdout "First nick is in use, trying second"
 			send_nick "$secondnick"
 			on_nick=2
 			# FIXME: THIS IS HACKISH AND MAY BREAK
@@ -183,15 +183,18 @@ IRC_CONNECT(){
 		fi
 		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			if [[ $ghost == 1 ]]; then
-				log "recovering ghost"
+				log_stdout "recovering ghost"
 				send_msg "Nickserv" "GHOST $firstnick $nickservpasswd"
 				sleep 2
 				send_nick "$firstnick"
 			fi
-			log "identifying..."
+			log_stdout "identifying..."
 			[ -n "$nickservpasswd" ] && send_msg "Nickserv" "IDENTIFY $nickservpasswd"
 			sleep 1
+			log_stdout 'Connected'
+			log_stdout 'Joining autojoin channels'
 			channels_join_config_channels
+			log_stdout 'Finished joining'
 			break
 		fi
 	done;
