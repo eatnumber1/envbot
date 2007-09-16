@@ -26,6 +26,14 @@ module_eval_INIT() {
 	echo "on_PRIVMSG"
 }
 
+module_eval_UNLOAD() {
+	unset module_eval_on_PRIVMSG
+}
+
+module_eval_REHASH() {
+	return 0
+}
+
 # Called on a PRIVMSG
 #
 # $1 = from who (n!u@h)

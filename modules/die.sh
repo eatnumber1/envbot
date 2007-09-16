@@ -26,6 +26,14 @@ module_die_INIT() {
 	echo "on_PRIVMSG"
 }
 
+module_die_UNLOAD() {
+	unset module_die_on_PRIVMSG
+}
+
+module_die_REHASH() {
+	return 0
+}
+
 # Called on a PRIVMSG
 #
 # $1 = from who (n!u@h)

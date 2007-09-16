@@ -26,6 +26,14 @@ module_sendraw_INIT() {
 	echo "on_PRIVMSG"
 }
 
+module_sendraw_UNLOAD() {
+	unset module_sendraw_on_PRIVMSG
+}
+
+module_sendraw_REHASH() {
+	return 0
+}
+
 # Called on a PRIVMSG
 #
 # $1 = from who (n!u@h)

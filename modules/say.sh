@@ -25,6 +25,14 @@ module_say_INIT() {
 	echo "on_PRIVMSG"
 }
 
+module_say_UNLOAD() {
+	unset module_say_on_PRIVMSG
+}
+
+module_say_REHASH() {
+	return 0
+}
+
 # Called on a PRIVMSG
 #
 # $1 = from who (n!u@h)

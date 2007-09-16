@@ -26,6 +26,15 @@ module_join_INIT() {
 	echo "on_PRIVMSG"
 }
 
+module_join_UNLOAD() {
+	unset module_join_on_PRIVMSG
+}
+
+module_join_REHASH() {
+	return 0
+}
+
+
 # Called on a PRIVMSG
 #
 # $1 = from who (n!u@h)

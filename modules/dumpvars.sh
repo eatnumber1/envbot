@@ -25,6 +25,14 @@ module_dumpvars_INIT() {
 	echo "on_PRIVMSG"
 }
 
+module_dumpvars_UNLOAD() {
+	unset module_dumpvars_on_PRIVMSG
+}
+
+module_dumpvars_REHASH() {
+	return 0
+}
+
 # Called on a PRIVMSG
 #
 # $1 = from who (n!u@h)

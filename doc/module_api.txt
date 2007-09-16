@@ -47,8 +47,9 @@ module_modulename_INIT (REQUIRED)
 module_modulename_UNLOAD (REQUIRED) (TODO)
 	Called to make the module unload itself.
 	In this function it should clean up after itself and undefine all
-	it's functions and variables except the unload functuon itself.
-	The unload function will be undefined after it finished.
+	it's functions and variables except the REQUIRED functions.
+	The unload function and other REQUIRED functions will be undefined 
+	after unload finished.
 	The module may or may not get reloaded after this.
 	No parameters
 	Return code:

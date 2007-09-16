@@ -118,6 +118,8 @@ modules_unload() {
 	module_${module}_UNLOAD || \
 		{ log_stdout "ERROR: Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"; quit_bot; }
 	unset module_${module}_UNLOAD
+	unset module_${module}_INIT
+	unset module_${module}_REHASH
 	modules_loaded="$(list_remove "modules_loaded" "$module")"
 	return 0
 }
@@ -143,8 +145,6 @@ modules_load() {
 		fi
 	fi
 }
-
-
 
 modules_loaded=""
 # Load modules

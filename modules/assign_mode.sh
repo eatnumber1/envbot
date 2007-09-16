@@ -26,6 +26,14 @@ module_assign_mode_INIT() {
 	echo "on_PRIVMSG"
 }
 
+module_assign_mode_UNLOAD() {
+	unset module_assign_mode_on_PRIVMSG
+}
+
+module_assign_mode_REHASH() {
+	return 0
+}
+
 # Called on a PRIVMSG
 #
 # $1 = from who (n!u@h)
