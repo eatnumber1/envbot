@@ -175,7 +175,7 @@ IRC_CONNECT(){
 			server_005="${server_005/ :are supported by this server/}" # Get rid of :are supported by this server
 			handle_005 "$line"
 		fi
-		if [[ $line =~ "Looking up your hostname" ]]; then #en galant entré :P
+		if [[ $line =~ "Looking up your hostname" ]]; then
 			log_stdout "logging in as $config_firstnick..."
 			send_nick "$config_firstnick"
 			# FIXME: THIS IS HACKISH AND MAY BREAK
