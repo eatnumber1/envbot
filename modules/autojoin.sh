@@ -21,8 +21,6 @@
 ###########################################################################
 # This module does autojoin after connect.
 
-
-
 module_autojoin_INIT() {
 	echo "after_connect"
 }
@@ -48,4 +46,3 @@ module_autojoin_join_from_config() {
 module_autojoin_after_connect() {
 	module_autojoin_join_from_config
 }
-

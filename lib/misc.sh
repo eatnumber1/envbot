@@ -57,4 +57,3 @@ list_remove() {
 	local newlist=${oldlist//$2}
 	echo "$(sed 's/^ \+//;s/ \+$//;s/ \{2,\}/ /g' <<< "$newlist")" # Get rid of the unneeded spaces.
 }
-
