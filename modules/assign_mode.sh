@@ -34,13 +34,13 @@ assign_mode_INIT() {
 assign_mode_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
-	local channel="$2"
+	local sendon_channel="$2"
 	local query="$3"
 	if [[ "$query" =~ ^${config_listenchar}op.* ]]; then
 		query="${query//${config_listenchar}op/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local nick="${BASH_REMATCH[2]}"
 				send_raw "MODE $channel +o $nick"
@@ -54,7 +54,7 @@ assign_mode_on_PRIVMSG() {
 		query="${query//${config_listenchar}deop/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local nick="${BASH_REMATCH[2]}"
 				send_raw "MODE $channel -o $nick"
@@ -68,7 +68,7 @@ assign_mode_on_PRIVMSG() {
 		query="${query//${config_listenchar}halfop/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local nick="${BASH_REMATCH[2]}"
 				send_raw "MODE $channel +h $nick"
@@ -82,7 +82,7 @@ assign_mode_on_PRIVMSG() {
 		query="${query//${config_listenchar}dehalfop/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local nick="${BASH_REMATCH[2]}"
 				send_raw "MODE $channel -h $nick"
@@ -96,7 +96,7 @@ assign_mode_on_PRIVMSG() {
 		query="${query//${config_listenchar}voice/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local nick="${BASH_REMATCH[2]}"
 				send_raw "MODE $channel +v $nick"
@@ -110,7 +110,7 @@ assign_mode_on_PRIVMSG() {
 		query="${query//${config_listenchar}devoice/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local nick="${BASH_REMATCH[2]}"
 				send_raw "MODE $channel -v $nick"
@@ -124,7 +124,7 @@ assign_mode_on_PRIVMSG() {
 		query="${query//${config_listenchar}protect/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local nick="${BASH_REMATCH[2]}"
 				send_raw "MODE $channel +a $nick"
@@ -138,7 +138,7 @@ assign_mode_on_PRIVMSG() {
 		query="${query//${config_listenchar}deprotect/}"
 		query="${query/^ /}"
 		if access_check_owner "$sender"; then
-			if [[ $query =~ ([^ ]+)\ (.*) ]]; then
+			if [[ $query =~ (#[^ ]+)\ (.*) ]]; then
 				local channel="${BASH_REMATCH[1]}"
 				local nick="${BASH_REMATCH[2]}"
 				send_raw "MODE $channel -a $nick"
