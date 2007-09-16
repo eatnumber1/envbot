@@ -56,6 +56,14 @@ Server_NAMESX=0
 ServerEXCEPTS=""
 ServerINVEX=""
 
+# In case we don't get a 005, make some sane defaults.
+ServerCHMODES_LISTMODES="b"
+ServerCHMODES_ALWAYSPARAM="k"
+ServerCHMODES_PARAMONSET="l"
+ServerCHMODES_SIMPLE="imnpst"
+ServerPREFIX_modes="ov"
+ServerPREFIX_prefixes="@+"
+
 quit_bot() {
 	for module in $modules_FINALISE; do
 		${module}_FINALISE
@@ -79,7 +87,7 @@ handle_005() {
 	# Example from freenode:
 	# :heinlein.freenode.net 005 bashbot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
 	# :heinlein.freenode.net 005 bashbot SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
-	line="$1"
+	local line="$1"
 	if [[ $line =~ EXCEPTS(=([^ ]+))? ]]; then
 		# Some, but not all also send what char the modes for EXCEPTS is.
 		# If it isn't sent, guess one +e
@@ -97,6 +105,17 @@ handle_005() {
 		else
 			ServerINVEX="I"
 		fi
+	fi
+	if [[ $line =~ PREFIX=(\(([^ \)]+)\)([^ ]+)) ]]; then
+		ServerPREFIX="${BASH_REMATCH[1]}"
+		ServerPREFIX_modes="${BASH_REMATCH[2]}"
+		ServerPREFIX_prefixes="${BASH_REMATCH[3]}"
+	fi
+	if [[ $line =~ CHANMODES=([^ ,]+),([^ ,]+),([^ ,]+),([^ ,]+) ]]; then
+		ServerCHMODES_LISTMODES="${BASH_REMATCH[1]}"
+		ServerCHMODES_ALWAYSPARAM="${BASH_REMATCH[2]}"
+		ServerCHMODES_PARAMONSET="${BASH_REMATCH[3]}"
+		ServerCHMODES_SIMPLE="${BASH_REMATCH[4]}"
 	fi
 	# Enable NAMESX is supported.
 	if [[ $line =~ NAMESX ]]; then
