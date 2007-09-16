@@ -22,11 +22,21 @@
 
 log="---------------"
 log_raw_in() {
-	echo "< $(date +'%Y-%m-%d %k:%M:%S') $@"
+	local logstring="< $(date +'%Y-%m-%d %k:%M:%S') $@"
+	echo "$logstring" >> "$logfile"
 }
 log_raw_out() {
-	echo "> $(date +'%Y-%m-%d %k:%M:%S') $@"
+	local logstring="> $(date +'%Y-%m-%d %k:%M:%S') $@"
+	echo "$logstring" >> "$logfile"
 }
 log() {
-	echo "$log $(date +'%Y-%m-%d %k:%M:%S') $@"
+	local logstring="$log $(date +'%Y-%m-%d %k:%M:%S') $@"
+	echo "$logstring" >> "$logfile"
 }
+
+
+# This creates logfile for this run:
+logfile="${logdir}/$(date -u +%s).log"
+touch "$logfile"
+
+echo "Logfile is $logfile"

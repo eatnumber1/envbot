@@ -52,6 +52,9 @@ listenchar=';'
 #owners[1]='.*!brain@staff\.kuonet\.org'
 #owners[2]='.*!brain@staff\.kuonet-ng\.org'
 
+# Directory for logfiles
+logdir="logs"
+
 # What modules to load, space separated list
 # For a list of modules see the modules dir.
 modules="faq"

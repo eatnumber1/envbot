@@ -62,7 +62,7 @@ quit_bot() {
 }
 
 # Get some common data out of 005, the whole will also be saved to
-# $Server005 for any module to use via parse_005.
+# $Server005 for any module to use via parse_005().
 # This function is for cases that needs special action, like NAMESX
 # and UHNAMES.
 # This should be called directly after recieving a part of the 005!
