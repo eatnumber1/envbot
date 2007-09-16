@@ -20,6 +20,14 @@
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
 
+###########################################################################
+# Internal functions to core or this file below this line!                #
+# Module authors: go away                                                 #
+# Yes that means the whole file!                                          #
+# See doc/module_api.txt instead                                          #
+###########################################################################
+
+
 modules_add_hooks() {
 	local module="$1"
 	local hooks="$(module_${module}_INIT)"

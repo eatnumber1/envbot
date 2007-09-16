@@ -20,7 +20,40 @@
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
 
-# Internal function to this file
+log_prefix="---------------"
+
+
+# Log to log file.
+# $* = the log message to log
+log() {
+	do_log "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
+}
+
+# Always print log message to STDOUT as well
+# $* = the log message to log
+log_stdout() {
+	local logstring="$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
+	echo "$logstring" >> "$log_file"
+	echo "$logstring"
+}
+
+
+###########################################################################
+# Internal functions to core or this file below this line!                #
+# Module authors: go away                                                 #
+###########################################################################
+
+# Used internally in core
+log_raw_in() {
+	do_log "< $(date +'%Y-%m-%d %k:%M:%S') $@"
+}
+# Used internally in core
+log_raw_out() {
+	do_log "> $(date +'%Y-%m-%d %k:%M:%S') $@"
+}
+
+
+# Internal function to this file.
 do_log() {
 	echo "$1" >> "$log_file"
 	if [[ $config_log_stdout -eq 1 ]]; then
@@ -28,24 +61,7 @@ do_log() {
 	fi
 }
 
-log_prefix="---------------"
-log_raw_in() {
-	do_log "< $(date +'%Y-%m-%d %k:%M:%S') $@"
-}
-log_raw_out() {
-	do_log "> $(date +'%Y-%m-%d %k:%M:%S') $@"
-}
-log() {
-	do_log "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
-}
-
-# Allways print to STDOUT as well
-log_stdout() {
-	local logstring="$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
-	echo "$logstring" >> "$log_file"
-	echo "$logstring"
-}
-
+# Create log file.
 log_init() {
 	# This creates logfile for this run:
 	log_file="${config_log_dir}/$(date -u +%s).log"

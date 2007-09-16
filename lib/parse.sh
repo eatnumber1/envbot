@@ -29,12 +29,26 @@ parse_get_colon_arg() {
 	cut -d':' -f2- <<< "$1"
 }
 
+# Get nick from hostmask
 # Returns on STDOUT: nick
 # parameter: n!u@h mask
 parse_hostmask_nick() {
 	cut -d'!' -f1 <<< "$1"
 }
+# Get ident from hostmask
+# Returns on STDOUT: nick
+# parameter: n!u@h mask
+parse_hostmask_ident() {
+	cut -d'!' -f2 <<< "$1" | cut -d'@' -f1
+}
+# Get host from hostmask
+# Returns on STDOUT: nick
+# parameter: n!u@h mask
+parse_hostmask_host() {
+	cut -d'@' -f2 <<< "$1"
+}
 
+# This is used to get data out of 005.
 # $1 = Name of data to get
 # Returns 0 if found, otherwise 1.
 # Returns on STDOUT the variable data in question, if any

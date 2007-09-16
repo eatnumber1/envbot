@@ -20,6 +20,7 @@
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
 
+# Space separated list of current channels
 channels_current=""
 
 # Join a channel
@@ -41,6 +42,11 @@ channels_part() {
 	[ -n "$2" ] && reason=" :$2"
 	send_raw "PART ${channel}${reason}"
 }
+
+###########################################################################
+# Internal functions to core or this file below this line!                #
+# Module authors: go away                                                 #
+###########################################################################
 
 # Internal function
 # Adds channels to the list
