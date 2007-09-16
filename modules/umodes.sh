@@ -19,58 +19,24 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
+# Set umodes when connecting
 
-# What version this config is at. This is used to check
-# if your config needs updating.
-config_version=4
+module_umodes_INIT() {
+	echo "after_connect"
+}
 
-# Nick to use
-config_firstnick="BOTNICK"
-# Nick if first is in use
-config_secondnick="BOTNICK_"
-# Nick if second is in use
-config_thirdnick="BOTNICK_"
+module_umodes_UNLOAD() {
+	unset module_connect_umodes_after_connect
+}
 
-config_ident='rfc3092'
-config_gecos='ietf.org/rfc/rfc3092'
+module_umodes_REHASH() {
+	return 0
+}
 
-# If this is empty don't use nickserv.
-config_nickserv_passwd='nickserv password here'
-
-# Format should be hostname.foo/port
-config_server='irc.kuonet.org/6667'
-# If this is empty don't use a server passwd.
-config_server_passwd=""
-
-# If a message is prefixed with this, treat is as a command.
-config_listenchar=';'
-
-# Owner regexes.
-# THESE ARE EXAMPLES, don't use these, replace them
-# Without one set, the bot won't start
-#config_owners[1]='.*!brain@staff\.kuonet\.org'
-#config_owners[2]='.*!brain@staff\.kuonet-ng\.org'
-
-# Directory for logfiles
-config_log_dir="logs"
-# Should we always log to STDOUT as well?
-config_log_stdout=0
-
-# What modules to load, space separated list
-# For a list of modules see the modules dir.
-config_modules="umodes autojoin faq"
-
-# Module specific settings
-
-# FAQ module
-config_module_faq_file='./faq.txt'
-
-# AutoJoin module.
-# Channels to autojoin on connect
-config_autojoin_channels[1]='#channel'
-# A channel can have a key as showed in the example below
-config_autojoin_channels[1]='#otherchannel channelkey'
-
-# Umodes module.
-# Default umodes to set on connect.
-config_module_umodes_default_umodes="+is-w"
+# Called after bot has connected
+module_umodes_after_connect() {
+	if [[ $config_module_umodes_default_umodes ]]; then
+		log "Setting umodes: $config_module_umodes_default_umodes"
+		send_umodes "$config_module_umodes_default_umodes"
+	fi
+}
