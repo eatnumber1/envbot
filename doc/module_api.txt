@@ -119,7 +119,7 @@ modulename_on_QUIT
 		Reason: A module with a list of users could get desynced if it didn't
 		get the quit.
 
-modulename_on_TOPIC (TODO)
+modulename_on_TOPIC
 	# :AnMaster!AnMaster@staff.kuonet-ng.org TOPIC #test :Bash bot testing channel
 	Called when a topic is set or on channel join
 	$1 = who did it (n!u@h)
@@ -128,7 +128,7 @@ modulename_on_TOPIC (TODO)
 	Return code not checked.
 		Reason: We don't want to get desynced modules.
 
-modulename_on_channel_modechange (TODO)
+modulename_on_channel_MODE
 	# :ChanServ!ChanServ@services.kuonet-ng.org MODE #test +o AnMaster
 	# :AnMaster!AnMaster@staff.kuonet-ng.org MODE #test +sk 5
 	# :ChanServ!ChanServ@services.kuonet-ng.org MODE #test +nt-k 5

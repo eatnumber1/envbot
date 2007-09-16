@@ -223,6 +223,12 @@ add_hooks() {
 			"on_PRIVMSG")
 				modules_on_PRIVMSG="$modules_on_PRIVMSG $module"
 				;;
+			"on_TOPIC")
+				modules_on_TOPIC="$modules_on_TOPIC $module"
+				;;
+			"on_channel_MODE")
+				modules_on_channel_MODE="$modules_on_channel_MODE $module"
+				;;
 			"on_JOIN")
 				modules_on_="$modules_on_JOIN $module"
 				;;
@@ -327,6 +333,20 @@ while true; do
 				if [[ $? -ne 0 ]]; then
 					break
 				fi
+			done
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+TOPIC\ (#[^ ]+)(\ :(.*))? ]]; then
+			sender="${BASH_REMATCH[1]}"
+			channel="${BASH_REMATCH[2]}"
+			topic="${BASH_REMATCH[4]}"
+			for module in $modules_on_TOPIC; do
+				${module}_on_TOPIC "$sender" "$channel" "$topic"
+			done
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+MODE\ (#[^ ]+)\ (.*) ]]; then
+			sender="${BASH_REMATCH[1]}"
+			channel="${BASH_REMATCH[2]}"
+			modes="${BASH_REMATCH[3]}"
+			for module in $modules_on_channel_MODE ; do
+				${module}_on_channel_MODE "$sender" "$channel" "$modes"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NICK\ (.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
