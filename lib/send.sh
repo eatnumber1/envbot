@@ -28,17 +28,33 @@ send_raw() {
 # $1 = who (channel or nick)
 # $* = message
 send_msg() {
-	local nick="$1"
+	local target="$1"
 	shift 1
-	send_raw "PRIVMSG ${nick} :${@}"
+	send_raw "PRIVMSG ${target} :${@}"
 }
 
 # $1 = who (channel or nick)
 # $* = message
 send_notice() {
-	local nick="$1"
+	local target="$1"
 	shift 1
-	send_raw "NOTICE ${nick} :${@}"
+	send_raw "NOTICE ${target} :${@}"
+}
+
+# $1 = who (channel or nick)
+# $* = message
+send_ctcp() {
+	local target="$1"
+	shift 1
+	send_msg "${target}" $'\1'"${@}"$'\1'
+}
+
+# $1 = who (channel or nick)
+# $* = message
+send_nctcp() {
+	local target="$1"
+	shift 1
+	send_notice "${target}" $'\1'"${@}"$'\1'
 }
 
 # $1 = new nick
