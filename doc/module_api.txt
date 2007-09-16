@@ -1,4 +1,8 @@
+Module API
+==========
+
 This file contains info needed to write a module.
+
 
 Variables
 ---------
@@ -13,19 +17,24 @@ other names. Don't forget variables created in for loops and such
  do local foo on the line before it)
 
 
-Functions
----------
-Each function should start with the module_ followed by the module name.
+Functions and hooks
+-------------------
+Hooks are functions with special names, as listed below in the section "The hooks".
+
+Each function or hook should start with the module_ followed by the module name.
 So if the module is faq.sh the modules should start with module_faq_ like module_faq_INIT.
 
 All bash functions in the module MUST follow the format
 module_modulename_functionname to prevent overwriting other modules, or
 global bot functions.
 
-If not mentioned otherwise the function is optional.
+If not mentioned otherwise the hook is optional.
 Functions marked with TODO may change, get renamed or removed and may not work
 even in current code.
 
+
+The hooks
+---------
 module_modulename_INIT (REQUIRED)
 	Called directly after loading the module.
 	No parameters.
@@ -35,6 +44,7 @@ module_modulename_INIT (REQUIRED)
 	On STDOUT should be returned a space separated list of functions the
 	module implements. FAQ would return "before_connect on_PRIVMSG"
 
+
 module_modulename_FINALISE
 	Called directly before the bot quits. The bot has already closed
 	the connection to the IRC server at this point. This is for saving
@@ -42,23 +52,27 @@ module_modulename_FINALISE
 	No parameters.
 	Return code isn't checked.
 
+
 module_modulename_before_connect
-	If implemented, called before the bot connected.
+	Called before the bot connected.
 	No parameters
 	Return code not checked.
 	Note: This is useful for stuff that needs to echo log messages
 	      as that can't be done in modulename_INIT.
 
+
 module_modulename_on_connect
-	If implemented, called for each line that the bot
+	Called for each line that the bot
 	receives from the server during connecting.
 	$1 = raw line.
 	Return code not checked.
 
+
 module_modulename_after_connect
-	If implemented, called after the bot connected.
+	Called after the bot connected.
 	No parameters
 	Return code not checked.
+
 
 module_modulename_on_PRIVMSG
 	Called when bot gets a PRIVMSG
@@ -70,6 +84,7 @@ module_modulename_on_PRIVMSG
 		1 = I have taken care of this, and don't
 		    consult other modules about this.
 
+
 module_modulename_on_NOTICE
 	Called when bot gets a NOTICE
 	$1 = from who (n!u@h)
@@ -80,6 +95,7 @@ module_modulename_on_NOTICE
 		1 = I have taken care of this, and don't
 		    consult other modules about this.
 
+
 module_modulename_on_NICK
 	# :AnMaster!AnMaster@staff.kuonet-ng.org NICK AnMaster_test
 	Called when someone changes nick in a channel the bot is in
@@ -89,6 +105,7 @@ module_modulename_on_NICK
 		Reason: A module with a list of users could get desynced if it didn't
 		get the nick change.
 
+
 module_modulename_on_JOIN
 	# :AnMaster!AnMaster@staff.kuonet-ng.org JOIN :#test
 	Called when someone joins a channel the bot is in
@@ -97,6 +114,7 @@ module_modulename_on_JOIN
 	Return code not checked.
 		Reason: A module with a list of users could get desynced if it didn't
 		get the join.
+
 
 module_modulename_on_PART
 	# :AnMaster!AnMaster@staff.kuonet-ng.org PART #test
@@ -108,6 +126,7 @@ module_modulename_on_PART
 	Return code not checked.
 		Reason: A module with a list of users could get desynced if it didn't
 		get the part.
+
 
 module_modulename_on_KICK
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test AnMaster_test :this is a test
@@ -121,6 +140,7 @@ module_modulename_on_KICK
 		Reason: A module with a list of users could get desynced if it didn't
 		get the kick.
 
+
 module_modulename_on_QUIT
 	# :AnMaster_test!AnMaster@staff.kuonet-ng.org QUIT :Quit: ERC Version 5.2 (IRC client for Emacs)
 	Called when someone quits
@@ -130,6 +150,7 @@ module_modulename_on_QUIT
 		Reason: A module with a list of users could get desynced if it didn't
 		get the quit.
 
+
 module_modulename_on_TOPIC
 	# :AnMaster!AnMaster@staff.kuonet-ng.org TOPIC #test :Bash bot testing channel
 	Called when a topic is set or on channel join
@@ -138,6 +159,7 @@ module_modulename_on_TOPIC
 	$3 = New topic
 	Return code not checked.
 		Reason: We don't want to get desynced modules.
+
 
 module_modulename_on_channel_MODE
 	# :ChanServ!ChanServ@services.kuonet-ng.org MODE #test +o AnMaster
@@ -163,12 +185,14 @@ module_modulename_on_numeric
 		    consult other modules about this.
 	Note: In most cases you DON'T want to return 1 for this. If you do be very very careful.
 
+
 module_modulename_on_server_ERROR (TODO)
 	# ERROR :Closing link (rfc3092@2001:16d8:fff2::) [Killed (AnMaster (testing a kill))]
 	Called when the bot get an ERROR from the server.
 	$1 = the ERROR message.
 	Return code not checked.
 		Reason: There isn't much point in swallowing this.
+
 
 module_modulename_before_disconnect
 	Called when the bot is about to disconnect from server.
@@ -179,6 +203,7 @@ module_modulename_before_disconnect
 	No parameters.
 	Return code not checked.
 
+
 module_modulename_after_disconnect
 	Called when the bot gets disconnected from server.
 	The bot may or may not reconnect after this depending on what caused
@@ -186,6 +211,7 @@ module_modulename_after_disconnect
 	No parameters.
 	Return code not checked.
 		Reason: A module may need clean up, don't let it desync.
+
 
 module_modulename_on_RAW
 	Called when the bot gets *ANY* line from the server after the initial connect.
