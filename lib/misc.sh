@@ -48,6 +48,31 @@ validate_config() {
 	fi
 }
 
+# Quits the bot in a graceful way:
+# Optional parameters:
+# $1 = Reason to quit
+# $2 = Return status (if not given, then exit 0).
+quit_bot() {
+	for module in $modules_before_disconnect; do
+		module_${module}_before_disconnect
+	done
+	local reason=$1
+	send_quit "$reason"
+	for module in $modules_after_disconnect; do
+		module_${module}_after_disconnect
+	done
+	for module in $modules_FINALISE; do
+		${module}_FINALISE
+	done
+	log "Bot quit gracefully"
+	exec 3<&-
+	if [[ $2 ]]; then
+		exit $2
+	else
+		exit 0
+	fi
+}
+
 # Remove a value from a space separated list
 # $1 = list to remove from
 # $2 = value to remove

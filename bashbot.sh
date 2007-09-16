@@ -67,27 +67,6 @@ server_CHMODES_SIMPLE="imnpst"
 server_PREFIX_modes="ov"
 server_PREFIX_prefixes="@+"
 
-quit_bot() {
-	for module in $modules_before_disconnect; do
-		module_${module}_before_disconnect
-	done
-	local reason=$1
-	send_quit "$reason"
-	for module in $modules_after_disconnect; do
-		module_${module}_after_disconnect
-	done
-	for module in $modules_FINALISE; do
-		${module}_FINALISE
-	done
-	log "Bot quit gracefully"
-	exec 3<&-
-	if [[ $2 ]]; then
-		exit $2
-	else
-		exit 0
-	fi
-}
-
 # Get some common data out of 005, the whole will also be saved to
 # $server_005 for any module to use via parse_005().
 # This function is for cases that needs special action, like NAMESX
