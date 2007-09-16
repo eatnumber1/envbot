@@ -20,9 +20,9 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
-# Quit the bot.
+# Join/part
 
-die_INIT() {
+join_INIT() {
 	echo "on_PRIVMSG"
 }
 
@@ -31,22 +31,49 @@ die_INIT() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-die_on_PRIVMSG() {
+join_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${listenchar}die.* ]]; then
-		query="${query//${listenchar}die/}"
+	if [[ "$query" =~ ^${listenchar}part.* ]]; then
+		query="${query//${listenchar}part/}"
 		query="${query/# /}"
 		if access_check_owner "$sender"; then
-			send_quit "$query"
-			quit_bot
+			if [[ $query =~ ([^ ]+)(\ (.*))? ]]; then
+				local channel="${BASH_REMATCH[1]}"
+				local message="${BASH_REMATCH[3]}"
+				if [[ -z "$reason" ]]; then
+					channels_part "$channel"
+				else
+					channels_part "$channel" "$message"
+				fi
+			fi
 			sleep 2
 		else
-			access_fail "$sender" "make the bot die" "owner"
+			access_fail "$sender" "make the bot part channel" "owner"
+		fi
+		return 1
+	elif [[ "$query" =~ ^${listenchar}join.* ]]; then
+		query="${query//${listenchar}join/}"
+		query="${query/# /}"
+		if access_check_owner "$sender"; then
+			if [[ $query =~ ([^ ]+)(\ .*)? ]]; then
+				local channel="${BASH_REMATCH[1]}"
+				local key="${BASH_REMATCH[2]}"
+				key="${key/# /}"
+				if [[ -z "$key" ]]; then
+					channels_join "${channel}"
+				else
+					channels_join "${channel}" "$key"
+				fi
+			fi
+			sleep 2
+		else
+			access_fail "$sender" "make the join channel" "owner"
 		fi
 		return 1
 	fi
+
 	return 0
 }
