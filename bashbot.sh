@@ -28,7 +28,7 @@ if [[ $? -ne 0 ]]; then
 	exit 1
 fi
 
-config_current_version=3
+config_current_version=4
 
 echo "Loading library functions"
 # Load library functions.
@@ -236,9 +236,6 @@ IRC_CONNECT(){
 			[ -n "$config_nickserv_passwd" ] && send_msg "Nickserv" "IDENTIFY $config_nickserv_passwd"
 			sleep 1
 			log_stdout 'Connected'
-			log_stdout 'Joining autojoin channels'
-			channels_join_from_config
-			log_stdout 'Finished joining'
 			break
 		fi
 	done;

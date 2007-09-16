@@ -22,7 +22,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=3
+config_version=4
 
 # Nick to use
 config_firstnick="BOTNICK"
@@ -42,11 +42,6 @@ config_server='irc.kuonet.org/6667'
 # If this is empty don't use a server passwd.
 config_server_passwd=""
 
-# Channels to autojoin on connect
-config_autojoin_channels[1]='#channel'
-# A channel can have a key as showed in the example below
-config_autojoin_channels[1]='#otherchannel channelkey'
-
 # If a message is prefixed with this, treat is as a command.
 config_listenchar=';'
 
@@ -63,7 +58,16 @@ config_log_stdout=0
 
 # What modules to load, space separated list
 # For a list of modules see the modules dir.
-config_modules="faq"
+config_modules="faq autojoin"
 
 # Module specific settings
+
+# FAQ module
 config_module_faq_file='./faq.txt'
+
+# AutoJoin module.
+# Channels to autojoin on connect
+config_autojoin_channels[1]='#channel'
+# A channel can have a key as showed in the example below
+config_autojoin_channels[1]='#otherchannel channelkey'
+

@@ -42,15 +42,6 @@ channels_part() {
 	send_raw "PART ${channel}${reason}"
 }
 
-channels_join_from_config() {
-	local channel
-	for channel in "${config_autojoin_channels[@]}"; do
-		# No quotes here because then second arugment can be a key
-		channels_join $channel
-		sleep 2
-	done
-}
-
 # Internal function
 # Adds channels to the list
 channels_add() {

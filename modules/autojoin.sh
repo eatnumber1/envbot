@@ -19,42 +19,33 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
-validate_config() {
-	if [ -z "$config_version" ]; then
-		echo "ERROR: YOU MUST SET THE CORRECT config_version IN THE CONFIG"
-		exit 1
-	fi
-	if [ $config_version -ne $config_current_version ]; then
-		echo "ERROR: YOUR config_version IS $config_version BUT THE BOT'S CONFIG VERSION IS $config_current_version."
-		echo "PLEASE UPDATE YOUR CONFIG."
-		exit 1
-	fi
-	if [ -z "$config_firstnick" ]; then
-		echo "ERROR: YOU MUST SET A config_firstnick IN THE CONFIG"
-		exit 1
-	fi
-	if [ -z "$config_log_dir" ]; then
-		echo "ERROR: YOU MUST SET A config_log_dir IN THE CONFIG"
-		exit 1
-	fi
-	if [ -z "$config_log_stdout" ]; then
-		echo "ERROR: YOU MUST SET config_log_stdout IN THE CONFIG"
-		exit 1
-	fi
-	if [ -z "${config_owners[1]}" ]; then
-		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
-		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_owners[1] that is)."
-		exit 1
-	fi
+# This module does autojoin after connect.
+
+
+
+module_autojoin_INIT() {
+	echo "after_connect"
 }
 
-# Remove a value from a space separated list
-# $1 = list to remove from
-# $2 = value to remove
-# Returns new list on STDOUT
-list_remove() {
-	local oldlist="${!1}"
-	local newlist=${oldlist//$2}
-	echo "$(sed 's/^ \+//;s/ \+$//;s/ \{2,\}/ /g' <<< "$newlist")" # Get rid of the unneeded spaces.
+module_autojoin_UNLOAD() {
+	unset module_autojoin_after_connect
+}
+
+module_autojoin_REHASH() {
+	return 0
+}
+
+module_autojoin_join_from_config() {
+	local channel
+	for channel in "${config_module_autojoin_channels[@]}"; do
+		# No quotes here because then second arugment can be a key
+		channels_join $channel
+		sleep 2
+	done
+}
+
+# Called after bot has connected
+module_autojoin_after_connect() {
+	module_autojoin_join_from_config
 }
 
