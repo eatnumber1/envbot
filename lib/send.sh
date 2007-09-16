@@ -64,5 +64,3 @@ send_quit() {
 	[ -n "$1" ] && reason=" :$1"
 	send_raw "QUIT${reason}"
 }
-
-

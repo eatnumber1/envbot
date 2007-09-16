@@ -54,6 +54,6 @@ log_init() {
 		echo "Error: couldn't create logfile"
 		exit 1
 	fi
-	
+
 	echo "Logfile is $logfile"
 }

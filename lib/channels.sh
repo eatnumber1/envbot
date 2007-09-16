@@ -92,4 +92,3 @@ channels_handle_join() {
 		channels_add "$2"
 	fi
 }
-
