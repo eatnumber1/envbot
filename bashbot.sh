@@ -28,7 +28,7 @@ if [[ $? -ne 0 ]]; then
 	exit 1
 fi
 
-config_current_version=4
+config_current_version=5
 
 echo "Loading library functions"
 # Load library functions.
@@ -145,14 +145,13 @@ handle_ping() {
 }
 
 IRC_CONNECT(){
-	local ghost=0
 	local on_nick=1
 	log_stdout "Connecting..."
 	exec 3<&-
 	exec 3<> "/dev/tcp/${config_server}"
 	while read -d $'\n' -u 3 line; do
 		for module in $modules_on_connect; do
-			module_${module}_on_connect $line
+			module_${module}_on_connect "$line"
 		done
 		# Part of motd, that goes to dev null.
 		if  [[ $( echo $line | cut -d' ' -f2 ) == '372'  ]]; then
@@ -174,8 +173,7 @@ IRC_CONNECT(){
 			server_005=$(tr -d $'\r\n' <<< "$server_005") # Get rid of newlines
 			server_005="${server_005/ :are supported by this server/}" # Get rid of :are supported by this server
 			handle_005 "$line"
-		fi
-		if [[ $line =~ "Looking up your hostname" ]]; then
+		elif [[ $line =~ "Looking up your hostname" ]]; then
 			log_stdout "logging in as $config_firstnick..."
 			send_nick "$config_firstnick"
 			# FIXME: THIS IS HACKISH AND MAY BREAK
@@ -186,7 +184,6 @@ IRC_CONNECT(){
 		fi
 		handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
-			ghost=1
 			if [[ $on_nick -eq 3 ]]; then
 				log_stdout "Third nick is ALSO in use. I give up"
 				quit_bot 2
@@ -203,16 +200,7 @@ IRC_CONNECT(){
 			# FIXME: THIS IS HACKISH AND MAY BREAK
 			nick_current="$config_secondnick"
 			sleep 1
-		fi
-		if [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
-			if [[ $ghost == 1 ]]; then
-				log_stdout "Recovering ghost"
-				send_msg "Nickserv" "GHOST $config_firstnick $config_nickserv_passwd"
-				sleep 2
-				send_nick "$config_firstnick"
-			fi
-			log_stdout "Identifying..."
-			[ -n "$config_nickserv_passwd" ] && send_msg "Nickserv" "IDENTIFY $config_nickserv_passwd"
+		elif [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			sleep 1
 			log_stdout 'Connected'
 			break

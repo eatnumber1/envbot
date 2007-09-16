@@ -19,59 +19,38 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
+# Identify to nickserv
 
-# What version this config is at. This is used to check
-# if your config needs updating.
-config_version=5
+module_services_INIT() {
+	echo "on_connect"
+	module_services_ghost=0
+}
 
-# Nick to use
-config_firstnick="BOTNICK"
-# Nick if first is in use
-config_secondnick="BOTNICK_"
-# Nick if second is in use
-config_thirdnick="BOTNICK__"
+module_services_UNLOAD() {
+	unset module_services_ghost
+	unset module_connect_services_on_connect
+}
 
-config_ident='rfc3092'
-config_gecos='ietf.org/rfc/rfc3092'
+module_services_REHASH() {
+	return 0
+}
 
-# Format should be hostname.foo/port
-config_server='irc.kuonet-ng.org/6667'
-# If this is empty don't use a server passwd.
-config_server_passwd=""
-
-# If a message is prefixed with this, treat is as a command.
-config_listenchar=';'
-
-# Owner regexes.
-# THESE ARE EXAMPLES, don't use these, replace them
-# Without one set, the bot won't start
-#config_owners[1]='.*!brain@staff\.kuonet\.org'
-#config_owners[2]='.*!brain@staff\.kuonet-ng\.org'
-
-# Directory for logfiles
-config_log_dir="logs"
-# Should we always log to STDOUT as well?
-config_log_stdout=1
-
-# What modules to load, space separated list
-# For a list of modules see the modules dir.
-config_modules="services umodes autojoin faq"
-
-# Module specific settings
-
-# Services module
-# Nickserv password
-config_module_services_nickserv_passwd='nickserv password here'
-
-# FAQ module
-config_module_faq_file='./faq.txt'
-
-# AutoJoin module.
-# Channels to autojoin on connect
-config_autojoin_channels[1]='#channel'
-# A channel can have a key as showed in the example below
-config_autojoin_channels[1]='#otherchannel channelkey'
-
-# Umodes module.
-# Default umodes to set on connect.
-config_module_umodes_default_umodes="+is-w"
+# Called for each line on connect bot has connected
+module_services_on_connect() {
+	local line="$1"
+	if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then # Nick in use
+		module_services_ghost=1
+	elif [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
+		if [[ $module_services_ghost == 1 ]]; then
+			log_stdout "Recovering ghost"
+			send_msg "Nickserv" "GHOST $config_firstnick $config_module_services_nickserv_passwd"
+			sleep 2
+			send_nick "$config_firstnick"
+		fi
+		log_stdout "Identifying..."
+		send_msg "Nickserv" "IDENTIFY $config_module_services_nickserv_passwd"
+		sleep 1
+		log_stdout 'Connected'
+		break
+	fi
+}
