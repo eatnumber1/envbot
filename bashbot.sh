@@ -141,6 +141,7 @@ IRC_CONNECT(){ #$1=nick $2=passwd
 			fi
 		elif  [[ $( echo $line | cut -d' ' -f2 ) == '004' ]]; then
 			Server004="$( echo $line | cut -d' ' -f4- )"
+			Server004=$(tr -d $'\r\n' <<< "$Server004")  # Get rid of ending newline
 		elif  [[ $( echo $line | cut -d' ' -f2 ) == '005' ]]; then
 			Server005="$Server005 $( echo $line | cut -d' ' -f4- )"
 			Server005=$(tr -d $'\r\n' <<< "$Server005") # Get rid of newlines
@@ -284,7 +285,7 @@ while true; do
 				log "WARNING: Correcting own nick and lets hope that doesn't break anything"
 				CurrentNick="$mynick"
 			fi
-			numericdata="${BASH_REMATCH[2]}"
+			numericdata="${BASH_REMATCH[3]}"
 			for module in $modules_on_numeric; do
 				${module}_on_numeric "$numeric" "$numericdata"
 				if [[ $? -ne 0 ]]; then
