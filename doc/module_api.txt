@@ -26,7 +26,8 @@ modulename_INIT (REQUIERD)
 	Called directly after loading the module.
 	No parameters.
 	If return code isn't 0 the module is considered as failed to load.
-	The module should clean up after itself in this case.
+	The module should clean up after itself in this case before it returns
+	from INIT.
 	On STDOUT should be returned a space separated list of functions the 
 	module implements. FAQ would return "before_connect on_PRIVMSG"
 
