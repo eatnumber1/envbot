@@ -22,13 +22,13 @@
 
 # Internal function to this file
 do_log() {
-	echo $1 >> "$logfile"
-	if [[ $config_logstdout -eq 1 ]]; then
+	echo "$1" >> "$log_file"
+	if [[ $config_log_stdout -eq 1 ]]; then
 		echo "$1"
 	fi
 }
 
-log="---------------"
+log_prefix="---------------"
 log_raw_in() {
 	do_log "< $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
@@ -36,24 +36,24 @@ log_raw_out() {
 	do_log "> $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 log() {
-	do_log "$log $(date +'%Y-%m-%d %k:%M:%S') $@"
+	do_log "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 
 # Allways print to STDOUT as well
 log_stdout() {
-	local logstring="$log $(date +'%Y-%m-%d %k:%M:%S') $@"
-	echo "$logstring" >> "$logfile"
+	local logstring="$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
+	echo "$logstring" >> "$log_file"
 	echo "$logstring"
 }
 
 log_init() {
 	# This creates logfile for this run:
-	logfile="${config_logdir}/$(date -u +%s).log"
-	touch "$logfile"
+	log_file="${config_log_dir}/$(date -u +%s).log"
+	touch "$log_file"
 	if [[ $? -ne 0 ]]; then
 		echo "Error: couldn't create logfile"
 		exit 1
 	fi
 
-	echo "Logfile is $logfile"
+	echo "Logfile is $log_file"
 }

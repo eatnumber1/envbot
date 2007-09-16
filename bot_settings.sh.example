@@ -22,7 +22,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=2
+config_version=3
 
 # Nick to use
 config_firstnick="BOTNICK"
@@ -57,9 +57,9 @@ config_listenchar=';'
 #config_owners[2]='.*!brain@staff\.kuonet-ng\.org'
 
 # Directory for logfiles
-config_logdir="logs"
+config_log_dir="logs"
 # Should we always log to STDOUT as well?
-config_logstdout=0
+config_log_stdout=0
 
 # What modules to load, space separated list
 # For a list of modules see the modules dir.

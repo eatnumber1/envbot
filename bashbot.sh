@@ -28,7 +28,7 @@ if [[ $? -ne 0 ]]; then
 	exit 1
 fi
 
-config_current_version=2
+config_current_version=3
 
 echo "Loading library functions"
 # Load library functions.

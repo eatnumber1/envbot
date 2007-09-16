@@ -33,12 +33,12 @@ validate_config() {
 		echo "ERROR: YOU MUST SET A config_firstnick IN THE CONFIG"
 		exit 1
 	fi
-	if [ -z "$config_logdir" ]; then
-		echo "ERROR: YOU MUST SET A config_logdir IN THE CONFIG"
+	if [ -z "$config_log_dir" ]; then
+		echo "ERROR: YOU MUST SET A config_log_dir IN THE CONFIG"
 		exit 1
 	fi
-	if [ -z "$config_logstdout" ]; then
-		echo "ERROR: YOU MUST SET config_logstdout IN THE CONFIG"
+	if [ -z "$config_log_stdout" ]; then
+		echo "ERROR: YOU MUST SET config_log_stdout IN THE CONFIG"
 		exit 1
 	fi
 	if [ -z "${config_owners[1]}" ]; then
