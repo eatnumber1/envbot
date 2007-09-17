@@ -43,7 +43,8 @@ module_dumpvars_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenregex}dumpvars$ ]]; then
+	# We don't care about parameters.
+	if parse_query_is_command "$query" "dumpvars" > /dev/null; then
 		if access_check_owner "$sender"; then
 			# This is hackish, we only display
 			# lines unique to "file" 1.

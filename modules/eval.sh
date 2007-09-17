@@ -44,10 +44,10 @@ module_eval_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenregex}eval\ (.*) ]]; then
-		query="${BASH_REMATCH[1]}"
+	local parameters
+	if parameters="$(parse_query_is_command "$query" "eval")"; then
 		if access_check_owner "$sender"; then
-			eval "$query"
+			eval "$parameters"
 			sleep 2
 		else
 			access_fail "$sender" "send a raw line" "owner"

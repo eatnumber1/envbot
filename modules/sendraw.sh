@@ -44,11 +44,11 @@ module_sendraw_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenregex}raw\ (.*) ]]; then
-		query="${BASH_REMATCH[1]}"
+	local parameters
+	if parameters="$(parse_query_is_command "$query" "raw")"; then
 		if access_check_owner "$sender"; then
-			send_raw "$query"
-			sleep 2
+			send_raw "$parameters"
+			sleep 1
 		else
 			access_fail "$sender" "send a raw line" "owner"
 		fi

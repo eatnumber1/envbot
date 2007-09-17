@@ -64,43 +64,46 @@ module_faq_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenregex}faq\ (.*) ]]; then
-		query="${BASH_REMATCH[1]}"
-		if [[ "$query" =~ reload ]]; then
-			if access_check_owner "$sender"; then
-				send_msg "$channel" "Reloading FAQ items..."
-				module_faq_load
-				send_msg "$channel" "Done."
-				sleep 2
+	local parameters
+	if parameters="$(parse_query_is_command "$query" "faq")"; then
+		if [[ "$parameters" =~ ^(.*) ]]; then
+			query="${BASH_REMATCH[1]}"
+			if [[ "$query" =~ reload ]]; then
+				if access_check_owner "$sender"; then
+					send_msg "$channel" "Reloading FAQ items..."
+					module_faq_load
+					send_msg "$channel" "Done."
+					sleep 2
+				else
+					access_fail "$sender" "reload faq items" "owner"
+				fi
+				return 1
+			fi
+			local query_time="$(date +%H%M)$line"
+			if [[ "$module_faq_last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
+				module_faq_last_query="$(date +%H%M)$line"
+				if [[ "$query" -gt 0 ]]; then
+					log "$channel :$query is numeric"
+					send_msg "$channel" "${module_faq_array[$query]}"
+					# Very simple way to prevent flooding ourself off.
+					sleep 1
+				elif [[ "${#query}" -ge 3 ]] ; then
+					local i=0
+					while [[ $i -lt "${#module_faq_array[*]}" ]] ; do
+						i=$((i+1))
+						if echo ${module_faq_array[$i]} | cut -d " " -f 3- | /bin/grep -i -F -m 1 "$query" ; then
+							log "$channel :${module_faq_array[$i]}"
+							send_msg "$channel" "${module_faq_array[$i]}"
+							sleep 1
+							break 1
+						fi
+					done
+				fi
 			else
-				access_fail "$sender" "reload faq items" "owner"
+				log "ERROR : FLOOD DETECTED"
 			fi
 			return 1
 		fi
-		local query_time="$(date +%H%M)$line"
-		if [[ "$module_faq_last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
-			module_faq_last_query="$(date +%H%M)$line"
-			if [[ "$query" -gt 0 ]]; then
-				log "$channel :$query is numeric"
-				send_msg "$channel" "${module_faq_array[$query]}"
-				# Very simple way to prevent flooding ourself off.
-				sleep 1
-			elif [[ "${#query}" -ge 3 ]] ; then
-				local i=0
-				while [[ $i -lt "${#module_faq_array[*]}" ]] ; do
-					i=$((i+1))
-					if echo ${module_faq_array[$i]} | cut -d " " -f 3- | /bin/grep -i -F -m 1 "$query" ; then
-						log "$channel :${module_faq_array[$i]}"
-						send_msg "$channel" "${module_faq_array[$i]}"
-						sleep 1
-						break 1
-					fi
-				done
-			fi
-		else
-			log "ERROR : FLOOD DETECTED"
-		fi
-		return 1
 	fi
 	return 0
 }

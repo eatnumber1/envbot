@@ -44,10 +44,10 @@ module_die_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenregex}die\ (.*) ]]; then
-		query="${BASH_REMATCH[1]}"
+	local parameters
+	if parameters="$(parse_query_is_command "$query" "die")"; then
 		if access_check_owner "$sender"; then
-			quit_bot "$query"
+			quit_bot "$parameters"
 			sleep 2
 		else
 			access_fail "$sender" "make the bot die" "owner"

@@ -46,39 +46,44 @@ module_load_on_PRIVMSG() {
 	local channel="$2"
 	local query="$3"
 	local target_module status_message status
-	if [[ "$query" =~ ^${config_listenregex}modload\ ([^ ]+) ]]; then
-		target_module="${BASH_REMATCH[1]}"
-		if access_check_owner "$sender"; then
-			modules_load "$target_module"
-			status=$?
-			case $status in
-				0) status_message="Load successful" ;;
-				2) status_message="Module is already loaded" ;;
-				3) status_message="Failed to source it" ;;
-				4) status_message="No such module" ;;
-				5) status_message="Getting hooks failed" ;;
-				*) status_message="Unknown error (code $status)" ;;
-			esac
-			send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
-		else
-			access_fail "$sender" "load a module" "owner"
+	local parameters
+	if parameters="$(parse_query_is_command "$query" "modload")"; then
+		if [[ "$parameters" =~ ^([^ ]+) ]]; then
+			target_module="${BASH_REMATCH[1]}"
+			if access_check_owner "$sender"; then
+				modules_load "$target_module"
+				status=$?
+				case $status in
+					0) status_message="Load successful" ;;
+					2) status_message="Module is already loaded" ;;
+					3) status_message="Failed to source it" ;;
+					4) status_message="No such module" ;;
+					5) status_message="Getting hooks failed" ;;
+					*) status_message="Unknown error (code $status)" ;;
+				esac
+				send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
+			else
+				access_fail "$sender" "load a module" "owner"
+			fi
+			return 1
 		fi
-		return 1
-	elif [[ "$query" =~ ^${config_listenregex}modunload\ ([^ ]+) ]]; then
-		target_module="${BASH_REMATCH[1]}"
-		if access_check_owner "$sender"; then
-			modules_unload "$target_module"
-			status=$?
-			case $status in
-				0) status_message="Load successful" ;;
-				2) status_message="Module is not loaded" ;;
-				*) status_message="Unknown error (code $status)" ;;
-			esac
-			send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
-		else
-			access_fail "$sender" "unload a module" "owner"
+	elif parameters="$(parse_query_is_command "$query" "modunload")"; then
+		if [[ "$parameters" =~ ^([^ ]+) ]]; then
+			target_module="${BASH_REMATCH[1]}"
+			if access_check_owner "$sender"; then
+				modules_unload "$target_module"
+				status=$?
+				case $status in
+					0) status_message="Unload successful" ;;
+					2) status_message="Module is not loaded" ;;
+					*) status_message="Unknown error (code $status)" ;;
+				esac
+				send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
+			else
+				access_fail "$sender" "unload a module" "owner"
+			fi
+			return 1
 		fi
-		return 1
 	fi
 
 	return 0
