@@ -36,7 +36,9 @@ numeric[252]=RPL_LUSEROP
 numeric[253]=RPL_LUSERUNKNOWN
 numeric[254]=RPL_LUSERCHANNELS
 numeric[255]=RPL_LUSERME
+numeric[265]=RPL_LOCALUSERS   # Not from any RFC.
 numeric[266]=RPL_GLOBALUSERS  # Not from any RFC.
+
 numeric[332]=RPL_TOPIC
 numeric[333]=RPL_TOPICWHOTIME # Not from any RFC.
 numeric[353]=RPL_NAMREPLY
@@ -44,7 +46,7 @@ numeric[366]=RPL_ENDOFNAMES
 numeric[372]=RPL_MOTD
 numeric[375]=RPL_MOTDSTART
 numeric[376]=RPL_ENDOFMOTD
-numeric[396]=RPL_HOSTHIDDEN # Not from any RFC.
+numeric[396]=RPL_HOSTHIDDEN   # Not from any RFC.
 
 # Errors
 numeric[432]=ERR_ERRONEUSNICKNAME # Bad/forbidden nickname
