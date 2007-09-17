@@ -55,7 +55,7 @@ config_log_stdout=1
 
 # What modules to load, space separated list
 # For a list of modules see the modules dir.
-config_modules="load services umodes autojoin faq"
+config_modules="load services umodes autojoin"
 
 # Module specific settings
 
@@ -64,7 +64,7 @@ config_modules="load services umodes autojoin faq"
 config_module_services_nickserv_passwd='nickserv password here'
 
 # FAQ module
-config_module_faq_file='./faq.txt'
+#config_module_faq_file='data/faq.txt'
 
 # AutoJoin module.
 # Channels to autojoin on connect

@@ -58,9 +58,13 @@ numeric_RPL_MOTD='372'
 numeric_RPL_MOTDSTART='375'
 numeric_RPL_ENDOFMOTD='376'
 numeric_RPL_HOSTHIDDEN='396'
+numeric_ERR_UNKNOWNCOMMAND='421'
 numeric_ERR_ERRONEUSNICKNAME='432'
 numeric_ERR_NICKNAMEINUSE='433'
 numeric_ERR_NEEDMOREPARAMS='461'
+numeric_ERR_UNKNOWNMODE='472'
+numeric_ERR_INVITEONLYCHAN='473'
+numeric_ERR_BANNEDFROMCHAN='474'
 
 ##########################
 # Number -> name mapping #
@@ -89,8 +93,12 @@ numeric[372]='RPL_MOTD'
 numeric[375]='RPL_MOTDSTART'
 numeric[376]='RPL_ENDOFMOTD'
 numeric[396]='RPL_HOSTHIDDEN'
+numeric[421]='ERR_UNKNOWNCOMMAND'
 numeric[432]='ERR_ERRONEUSNICKNAME'
 numeric[433]='ERR_NICKNAMEINUSE'
 numeric[461]='ERR_NEEDMOREPARAMS'
+numeric[472]='ERR_UNKNOWNMODE'
+numeric[473]='ERR_INVITEONLYCHAN'
+numeric[474]='ERR_BANNEDFROMCHAN'
 
 # End of generated file.
