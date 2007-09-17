@@ -40,7 +40,7 @@ config_server='irc.kuonet-ng.org/6667'
 config_server_passwd=""
 
 # A regex of prefixes we should listen to.
-config_listenregex=';'
+config_listenregex=";"
 
 # Owner regexes.
 # THESE ARE EXAMPLES, don't use these, replace them

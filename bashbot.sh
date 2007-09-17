@@ -144,8 +144,27 @@ handle_ping() {
 	fi
 }
 
+handle_nick_in_use() {
+	if [[ $on_nick -eq 3 ]]; then
+		log_stdout "Third nick is ALSO in use. I give up"
+		quit_bot 2
+	fi
+	if [[ $on_nick -eq 2 ]]; then
+		log_stdout "Second nick is ALSO in use, trying third"
+		send_nick "$config_thirdnick"
+		nick_current="$config_thirdnick"
+		on_nick=3
+	fi
+	log_stdout "First nick is in use, trying second"
+	send_nick "$config_secondnick"
+	on_nick=2
+	# FIXME: THIS IS HACKISH AND MAY BREAK
+	nick_current="$config_secondnick"
+	sleep 1
+}
+
 IRC_CONNECT(){
-	local on_nick=1
+	on_nick=1
 	log_stdout "Connecting..."
 	exec 3<&-
 	exec 3<> "/dev/tcp/${config_server}"
@@ -183,23 +202,10 @@ IRC_CONNECT(){
 			send_raw "USER $config_ident 0 * :${config_gecos}"
 		fi
 		handle_ping "$line"
-		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then
-			if [[ $on_nick -eq 3 ]]; then
-				log_stdout "Third nick is ALSO in use. I give up"
-				quit_bot 2
-			fi
-			if [[ $on_nick -eq 2 ]]; then
-				log_stdout "Second nick is ALSO in use, trying third"
-				send_nick "$config_thirdnick"
-				nick_current="$config_thirdnick"
-				on_nick=3
-			fi
-			log_stdout "First nick is in use, trying second"
-			send_nick "$config_secondnick"
-			on_nick=2
-			# FIXME: THIS IS HACKISH AND MAY BREAK
-			nick_current="$config_secondnick"
-			sleep 1
+		if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then # Nick in use.
+			handle_nick_in_use
+		elif [[ $( echo $line | cut -d' ' -f2 ) == '432'  ]]; then # Erroneous Nickname Being Held...
+			handle_nick_in_use
 		elif [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 			sleep 1
 			log_stdout 'Connected'

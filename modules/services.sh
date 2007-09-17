@@ -40,6 +40,8 @@ module_services_on_connect() {
 	local line="$1"
 	if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then # Nick in use
 		module_services_ghost=1
+	elif [[ $( echo $line | cut -d' ' -f2 ) == '432'  ]]; then # Erroneous Nickname Being Held...
+		module_services_ghost=1
 	elif [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
 		if [[ $module_services_ghost == 1 ]]; then
 			log_stdout "Recovering ghost"
