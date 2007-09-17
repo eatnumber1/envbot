@@ -22,6 +22,7 @@
 # This file contains a list of numerics that we *currently use*.
 # It is therefore incomplete.
 
+# Based of RFC 1459, RFC 2812 and http://www.alien.net.au/irc/irc2numerics.html
 
 # These are from RFC 1459, if not mentioned otherwise
 
@@ -30,14 +31,22 @@
 ##########################
 
 # Command replies.
-numeric[332]='RPL_TOPIC'
-numeric[333]='RPL_TOPICWHOTIME' # Not from any RFC.
-numeric[353]='RPL_NAMREPLY'
-numeric[366]='RPL_ENDOFNAMES'
-numeric[372]='RPL_MOTD'
-numeric[375]='RPL_MOTDSTART'
-numeric[376]='RPL_ENDOFMOTD'
+numeric[251]=RPL_LUSERCLIENT
+numeric[252]=RPL_LUSEROP
+numeric[253]=RPL_LUSERUNKNOWN
+numeric[254]=RPL_LUSERCHANNELS
+numeric[255]=RPL_LUSERME
+numeric[266]=RPL_GLOBALUSERS  # Not from any RFC.
+numeric[332]=RPL_TOPIC
+numeric[333]=RPL_TOPICWHOTIME # Not from any RFC.
+numeric[353]=RPL_NAMREPLY
+numeric[366]=RPL_ENDOFNAMES
+numeric[372]=RPL_MOTD
+numeric[375]=RPL_MOTDSTART
+numeric[376]=RPL_ENDOFMOTD
+numeric[396]=RPL_HOSTHIDDEN # Not from any RFC.
 
-numeric[432]='ERR_ERRONEUSNICKNAME' # Bad/forbidden nickname
-numeric[433]='ERR_NICKNAMEINUSE'    # Nick in use
-numeric[461]='ERR_NEEDMOREPARAMS'
+# Errors
+numeric[432]=ERR_ERRONEUSNICKNAME # Bad/forbidden nickname
+numeric[433]=ERR_NICKNAMEINUSE    # Nick in use
+numeric[461]=ERR_NEEDMOREPARAMS

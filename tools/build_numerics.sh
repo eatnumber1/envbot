@@ -61,7 +61,9 @@ cat - << EOF
 # Name -> number mapping #
 ##########################
 
-# During connect, these are sent. They are NOT part of RFC 1459
+# During connect, these are sent. They are NOT part of RFC 1459.
+# For some format of the parameters varies between servers.
+numeric_RPL_WELCOME='001'  # "Welcome to <network>"
 numeric_RPL_YOURHOST='002' # "Your host is <servername>, running version <ver>"
 numeric_RPL_MYINFO='004'   # "<servername> <version> <available user modes> <available channel modes>"
 numeric_RPL_ISUPPORT='005' # Not in any RFC. See http://www.irc.org/tech_docs/005.html for incomplete list.
@@ -84,9 +86,11 @@ cat - << EOF
 # Number -> name mapping #
 ##########################
 
-# During connect, these are sent. They are NOT part of RFC 1459
+# During connect, these are sent. They are NOT part of RFC 1459.
+# For some format of the parameters varies between servers.
+numeric[001]='RPL_WELCOME'  # "Welcome to <network>"
 numeric[002]='RPL_YOURHOST' # "Your host is <servername>, running version <ver>"
-numeric[004]='RPL_MYINFO' # "<servername> <version> <available user modes> <available channel modes>"
+numeric[004]='RPL_MYINFO'   # "<servername> <version> <available user modes> <available channel modes>"
 numeric[005]='RPL_ISUPPORT' # Not in any RFC. See http://www.irc.org/tech_docs/005.html for incomplete list.
 
 # "Normal" numerics.
