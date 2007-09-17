@@ -74,6 +74,18 @@ send_modes() {
 	send_raw "MODE $1 $2"
 }
 
+# $1 = channel to set topic of
+# $2 = new topic.
+send_topic() {
+	send_raw "TOPIC $1 :$2"
+}
+
+###########################################################################
+# Internal functions to core or this file below this line!                #
+# Module authors: go away                                                 #
+###########################################################################
+
+# Module authors: use the wrapper: quit_bot in misc.sh instead!
 # $1 = if set, a quit reason
 send_quit() {
 	local reason=""

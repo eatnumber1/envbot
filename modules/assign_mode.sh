@@ -50,7 +50,7 @@ module_assign_mode_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
-				send_raw "MODE $channel +o $nick"
+				send_modes "$channel" "+o $nick"
 			else
 				access_fail "$sender" "make the bot op somebody" "owner"
 			fi
@@ -61,7 +61,7 @@ module_assign_mode_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
-				send_raw "MODE $channel -o $nick"
+				send_modes "$channel" "-o $nick"
 			else
 				access_fail "$sender" "make the bot deop somebody" "owner"
 			fi
@@ -72,7 +72,7 @@ module_assign_mode_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
-					send_raw "MODE $channel +h $nick"
+					send_modes "$channel" "+h $nick"
 			else
 				access_fail "$sender" "make the bot halfop somebody" "owner"
 			fi
@@ -83,7 +83,7 @@ module_assign_mode_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
-				send_raw "MODE $channel -h $nick"
+				send_modes "$channel" "-h $nick"
 			else
 				access_fail "$sender" "make the bot dehalfop somebody" "owner"
 			fi
@@ -94,7 +94,7 @@ module_assign_mode_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
-				send_raw "MODE $channel +v $nick"
+				send_modes "$channel" "+v $nick"
 			else
 				access_fail "$sender" "make the bot give voice to somebody" "owner"
 			fi
@@ -105,7 +105,7 @@ module_assign_mode_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
-				send_raw "MODE $channel -v $nick"
+				send_modes "$channel" "-v $nick"
 			else
 				access_fail "$sender" "make the bot take voice from somebody" "owner"
 			fi
@@ -116,7 +116,7 @@ module_assign_mode_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
-				send_raw "MODE $channel +a $nick"
+				send_modes "$channel" "+a $nick"
 			else
 				access_fail "$sender" "make the bot protect somebody" "owner"
 			fi
@@ -127,7 +127,7 @@ module_assign_mode_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
-				send_raw "MODE $channel -a $nick"
+				send_modes "$channel" "-a $nick"
 			else
 				access_fail "$sender" "make the bot deprotect somebody" "owner"
 			fi
@@ -138,7 +138,7 @@ module_assign_mode_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
-				send_raw "TOPIC $channel :$message"
+				send_topic "$channel" "$message"
 			else
 				access_fail "$sender" "make the bot protect somebody" "owner"
 			fi
