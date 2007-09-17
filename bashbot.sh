@@ -34,6 +34,7 @@ echo "Loading library functions"
 # Load library functions.
 source lib/log.sh
 source lib/send.sh
+source lib/feedback.sh
 source lib/numerics.sh
 source lib/channels.sh
 source lib/parse.sh
