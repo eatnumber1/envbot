@@ -35,7 +35,7 @@ module_services_REHASH() {
 	return 0
 }
 
-# Called for each line on connect bot has connected
+# Called for each line on connect
 module_services_on_connect() {
 	local line="$1"
 	if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then # Nick in use
