@@ -74,11 +74,12 @@ parse_005() {
 #         1 = Doesn't match
 # Returned on STDOUT if matches: The parameters
 parse_query_is_command() {
-	if [[ "$1" =~ ^${config_listenregex}${2}\ (.*) ]]; then
-		echo "${BASH_REMATCH[1]: -1}"
+	if [[ "$1" =~ ^${config_listenregex}${2}(\ (.*)|$) ]]; then
+		echo "${BASH_REMATCH[@]: -1}"
 		return 0
 	else
 		return 1
 	fi
 }
+
 

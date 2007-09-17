@@ -45,34 +45,38 @@ module_join_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenregex}part\ (#[^ ]+)(\ (.*))? ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local message="${BASH_REMATCH[3]}"
-		if access_check_owner "$sender"; then
-			if [[ -z "$reason" ]]; then
-				channels_part "$channel"
+	local parameters
+	if parameters="$(parse_query_is_command "$query" "part")"; then
+		if [[ "$parameters" =~ ^(#[^ ]+)(\ (.*))? ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local message="${BASH_REMATCH[3]}"
+			if access_check_owner "$sender"; then
+				if [[ -z "$reason" ]]; then
+					channels_part "$channel"
+				else
+					channels_part "$channel" "$message"
+				fi
 			else
-				channels_part "$channel" "$message"
+				access_fail "$sender" "make the bot part channel" "owner"
 			fi
-		else
-			access_fail "$sender" "make the bot part channel" "owner"
+			return 1
 		fi
-		return 1
-	elif [[ "$query" =~ ^${config_listenregex}join\ (#[^ ]+)(\ .*)? ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local key="${BASH_REMATCH[2]}"
-		if access_check_owner "$sender"; then
-			key="${key/# /}"
-			if [[ -z "$key" ]]; then
-				channels_join "${channel}"
+	elif parameters="$(parse_query_is_command "$query" "join")"; then
+		if [[ "$parameters" =~ ^(#[^ ]+)(\ .*)? ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local key="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+				key="${key/# /}"
+				if [[ -z "$key" ]]; then
+					channels_join "${channel}"
+				else
+					channels_join "${channel}" "$key"
+				fi
 			else
-				channels_join "${channel}" "$key"
+				access_fail "$sender" "make the join channel" "owner"
 			fi
-		else
-			access_fail "$sender" "make the join channel" "owner"
+			return 1
 		fi
-		return 1
 	fi
-
 	return 0
 }
