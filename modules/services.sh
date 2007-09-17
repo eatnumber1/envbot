@@ -28,7 +28,7 @@ module_services_INIT() {
 
 module_services_UNLOAD() {
 	unset module_services_ghost
-	unset module_connect_services_on_connect
+	unset module_services_on_connect
 }
 
 module_services_REHASH() {
@@ -38,11 +38,11 @@ module_services_REHASH() {
 # Called for each line on connect
 module_services_on_connect() {
 	local line="$1"
-	if [[ $( echo $line | cut -d' ' -f2 ) == '433'  ]]; then # Nick in use
+	if [[ $( echo $line | cut -d' ' -f2 ) == $numeric_ERR_NICKNAMEINUSE  ]]; then # Nick in use
 		module_services_ghost=1
-	elif [[ $( echo $line | cut -d' ' -f2 ) == '432'  ]]; then # Erroneous Nickname Being Held...
+	elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
 		module_services_ghost=1
-	elif [[ $( echo $line | cut -d' ' -f2 ) == '376'  ]]; then # 376 = End of motd
+	elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_ENDOFMOTD  ]]; then # 376 = End of motd
 		if [[ $module_services_ghost == 1 ]]; then
 			log_stdout "Recovering ghost"
 			send_msg "Nickserv" "GHOST $config_firstnick $config_module_services_nickserv_passwd"

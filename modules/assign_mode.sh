@@ -44,87 +44,106 @@ module_assign_mode_on_PRIVMSG() {
 	local sender="$1"
 	local sendon_channel="$2"
 	local query="$3"
-	if [[ "$query" =~ ^${config_listenregex}op\ ([^ ]+)\ ([^ ]+) ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local nick="${BASH_REMATCH[2]}"
-		if access_check_owner "$sender"; then
-			send_raw "MODE $channel +o $nick"
-		else
-			access_fail "$sender" "make the bot op somebody" "owner"
+	local parameters
+	if parameters="$(parse_query_is_command "$query" "op")"; then
+		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local nick="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+				send_raw "MODE $channel +o $nick"
+			else
+				access_fail "$sender" "make the bot op somebody" "owner"
+			fi
+			return 1
 		fi
-		return 1
-	elif [[ "$query" =~ ^${config_listenregex}deop\ ([^ ]+)\ ([^ ]+) ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local nick="${BASH_REMATCH[2]}"
-		if access_check_owner "$sender"; then
-			send_raw "MODE $channel -o $nick"
-		else
-			access_fail "$sender" "make the bot deop somebody" "owner"
+	elif parameters="$(parse_query_is_command "$query" "deop")"; then
+		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local nick="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+				send_raw "MODE $channel -o $nick"
+			else
+				access_fail "$sender" "make the bot deop somebody" "owner"
+			fi
+			return 1
 		fi
-		return 1
-	elif [[ "$query" =~ ^${config_listenregex}halfop\ ([^ ]+)\ ([^ ]+) ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local nick="${BASH_REMATCH[2]}"
-		if access_check_owner "$sender"; then
-				send_raw "MODE $channel +h $nick"
-		else
-			access_fail "$sender" "make the bot halfop somebody" "owner"
+	elif parameters="$(parse_query_is_command "$query" "halfop")"; then
+		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local nick="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+					send_raw "MODE $channel +h $nick"
+			else
+				access_fail "$sender" "make the bot halfop somebody" "owner"
+			fi
+			return 1
 		fi
-		return 1
-	elif [[ "$query" =~ ^${config_listenregex}dehalfop\ ([^ ]+)\ ([^ ]+) ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local nick="${BASH_REMATCH[2]}"
-		if access_check_owner "$sender"; then
-			send_raw "MODE $channel -h $nick"
-		else
-			access_fail "$sender" "make the bot dehalfop somebody" "owner"
+	elif parameters="$(parse_query_is_command "$query" "dehalfop")"; then
+		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local nick="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+				send_raw "MODE $channel -h $nick"
+			else
+				access_fail "$sender" "make the bot dehalfop somebody" "owner"
+			fi
+			return 1
 		fi
-		return 1
-	elif [[ "$query" =~ ^${config_listenregex}voice\ ([^ ]+)\ ([^ ]+) ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local nick="${BASH_REMATCH[2]}"
-		if access_check_owner "$sender"; then
-			send_raw "MODE $channel +v $nick"
-		else
-			access_fail "$sender" "make the bot give voice to somebody" "owner"
+	elif parameters="$(parse_query_is_command "$query" "voice")"; then
+		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local nick="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+				send_raw "MODE $channel +v $nick"
+			else
+				access_fail "$sender" "make the bot give voice to somebody" "owner"
+			fi
+			return 1
 		fi
-		return 1
-	elif [[ "$query" =~ ^${config_listenregex}devoiced\ ([^ ]+)\ ([^ ]+) ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local nick="${BASH_REMATCH[2]}"
-		if access_check_owner "$sender"; then
-			send_raw "MODE $channel -v $nick"
-		else
-			access_fail "$sender" "make the bot take voice from somebody" "owner"
+	elif parameters="$(parse_query_is_command "$query" "devoice")"; then
+		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local nick="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+				send_raw "MODE $channel -v $nick"
+			else
+				access_fail "$sender" "make the bot take voice from somebody" "owner"
+			fi
+			return 1
 		fi
-		return 1
-	elif [[ "$query" =~ ^${config_listenregex}protect\ ([^ ]+)\ ([^ ]+) ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local nick="${BASH_REMATCH[2]}"
-		if access_check_owner "$sender"; then
-			send_raw "MODE $channel +a $nick"
-		else
-			access_fail "$sender" "make the bot protect somebody" "owner"
+	elif parameters="$(parse_query_is_command "$query" "protect")"; then
+		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local nick="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+				send_raw "MODE $channel +a $nick"
+			else
+				access_fail "$sender" "make the bot protect somebody" "owner"
+			fi
+			return 1
 		fi
-		return 1
-	elif [[ "$query" =~ ^${config_listenregex}deprotect\ ([^ ]+)\ ([^ ]+) ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local nick="${BASH_REMATCH[2]}"
-		if access_check_owner "$sender"; then
-			send_raw "MODE $channel -a $nick"
-		else
-			access_fail "$sender" "make the bot deprotect somebody" "owner"
+	elif parameters="$(parse_query_is_command "$query" "deprotect")"; then
+		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local nick="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+				send_raw "MODE $channel -a $nick"
+			else
+				access_fail "$sender" "make the bot deprotect somebody" "owner"
+			fi
+			return 1
 		fi
-		return 1
-	elif [[ "$query" =~ ^${config_listenregex}topic\ (#[^ ]+)\ (.*) ]]; then
-		local channel="${BASH_REMATCH[1]}"
-		local message="${BASH_REMATCH[2]}"
-		if access_check_owner "$sender"; then
-			send_raw "TOPIC $channel :$message"
-		else
-			access_fail "$sender" "make the bot protect somebody" "owner"
+	elif parameters="$(parse_query_is_command "$query" "topic")"; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ (.*) ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local message="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+				send_raw "TOPIC $channel :$message"
+			else
+				access_fail "$sender" "make the bot protect somebody" "owner"
+			fi
+			return 1
 		fi
-		return 1
 	fi
 
 	return 0
