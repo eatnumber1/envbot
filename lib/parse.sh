@@ -66,3 +66,19 @@ parse_005() {
 	fi
 	return 1
 }
+
+# $1 = The query to check, this should be the part 
+#      after the : in PRIVMSG.
+# $2 = What command to look for.
+# Return: 0 = Matches
+#         1 = Doesn't match
+# Returned on STDOUT if matches: The parameters
+parse_query_is_command() {
+	if [[ "$1" =~ ^${config_listenregex}${2}\ (.*) ]]; then
+		echo "${BASH_REMATCH[1]: -1}"
+		return 0
+	else
+		return 1
+	fi
+}
+
