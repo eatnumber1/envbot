@@ -46,7 +46,7 @@ module_kick_ban_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "kick")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+)\ ([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+)\ (.*) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			local kickmessage="${BASH_REMATCH[3]}"

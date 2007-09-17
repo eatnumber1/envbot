@@ -56,6 +56,18 @@ module_say_on_PRIVMSG() {
 			fi
 			return 1
 		fi
+	elif parameters="$(parse_query_is_command "$query" "act")"; then
+		if [[ "$parameters" =~ ^([^ ]+)\ (.*) ]]; then
+			local channel="${BASH_REMATCH[1]}"
+			local message="${BASH_REMATCH[2]}"
+			if access_check_owner "$sender"; then
+				send_msg "${channel}" $'\1'"ACTION ${message}"$'\1'
+				sleep 1
+			else
+				access_fail "$sender" "make the bot act" "owner"
+			fi
+			return 1
+		fi
 	fi
 	return 0
 }
