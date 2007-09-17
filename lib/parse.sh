@@ -67,7 +67,7 @@ parse_005() {
 	return 1
 }
 
-# $1 = The query to check, this should be the part 
+# $1 = The query to check, this should be the part
 #      after the : in PRIVMSG.
 # $2 = What command to look for.
 # Return: 0 = Matches
@@ -81,5 +81,3 @@ parse_query_is_command() {
 		return 1
 	fi
 }
-
-

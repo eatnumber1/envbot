@@ -87,5 +87,3 @@ validate_config() {
 		exit 1
 	fi
 }
-
-
