@@ -21,11 +21,13 @@ All you have to do is to get the bot running is:
  * Copy bot_settings.sh.example to bot_settings.sh
  * Edit bot_settings.sh to set correct nick, 
    irc server, service password, and so on.
- * Run ./envbot.sh
+ * Run ./envbot
 
 
 Contacting developers
 ---------------------
 You can reach us on irc.
-  Server: irc.kuonet-ng.org
+1)  Server: irc.kuonet-ng.org
+  Channel: #envbot
+2)  Server: irc.securitychat.org
   Channel: #envbot
