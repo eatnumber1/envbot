@@ -3,6 +3,7 @@ envbot - A modular IRC bot in bash
 envbot is a modular irc bot coded
 in bash.
 
+
 Dependencies
 ------------
 * bash - version 3.x should work fine, but not tested on anything below 3.2
@@ -10,6 +11,7 @@ Dependencies
   to disable this. Most other distros are sane and have it on.
 * Standard POSIX tools. Should be included on any recent and sane Linux
   distro.
+
 
 Installing
 ----------
