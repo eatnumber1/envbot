@@ -50,7 +50,7 @@ module_eval_on_PRIVMSG() {
 			eval "$parameters"
 			sleep 2
 		else
-			access_fail "$sender" "send a raw line" "owner"
+			access_fail "$sender" "eval a command" "owner"
 		fi
 		return 1
 	fi
