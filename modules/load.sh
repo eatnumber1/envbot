@@ -65,8 +65,10 @@ module_load_on_PRIVMSG() {
 			else
 				access_fail "$sender" "load a module" "owner"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "modload" "modulename"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "modunload")"; then
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			target_module="${BASH_REMATCH[1]}"
@@ -82,8 +84,10 @@ module_load_on_PRIVMSG() {
 			else
 				access_fail "$sender" "unload a module" "owner"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "modunload" "modulename"
 		fi
+		return 1
 	fi
 
 	return 0

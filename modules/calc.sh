@@ -21,20 +21,44 @@
 ###########################################################################
 # Allow owners to make to bot say something
 
+module_calc_create_tmpfile() {
+	unset module_calc_tmpfile
+	module_calc_tmpfile="$(mktemp -t bashbot.calc.XXXXXXXXXX)" || return 1
+}
+
+module_calc_empty_tmpfile() {
+	> "$module_calc_tmpfile"
+}
+
+module_calc_remove_tmpfile() {
+	if [ -e "$module_calc_tmpfile" ]; then
+		rm -f "$module_calc_tmpfile"
+	fi
+}
+
 module_calc_INIT() {
-	echo "on_PRIVMSG"
+	echo "on_PRIVMSG after_load FINALISE"
 }
 
 module_calc_UNLOAD() {
-	if [ -e "/tmp/calc.temp" ]; then
-		rm /tmp/calc.temp
-	fi
-	unset module_say_on_PRIVMSG
+	module_calc_remove_tmpfile
+	unset module_calc_tmpfile
+	unset module_calc_on_PRIVMSG module_calc_after_load module_calc_FINALISE
+	unset module_calc_create_tmpfile module_calc_remove_tmpfile module_calc_empty_tmpfile
+}
+
+module_calc_after_load() {
+	module_calc_create_tmpfile
+	return 0
+}
+
+module_calc_FINALISE() {
+	module_calc_remove_tmpfile
+	return 0
 }
 
 module_calc_REHASH() {
-	cat /dev/null > /tmp/calc.temp
-	return 0
+	module_calc_empty_tmpfile
 }
 
 # Called on a PRIVMSG
@@ -43,18 +67,18 @@ module_calc_REHASH() {
 # $2 = to who (channel or botnick)
 # $3 = the message
 module_calc_on_PRIVMSG() {
-        # Accept this anywhere, unless someone can give a good reason not to.
-        local sender="$1"
-        local channel="$2"
-        local query="$3"
-        local parameters
-        if parameters="$(parse_query_is_command "$query" "calc")"; then
-                echo -e "$parameters\nquit" > /tmp/calc.temp
-		local myresult=`bc -q /tmp/calc.temp`
+	# Accept this anywhere, unless someone can give a good reason not to.
+	local sender="$1"
+	local channel="$2"
+	local query="$3"
+	local parameters
+	if parameters="$(parse_query_is_command "$query" "calc")"; then
+		echo -e "$parameters\nquit" > "$module_calc_tmpfile"
+		local myresult="$(bc -q "$module_calc_tmpfile")"
 		send_msg "$channel" "$(parse_hostmask_nick "$sender"): $myresult"
-		rm /tmp/calc.temp
-                sleep 1
-                return 1
-        fi
-        return 0
+		module_calc_empty_tmpfile
+		sleep 1
+		return 1
+	fi
+	return 0
 }
