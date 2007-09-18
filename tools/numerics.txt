@@ -35,65 +35,109 @@
 ##########################
 
 # Command replies.
+numeric[219]=RPL_ENDOFSTATS
 numeric[221]=RPL_UMODEIS
+numeric[242]=RPL_STATSUPTIME
+
 numeric[251]=RPL_LUSERCLIENT
 numeric[252]=RPL_LUSEROP
 numeric[253]=RPL_LUSERUNKNOWN
 numeric[254]=RPL_LUSERCHANNELS
 numeric[255]=RPL_LUSERME
+numeric[256]=RPL_ADMINME
+numeric[257]=RPL_ADMINLOC1
+numeric[258]=RPL_ADMINLOC2
+numeric[259]=RPL_ADMINEMAIL
 numeric[265]=RPL_LOCALUSERS   # Not from any RFC.
 numeric[266]=RPL_GLOBALUSERS  # Not from any RFC.
+numeric[271]=RPL_SILELIST      #Not from any RFC
+numeric[272]=RPL_ENDOFSILELIST #Not from any RFC
 
 numeric[301]=RPL_AWAY
+numeric[303]=RPL_ISON
 numeric[304]=RPL_TEXT         # Not from any RFC I think. And on inspircd this is used for syntax hints.
+numeric[305]=RPL_UNAWAY
+numeric[306]=RPL_UNAWAY
 numeric[307]=RPL_WHOISREGNICK # Not from any RFC. Used on unreal.
 numeric[311]=RPL_WHOISUSER
 numeric[312]=RPL_WHOISSERVER
 numeric[313]=RPL_WHOISOPERATOR
+numeric[314]=RPL_WHOWASUSER
+numeric[315]=RPL_ENDOFWHO
 numeric[317]=RPL_WHOISIDLE
 numeric[318]=RPL_ENDOFWHOIS
 numeric[319]=RPL_WHOISCHANNELS
 numeric[320]=RPL_WHOISSPECIAL # Not from any RFC. Numeric called other things on other ircds.
                               # RPL_WHOISSPECIAL is what it is called on unreal.
                               # Used for "connecting using ssl" on inspircd. Also used for SWHOIS.
+numeric[321]=RPL_LISTSTART
+numeric[322]=RPL_LIST
+numeric[323]=RPL_LISTEND
 numeric[324]=RPL_CHANNELMODEIS
 numeric[329]=RPL_CREATIONTIME # Not from any RFC. Used on inspircd at least.
 numeric[330]=RPL_WHOISACCOUNT # Not from any RFC. This is how it is used on inspircd with m_services_account.
 numeric[332]=RPL_TOPIC
 numeric[333]=RPL_TOPICWHOTIME # Not from any RFC.
+numeric[341]=RPL_INVITING
+numeric[351]=RPL_VERSION
+numeric[352]=RPL_WHOREPLY
 numeric[353]=RPL_NAMREPLY
+numeric[364]=RPL_LINKS
+numeric[365]=RPL_ENDOFLINKS
 numeric[366]=RPL_ENDOFNAMES
 numeric[367]=RPL_BANLIST
 numeric[368]=RPL_ENDOFBANLIST
+numeric[369]=RPL_ENDOFWHOWAS
+numeric[371]=RPL_INFO
 numeric[372]=RPL_MOTD
+numeric[374]=RPL_ENDOFINFO
 numeric[375]=RPL_MOTDSTART
 numeric[376]=RPL_ENDOFMOTD
 numeric[378]=RPL_WHOISHOST
+numeric[391]=RPL_TIME
 numeric[396]=RPL_HOSTHIDDEN   # Not from any RFC.
 
 
 # Errors
 numeric[401]=ERR_NOSUCHNICK
+numeric[404]=ERR_CANNOTSENDTOCHAN
+numeric[405]=ERR_TOOMANYCHANNELS
+numeric[406]=ERR_WASNOSUCHNICK
 numeric[421]=ERR_UNKNOWNCOMMAND
-numeric[432]=ERR_ERRONEUSNICKNAME # Bad/forbidden nickname
-numeric[433]=ERR_NICKNAMEINUSE    # Nick in use
-numeric[445]=ERR_SUMMONDISABLED   # Yep, most (all?) do nowdays :)
-numeric[446]=ERR_USERSDISABLED    # Yep, most (all?) do nowdays :)
-numeric[447]=ERR_NONICKCHANGE     # Not from any RFC.
+numeric[432]=ERR_ERRONEUSNICKNAME  # Bad/forbidden nickname
+numeric[433]=ERR_NICKNAMEINUSE     # Nick in use
+numeric[443]=ERR_USERONCHANNEL
+numeric[445]=ERR_SUMMONDISABLED    # Yep, most (all?) do nowdays :)
+numeric[446]=ERR_USERSDISABLED     # Yep, most (all?) do nowdays :)
+numeric[447]=ERR_NONICKCHANGE      # Not from any RFC.
+numeric[460]=ERR_NOTFORHALFOPS     # Not from any RFC. Unreal got this at least.
 numeric[461]=ERR_NEEDMOREPARAMS
+numeric[462]=ERR_ALREADYREGISTERED
 numeric[472]=ERR_UNKNOWNMODE
 numeric[473]=ERR_INVITEONLYCHAN
 numeric[474]=ERR_BANNEDFROMCHAN
+numeric[480]=ERR_CANNOTKNOCK       # Not from any RFC.
 numeric[481]=ERR_NOPRIVILEGES
-numeric[484]=ERR_ATTACKDENY       # Name on unreal. No idea use on unreal.
-                                  # InspIRCd: 484 <nick> <channel> :Can't kick user <nick> from channel (+Q set)
-numeric[490]=ERR_ALLMUSTUSESSL    # InspIRCd specific numeric. I made up this name, I don't know correct name.
-                                  # 490 <nick> <channel> :all members of the channel must be connected via SSL
-numeric[495]=ERR_NOREJOINONKICK   # InspIRCd specific numeric. I made up this name, I don't know correct name.
-                                  # 495 <nick> <channel> :You cannot rejoin this channel yet after being kicked (+J)
+numeric[482]=ERR_CHANOPRIVSNEEDED
+numeric[484]=ERR_ATTACKDENY        # Name on unreal. No idea use on unreal.
+                                   # InspIRCd: 484 <nick> <channel> :Can't kick user <nick> from channel (+Q set)
+numeric[490]=ERR_ALLMUSTUSESSL     # InspIRCd specific numeric. I made up this name, I don't know correct name.
+                                   # 490 <nick> <channel> :all members of the channel must be connected via SSL
+numeric[495]=ERR_NOREJOINONKICK    # InspIRCd specific numeric. I made up this name, I don't know correct name.
+                                   # 495 <nick> <channel> :You cannot rejoin this channel yet after being kicked (+J)
+numeric[499]=ERR_CHANOWNPRIVNEEDED # Not from any RFC. Unreal got this at least.
 
-# Others?
-numeric[671]=RPL_WHOISSECURE # Not from any RFC. Used on unreal.
+
+# Others. Not from any RFC but semi standard.
+numeric[600]=RPL_LOGON           # Unreal, InspIRCd and more
+numeric[601]=RPL_LOGOFF          # Unreal, InspIRCd and more
+numeric[602]=RPL_WATCHOFF        # Unreal, InspIRCd and more
+numeric[604]=RPL_NOWON           # Unreal, InspIRCd and more
+numeric[605]=RPL_NOWOFF          # Unreal, InspIRCd and more
+numeric[606]=RPL_WATCHLIST       # Unreal, InspIRCd and more
+numeric[607]=RPL_ENDOFWATCHLIST  # Unreal, InspIRCd and more
+
+numeric[671]=RPL_WHOISSECURE     # Used on unreal for ssl clients.
 
 
 # IRCd specific, these are InspIRCd ones unless said otherwise.
@@ -102,3 +146,8 @@ numeric[671]=RPL_WHOISSECURE # Not from any RFC. Used on unreal.
 # As I mainly use InspIRCd I prioritize those. ;)
 numeric[902]=RPL_COMMANDS      # 902 <nick> :<command> <module name> <minimum parameters>
 numeric[903]=RPL_ENDOFCOMMANDS # 903 <nick> :End of COMMANDS list
+# Unreal uses 972 (ERR_CANNOTDOCOMMAND) for umode +q, and other failed kicks.
+# According to http://www.alien.net.au/irc/irc2numerics.html:
+#  "Works similarly to all of KineIRCd's CANNOT* numerics. This one indicates that a
+#   command could not be performed for an arbitrary reason. For example, a halfop trying to kick an op."
+# Unreal uses 974 (ERR_CANNOTCHANGECHANMODE ?) for ERR_ALLMUSTUSESSL.
