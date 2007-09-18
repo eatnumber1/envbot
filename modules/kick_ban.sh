@@ -20,7 +20,7 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
-# Kicking (insert comment about Chuck Norris ;) and banning
+# Kicking (insert comment about Chuck Norris ;) and banning.
 
 module_kick_ban_INIT() {
 	echo "on_PRIVMSG"

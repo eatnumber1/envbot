@@ -73,7 +73,7 @@ module_calc_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "calc")"; then
-		echo -e "$parameters\nquit" > "$module_calc_tmpfile"
+		echo "$parameters"$'\nquit' > "$module_calc_tmpfile"
 		local myresult="$(bc -q "$module_calc_tmpfile")"
 		send_msg "$channel" "$(parse_hostmask_nick "$sender"): $myresult"
 		module_calc_empty_tmpfile
