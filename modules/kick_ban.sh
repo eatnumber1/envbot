@@ -27,7 +27,7 @@ module_kick_ban_INIT() {
 }
 
 module_kick_ban_UNLOAD() {
-	unset module_assign_mode_on_PRIVMSG
+	unset module_kick_ban_on_PRIVMSG
 }
 
 module_kick_ban_REHASH() {
