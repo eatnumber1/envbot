@@ -34,7 +34,7 @@ log() {
 log_stdout() {
 	local logstring="$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
 	echo "$logstring" >> "$log_file"
-	echo "$logstring"
+	echo "$logstring" | tr -d $'\\007'
 }
 
 
@@ -57,7 +57,7 @@ log_raw_out() {
 do_log() {
 	echo "$1" >> "$log_file"
 	if [[ $config_log_stdout -eq 1 ]]; then
-		echo "$1"
+		echo "$1" | tr -d $'\\007'
 	fi
 }
 
