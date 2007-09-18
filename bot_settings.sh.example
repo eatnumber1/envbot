@@ -24,6 +24,10 @@
 # if your config needs updating.
 config_version=7
 
+####################
+# General settings #
+####################
+
 # Nick to use
 config_firstnick="BOTNICK"
 # Nick if first is in use
@@ -33,6 +37,7 @@ config_thirdnick="BOTNICK__"
 
 config_ident='rfc3092'
 config_gecos='ietf.org/rfc/rfc3092'
+
 
 # Format should be hostname.foo/port
 config_server='irc.kuonet-ng.org/6667'
@@ -48,42 +53,67 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 #config_owners[1]='.*!brain@staff\.kuonet\.org'
 #config_owners[2]='.*!brain@staff\.kuonet-ng\.org'
 
+
+###########
+# Logging #
+###########
+
 # Directory for logfiles
 config_log_dir="logs"
 # Should we always log to STDOUT as well?
 config_log_stdout=1
 
+
+###########
+# Modules #
+###########
+
 # What modules to load, space separated list
 # For a list of modules see the modules dir.
+# Note that the order of the modules may be important
+# The list should normally start with "load services umodes"
 config_modules="load services umodes autojoin"
 
 
-###########################
-# Module specific settings#
-###########################
+############################
+# Module specific settings #
+############################
 
+#####################################################################
 # Services module
+#
 # Nickserv password
 config_module_services_nickserv_passwd='nickserv password here'
 # Name of nickserv
+#   Normaly this is correct
 config_module_services_nickserv_name='NickServ'
 # Service style. Supported are: anope, atheme
+#   For the default server (irc.kuonet-ng.org) use atheme
+#   Otherwise try anope, that will work with atheme too but
+#   some features will be disabled.
 config_module_services_style='atheme'
 # Use server side aliases
+#   Try 1 first, if the bot fails to identify try 0
 config_module_services_server_alias=1
 
 
+#####################################################################
 # FAQ module
+#
 #config_module_faq_file='data/faq.txt'
 
 
+#####################################################################
 # AutoJoin module.
+#
 # Channels to autojoin on connect
 config_module_autojoin_channels[1]='#channel'
 # A channel can have a key as showed in the example below
 config_module_autojoin_channels[2]='#otherchannel channelkey'
 
 
+#####################################################################
 # Umodes module.
+#
 # Default umodes to set on connect.
-config_module_umodes_default_umodes="+is-w"
+config_module_umodes_default_umodes="+isB-w"
