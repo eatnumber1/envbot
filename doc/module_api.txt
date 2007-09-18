@@ -157,7 +157,7 @@ module_modulename_on_PART
 
 module_modulename_on_KICK
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test AnMaster_test :this is a test
-	# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test bashbot :another test
+	# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test envbot :another test
 	Called when someone parts a channel the bot is in
 	$1 = Who did it (n!u@h).
 	$2 = What channel.
@@ -216,17 +216,17 @@ module_modulename_on_numeric
 module_modulename_on_server_ERROR
 	# ERROR :Closing link (rfc3092@1.2.3.4) [Killed (AnMaster (testing a kill on inspircd))]
 	# ERROR :Closing Link: [1.2.3.4] (Throttled: Reconnecting too fast) -Email staff@kuonet.org for more information.
-	# ERROR :Closing Link: bashbot[host.name.se] Brain ([hurricane.KuoNET.org] Local kill by Brain (testing kill on unrealircd))
-	# ERROR :Closing Link: bashbot[host.name.se] hurricane.KuoNET.org (Killed (Brain (testing kill on unrealircd, remote one)))
+	# ERROR :Closing Link: envbot[host.name.se] Brain ([hurricane.KuoNET.org] Local kill by Brain (testing kill on unrealircd))
+	# ERROR :Closing Link: envbot[host.name.se] hurricane.KuoNET.org (Killed (Brain (testing kill on unrealircd, remote one)))
 	Called when the bot get an ERROR from the server.
 	$1 = The ERROR message.
 	Return code not checked.
 		Reason: There isn't much point in swallowing this.
 
 module_modulename_on_KILL
-	# :AnMaster!AnMaster@staff.kuonet-ng.org KILL bashbot :photon.kuonet-ng.org!staff.kuonet-ng.org!AnMaster (killing to test on inspircd)
-	# :Brain!brain@staff.kuonet.org KILL bashbot :staff.kuonet.org!Brain (testing kill on unrealircd)
-	# :Brain!brain@staff.kuonet.org KILL bashbot :hurricane!staff.kuonet.org!Brain (testing kill on unrealircd, remote one)
+	# :AnMaster!AnMaster@staff.kuonet-ng.org KILL envbot :photon.kuonet-ng.org!staff.kuonet-ng.org!AnMaster (killing to test on inspircd)
+	# :Brain!brain@staff.kuonet.org KILL envbot :staff.kuonet.org!Brain (testing kill on unrealircd)
+	# :Brain!brain@staff.kuonet.org KILL envbot :hurricane!staff.kuonet.org!Brain (testing kill on unrealircd, remote one)
 	Called when the bot get a KILL message from the server.
 	$1 = The sender of the kill.
 	$2 = The target of the kill.

@@ -36,8 +36,8 @@ module_kick_ban_REHASH() {
 }
 
 # Lets check if TBAN is supported
-# :photon.kuonet-ng.org 461 bashbot TBAN :Not enough parameters.
-# :photon.kuonet-ng.org 304 bashbot :SYNTAX TBAN <channel> <duration> <banmask>
+# :photon.kuonet-ng.org 461 envbot TBAN :Not enough parameters.
+# :photon.kuonet-ng.org 304 envbot :SYNTAX TBAN <channel> <duration> <banmask>
 module_kick_ban_after_connect() {
 	module_kick_ban_TBAN_supported=0
 	send_raw "TBAN"

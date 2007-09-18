@@ -23,7 +23,7 @@
 
 module_calc_create_tmpfile() {
 	unset module_calc_tmpfile
-	module_calc_tmpfile="$(mktemp -t bashbot.calc.XXXXXXXXXX)" || return 1
+	module_calc_tmpfile="$(mktemp -t envbot.calc.XXXXXXXXXX)" || return 1
 }
 
 module_calc_empty_tmpfile() {
