@@ -73,7 +73,7 @@ module_kick_ban_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "kick")"; then
-		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+)\ (.*) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+)\ (.+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			local kickmessage="${BASH_REMATCH[3]}"
@@ -83,8 +83,10 @@ module_kick_ban_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot kick somebody" "owner"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "kick" "#channel nick reason"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "ban")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+)(\ ([0-9]+))? ]]; then
 			local channel="${BASH_REMATCH[1]}"
@@ -102,8 +104,10 @@ module_kick_ban_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot ban somebody" "owner"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "ban" "#channel nick [duration]"
 		fi
+		return 1
 	fi
 
 	return 0
