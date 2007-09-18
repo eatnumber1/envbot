@@ -19,7 +19,7 @@
 #   Free Software Foundation, Inc.,                                       #
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ###########################################################################
-# Allow owners to make to bot say something
+# Calculate with bc
 
 module_calc_create_tmpfile() {
 	unset module_calc_tmpfile
