@@ -81,6 +81,7 @@ numeric_ERR_NEEDMOREPARAMS='461'
 numeric_ERR_UNKNOWNMODE='472'
 numeric_ERR_INVITEONLYCHAN='473'
 numeric_ERR_BANNEDFROMCHAN='474'
+numeric_ERR_NOPRIVILEGES='481'
 numeric_RPL_WHOISSECURE='671'
 
 ##########################
@@ -133,6 +134,7 @@ numeric[461]='ERR_NEEDMOREPARAMS'
 numeric[472]='ERR_UNKNOWNMODE'
 numeric[473]='ERR_INVITEONLYCHAN'
 numeric[474]='ERR_BANNEDFROMCHAN'
+numeric[481]='ERR_NOPRIVILEGES'
 numeric[671]='RPL_WHOISSECURE'
 
 # End of generated file.
