@@ -54,8 +54,10 @@ module_say_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot talk with say" "owner"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "say" "target message # Where target is a nick or channel"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "act")"; then
 		if [[ "$parameters" =~ ^([^ ]+)\ (.*) ]]; then
 			local channel="${BASH_REMATCH[1]}"
@@ -66,8 +68,10 @@ module_say_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot act" "owner"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "act" "target message # Where target is a nick or channel"
 		fi
+		return 1
 	fi
 	return 0
 }
