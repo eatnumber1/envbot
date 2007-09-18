@@ -56,7 +56,10 @@ module_services_on_connect() {
 		fi
 		if [[ $module_services_ghost == 1 ]]; then
 			log_stdout "Recovering ghost"
+			sleep 1
 			send_raw "${module_services_nickserv_command}GHOST $config_firstnick $config_module_services_nickserv_passwd"
+			# Try to release too, just in case.
+			send_raw "${module_services_nickserv_command}RELEASE $config_firstnick $config_module_services_nickserv_passwd"
 			sleep 2
 			send_nick "$config_firstnick"
 		fi
