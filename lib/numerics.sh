@@ -87,8 +87,12 @@ numeric_ERR_UNKNOWNMODE='472'
 numeric_ERR_INVITEONLYCHAN='473'
 numeric_ERR_BANNEDFROMCHAN='474'
 numeric_ERR_NOPRIVILEGES='481'
+numeric_ERR_ATTACKDENY='484'
+numeric_ERR_ALLMUSTUSESSL='490'
 numeric_ERR_NOREJOINONKICK='495'
 numeric_RPL_WHOISSECURE='671'
+numeric_RPL_COMMANDS='902'
+numeric_RPL_ENDOFCOMMANDS='903'
 
 ##########################
 # Number -> name mapping #
@@ -146,7 +150,11 @@ numeric[472]='ERR_UNKNOWNMODE'
 numeric[473]='ERR_INVITEONLYCHAN'
 numeric[474]='ERR_BANNEDFROMCHAN'
 numeric[481]='ERR_NOPRIVILEGES'
+numeric[484]='ERR_ATTACKDENY'
+numeric[490]='ERR_ALLMUSTUSESSL'
 numeric[495]='ERR_NOREJOINONKICK'
 numeric[671]='RPL_WHOISSECURE'
+numeric[902]='RPL_COMMANDS'
+numeric[903]='RPL_ENDOFCOMMANDS'
 
 # End of generated file.

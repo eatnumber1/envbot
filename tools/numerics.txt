@@ -64,7 +64,7 @@ numeric[333]=RPL_TOPICWHOTIME # Not from any RFC.
 numeric[353]=RPL_NAMREPLY
 numeric[366]=RPL_ENDOFNAMES
 numeric[367]=RPL_BANLIST
-numeric[368]=RPL_ENDOFBANLIST 
+numeric[368]=RPL_ENDOFBANLIST
 numeric[372]=RPL_MOTD
 numeric[375]=RPL_MOTDSTART
 numeric[376]=RPL_ENDOFMOTD
@@ -85,8 +85,20 @@ numeric[472]=ERR_UNKNOWNMODE
 numeric[473]=ERR_INVITEONLYCHAN
 numeric[474]=ERR_BANNEDFROMCHAN
 numeric[481]=ERR_NOPRIVILEGES
+numeric[484]=ERR_ATTACKDENY       # Name on unreal. No idea use on unreal.
+                                  # InspIRCd: 484 <nick> <channel> :Can't kick user <nick> from channel (+Q set)
+numeric[490]=ERR_ALLMUSTUSESSL    # InspIRCd specific numeric. I made up this name, I don't know correct name.
+                                  # 490 <nick> <channel> :all members of the channel must be connected via SSL
 numeric[495]=ERR_NOREJOINONKICK   # InspIRCd specific numeric. I made up this name, I don't know correct name.
                                   # 495 <nick> <channel> :You cannot rejoin this channel yet after being kicked (+J)
 
 # Others?
 numeric[671]=RPL_WHOISSECURE # Not from any RFC. Used on unreal.
+
+
+# IRCd specific, these are InspIRCd ones unless said otherwise.
+# As we can't include more than one meaning for every numeric conflicting
+# ones may be added as comments. Modules depending on 9xx numerics should use the raw value.
+# As I mainly use InspIRCd I prioritize those. ;)
+numeric[902]=RPL_COMMANDS      # 902 <nick> :<command> <module name> <minimum parameters>
+numeric[903]=RPL_ENDOFCOMMANDS # 903 <nick> :End of COMMANDS list
