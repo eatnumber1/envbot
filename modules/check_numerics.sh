@@ -39,4 +39,3 @@ module_check_numerics_on_numeric() {
 		log_stdout "Unknown numeric $1 Data: $2"
 	fi
 }
-
