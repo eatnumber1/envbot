@@ -55,10 +55,10 @@ module_load_on_PRIVMSG() {
 				status=$?
 				case $status in
 					0) status_message="Load successful" ;;
-					2) status_message="Module is already loaded" ;;
+					2) status_message="Module \"$target_module\" is already loaded" ;;
 					3) status_message="Failed to source it" ;;
-					4) status_message="No such module" ;;
-					5) status_message="Getting hooks failed" ;;
+					4) status_message="Module \"$target_module\" could not be found" ;;
+					5) status_message="Getting hooks from module failed" ;;
 					*) status_message="Unknown error (code $status)" ;;
 				esac
 				send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
@@ -75,7 +75,7 @@ module_load_on_PRIVMSG() {
 				status=$?
 				case $status in
 					0) status_message="Unload successful" ;;
-					2) status_message="Module is not loaded" ;;
+					2) status_message="Module \"$target_module\" is not loaded" ;;
 					*) status_message="Unknown error (code $status)" ;;
 				esac
 				send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
