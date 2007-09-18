@@ -43,6 +43,7 @@ numeric[5]='RPL_ISUPPORT' # Not in any RFC. See http://www.irc.org/tech_docs/005
 
 numeric[6]='RPL_MAP'    # Not from any RFC
 numeric[7]='RPL_MAPEND' # Not from any RFC
+numeric[8]='RPL_SNOMASK' # Not from any RFC, used on unreal
 
 # Command replies.
 numeric[219]=RPL_ENDOFSTATS
