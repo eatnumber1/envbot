@@ -35,18 +35,12 @@
 # Name -> number mapping #
 ##########################
 
-# All 0xx must be maintained by hand in build_numerics.sh
-
-# During connect, these are sent. They are NOT part of RFC 1459.
-# For some format of the parameters varies between servers.
-numeric_RPL_WELCOME='001'  # "Welcome to <network>"
-numeric_RPL_YOURHOST='002' # "Your host is <servername>, running version <ver>"
-numeric_RPL_MYINFO='004'   # "<servername> <version> <available user modes> <available channel modes>"
-numeric_RPL_ISUPPORT='005' # Not in any RFC. See http://www.irc.org/tech_docs/005.html for incomplete list.
-
-numeric_RPL_MAP='006'    # Not from any RFC
-numeric_RPL_MAPEND='007' # Not from any RFC
-# "Normal" numerics.
+numeric_RPL_WELCOME='001'
+numeric_RPL_YOURHOST='002'
+numeric_RPL_MYINFO='004'
+numeric_RPL_ISUPPORT='005'
+numeric_RPL_MAP='006'
+numeric_RPL_MAPEND='007'
 numeric_RPL_ENDOFSTATS='219'
 numeric_RPL_UMODEIS='221'
 numeric_RPL_STATSUPTIME='242'
@@ -143,19 +137,12 @@ numeric_RPL_ENDOFCOMMANDS='903'
 # Number -> name mapping #
 ##########################
 
-# All 0xx must be maintained by hand in build_numerics.sh
-
-# During connect, these are sent. They are NOT part of RFC 1459.
-# For some format of the parameters varies between servers.
-numeric[1]='RPL_WELCOME'  # "Welcome to <network>"
-numeric[2]='RPL_YOURHOST' # "Your host is <servername>, running version <ver>"
-numeric[4]='RPL_MYINFO'   # "<servername> <version> <available user modes> <available channel modes>"
-numeric[5]='RPL_ISUPPORT' # Not in any RFC. See http://www.irc.org/tech_docs/005.html for incomplete list.
-
-numeric[6]='RPL_MAP'    # Not from any RFC
-numeric[7]='RPL_MAPEND' # Not from any RFC
-
-# "Normal" numerics.
+numeric[1]='RPL_WELCOME'
+numeric[2]='RPL_YOURHOST'
+numeric[4]='RPL_MYINFO'
+numeric[5]='RPL_ISUPPORT'
+numeric[6]='RPL_MAP'
+numeric[7]='RPL_MAPEND'
 numeric[219]='RPL_ENDOFSTATS'
 numeric[221]='RPL_UMODEIS'
 numeric[242]='RPL_STATSUPTIME'
