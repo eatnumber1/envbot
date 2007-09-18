@@ -22,17 +22,25 @@
 # Identify to nickserv
 
 module_services_INIT() {
-	echo "on_connect"
+	echo "on_connect after_load"
 	module_services_ghost=0
 }
 
 module_services_UNLOAD() {
-	unset module_services_ghost
-	unset module_services_on_connect
+	unset module_services_ghost module_services_nickserv_command
+	unset module_services_on_connect module_services_after_load
 }
 
 module_services_REHASH() {
 	return 0
+}
+
+module_services_after_load() {
+	if [[ $config_module_services_server_alias -eq 0 ]]; then
+		module_services_nickserv_command="PRIVMSG $config_module_services_nickserv_name :"
+	else
+		module_services_nickserv_command="$config_module_services_nickserv_name "
+	fi
 }
 
 # Called for each line on connect
@@ -43,14 +51,19 @@ module_services_on_connect() {
 	elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
 		module_services_ghost=1
 	elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_ENDOFMOTD  ]]; then # 376 = End of motd
+		if [[ $config_module_services_style == atheme ]]; then
+			send_raw "${module_services_nickserv_command}IDENTIFY $config_firstnick $config_module_services_nickserv_passwd"
+		fi
 		if [[ $module_services_ghost == 1 ]]; then
 			log_stdout "Recovering ghost"
-			send_msg "Nickserv" "GHOST $config_firstnick $config_module_services_nickserv_passwd"
+			send_raw "${module_services_nickserv_command}GHOST $config_firstnick $config_module_services_nickserv_passwd"
 			sleep 2
 			send_nick "$config_firstnick"
 		fi
 		log_stdout "Identifying..."
-		send_msg "Nickserv" "IDENTIFY $config_module_services_nickserv_passwd"
+		if [[ $config_module_services_style != atheme ]]; then
+			send_raw "${module_services_nickserv_command}IDENTIFY $config_module_services_nickserv_passwd"
+		fi
 		sleep 1
 	fi
 }

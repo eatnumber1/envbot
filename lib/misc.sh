@@ -67,7 +67,7 @@ validate_config() {
 	fi
 	if [ $config_version -ne $config_current_version ]; then
 		echo "ERROR: YOUR config_version IS $config_version BUT THE BOT'S CONFIG VERSION IS $config_current_version."
-		echo "PLEASE UPDATE YOUR CONFIG."
+		echo "PLEASE UPDATE YOUR CONFIG. Check bot_settings.sh.example for current format."
 		exit 1
 	fi
 	if [ -z "$config_firstnick" ]; then
