@@ -23,15 +23,42 @@
 # Kicking (insert comment about Chuck Norris ;) and banning.
 
 module_kick_ban_INIT() {
-	echo "on_PRIVMSG"
+	echo "on_PRIVMSG after_connect after_load on_numeric"
 }
 
 module_kick_ban_UNLOAD() {
-	unset module_kick_ban_on_PRIVMSG
+	unset module_kick_ban_TBAN_supported
+	unset module_kick_ban_on_PRIVMSG module_kick_ban_after_connect module_kick_ban_after_load module_kick_ban_on_numeric
 }
 
 module_kick_ban_REHASH() {
 	return 0
+}
+
+# Lets check if TBAN is supported
+# :photon.kuonet-ng.org 461 bashbot TBAN :Not enough parameters.
+# :photon.kuonet-ng.org 304 bashbot :SYNTAX TBAN <channel> <duration> <banmask>
+module_kick_ban_after_connect() {
+	module_kick_ban_TBAN_supported=0
+	send_raw "TBAN"
+}
+
+# HACK: If module is loaded after connect, module_kick_ban_after_connect won't
+#       get called, therefore lets check if we are connected here and check for
+#       TBAN here if that is the case.
+module_kick_ban_after_load() {
+	if [[ $connected -eq 1 ]]; then
+		module_kick_ban_TBAN_supported=0
+		send_raw "TBAN"
+	fi
+}
+
+module_kick_ban_on_numeric() {
+	if [[ $1 == $numeric_ERR_NEEDMOREPARAMS ]]; then
+		if [[ "$2" =~ ^TBAN\ : ]]; then
+			module_kick_ban_TBAN_supported=1
+		fi
+	fi
 }
 
 # Called on a PRIVMSG
@@ -46,7 +73,7 @@ module_kick_ban_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "kick")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+)\ (.*) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+)\ (.*) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			local kickmessage="${BASH_REMATCH[3]}"
@@ -59,11 +86,17 @@ module_kick_ban_on_PRIVMSG() {
 			return 1
 		fi
 	elif parameters="$(parse_query_is_command "$query" "ban")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+)(\ ([0-9]+))? ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
+			# Optional parameter.
+			local duration="${BASH_REMATCH[4]}"
 			if access_check_owner "$sender"; then
-				send_modes "$channel" "+b $nick"
+				if [[ $duration ]] && [[ $module_kick_ban_TBAN_supported -eq 1 ]]; then
+					send_raw "TBAN $channel $duration $nick"
+				else
+					send_modes "$channel" "+b $nick"
+				fi
 				# send_modes "$channel" "+b" get_hostmask $nick <-- not implemented yet
 				log_stdout "$nick banned from $channel"
 			else

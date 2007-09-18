@@ -39,6 +39,7 @@ numeric[255]=RPL_LUSERME
 numeric[265]=RPL_LOCALUSERS   # Not from any RFC.
 numeric[266]=RPL_GLOBALUSERS  # Not from any RFC.
 
+numeric[304]=RPL_TEXT         # Not from any RFC I think. And on inspircd this is used for syntax hints.
 numeric[332]=RPL_TOPIC
 numeric[333]=RPL_TOPICWHOTIME # Not from any RFC.
 numeric[353]=RPL_NAMREPLY

@@ -46,7 +46,11 @@ validate_config
 log_init
 # Now logging functions can be used.
 
+# Status variables
 nick_current=""
+connected=0
+
+# Server info variables
 server_name=""
 server_004=""
 # See http://www.irc.org/tech_docs/005.html for an incomplete list.
@@ -166,6 +170,7 @@ handle_nick_in_use() {
 }
 
 IRC_CONNECT(){
+	connected=0
 	on_nick=1
 	log_stdout "Connecting..."
 	exec 3<&-
@@ -212,6 +217,7 @@ IRC_CONNECT(){
 		elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_ENDOFMOTD  ]]; then # 376 = End of motd
 			sleep 1
 			log_stdout 'Connected'
+			connected=1
 			break
 		fi
 	done;
@@ -354,6 +360,7 @@ while true; do
 	done
 
 	log "DIED FOR SOME REASON"
+	connected=0
 	for module in $modules_after_disconnect; do
 		module_${module}_after_disconnect
 	done
