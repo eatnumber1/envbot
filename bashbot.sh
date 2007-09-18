@@ -170,7 +170,7 @@ IRC_CONNECT(){
 	log_stdout "Connecting..."
 	exec 3<&-
 	exec 3<> "/dev/tcp/${config_server}"
-	while read -d $'\n' -u 3 line; do
+	while read -rd $'\n' -u 3 line; do
 		# Check with modules first, needed so we don't skip them.
 		for module in $modules_on_connect; do
 			module_${module}_on_connect "$line"
@@ -233,7 +233,7 @@ while true; do
 	done
 
 
-	while read -u 3 -t 600 line ; do #-d $'\n'
+	while read -ru 3 -t 600 line ; do #-d $'\n'
 		line=${line//$'\r'/}
 		log_raw_in "$line"
 		for module in $modules_on_raw; do
