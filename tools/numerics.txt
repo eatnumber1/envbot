@@ -22,7 +22,11 @@
 # This file contains a list of numerics that we *currently use*.
 # It is therefore incomplete.
 
-# Based of RFC 1459, RFC 2812 and http://www.alien.net.au/irc/irc2numerics.html
+# Sources:
+# RFC 1459
+# RFC 2812
+# http://www.alien.net.au/irc/irc2numerics.html
+# http://www.inspircd.org/wiki/List_Of_Numerics
 
 # These are from RFC 1459, if not mentioned otherwise
 
@@ -49,7 +53,7 @@ numeric[313]=RPL_WHOISOPERATOR
 numeric[317]=RPL_WHOISIDLE
 numeric[318]=RPL_ENDOFWHOIS
 numeric[319]=RPL_WHOISCHANNELS
-numeric[320]=RPL_WHOISSPECIAL # Not from any RFC. Numeric used for other things on other ircds.
+numeric[320]=RPL_WHOISSPECIAL # Not from any RFC. Numeric called other things on other ircds.
                               # RPL_WHOISSPECIAL is what it is called on unreal.
                               # Used for "connecting using ssl" on inspircd. Also used for SWHOIS.
 numeric[324]=RPL_CHANNELMODEIS
@@ -59,6 +63,8 @@ numeric[332]=RPL_TOPIC
 numeric[333]=RPL_TOPICWHOTIME # Not from any RFC.
 numeric[353]=RPL_NAMREPLY
 numeric[366]=RPL_ENDOFNAMES
+numeric[367]=RPL_BANLIST
+numeric[368]=RPL_ENDOFBANLIST 
 numeric[372]=RPL_MOTD
 numeric[375]=RPL_MOTDSTART
 numeric[376]=RPL_ENDOFMOTD
@@ -71,12 +77,16 @@ numeric[401]=ERR_NOSUCHNICK
 numeric[421]=ERR_UNKNOWNCOMMAND
 numeric[432]=ERR_ERRONEUSNICKNAME # Bad/forbidden nickname
 numeric[433]=ERR_NICKNAMEINUSE    # Nick in use
+numeric[445]=ERR_SUMMONDISABLED   # Yep, most (all?) do nowdays :)
+numeric[446]=ERR_USERSDISABLED    # Yep, most (all?) do nowdays :)
+numeric[447]=ERR_NONICKCHANGE     # Not from any RFC.
 numeric[461]=ERR_NEEDMOREPARAMS
 numeric[472]=ERR_UNKNOWNMODE
 numeric[473]=ERR_INVITEONLYCHAN
 numeric[474]=ERR_BANNEDFROMCHAN
 numeric[481]=ERR_NOPRIVILEGES
-
+numeric[495]=ERR_NOREJOINONKICK   # InspIRCd specific numeric. I made up this name, I don't know correct name.
+                                  # 495 <nick> <channel> :You cannot rejoin this channel yet after being kicked (+J)
 
 # Others?
 numeric[671]=RPL_WHOISSECURE # Not from any RFC. Used on unreal.
