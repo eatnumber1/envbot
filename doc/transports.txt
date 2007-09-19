@@ -21,6 +21,7 @@ It is a space separated list of supported features. Current ones:
  * nossl - Supports making non-SSL connections
  * ssl   - Supports SSL
  * bind  - Supports using a specific IP when connecting
+This variable only needs to be set after transport_check_support has run
 
 
 Functions

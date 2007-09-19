@@ -21,9 +21,8 @@
 # A HACKISH transport module using stunnel
 
 # A list of features supported
-# These are used: ipv4, ipv6, ssl, bind
-transport_supports="ipv4 ipv6 ssl"
-
+# This is set in transport_check_support
+transport_supports=""
 
 # Check if all the stuff needed to use this transport is available
 # Return status: 0 = yes
@@ -33,9 +32,17 @@ transport_check_support() {
 	# without trying to make a connection (that could fail for so
 	# many other reasons), please contact me.
 	[[ -x "$config_transport_stunnel_path" ]] || return 1
+	# HACKISH: Check if ipv6 is supported
+	if "$config_transport_stunnel_path" -version 2>&1 | grep -q 'IPV6'; then
+		transport_supports="ipv4 ipv6 ssl"
+	else
+		transport_supports="ipv4 ssl"
+	fi
 	return 0
 }
 
+# Print a config file for stunnel
+# Yes, this is the only way to tell stunnel what to do...
 # $1 = Remote hostname
 # $2 = Remote port to use
 transport_create_config() {
@@ -46,6 +53,7 @@ transport_create_config() {
 	echo "[irc]"
 	echo "accept = 127.0.0.1:$config_transport_stunnel_localport"
 	echo "connect = $1:$2"
+	echo "TIMEOUTbusy = 600"
 	echo "TIMEOUTidle = 600"
 }
 
@@ -73,7 +81,7 @@ transport_disconnect() {
 	exec 3<&-
 
 	[[ -f "$transport_pid_file" ]] && kill "$(< "$transport_pid_file")" && rm -f $transport_pid_file
-	[[ -f "$transport_output_file" ]] && cat $transport_output_file && rm $transport_output_file
+	[[ -f "$transport_output_file" ]] && cat "$transport_output_file" && rm $transport_output_file
 }
 
 # Return a line in the variable line.
