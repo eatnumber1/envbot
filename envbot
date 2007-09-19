@@ -20,10 +20,19 @@
 ###########################################################################
 config_file="bot_settings.sh"
 
-function PRINT_Help {
+print_cmd_help() {
 	echo 'envbot - A modular IRC bot in bash.'
 	echo "Syntax:"
 	echo "  --config file   Use file instead of the default $config_file as config file."
+	exit 0
+}
+print_version() {
+	echo 'envbot 0.0.0.1-bzr'
+	echo 'A modular IRC bot in bash.'
+	echo "Copyright (C) 2007 Arvid Norlander"
+	echo "Copyright (C) 2007 EmErgE"
+	echo "This is free software; see the source for copying conditions.  There is NO"
+	echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 	exit 0
 }
 
@@ -31,14 +40,14 @@ if [ $# -gt 0 ]; then # there are arguments to the command
 	while [ $# -gt 0 ]; do
 		case "$1" in
 			'--help'|'-help'|'--usage'|'-usage'|'-h')
-				PRINT_Help
+				print_cmd_help
 				;;
 			'--config'|'-c')
 				config_file="$2"
 				shift 2
 				;;
 			*)
-				PRINT_Help
+				print_cmd_help
 				;;
 		esac
 	done
