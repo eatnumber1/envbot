@@ -18,76 +18,50 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+# A transport module using /dev/tcp
 
-send_raw() {
-	log_raw_out "$@"
-	transport_write_line "$@"$'\r'
+# A list of features supported
+# These are used: ipv4, ipv6, ssl, bind
+transport_supports="ipv4 ipv6"
+
+# Check if all the stuff needed to use this transport is available
+# Return status: 0 = yes
+#                1 = no
+transport_check_support() {
+	# If anyone can tell me how to check if /dev/tcp is supported
+	# without trying to make a connection (that could fail for so
+	# many other reasons), please contact me.
+	return 0
 }
 
-# $1 = who (channel or nick)
-# $* = message
-send_msg() {
-	local target="$1"
-	shift 1
-	send_raw "PRIVMSG ${target} :${@}"
+# Try to connect
+# Return status: 0 if ok
+#                1 if connection failed
+# $1 = hostname/ip
+# $2 = port
+# $3 = ip to bind to if any and if supported
+transport_connect() {
+	exec 3<&-
+	exec 3<> "/dev/tcp/${1}/${2}"
 }
 
-# $1 = who (channel or nick)
-# $* = message
-send_notice() {
-	local target="$1"
-	shift 1
-	send_raw "NOTICE ${target} :${@}"
+# No parameters, no return code check
+transport_disconnect() {
+	exec 3<&-
 }
 
-# $1 = who (channel or nick)
-# $* = message
-send_ctcp() {
-	local target="$1"
-	shift 1
-	send_msg "${target}" $'\1'"${@}"$'\1'
+# Return a line in the variable line.
+# Return status: 0 if ok
+#                1 if connection failed
+transport_read_line() {
+	read -ru 3 -t 600 line
+	# Fail.
+	[[ $? -ne 0 ]] && return 1
+	line=${line//$'\r'/}
 }
 
-# $1 = who (channel or nick)
-# $* = message
-send_nctcp() {
-	local target="$1"
-	shift 1
-	send_notice "${target}" $'\1'"${@}"$'\1'
-}
-
-# $1 = new nick
-send_nick() {
-	local nick="$1"
-	send_raw "NICK ${nick}"
-}
-
-# $1 = modes to set
-send_umodes() {
-	send_raw "MODE $nick_current $1"
-}
-
-# $1 = channel to set them on
-# $2 = modes to set
-send_modes() {
-	send_raw "MODE $1 $2"
-}
-
-# $1 = channel to set topic of
-# $2 = new topic.
-send_topic() {
-	send_raw "TOPIC $1 :$2"
-}
-
-###########################################################################
-# Internal functions to core or this file below this line!                #
-# Module authors: go away                                                 #
-###########################################################################
-
-# Module authors: use the wrapper: quit_bot in misc.sh instead!
-# $1 = if set, a quit reason
-send_quit() {
-	local reason=""
-	[ -n "$1" ] && reason=" :$1"
-	send_raw "QUIT${reason}"
+# Send a line
+# $* = send this
+transport_write_line() {
+	echo -e "$@" >&3
 }

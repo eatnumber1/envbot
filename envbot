@@ -18,7 +18,6 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-
 config_file="bot_settings.sh"
 
 function PRINT_Help {
@@ -61,7 +60,16 @@ if [[ $? -ne 0 ]]; then
 	exit 1
 fi
 
-config_current_version=7
+config_current_version=8
+
+# Must be checked here and not in validate_config because of
+# loading order.
+if [ ! -r "transport/${config_transport}.sh" ]; then
+	echo "ERROR: The transport ${config_transport} doesn't seem to exist"
+	exit 1
+fi
+echo "Loading transport"
+source "transport/${config_transport}.sh"
 
 echo "Loading library functions"
 # Load library functions.
@@ -206,9 +214,8 @@ IRC_CONNECT(){
 	connected=0
 	on_nick=1
 	log_stdout "Connecting..."
-	exec 3<&-
-	exec 3<> "/dev/tcp/${config_server}"
-	while read -rd $'\n' -u 3 line; do
+	transport_connect "$config_server" "$config_server_port" "$config_server_bind" || return 1
+	while transport_read_line; do
 		# Check with modules first, needed so we don't skip them.
 		for module in $modules_on_connect; do
 			module_${module}_on_connect "$line"
@@ -272,8 +279,7 @@ while true; do
 	done
 
 
-	while read -ru 3 -t 600 line ; do #-d $'\n'
-		line=${line//$'\r'/}
+	while transport_read_line ; do #-d $'\n'
 		log_raw_in "$line"
 		for module in $modules_on_raw; do
 			module_${module}_on_raw "$line"

@@ -37,7 +37,7 @@ quit_bot() {
 		${module}_FINALISE
 	done
 	log "Bot quit gracefully"
-	exec 3<&-
+	transport_disconnect
 	if [[ $2 ]]; then
 		exit $2
 	else
@@ -53,6 +53,10 @@ list_remove() {
 	local oldlist="${!1}"
 	local newlist=${oldlist//$2}
 	echo "$(sed 's/^ \+//;s/ \+$//;s/ \{2,\}/ /g' <<< "$newlist")" # Get rid of the unneeded spaces.
+}
+
+list_contains() {
+	echo "${!1}" | grep -wq "$2"
 }
 
 ###########################################################################
@@ -85,5 +89,15 @@ validate_config() {
 		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
 		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_owners[1] that is)."
 		exit 1
+	fi
+	if [[ $config_server_ssl -ne 0 ]]; then
+		if ! list_contains transport_supports "ssl"; then
+			echo "ERROR: THIS TRANSPORT DOES NOT SUPORT SSL"
+		fi
+	fi
+	if [[ "$config_server_bind" ]]; then
+		if ! list_contains transport_supports "bind"; then
+			echo "ERROR: THIS TRANSPORT DOES NOT SUPORT BINDING AN IP"
+		fi
 	fi
 }
