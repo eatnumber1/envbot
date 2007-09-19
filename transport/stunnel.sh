@@ -28,12 +28,17 @@ transport_supports=""
 # Return status: 0 = yes
 #                1 = no
 transport_check_support() {
-	echo -e 'WARNING: stunnel support is EXPERIMENTAL.\a'
-	local i
-	for i in {1..5}; do
-		sleep 1
-		echo -ne '\a'
-	done
+	echo 'WARNING: stunnel support is EXPERIMENTAL.'
+	if [[ $config_transport_stunnel_ireallywantstunnel -ne 1 ]]; then
+		local i
+		for i in {1..10}; do
+			sleep 1
+			echo -ne '\a'
+		done
+		echo "If you really want to use stunnel still add this to your config:"
+		echo 'config_transport_stunnel_ireallywantstunnel=1'
+		exit 1
+	fi
 	# If anyone can tell me how to check if /dev/tcp is supported
 	# without trying to make a connection (that could fail for so
 	# many other reasons), please contact me.

@@ -81,9 +81,10 @@ module_faq_on_PRIVMSG() {
 			local query_time="$(date +%H%M)$line"
 			if [[ "$module_faq_last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
 				module_faq_last_query="$(date +%H%M)$line"
-				if [[ "$query" -gt 0 ]]; then
+				if [[ "$query" =~ ^\ *([0-9]+)\ *$ ]]; then
+					local index="${BASH_REMATCH[1]}"
 					log "$channel :$query is numeric"
-					send_msg "$channel" "${module_faq_array[$query]}"
+					send_msg "$channel" "${module_faq_array[$index]}"
 					# Very simple way to prevent flooding ourself off.
 					sleep 1
 				elif [[ "${#query}" -ge 3 ]] ; then
