@@ -35,14 +35,14 @@
 
 # During connect, these are sent. They are NOT part of RFC 1459.
 # For some format of the parameters varies between servers.
-numeric[1]='RPL_WELCOME'  # "Welcome to <network>"
-numeric[2]='RPL_YOURHOST' # "Your host is <servername>, running version <ver>"
-numeric[4]='RPL_MYINFO'   # "<servername> <version> <available user modes> <available channel modes>"
-numeric[5]='RPL_ISUPPORT' # Not in any RFC. See http://www.irc.org/tech_docs/005.html for incomplete list.
+numeric[1]=RPL_WELCOME   # "Welcome to <network>"
+numeric[2]=RPL_YOURHOST  # "Your host is <servername>, running version <ver>"
+numeric[4]=RPL_MYINFO    # "<servername> <version> <available user modes> <available channel modes>"
+numeric[5]=RPL_ISUPPORT  # Not in any RFC. See http://www.irc.org/tech_docs/005.html for incomplete list.
 
-numeric[6]='RPL_MAP'    # Not from any RFC
-numeric[7]='RPL_MAPEND' # Not from any RFC
-numeric[8]='RPL_SNOMASK' # Not from any RFC, used on unreal
+numeric[6]=RPL_MAP       # Not from any RFC
+numeric[7]=RPL_MAPEND    # Not from any RFC
+numeric[8]=RPL_SNOMASK   # Not from any RFC, used on unreal
 
 # Command replies.
 numeric[219]=RPL_ENDOFSTATS
@@ -64,6 +64,7 @@ numeric[271]=RPL_SILELIST      #Not from any RFC
 numeric[272]=RPL_ENDOFSILELIST #Not from any RFC
 
 numeric[301]=RPL_AWAY
+numeric[302]=RPL_USERHOST
 numeric[303]=RPL_ISON
 numeric[304]=RPL_TEXT         # Not from any RFC I think. And on inspircd this is used for syntax hints.
 numeric[305]=RPL_UNAWAY
@@ -88,6 +89,7 @@ numeric[329]=RPL_CREATIONTIME # Not from any RFC. Used on inspircd at least.
 numeric[330]=RPL_WHOISACCOUNT # Not from any RFC. This is how it is used on inspircd with m_services_account.
 numeric[332]=RPL_TOPIC
 numeric[333]=RPL_TOPICWHOTIME # Not from any RFC.
+numeric[340]=RPL_USERIP       # Not from any RFC.
 numeric[341]=RPL_INVITING
 numeric[351]=RPL_VERSION
 numeric[352]=RPL_WHOREPLY
