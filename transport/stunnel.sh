@@ -18,7 +18,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# A HACKISH transport module using socat
+# A HACKISH transport module using stunnel
 
 # A list of features supported
 # These are used: ipv4, ipv6, ssl, bind
@@ -36,19 +36,16 @@ transport_check_support() {
 	return 0
 }
 
-# $1 = Local port to use
-# $2 = Remote hostname
-# $3 = Remote port to use
-# $4 = PID file to use
-# $5 = Output file
+# $1 = Remote hostname
+# $2 = Remote port to use
 transport_create_config() {
 	echo "client = yes"
 	echo "verify = 0"
-	echo "pid = $4"
-	echo "output = $5"
+	echo "pid = $transport_pid_file"
+	echo "output = $transport_output_file"
 	echo "[irc]"
-	echo "accept = 127.0.0.1:$1"
-	echo "connect = $2:$3"
+	echo "accept = 127.0.0.1:$config_transport_stunnel_localport"
+	echo "connect = $1:$2"
 	echo "TIMEOUTidle = 600"
 }
 
@@ -64,8 +61,7 @@ transport_create_config() {
 transport_connect() {
 	transport_pid_file="$(mktemp -t envbot.stunnel.pid.XXXXXXXXXX)" || return 1
 	transport_output_file="$(mktemp -t envbot.stunnel.output.XXXXXXXXXX)" || return 1
-	transport_create_config \
-		"$config_transport_stunnel_localport" "$1" "$2" "$transport_pid_file" "$transport_output_file" | \
+	transport_create_config "$1" "$2" | \
 		"$config_transport_stunnel_path" -fd 0
 	exec 3<&-
 	exec 3<> "/dev/tcp/127.0.0.1/$config_transport_stunnel_localport"
@@ -76,8 +72,8 @@ transport_connect() {
 transport_disconnect() {
 	exec 3<&-
 
-	[[ -f "$transport_pid_file" ]] && kill "$(cat "$transport_pid_file")" && rm $transport_pid_file
-	[[ -f "$transport_output_file" ]] && rm $transport_output_file
+	[[ -f "$transport_pid_file" ]] && kill "$(< "$transport_pid_file")" && rm -f $transport_pid_file
+	[[ -f "$transport_output_file" ]] && cat $transport_output_file && rm $transport_output_file
 }
 
 # Return a line in the variable line.
