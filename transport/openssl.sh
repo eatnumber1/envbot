@@ -18,7 +18,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# A transport module using gnutls-cli
+# A transport module using openssl s_client
 
 # A list of features supported
 # These are used: ipv4, ipv6, ssl, nossl, bind
@@ -31,7 +31,7 @@ transport_check_support() {
 	# If anyone can tell me how to check if /dev/tcp is supported
 	# without trying to make a connection (that could fail for so
 	# many other reasons), please contact me.
-	type -p gnutls-cli >/dev/null || return 1
+	type -p openssl >/dev/null || return 1
 	type -p mkfifo >/dev/null || return 1
 	return 0
 }
@@ -45,7 +45,7 @@ transport_check_support() {
 # $3 = IP to bind to if any and if supported
 #      If the module does not support it, just ignore it.
 transport_connect() {
-	transport_tmp_dir_file="$(mktemp -dt envbot.gnutls.XXXXXXXXXX)" || return 1
+	transport_tmp_dir_file="$(mktemp -dt envbot.openssl.XXXXXXXXXX)" || return 1
 	# To keep this simple, from client perspective.
 	# We WRITE to out and READ from in
 	mkfifo "${transport_tmp_dir_file}/in"
@@ -53,8 +53,8 @@ transport_connect() {
 	exec 3<&-
 	exec 4<&-
 	local myargs
-	[[ $config_server_ssl_accept_invalid -eq 1 ]] && myargs="--insecure"
-	gnutls-cli "$1" -p "$2" $myargs < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
+	[[ $config_server_ssl_accept_invalid -eq 1 ]] && myargs="-verify 0"
+	openssl s_client -quiet -connect "$1:$2" $myargs < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
 	echo $! >> "${transport_tmp_dir_file}/pid"
 	exec 3>"${transport_tmp_dir_file}/out"
 	exec 4<"${transport_tmp_dir_file}/in"

@@ -22,7 +22,7 @@
 # Output to STDOUT.
 # Run this in main dir.
 
-cat - << EOF
+cat << EOF
 #!/bin/bash
 ###########################################################################
 #                                                                         #
@@ -70,7 +70,7 @@ for index in ${!numeric[*]}; do
 done
 
 # Same special case as above.
-cat - << EOF
+cat << EOF
 
 ##########################
 # Number -> name mapping #
@@ -81,7 +81,7 @@ for index in ${!numeric[*]}; do
 	echo "numeric[$index]='${numeric[$index]}'"
 done
 
-cat - << EOF
+cat << EOF
 
 # End of generated file.
 EOF

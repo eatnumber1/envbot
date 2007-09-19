@@ -80,7 +80,8 @@ config_log_stdout=1
 # The recommended SSL module is gnutls.
 config_transport='dev-tcp'
 #config_transport='gnutls'
-#config_transport='stunnel'
+#config_transport='openssl' # Not well tested
+#config_transport='stunnel' # Tested and depressingly bad
 # stunnel options
 # MAKE SURE THEY ARE CORRECT if you use stunnel.
 #config_transport_stunnel_path='/usr/sbin/stunnel'
