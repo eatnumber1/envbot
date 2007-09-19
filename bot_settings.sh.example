@@ -75,7 +75,9 @@ config_log_stdout=1
 # Transport #
 #############
 
-# Transport module. You should select exactly one:
+# Transport module. You should select exactly one.
+# The recommended non-SSL module is dev-tcp.
+# The recommended SSL module is gnutls.
 config_transport='dev-tcp'
 #config_transport='gnutls'
 #config_transport='stunnel'
