@@ -28,7 +28,7 @@ transport_supports=""
 # Return status: 0 = yes
 #                1 = no
 transport_check_support() {
-	echo 'WARNING: stunnel support is EXPERIMENTAL.'
+	echo 'WARNING: stunnel support is EXPERIMENTAL. gnutls seems to work better'
 	if [[ $config_transport_stunnel_ireallywantstunnel -ne 1 ]]; then
 		local i
 		for i in {1..10}; do
@@ -58,7 +58,11 @@ transport_check_support() {
 # $2 = Remote port to use
 transport_create_config() {
 	echo "client = yes"
-	echo "verify = 0"
+	if [[ $config_server_ssl_accept_invalid -eq 1 ]]; then
+		echo "verify = 0"
+	else
+		echo "verify = 1"
+	fi
 	echo "pid = $transport_pid_file"
 	echo "output = $transport_output_file"
 	echo "[irc]"

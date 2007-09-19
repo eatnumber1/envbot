@@ -7,8 +7,8 @@ They may support different systems and/or different features.
 
 File descriptors
 ================
-If a module need to use a file descriptor it should use FD 3.
-If more than one is needed, it can try higher but that may be used
+If a module need to use a file descriptor it should use FD 3 and 4.
+If more than two are needed, the module can try higher but that may be used
 for other things in the future.
 
 

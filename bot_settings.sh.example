@@ -21,7 +21,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=8
+config_version=9
 
 ####################
 # General settings #
@@ -44,6 +44,8 @@ config_server='irc.kuonet-ng.org'
 config_server_port='6667'
 # If 1 use SSL, not all transport modules support this.
 config_server_ssl=0
+# Accept invalid certs?
+config_server_ssl_accept_invalid=0
 # If not empty try to bind to this ip when connecting, useful
 # to select vhost. Not all transport modules support this.
 config_server_bind=""
@@ -74,7 +76,8 @@ config_log_stdout=1
 #############
 
 # Transport module. You should select exactly one:
-config_transport='dev-tcp'
+#config_transport='dev-tcp'
+config_transport='gnutls'
 #config_transport='stunnel'
 # stunnel options
 # MAKE SURE THEY ARE CORRECT if you use stunnel.
