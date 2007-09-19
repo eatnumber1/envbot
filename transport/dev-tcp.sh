@@ -39,12 +39,15 @@ transport_check_support() {
 #                1 if connection failed
 # $1 = hostname/ip
 # $2 = port
-# $3 = ip to bind to if any and if supported
+# $3 = If 1 use SSL. If the module does not support it, just ignore it.
+# $3 = IP to bind to if any and if supported
+#      If the module does not support it, just ignore it.
 transport_connect() {
 	exec 3<&-
 	exec 3<> "/dev/tcp/${1}/${2}"
 }
 
+# Called to close connection
 # No parameters, no return code check
 transport_disconnect() {
 	exec 3<&-
@@ -62,6 +65,7 @@ transport_read_line() {
 
 # Send a line
 # $* = send this
+# Return code not checked.
 transport_write_line() {
 	echo -e "$@" >&3
 }
