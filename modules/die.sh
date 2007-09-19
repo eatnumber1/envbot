@@ -47,7 +47,6 @@ module_die_on_PRIVMSG() {
 	if parameters="$(parse_query_is_command "$query" "die")"; then
 		if access_check_owner "$sender"; then
 			quit_bot "$parameters"
-			sleep 2
 		else
 			access_fail "$sender" "make the bot die" "owner"
 		fi

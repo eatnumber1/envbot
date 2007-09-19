@@ -76,7 +76,6 @@ module_calc_on_PRIVMSG() {
 		local myresult="$(bc -q "$module_calc_tmpfile")"
 		send_msg "$channel" "$(parse_hostmask_nick "$sender"): $myresult"
 		module_calc_empty_tmpfile
-		sleep 1
 		return 1
 	fi
 	return 0

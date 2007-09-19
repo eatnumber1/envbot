@@ -49,7 +49,6 @@ module_say_on_PRIVMSG() {
 			local message="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
 				send_msg "$channel" "$message"
-				sleep 1
 			else
 				access_fail "$sender" "make the bot talk with say" "owner"
 			fi
@@ -63,7 +62,6 @@ module_say_on_PRIVMSG() {
 			local message="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
 				send_ctcp "${channel}" "ACTION ${message}"
-				sleep 1
 			else
 				access_fail "$sender" "make the bot act" "owner"
 			fi

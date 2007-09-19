@@ -47,7 +47,6 @@ module_sendraw_on_PRIVMSG() {
 	if parameters="$(parse_query_is_command "$query" "raw")"; then
 		if access_check_owner "$sender"; then
 			send_raw "$parameters"
-			sleep 1
 		else
 			access_fail "$sender" "send a raw line" "owner"
 		fi

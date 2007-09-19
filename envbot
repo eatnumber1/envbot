@@ -265,8 +265,8 @@ IRC_CONNECT(){
 			# FIXME: THIS IS HACKISH AND MAY BREAK
 			nick_current="$config_firstnick"
 			# If a server password is set, send it.
-			[[ $config_server_passwd ]] && send_raw "PASS $config_server_passwd"
-			send_raw "USER $config_ident 0 * :${config_gecos}"
+			[[ $config_server_passwd ]] && send_raw_flood "PASS $config_server_passwd"
+			send_raw_flood "USER $config_ident 0 * :${config_gecos}"
 		fi
 		handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == $numeric_ERR_NICKNAMEINUSE  ]]; then # Nick in use.

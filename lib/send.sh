@@ -19,7 +19,20 @@
 #                                                                         #
 ###########################################################################
 
+
+# Flood limiting.
+send_last=0
+
 send_raw() {
+	if [[ "$send_last" == "$(date -u +%s)" ]]; then
+		sleep 1
+	fi
+	send_last="$(date -u +%s)"
+	send_raw_flood "$@"
+}
+
+# This may flood ourself off. Use send_raw instead in most cases.
+send_raw_flood() {
 	log_raw_out "$@"
 	transport_write_line "$@"$'\r'
 }

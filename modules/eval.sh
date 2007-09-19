@@ -47,7 +47,6 @@ module_eval_on_PRIVMSG() {
 	if parameters="$(parse_query_is_command "$query" "eval")"; then
 		if access_check_owner "$sender"; then
 			eval "$parameters"
-			sleep 2
 		else
 			access_fail "$sender" "eval a command" "owner"
 		fi
