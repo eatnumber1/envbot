@@ -1,0 +1,54 @@
+Transport modules
+=================
+
+Transport modules is a feature that allows different ways to connect to the server.
+They may support different systems and/or different features.
+
+Variables
+=========
+The module defines a variable called $transport_supports
+It is a space separated list of supported features. Current ones:
+ * ipv4  - Supports IPv4
+ * ipv6  - Supports IPv6
+ * ssl   - Supports SSL
+ * bind  - Supports using a specific IP when connecting
+
+Functions
+=========
+The function names below should not be unique for the module like with
+normal modules. You can only use one transport module at a time.
+
+
+transport_check_support()
+	Check if all the stuff needed to use this transport is available
+	on this system.
+	Return status: 0 = Yes
+	               1 = No
+
+
+transport_connect()
+	Try to connect
+	Return status: 0 If ok
+	               1 If connection failed
+	$1 = Hostname/IP
+	$2 = Port
+	$3 = If 1 use SSL. If the module does not support it, just ignore it.
+	$3 = IP to bind to if any and if supported
+	     If the module does not support it, just ignore it.
+
+
+transport_disconnect()
+	Called to close connection
+	No parameters, no return code check
+
+
+transport_read_line()
+	Return a line in the variable $line.
+	Return status: 0 If ok
+	               1 If connection failed
+
+
+transport_write_line()
+	Send a line
+	$* = send this
+	Return code not checked.
