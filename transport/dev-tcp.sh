@@ -67,5 +67,5 @@ transport_read_line() {
 # $* = send this
 # Return code not checked.
 transport_write_line() {
-	echo -e "$@" >&3
+	echo "$@" >&3
 }
