@@ -76,8 +76,8 @@ config_log_stdout=1
 #############
 
 # Transport module. You should select exactly one:
-#config_transport='dev-tcp'
-config_transport='gnutls'
+config_transport='dev-tcp'
+#config_transport='gnutls'
 #config_transport='stunnel'
 # stunnel options
 # MAKE SURE THEY ARE CORRECT if you use stunnel.
