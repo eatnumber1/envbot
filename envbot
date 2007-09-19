@@ -399,6 +399,7 @@ while true; do
 	done
 
 	log "DIED FOR SOME REASON"
+	transport_disconnect
 	connected=0
 	for module in $modules_after_disconnect; do
 		module_${module}_after_disconnect

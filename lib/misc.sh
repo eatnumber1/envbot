@@ -46,8 +46,8 @@ quit_bot() {
 }
 
 # Remove a value from a space separated list
-# $1 = list to remove from
-# $2 = value to remove
+# $1 = List to remove from
+# $2 = Value to remove
 # Returns new list on STDOUT
 list_remove() {
 	local oldlist="${!1}"
@@ -55,6 +55,10 @@ list_remove() {
 	echo "$(sed 's/^ \+//;s/ \+$//;s/ \{2,\}/ /g' <<< "$newlist")" # Get rid of the unneeded spaces.
 }
 
+# Checks if a space separated list contains a value
+# $1 = List to check
+# $2 = Value to check for
+# Returns 0 if found, otherwise 1.
 list_contains() {
 	echo "${!1}" | grep -wq "$2"
 }

@@ -4,6 +4,14 @@ Transport modules
 Transport modules is a feature that allows different ways to connect to the server.
 They may support different systems and/or different features.
 
+
+File descriptors
+================
+If a module need to use a file descriptor it should use FD 3.
+If more than one is needed, it can try higher but that may be used
+for other things in the future.
+
+
 Variables
 =========
 The module defines a variable called $transport_supports
@@ -12,6 +20,7 @@ It is a space separated list of supported features. Current ones:
  * ipv6  - Supports IPv6
  * ssl   - Supports SSL
  * bind  - Supports using a specific IP when connecting
+
 
 Functions
 =========
@@ -40,6 +49,7 @@ transport_connect()
 transport_disconnect()
 	Called to close connection
 	No parameters, no return code check
+	The module must handle this getting called even when not connected.
 
 
 transport_read_line()
