@@ -116,35 +116,37 @@ numeric[404]=ERR_CANNOTSENDTOCHAN
 numeric[405]=ERR_TOOMANYCHANNELS
 numeric[406]=ERR_WASNOSUCHNICK
 numeric[421]=ERR_UNKNOWNCOMMAND
-numeric[432]=ERR_ERRONEUSNICKNAME  # Bad/forbidden nickname
-numeric[433]=ERR_NICKNAMEINUSE     # Nick in use
+numeric[432]=ERR_ERRONEUSNICKNAME     # Bad/forbidden nickname
+numeric[433]=ERR_NICKNAMEINUSE        # Nick in use
 numeric[441]=ERR_USERNOTINCHANNEL
 numeric[442]=ERR_NOTONCHANNEL
 numeric[443]=ERR_USERONCHANNEL
-numeric[445]=ERR_SUMMONDISABLED    # Yep, most (all?) do nowdays :)
-numeric[446]=ERR_USERSDISABLED     # Yep, most (all?) do nowdays :)
-numeric[447]=ERR_NONICKCHANGE      # Not from any RFC.
-numeric[460]=ERR_NOTFORHALFOPS     # Not from any RFC. Unreal got this at least.
+numeric[445]=ERR_SUMMONDISABLED       # Yep, most (all?) do nowdays :)
+numeric[446]=ERR_USERSDISABLED        # Yep, most (all?) do nowdays :)
+numeric[447]=ERR_NONICKCHANGE         # Not from any RFC.
+numeric[460]=ERR_NOTFORHALFOPS        # Not from any RFC. Unreal got this at least.
 numeric[461]=ERR_NEEDMOREPARAMS
 numeric[462]=ERR_ALREADYREGISTERED
-numeric[470]=ERR_LINKCHANNEL       # Not from any RFC.
-                                   # InspIRCd example: :#channel has become full, so you are automatically being transferred to the linked channel #otherchannel
+numeric[468]=ERR_ONLYSERVERSCANCHANGE # Not from any RFC.
+numeric[470]=ERR_LINKCHANNEL          # Not from any RFC.
+                                      # InspIRCd example: :#channel has become full, so you are automatically being transferred to the linked channel #otherchannel
 numeric[471]=ERR_CHANNELISFULL
 numeric[472]=ERR_UNKNOWNMODE
 numeric[473]=ERR_INVITEONLYCHAN
 numeric[474]=ERR_BANNEDFROMCHAN
 numeric[475]=ERR_BADCHANNELKEY
-numeric[480]=ERR_CANNOTKNOCK       # Not from any RFC.
+numeric[480]=ERR_CANNOTKNOCK          # Not from any RFC.
 numeric[481]=ERR_NOPRIVILEGES
 numeric[482]=ERR_CHANOPRIVSNEEDED
-numeric[484]=ERR_ATTACKDENY        # Name on unreal. No idea use on unreal.
-                                   # InspIRCd: 484 <nick> <channel> :Can't kick user <nick> from channel (+Q set)
-numeric[489]=ERR_SECUREONLYCHAN    # Not from any RFC. Used on Unreal and InspIRCd at least.
-numeric[490]=ERR_ALLMUSTUSESSL     # InspIRCd specific numeric. I made up this name, I don't know correct name.
-                                   # 490 <nick> <channel> :all members of the channel must be connected via SSL
-numeric[495]=ERR_NOREJOINONKICK    # InspIRCd specific numeric. I made up this name, I don't know correct name.
-                                   # 495 <nick> <channel> :You cannot rejoin this channel yet after being kicked (+J)
-numeric[499]=ERR_CHANOWNPRIVNEEDED # Not from any RFC. Unreal got this at least.
+numeric[484]=ERR_ATTACKDENY           # Name on unreal. No idea use on unreal.
+                                      # InspIRCd: 484 <nick> <channel> :Can't kick user <nick> from channel (+Q set)
+numeric[489]=ERR_SECUREONLYCHAN       # Not from any RFC. Used on Unreal and InspIRCd at least.
+numeric[490]=ERR_ALLMUSTUSESSL        # InspIRCd specific numeric. I made up this name, I don't know correct name.
+                                      # 490 <nick> <channel> :all members of the channel must be connected via SSL
+numeric[491]=ERR_NOOPERHOST
+numeric[495]=ERR_NOREJOINONKICK       # InspIRCd specific numeric. I made up this name, I don't know correct name.
+                                      # 495 <nick> <channel> :You cannot rejoin this channel yet after being kicked (+J)
+numeric[499]=ERR_CHANOWNPRIVNEEDED    # Not from any RFC. Unreal got this at least.
 
 
 # Others. Not from any RFC but semi standard.
