@@ -12,6 +12,14 @@ If more than one is needed, it can try higher but that may be used
 for other things in the future.
 
 
+Configuration
+=============
+Additional configuration variables for a module should follow this naming scheme:
+config_transport_transportname_variablename
+Example:
+config_transport_stunnel_path
+
+
 Variables
 =========
 The module defines a variable called $transport_supports

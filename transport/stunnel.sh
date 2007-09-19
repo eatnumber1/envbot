@@ -70,9 +70,9 @@ transport_connect() {
 	transport_pid_file="$(mktemp -t envbot.stunnel.pid.XXXXXXXXXX)" || return 1
 	transport_output_file="$(mktemp -t envbot.stunnel.output.XXXXXXXXXX)" || return 1
 	transport_create_config "$1" "$2" | \
-		"$config_transport_stunnel_path" -fd 0
+		"$config_transport_stunnel_path" -fd 0 || return 1
 	exec 3<&-
-	exec 3<> "/dev/tcp/127.0.0.1/$config_transport_stunnel_localport"
+	exec 3<> "/dev/tcp/127.0.0.1/$config_transport_stunnel_localport" || return 1
 }
 
 # Called to close connection
