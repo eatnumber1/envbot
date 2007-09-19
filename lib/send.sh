@@ -31,12 +31,6 @@ send_raw() {
 	send_raw_flood "$@"
 }
 
-# This may flood ourself off. Use send_raw instead in most cases.
-send_raw_flood() {
-	log_raw_out "$@"
-	transport_write_line "$@"$'\r'
-}
-
 # $1 = who (channel or nick)
 # $* = message
 send_msg() {
@@ -90,6 +84,14 @@ send_modes() {
 # $2 = new topic.
 send_topic() {
 	send_raw "TOPIC $1 :$2"
+}
+
+
+# This is semi-internal only
+# This may flood ourself off. Use send_raw instead in most cases.
+send_raw_flood() {
+	log_raw_out "$@"
+	transport_write_line "$@"$'\r'
 }
 
 ###########################################################################
