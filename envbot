@@ -18,10 +18,44 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+
+config_file="bot_settings.sh"
+
+function PRINT_Help {
+	echo 'envbot - A modular IRC bot in bash.'
+	echo "Syntax:"
+	echo "  --config file   Use file instead of the default $config_file as config file."
+	exit 0
+}
+
+if [ $# -gt 0 ]; then # there are arguments to the command
+	while [ $# -gt 0 ]; do
+		case "$1" in
+			'--help'|'-help'|'--usage'|'-usage'|'-h')
+				PRINT_Help
+				;;
+			'--config'|'-c')
+				config_file="$2"
+				shift 2
+				;;
+			*)
+				PRINT_Help
+				;;
+		esac
+	done
+fi
+
 echo "Loading... Please wait"
 
+if [ ! -r "$config_file" ]; then
+	echo "ERROR: Can't read config file ${config_file}."
+	echo "Check that is really there and correct permissions are set."
+	echo "If you used --config to specify name of config file, check that you spelled it correctly."
+	exit 1
+fi
+
 echo "Loading config"
-source bot_settings.sh
+source "$config_file"
 if [[ $? -ne 0 ]]; then
 	echo "Error: couldn't load config from bot_settings.sh"
 	exit 1
@@ -76,7 +110,7 @@ server_PREFIX_prefixes="@+"
 # $server_005 for any module to use via parse_005().
 # This function is for cases that needs special action, like NAMESX
 # and UHNAMES.
-# This should be called directly after recieving a part of the 005!
+# This should be called directly after receiving a part of the 005!
 # $1 = That part.
 handle_005() {
 	# Example from freenode:
@@ -232,7 +266,7 @@ while true; do
 		module_${module}_before_connect
 	done
 	IRC_CONNECT
-	trap 'send_quit "ctrl-C" ; quit_bot 1' TERM INT
+	trap 'quit_bot "ctrl-C"' TERM INT
 	for module in $modules_after_connect; do
 		module_${module}_after_connect
 	done
