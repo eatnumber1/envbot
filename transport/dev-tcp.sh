@@ -21,7 +21,7 @@
 # A transport module using /dev/tcp
 
 # A list of features supported
-# These are used: ipv4, ipv6, ssl, bind
+# These are used: ipv4, ipv6, ssl, nossl, bind
 transport_supports="ipv4 ipv6 nossl"
 
 # Check if all the stuff needed to use this transport is available
