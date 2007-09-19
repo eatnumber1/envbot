@@ -93,11 +93,13 @@ validate_config() {
 	if [[ $config_server_ssl -ne 0 ]]; then
 		if ! list_contains transport_supports "ssl"; then
 			echo "ERROR: THIS TRANSPORT DOES NOT SUPORT SSL"
+			exit 1
 		fi
 	fi
 	if [[ "$config_server_bind" ]]; then
 		if ! list_contains transport_supports "bind"; then
 			echo "ERROR: THIS TRANSPORT DOES NOT SUPORT BINDING AN IP"
+			exit 1
 		fi
 	fi
 }
