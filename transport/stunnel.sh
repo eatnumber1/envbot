@@ -58,11 +58,7 @@ transport_check_support() {
 # $2 = Remote port to use
 transport_create_config() {
 	echo "client = yes"
-	if [[ $config_server_ssl_accept_invalid -eq 1 ]]; then
-		echo "verify = 0"
-	else
-		echo "verify = 1"
-	fi
+	echo "verify = $(($config_server_ssl_accept_invalid ? 0: 1))"
 	echo "pid = $transport_pid_file"
 	echo "output = $transport_output_file"
 	echo "[irc]"
