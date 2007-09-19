@@ -69,13 +69,22 @@ config_log_dir="logs"
 # Should we always log to STDOUT as well?
 config_log_stdout=1
 
+#############
+# Transport #
+#############
+
+# Transport module. You should select exactly one:
+config_transport='dev-tcp'
+#config_transport='stunnel'
+# stunnel options
+# MAKE SURE THEY ARE CORRECT if you use stunnel.
+#config_transport_stunnel_path='/usr/sbin/stunnel'
+#config_transport_stunnel_localport='9741'
 
 ###########
 # Modules #
 ###########
 
-# Transport module. You should select exactly one:
-config_transport='dev-tcp'
 
 # What modules to load, space separated list
 # For a list of modules see the modules dir.

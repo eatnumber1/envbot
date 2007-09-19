@@ -99,6 +99,11 @@ validate_config() {
 			echo "ERROR: THIS TRANSPORT DOES NOT SUPORT SSL"
 			exit 1
 		fi
+	else
+		if ! list_contains transport_supports "nossl"; then
+			echo "ERROR: THIS TRANSPORT REQUIRES SSL"
+			exit 1
+		fi
 	fi
 	if [[ "$config_server_bind" ]]; then
 		if ! list_contains transport_supports "bind"; then

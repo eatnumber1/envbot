@@ -18,11 +18,12 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# A transport module using /dev/tcp
+# A HACKISH transport module using socat
 
 # A list of features supported
 # These are used: ipv4, ipv6, ssl, bind
-transport_supports="ipv4 ipv6 nossl"
+transport_supports="ipv4 ipv6 ssl"
+
 
 # Check if all the stuff needed to use this transport is available
 # Return status: 0 = yes
@@ -31,8 +32,26 @@ transport_check_support() {
 	# If anyone can tell me how to check if /dev/tcp is supported
 	# without trying to make a connection (that could fail for so
 	# many other reasons), please contact me.
+	[[ ! -x "$config_transport_stunnel_path" ]]  || return 1
 	return 0
 }
+
+# $1 = Local port to use
+# $2 = Remote hostname
+# $3 = Remote port to use
+# $4 = PID file to use
+# $5 = Output file
+transport_create_config() {
+	echo "client = yes"
+	echo "verify = 0"
+	echo "pid = $4"
+	echo "output = $5"
+	echo "[irc]"
+	echo "accept = 127.0.0.1:$1"
+	echo "connect = $2:$3"
+	echo "TIMEOUTidle = 600"
+}
+
 
 # Try to connect
 # Return status: 0 if ok
@@ -43,14 +62,22 @@ transport_check_support() {
 # $3 = IP to bind to if any and if supported
 #      If the module does not support it, just ignore it.
 transport_connect() {
+	transport_pid_file="$(mktemp -t envbot.stunnel.pid.XXXXXXXXXX)" || return 1
+	transport_output_file="$(mktemp -t envbot.stunnel.output.XXXXXXXXXX)" || return 1
+	transport_create_config \
+		"$config_transport_stunnel_localport" "$1" "$2" "$transport_pid_file" "$transport_output_file" | \
+		"$config_transport_stunnel_path" -fd 0
 	exec 3<&-
-	exec 3<> "/dev/tcp/${1}/${2}"
+	exec 3<> "/dev/tcp/127.0.0.1/$config_transport_stunnel_localport"
 }
 
 # Called to close connection
 # No parameters, no return code check
 transport_disconnect() {
 	exec 3<&-
+
+	[[ -f "$transport_pid_file" ]] && kill "$(cat "$transport_pid_file")" && rm $transport_pid_file
+	[[ -f "$transport_output_file" ]] && rm $transport_output_file
 }
 
 # Return a line in the variable line.

@@ -18,6 +18,7 @@ The module defines a variable called $transport_supports
 It is a space separated list of supported features. Current ones:
  * ipv4  - Supports IPv4
  * ipv6  - Supports IPv6
+ * nossl - Supports making non-SSL connections
  * ssl   - Supports SSL
  * bind  - Supports using a specific IP when connecting
 
