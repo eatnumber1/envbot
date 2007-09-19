@@ -28,8 +28,8 @@ transport_check_support()
 
 transport_connect()
 	Try to connect
-	Return status: 0 If ok
-	               1 If connection failed
+	Return status: 0 = Connection successful
+	               1 = Connection failed
 	$1 = Hostname/IP
 	$2 = Port
 	$3 = If 1 use SSL. If the module does not support it, just ignore it.
@@ -44,8 +44,8 @@ transport_disconnect()
 
 transport_read_line()
 	Return a line in the variable $line.
-	Return status: 0 If ok
-	               1 If connection failed
+	Return status: 0 = Success
+	               1 = Connection has failed (timeout or whatever)
 
 
 transport_write_line()
