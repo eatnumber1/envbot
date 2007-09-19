@@ -32,7 +32,7 @@ transport_check_support() {
 	# If anyone can tell me how to check if /dev/tcp is supported
 	# without trying to make a connection (that could fail for so
 	# many other reasons), please contact me.
-	[[ ! -x "$config_transport_stunnel_path" ]]  || return 1
+	[[ -x "$config_transport_stunnel_path" ]] || return 1
 	return 0
 }
 

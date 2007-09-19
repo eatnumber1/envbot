@@ -71,6 +71,12 @@ fi
 echo "Loading transport"
 source "transport/${config_transport}.sh"
 
+if ! transport_check_support; then
+	echo "ERROR: The tranport reported it can't work on this system."
+	echo "Please consult documentation for the transport module you are using."
+	exit 1
+fi
+
 echo "Loading library functions"
 # Load library functions.
 source lib/log.sh
@@ -85,6 +91,7 @@ source lib/modules.sh
 
 validate_config
 log_init
+
 # Now logging functions can be used.
 
 # Status variables
