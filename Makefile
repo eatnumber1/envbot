@@ -18,6 +18,11 @@
 #                                                                         #
 ###########################################################################
 # This file is used to generate some, uh, generated files.
+# Also some other tasks
+
+# For make dest-dir
+DISTDIR ?= dist
+
 all: numerics
 
 numerics:
@@ -29,5 +34,7 @@ clean:
 cleanlogs:
 	rm -vf logs/*.log
 
+dist-dir:
+	bzr export $(DISTDIR)
 
-.PHONY: all numerics clean cleanlogs
+.PHONY: all numerics clean cleanlogs dist-dir
