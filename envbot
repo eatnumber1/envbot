@@ -81,7 +81,7 @@ echo "Loading transport"
 source "transport/${config_transport}.sh"
 
 if ! transport_check_support; then
-	echo "ERROR: The tranport reported it can't work on this system."
+	echo "ERROR: The transport reported it can't work on this system."
 	echo "Please consult documentation for the transport module you are using."
 	exit 1
 fi
@@ -130,7 +130,7 @@ IRC_CONNECT(){
 		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTDSTART  ]]; then
 			log "Motd is not displayed in log"
 		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_YOURHOST  ]]; then
-			if [[ $line =~ Your\ host\ is\ ([^ ,]*)  ]]; then # just to get the regex, this should always be true
+			if [[ $line =~ Your\ host\ is\ ([^ ,]*)  ]]; then # just to get the server name, this should always be true
 				server_name="${BASH_REMATCH[1]}"
 			fi
 		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MYINFO ]]; then
