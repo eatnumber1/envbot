@@ -35,6 +35,7 @@ cleanlogs:
 	rm -vf logs/*.log
 
 dist-dir:
+	rm -rf $(DISTDIR)
 	bzr export $(DISTDIR)
 
 .PHONY: all numerics clean cleanlogs dist-dir
