@@ -24,10 +24,10 @@ numerics:
 	tools/build_numerics.sh > lib/numerics.sh
 
 clean:
-	rm -f *~ */*~
+	rm -vf *~ */*~
 
 cleanlogs:
-	rm -f logs/*.log
+	rm -vf logs/*.log
 
 
 .PHONY: all numerics clean cleanlogs
