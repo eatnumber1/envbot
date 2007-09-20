@@ -82,7 +82,11 @@ module_faq_on_PRIVMSG() {
 				module_faq_last_query="$(date +%H%M)$line"
 				if [[ "$query" =~ ^\ *([0-9]+)\ *$ ]]; then
 					local index="${BASH_REMATCH[1]}"
-					send_msg "$channel" "${module_faq_array[$index]}"
+					if [[ "${module_faq_array[$index]}" ]]; then
+						send_msg "$channel" "${module_faq_array[$index]}"
+					else
+						send_msg "$channel" "That FAQ item doesn't exist"
+					fi
 				elif [[ "${#query}" -ge 3 ]] ; then
 					local i=0
 					while [[ $i -lt "${#module_faq_array[*]}" ]] ; do
