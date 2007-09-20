@@ -97,6 +97,7 @@ source lib/parse.sh
 source lib/access.sh
 source lib/misc.sh
 source lib/modules.sh
+source lib/server.sh
 
 validate_config
 log_init
@@ -106,125 +107,6 @@ log_init
 # Status variables
 nick_current=""
 connected=0
-
-# Server info variables
-server_name=""
-server_004=""
-# See http://www.irc.org/tech_docs/005.html for an incomplete list.
-server_005=""
-# NAMES output with UHNAMES and NAMESX
-#  :photon.kuonet-ng.org 353 envbot = #bots :@%+AnMaster!AnMaster@staff.kuonet-ng.org @ChanServ!ChanServ@services.kuonet-ng.org bashbot!rfc3092@1F1794B2:769091B3
-# NAMES output with NAMESX only:
-#  :hurricane.KuoNET.org 353 envbot = #test :bashbot ~@Brain ~@EmErgE &@AnMaster/kng
-server_UHNAMES=0
-server_NAMESX=0
-# These are passed in a slightly odd way in 005 so we do them here.
-server_EXCEPTS=""
-server_INVEX=""
-
-# In case we don't get a 005, make some sane defaults.
-server_CHMODES_LISTMODES="b"
-server_CHMODES_ALWAYSPARAM="k"
-server_CHMODES_PARAMONSET="l"
-server_CHMODES_SIMPLE="imnpst"
-server_PREFIX_modes="ov"
-server_PREFIX_prefixes="@+"
-
-# Get some common data out of 005, the whole will also be saved to
-# $server_005 for any module to use via parse_005().
-# This function is for cases that needs special action, like NAMESX
-# and UHNAMES.
-# This should be called directly after receiving a part of the 005!
-# $1 = That part.
-handle_005() {
-	# Example from freenode:
-	# :heinlein.freenode.net 005 envbot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
-	# :heinlein.freenode.net 005 envbot SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
-	local line="$1"
-	if [[ $line =~ EXCEPTS(=([^ ]+))? ]]; then
-		# Some, but not all also send what char the modes for EXCEPTS is.
-		# If it isn't sent, guess one +e
-		if [[ ${BASH_REMATCH[2]} ]]; then
-			server_EXCEPTS="${BASH_REMATCH[2]}"
-		else
-			server_EXCEPTS="e"
-		fi
-	fi
-	if [[ $line =~ INVEX(=([^ ]+))? ]]; then
-		# Some, but not all also send what char the modes for INVEX is.
-		# If it isn't sent, guess one +I
-		if [[ ${BASH_REMATCH[2]} ]]; then
-			server_INVEX="${BASH_REMATCH[2]}"
-		else
-			server_INVEX="I"
-		fi
-	fi
-	if [[ $line =~ PREFIX=(\(([^ \)]+)\)([^ ]+)) ]]; then
-		server_PREFIX="${BASH_REMATCH[1]}"
-		server_PREFIX_modes="${BASH_REMATCH[2]}"
-		server_PREFIX_prefixes="${BASH_REMATCH[3]}"
-	fi
-	if [[ $line =~ CHANMODES=([^ ,]+),([^ ,]+),([^ ,]+),([^ ,]+) ]]; then
-		server_CHMODES_LISTMODES="${BASH_REMATCH[1]}"
-		server_CHMODES_ALWAYSPARAM="${BASH_REMATCH[2]}"
-		server_CHMODES_PARAMONSET="${BASH_REMATCH[3]}"
-		server_CHMODES_SIMPLE="${BASH_REMATCH[4]}"
-	fi
-	# Enable NAMESX is supported.
-	if [[ $line =~ NAMESX ]]; then
-		send_raw "PROTOCTL NAMESX"
-		server_NAMESX=1
-	fi
-	# Enable UHNAMES if it is there.
-	if [[ $line =~ UHNAMES ]]; then
-		send_raw "PROTOCTL UHNAMES"
-		server_UHNAMES=1
-	fi
-}
-
-handle_numerics() { # $1 = numeric, $2 = target (self), $3 = data
-	# Slight sanity check
-	if [[ $2 != $nick_current ]]; then
-		log_stdout 'WARNING: Own nick desynced!'
-		log_stdout "WARNING: It should be $nick_current but is $2"
-		log_stdout "WARNING: Correcting own nick and lets hope that doesn't break anything"
-		nick_current="$2"
-	fi
-}
-
-handle_nick() {
-	local oldnick="$(parse_hostmask_nick "$1")"
-	if [[ $oldnick == $nick_current ]]; then
-		nick_current="$2"
-	fi
-}
-
-handle_ping() {
-	if [[ "$1" =~ ^PING.* ]] ;then
-		local pingdata="$(parse_get_colon_arg "$1")"
-		log "$pingdata pinged me, answering ..."
-		send_raw "PONG :$pingdata"
-	fi
-}
-
-handle_nick_in_use() {
-	if [[ $on_nick -eq 3 ]]; then
-		log_stdout "Third nick is ALSO in use. I give up"
-		quit_bot 2
-	fi
-	if [[ $on_nick -eq 2 ]]; then
-		log_stdout "Second nick is ALSO in use, trying third"
-		send_nick "$config_thirdnick"
-		nick_current="$config_thirdnick"
-		on_nick=3
-	fi
-	log_stdout "First nick is in use, trying second"
-	send_nick "$config_secondnick"
-	on_nick=2
-	# FIXME: THIS IS HACKISH AND MAY BREAK
-	nick_current="$config_secondnick"
-	sleep 1
-}
 
 
 IRC_CONNECT(){
@@ -258,7 +140,7 @@ IRC_CONNECT(){
 			server_005="$server_005 $( echo $line | cut -d' ' -f4- )"
 			server_005=$(tr -d $'\r\n' <<< "$server_005") # Get rid of newlines
 			server_005="${server_005/ :are supported by this server/}" # Get rid of :are supported by this server
-			handle_005 "$line"
+			server_handle_005 "$line"
 		elif [[ $line =~ "Looking up your hostname" ]]; then
 			log_stdout "logging in as $config_firstnick..."
 			send_nick "$config_firstnick"
@@ -268,11 +150,11 @@ IRC_CONNECT(){
 			[[ $config_server_passwd ]] && send_raw_flood "PASS $config_server_passwd"
 			send_raw_flood "USER $config_ident 0 * :${config_gecos}"
 		fi
-		handle_ping "$line"
+		server_handle_ping "$line"
 		if [[ $( echo $line | cut -d' ' -f2 ) == $numeric_ERR_NICKNAMEINUSE  ]]; then # Nick in use.
-			handle_nick_in_use
+			server_handle_nick_in_use
 		elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
-			handle_nick_in_use
+			server_handle_nick_in_use
 		elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_ENDOFMOTD  ]]; then # 376 = End of motd
 			sleep 1
 			log_stdout 'Connected'
@@ -307,11 +189,11 @@ while true; do
 				continue 2
 			fi
 		done
-		if [[ $line =~ :${server_name}\ ([0-9]{3})\ ([^ ]+)\ (.*) ]]; then
+		if [[ $line =~ ^:${server_name}\ ([0-9]{3})\ ([^ ]+)\ (.*) ]]; then
 			# this is a numeric
 			numeric="${BASH_REMATCH[1]}"
 			numericdata="${BASH_REMATCH[3]}"
-			handle_numerics "$numeric" "${BASH_REMATCH[2]}" "$numericdata"
+			server_handle_numerics "$numeric" "${BASH_REMATCH[2]}" "$numericdata"
 			for module in $modules_on_numeric; do
 				module_${module}_on_numeric "$numeric" "$numericdata"
 				if [[ $? -ne 0 ]]; then
@@ -358,7 +240,7 @@ while true; do
 			sender="${BASH_REMATCH[1]}"
 			newnick="${BASH_REMATCH[2]}"
 			# Check if it was our own nick
-			handle_nick "$sender" "$newnick"
+			server_handle_nick "$sender" "$newnick"
 			for module in $modules_on_NICK; do
 				module_${module}_on_NICK "$sender" "$newnick"
 			done
@@ -406,7 +288,7 @@ while true; do
 				module_${module}_on_KILL "$sender" "$target" "$path" "$reason"
 			done
 		elif [[ $line =~ ^[^:] ]] ;then
-			handle_ping "$line"
+			server_handle_ping "$line"
 			if [[ "$line" =~ ^ERROR\ :(.*) ]]; then
 				error="${BASH_REMATCH[1]}"
 				log_stdout "Got ERROR from server: $error"
