@@ -107,6 +107,7 @@ config_transport='dev-tcp'
 # For a list of modules see the modules dir.
 # Note that the order of the modules may be important
 # The list should normally start with "load services umodes"
+# Some modules should be placed last. "factoids" is such a module.
 config_modules="modules rehash services umodes autojoin"
 
 
@@ -153,3 +154,9 @@ config_module_autojoin_channels[2]='#otherchannel channelkey'
 #
 # Default umodes to set on connect.
 config_module_umodes_default_umodes="+isB-w"
+
+#####################################################################
+# Factoids module
+#
+# (*) Location of sqlite3 database file for factoids
+#config_module_factoids_database='data/factoids.db'

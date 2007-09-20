@@ -2,3 +2,4 @@
 bot_settings.sh
 ./logs/*.log
 ./data/faq.txt
+./data/*.db

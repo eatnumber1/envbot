@@ -20,6 +20,13 @@
 ###########################################################################
 config_file="bot_settings.sh"
 
+# Make some system behave sane for this bot:
+unset LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY
+unset LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS
+unset LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
+export LC_ALL=C
+export LANG=C
+
 # Store command line for later use
 command_line="$@"
 
