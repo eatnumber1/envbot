@@ -70,6 +70,7 @@ module_modulename_UNLOAD (REQUIRED)
 module_modulename_REHASH (REQUIRED) (TODO)
 	Called to make the module reparse any config options.
 	No parameters
+	Return code:
 		0 = Rehashed correctly
 		1 = Non fatal error for the bot itself. The bot will call UNLOAD on the module.
 		2 = Fatal error of some kind. On this the bot will quit.
@@ -86,7 +87,9 @@ module_modulename_FINALISE
 module_modulename_after_load
 	Called after all the hooks are added for the module.
 	No parameters
-	Return code not checked.
+	Return code:
+		0 = Unloaded correctly
+		1 = Failed. On this the bot will call unload on the module.
 	Note: This is useful for stuff that needs to echo log messages
 	      as that can't be done in modulename_INIT.
 

@@ -154,13 +154,19 @@ modules_load() {
 					log_stdout "Hooks failed"
 					# Try to unload.
 					modules_unload "$module" || {
-						log_stdout "Unloading of failed load failed. Aborting all and everything"
+						log_stdout "Unloading of $module that failed to load failed. Aborting all and everything"
 						bot_quit "Fatal error in module unload of failed module load"
 					}
 					return 5
 				}
 			if grep -qw "$module" <<< "$modules_after_load"; then
 				module_${module}_after_load
+				if [[ $? -ne 0 ]]; then
+					modules_unload ${module} || {
+						log_stdout "Unloading of $module that failed after_load failed. Aborting all and everything"
+						bot_quit "Fatal error in module unload of failed module load (after_load)"
+					}
+				fi
 			fi
 		else
 			log_stdout "Could not load ${module}, failed to source it."
