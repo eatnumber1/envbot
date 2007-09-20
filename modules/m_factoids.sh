@@ -36,6 +36,23 @@ module_faq_REHASH() {
 }
 
 
+# Called after module has loaded.
+# Loads FAQ items
+module_factoids_after_load() {
+	# Check (silently) for sqlite3
+	type -p sqlite3 &> /dev/null
+	if [[ $? -ne 0 ]]; then
+		log_stdout "Couldn't find sqlite3 command line tool. The factoids module depend on that tool."
+		return 1
+	fi
+	if ! [[ -r $config_module_factoids_database ]]; then
+		log_stdout "Factiods database file doesn't exist or can't be read!"
+		log_stdout "See doc/factoids.sql for how to create one."
+		return 1
+	fi
+}
+
+
 # Make string safe for SQL.
 # Yes we just discard quotes atm.
 module_factoids_clean_string() {
@@ -154,21 +171,6 @@ module_factoids_remove() {
 	fi
 }
 
-
-# Called after module has loaded.
-# Loads FAQ items
-module_factoids_after_load() {
-	# Check (silently) for sqlite3
-	type -p sqlite3 &> /dev/null
-	if [[ $? -ne 0 ]]; then
-		log_stdout "Couldn't find sqlite3 command line tool. The factoids module depend on that tool."
-		return 1
-	fi
-	if ! [[ -r $config_module_factoids_database ]]; then
-		log_stdout "Factiods database file doesn't exist or can't be read!"
-		return 1
-	fi
-}
 
 # Called on a PRIVMSG
 #
