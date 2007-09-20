@@ -103,7 +103,8 @@ transport_read_line() {
 	read -ru 3 -t 600 line
 	# Fail.
 	[[ $? -ne 0 ]] && return 1
-	line="${line//$'\r'/}"
+	# Yes this looks mad!
+	line="${line//"$'\r'"/}"
 }
 
 # Send a line
