@@ -58,17 +58,22 @@ module_factoids_INSERT() {
 		"INSERT INTO factoids (name, value) VALUES('$(module_factoids_clean_string "$1")', '$(module_factoids_clean_string "$2")');"
 }
 
-# Change the value
+# Change the item in DB
+# $1 = key
+# $2 = new value
 module_factoids_UPDATE() {
 	sqlite3 -list "$config_module_factoids_database" \
 		"UPDATE factoids SET value='$(module_factoids_clean_string "$2")' WHERE name='$(module_factoids_clean_string "$1")';"
 }
 
+# Remove an item
+# $1 = key
 module_factoids_DELETE() {
-	echo "$(sqlite3 -list "$config_module_factoids_database" \
-		"DELETE FROM factoids WHERE name='$(module_factoids_clean_string "$1")';")"
+	sqlite3 -list "$config_module_factoids_database" \
+		"DELETE FROM factoids WHERE name='$(module_factoids_clean_string "$1")';"
 }
 
+# Check if factoid is locked or not.
 # $1 = key
 # Return 0 = locked
 #        1 = not locked
@@ -82,12 +87,14 @@ module_factoids_is_locked() {
 	fi
 }
 
+# Lock a factoid against changes from non-owners
 # $1 = key
 module_factoids_lock() {
 	sqlite3 -list "$config_module_factoids_database" \
 		"UPDATE factoids SET is_locked='1' WHERE name='$(module_factoids_clean_string "$1")';"
 }
 
+# Unlock a factoid from protection against non-owners
 # $1 = key
 module_factoids_unlock() {
 	sqlite3 -list "$config_module_factoids_database" \
