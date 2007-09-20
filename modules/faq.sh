@@ -88,6 +88,8 @@ module_faq_on_PRIVMSG() {
 					local i=0
 					while [[ $i -lt "${#module_faq_array[*]}" ]] ; do
 						i=$((i+1))
+						# FIXME: This seems very odd, what does it do?
+						# This module needs rewriting...
 						if echo ${module_faq_array[$i]} | cut -d " " -f 3- | /bin/grep -i -F -m 1 "$query" ; then
 							log "$channel :${module_faq_array[$i]}"
 							send_msg "$channel" "${module_faq_array[$i]}"

@@ -45,11 +45,11 @@ module_services_after_load() {
 # Called for each line on connect
 module_services_on_connect() {
 	local line="$1"
-	if [[ $( echo $line | cut -d' ' -f2 ) == $numeric_ERR_NICKNAMEINUSE  ]]; then # Nick in use
+	if [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_NICKNAMEINUSE  ]]; then # Nick in use
 		module_services_ghost=1
-	elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
+	elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
 		module_services_ghost=1
-	elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_ENDOFMOTD  ]]; then # 376 = End of motd
+	elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ENDOFMOTD  ]]; then # 376 = End of motd
 		if [[ $config_module_services_style == atheme ]]; then
 			send_raw "${module_services_nickserv_command}IDENTIFY $config_firstnick $config_module_services_nickserv_passwd"
 		fi

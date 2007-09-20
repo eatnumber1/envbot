@@ -60,7 +60,7 @@ list_remove() {
 # $2 = Value to check for
 # Returns 0 if found, otherwise 1.
 list_contains() {
-	echo "${!1}" | grep -wq "$2"
+	grep -wq "$2" <<< "${!1}"
 }
 
 ###########################################################################
