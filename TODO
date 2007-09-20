@@ -2,6 +2,7 @@ TODO list
 (no specifc order)
 
 * Nick tracking
+* Module (un)loading on rehash.
 * More detailed access control
 * Periodic events
 * Some framework (as a module) for help.
