@@ -117,6 +117,7 @@ numeric[405]=ERR_TOOMANYCHANNELS
 numeric[406]=ERR_WASNOSUCHNICK
 numeric[412]=ERR_NOTEXTTOSEND
 numeric[421]=ERR_UNKNOWNCOMMAND
+numeric[422]=ERR_NOMOTD
 numeric[432]=ERR_ERRONEUSNICKNAME     # Bad/forbidden nickname
 numeric[433]=ERR_NICKNAMEINUSE        # Nick in use
 numeric[441]=ERR_USERNOTINCHANNEL
