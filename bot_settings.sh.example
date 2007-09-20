@@ -107,7 +107,7 @@ config_transport='dev-tcp'
 # For a list of modules see the modules dir.
 # Note that the order of the modules may be important
 # The list should normally start with "load services umodes"
-config_modules="load services umodes autojoin"
+config_modules="modules rehash services umodes autojoin"
 
 
 ############################

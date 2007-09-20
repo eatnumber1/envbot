@@ -18,23 +18,23 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Load/unload modules.
+# Manage (load/unload/list) modules.
 
-module_load_INIT() {
+module_modules_INIT() {
 	echo "on_PRIVMSG"
 }
 
-module_load_UNLOAD() {
-	unset module_load_doload module_load_dounload
-	unset module_load_on_PRIVMSG
+module_modules_UNLOAD() {
+	unset module_modules_doload module_modules_dounload
+	unset module_modules_on_PRIVMSG
 }
 
-module_load_REHASH() {
+module_modules_REHASH() {
 	return 0
 }
 
 # $1 = Module to load
-module_load_doload() {
+module_modules_doload() {
 	local target_module="$1"
 	modules_load "$target_module"
 	local status_message status=$?
@@ -50,8 +50,12 @@ module_load_doload() {
 }
 
 # $1 = Module to unload
-module_load_dounload() {
+module_modules_dounload() {
 	local target_module="$1"
+	if [[ $target_module == modules ]]; then
+		send_msg "$(parse_hostmask_nick "$sender")" \
+			"You can't reload the modules module using itself. The hackish way would be to use the eval module for this."
+	fi
 	modules_unload "$target_module"
 	local status_message status=$?
 	case $status in
@@ -67,7 +71,7 @@ module_load_dounload() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-module_load_on_PRIVMSG() {
+module_modules_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
@@ -78,7 +82,7 @@ module_load_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
-				module_load_doload "$target_module"
+				module_modules_doload "$target_module"
 			else
 				access_fail "$sender" "load a module" "owner"
 			fi
@@ -90,7 +94,7 @@ module_load_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
-				module_load_dounload "$target_module"
+				module_modules_dounload "$target_module"
 			else
 				access_fail "$sender" "unload a module" "owner"
 			fi
@@ -102,9 +106,9 @@ module_load_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
-				module_load_dounload "$target_module"
+				module_modules_dounload "$target_module"
 				if [[ $? = 0 ]]; then
-					module_load_doload "$target_module"
+					module_modules_doload "$target_module"
 				fi
 			else
 				access_fail "$sender" "unload a module" "owner"
@@ -112,6 +116,17 @@ module_load_on_PRIVMSG() {
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "modunload" "modulename"
 		fi
+		return 1
+	elif parameters="$(parse_query_is_command "$query" "modlist")"; then
+			if access_check_owner "$sender"; then
+				local modlist
+				for target_module in $modules_loaded; do
+					modlist="$modlist $target_module"
+				done
+				send_msg "$(parse_hostmask_nick "$sender")" "Modules currently loaded:$modlist"
+			else
+				access_fail "$sender" "unload a module" "owner"
+			fi
 		return 1
 	fi
 	return 0
