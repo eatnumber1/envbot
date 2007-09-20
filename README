@@ -16,7 +16,7 @@ Transports:
 		The bash you use must support the psedo device /dev/tcp. Debian is known
 		to disable this. Most other distros are sane and have it on.
 	gnutls:
-		You need the program gnutls-cli
+		You need the program gnutls-cli.
 	openssl:
 		You need the program openssl.
 	stunnel:
