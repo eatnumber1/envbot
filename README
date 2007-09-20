@@ -5,8 +5,10 @@ envbot is a modular irc bot coded in bash.
 Features include:
  * SSL
  * IPv6
+ * Transport (ssl, whatever) to server are also modules
  * Modularity
  * Loading, unloading and reloading of modules at runtime
+ * Rehashing at runtime
 See TODO for other planed features
 
 Dependencies
@@ -15,22 +17,24 @@ Dependencies
 * Standard POSIX tools. Should be included on any recent and sane Linux
   distro.
 
-Some transports and module have extra dependencies:
+Some transports and module have extra dependencies. Note that when it says
+"you need the program" just having the library won't work. You actually need
+a program with this name.
 Transports:
 	dev-tcp:
 		The bash you use must support the psedo device /dev/tcp. Debian is known
 		to disable this. Most other distros are sane and have it on.
 	gnutls:
-		You need the program gnutls-cli.
+		You need the program gnutls-cli. (http://www.gnutls.org/)
 	openssl:
-		You need the program openssl.
+		You need the program openssl. (http://www.openssl.org/)
 	stunnel:
 		The bash you use must support the psedo device /dev/tcp. Debian is known
 		to disable this. Most other distros are sane and have it on.
-		You need the program stunnel.
+		You need the program stunnel. (http://stunnel.mirt.net/)
 Modules:
 	factoids
-		You need to command line tool sqlite3.
+		You need the program sqlite3. (http://www.sqlite.org/)
 
 Installing
 ----------
