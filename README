@@ -22,7 +22,7 @@ Transports:
 	stunnel:
 		The bash you use must support the psedo device /dev/tcp. Debian is known
 		to disable this. Most other distros are sane and have it on.
-		You need stunnel.
+		You need the program stunnel.
 
 
 Installing
