@@ -37,6 +37,7 @@ module_faq_REHASH() {
 
 
 # Make string safe for SQL.
+# Yes we just discard quotes atm.
 module_factoids_clean_string() {
 	tr -Cd 'A-Za-z0-9 ,;.:-_<>*|~^!"#%&/()=?+\@${}[]+' <<< "$1"
 }
