@@ -7,10 +7,22 @@ in bash.
 Dependencies
 ------------
 * bash - version 3.x should work fine, but not tested on anything below 3.2
-* The bash you use must support the psedo device /dev/tcp. Debian is known
-  to disable this. Most other distros are sane and have it on.
 * Standard POSIX tools. Should be included on any recent and sane Linux
   distro.
+
+Some transports and module have extra dependencies:
+Transports:
+	dev-tcp:
+		The bash you use must support the psedo device /dev/tcp. Debian is known
+		to disable this. Most other distros are sane and have it on.
+	gnutls:
+		You need the program gnutls-cli
+	openssl:
+		You need the program openssl.
+	stunnel:
+		The bash you use must support the psedo device /dev/tcp. Debian is known
+		to disable this. Most other distros are sane and have it on.
+		You need stunnel.
 
 
 Installing
