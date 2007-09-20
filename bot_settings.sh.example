@@ -47,8 +47,8 @@ config_server_port='6667'
 # If 1 use SSL, not all transport modules support this.
 config_server_ssl=0
 # Accept invalid certs?
-# Note that some SSL modules (openssl for example) just
-# print any errors and continues anyway
+#   Note that some SSL modules (openssl for example) just
+#   print any errors and continues anyway
 config_server_ssl_accept_invalid=0
 # Be verbose when connecting?
 #   Not all SSL modules support it. The ones that doesn't
