@@ -76,7 +76,7 @@ transport_read_line() {
 	read -ru 4 -t 600 line
 	# Fail.
 	[[ $? -ne 0 ]] && return 1
-	line=${line//$'\r'/}
+	line="${line//$'\r'/}"
 }
 
 # Send a line
