@@ -69,7 +69,7 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 #     THESE ARE EXAMPLES, don't use these, replace them
 #     Without at least one set, the bot won't start
 #config_owners[1]='.*!brain@staff\.kuonet\.org'
-#config_owners[2]='.*!brain@staff\.kuonet-ng\.org'
+#config_owners[2]='.*!AnMaster@staff\.kuonet-ng\.org'
 
 
 ###########

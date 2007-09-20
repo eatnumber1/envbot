@@ -71,8 +71,8 @@ fi
 
 config_current_version=10
 
-# This is hackish, the reason is that we need to load transport
-# before libraries:
+# This is hackish, it should be in config.sh (config_validate)
+# The reason is that we need to load transport before libraries:
 if [ -z "$config_version" ]; then
 	echo "ERROR: YOU MUST SET THE CORRECT config_version IN THE CONFIG"
 	exit 1

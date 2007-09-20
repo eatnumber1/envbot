@@ -5,3 +5,4 @@ TODO list
 * More detailed access control
 * Periodic events
 * Some framework (as a module) for help.
+* Separate logs for different things as an option.
