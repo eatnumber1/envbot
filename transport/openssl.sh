@@ -53,9 +53,13 @@ transport_connect() {
 	exec 3<&-
 	exec 4<&-
 	local myargs
-	[[ $config_server_ssl_accept_invalid -eq 0 ]] && myargs="-verify 1"
-	[[ $config_server_ssl_accept_invalid -eq 1 ]] && myargs="-verify 0"
-	openssl s_client -quiet -connect "$1:$2" $myargs < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
+	if [[ $config_server_ssl_accept_invalid -eq 1 ]]; then
+		myargs="-verify 0"
+	else
+		myargs="-verify 10"
+	fi
+	[[ $config_server_ssl_verbose -ne 1 ]] && myargs="$myargs -quiet"
+	openssl s_client -connect "$1:$2" $myargs < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
 	echo $! >> "${transport_tmp_dir_file}/pid"
 	exec 3>"${transport_tmp_dir_file}/out"
 	exec 4<"${transport_tmp_dir_file}/in"

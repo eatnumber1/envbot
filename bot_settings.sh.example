@@ -23,7 +23,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=9
+config_version=10
 
 ####################
 # General settings #
@@ -47,7 +47,15 @@ config_server_port='6667'
 # If 1 use SSL, not all transport modules support this.
 config_server_ssl=0
 # Accept invalid certs?
+# Note that some SSL modules (openssl for example) just
+# print any errors and continues anyway
 config_server_ssl_accept_invalid=0
+# Be verbose when connecting?
+#   Not all SSL modules support it. The ones that doesn't
+#   support it will just ignore it.
+#   Be aware that this is mainly for debugging of SSL transport
+#   modules as it is possible the verbose output may confuse the bot!
+config_server_ssl_verbose=0
 # If not empty try to bind to this IP when connecting, useful
 # to select vhost. Not all transport modules support this.
 config_server_bind=""

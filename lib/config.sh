@@ -21,7 +21,6 @@
 
 # Return status:
 # 0 = Sucess
-# 1 = Other error
 # 2 = Not same config version
 # 3 = Failed to source. The bot should not be in an undefined state
 # 4 = Failed to source. The bot may be in an undefined state
