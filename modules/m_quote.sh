@@ -3,7 +3,6 @@
 #                                                                         #
 #  envbot - an irc bot in bash                                            #
 #  Copyright (C) 2007  EmErgE <halt.system@gmail.com>                     #
-#  Copyright (C) 2007  Arvid Norlander                                    #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -79,7 +78,7 @@ module_quote_on_PRIVMSG() {
         local myval="${#module_quote_quotes}"
         let "myval = $myval - 1" ;
         let "number %= $myval";
-        
+
 	if parameters="$(parse_query_is_command "$query" "quote")"; then
 			send_msg "$channel" "${module_quote_quotes[$number]}"
         return 1
