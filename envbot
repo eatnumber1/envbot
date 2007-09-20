@@ -96,10 +96,11 @@ source lib/channels.sh
 source lib/parse.sh
 source lib/access.sh
 source lib/misc.sh
+source lib/config.sh
 source lib/modules.sh
 source lib/server.sh
 
-validate_config
+config_validate
 log_init
 
 # Now logging functions can be used.

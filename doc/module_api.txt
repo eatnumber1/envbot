@@ -52,6 +52,8 @@ module_modulename_UNLOAD (REQUIRED)
 	The unload function and other REQUIRED functions will be undefined
 	after unload finished.
 	The module may or may not get reloaded after this.
+	This function is NOT called when the bot is exiting. To check for that
+	use the FINALISE hook!
 	No parameters
 	Return code:
 		0 = Unloaded correctly

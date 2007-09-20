@@ -90,12 +90,12 @@ server_handle_005() {
 	fi
 	# Enable NAMESX is supported.
 	if [[ $line =~ NAMESX ]]; then
-		send_raw "PROTOCTL NAMESX"
+		send_raw_flood "PROTOCTL NAMESX"
 		server_NAMESX=1
 	fi
 	# Enable UHNAMES if it is there.
 	if [[ $line =~ UHNAMES ]]; then
-		send_raw "PROTOCTL UHNAMES"
+		send_raw_flood "PROTOCTL UHNAMES"
 		server_UHNAMES=1
 	fi
 }

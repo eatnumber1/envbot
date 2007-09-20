@@ -19,6 +19,8 @@
 #                                                                         #
 ###########################################################################
 
+# Variables marked with (*) will take effect at a rehash as well.
+
 # What version this config is at. This is used to check
 # if your config needs updating.
 config_version=9
@@ -52,12 +54,12 @@ config_server_bind=""
 # If this is empty don't use a server password.
 config_server_passwd=""
 
-# A regular expression of prefixes we should listen to.
+# (*) A regular expression of prefixes we should listen to.
 config_listenregex="(;|${config_firstnick}[:,] )"
 
-# Owner regexes.
-# THESE ARE EXAMPLES, don't use these, replace them
-# Without one set, the bot won't start
+# (*) Owner regexes.
+#     THESE ARE EXAMPLES, don't use these, replace them
+#     Without at least one set, the bot won't start
 #config_owners[1]='.*!brain@staff\.kuonet\.org'
 #config_owners[2]='.*!brain@staff\.kuonet-ng\.org'
 
@@ -68,7 +70,7 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 
 # Directory for logfiles
 config_log_dir="logs"
-# Should we always log to STDOUT as well?
+# (*) Should we always log to STDOUT as well?
 config_log_stdout=1
 
 #############
@@ -76,14 +78,15 @@ config_log_stdout=1
 #############
 
 # Transport module. You should select exactly one.
-# The recommended non-SSL module is dev-tcp.
-# The recommended SSL module is gnutls.
+#   The recommended non-SSL module is dev-tcp.
+#   The recommended SSL module is gnutls.
 config_transport='dev-tcp'
 #config_transport='gnutls'
 #config_transport='openssl' # Not well tested
-#config_transport='stunnel' # Tested and depressingly bad
+#config_transport='stunnel' # Tested and depressingly broken. Don't use.
+
 # stunnel options
-# MAKE SURE THEY ARE CORRECT if you use stunnel.
+#   MAKE SURE THEY ARE CORRECT if you use stunnel.
 #config_transport_stunnel_path='/usr/sbin/stunnel'
 #config_transport_stunnel_localport='9741'
 
@@ -108,22 +111,23 @@ config_modules="load services umodes autojoin"
 #
 # Nickserv password
 config_module_services_nickserv_passwd='nickserv password here'
-# Name of nickserv
-#   Normaly this is correct
+# (*) Name of nickserv
+#     Normaly this is correct
 config_module_services_nickserv_name='NickServ'
-# Service style. Supported are: anope, atheme
-#   For the default server (irc.kuonet-ng.org) use atheme
-#   Otherwise try anope, that will work with atheme too but
-#   some features will be disabled.
+# (* )Service style. Supported are: anope, atheme
+#     For the default server (irc.kuonet-ng.org) use atheme
+#     Otherwise try anope, that will work with atheme too but
+#     some features will be disabled.
 config_module_services_style='atheme'
-# Use server side aliases
-#   Try 1 first, if the bot fails to identify try 0
+# (*) Use server side aliases
+#     Try 1 first, if the bot fails to identify try 0
 config_module_services_server_alias=1
 
 
 #####################################################################
 # FAQ module
 #
+# (*) Location of FAQ items.
 #config_module_faq_file='data/faq.txt'
 
 

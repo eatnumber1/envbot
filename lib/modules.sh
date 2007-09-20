@@ -124,7 +124,7 @@ modules_unload() {
 		eval "modules_$hook=\"$newval\""
 	done
 	module_${module}_UNLOAD || \
-		{ log_stdout "ERROR: Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"; quit_bot "Fatal error in unload"; }
+		{ log_stdout "ERROR: Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"; quit_bot "Fatal error in module unload"; }
 	unset module_${module}_UNLOAD
 	unset module_${module}_INIT
 	unset module_${module}_REHASH
@@ -150,7 +150,15 @@ modules_load() {
 		if [[ $? -eq 0 ]]; then
 			modules_loaded="$modules_loaded $module"
 			modules_add_hooks "$module" || \
-				{ log_stdout "Hooks failed"; return 5; }
+				{
+					log_stdout "Hooks failed"
+					# Try to unload.
+					modules_unload "$module" || {
+						log_stdout "Unloading of failed load failed. Aborting all and everything"
+						quit_bot "Fatal error in module unload of failed module load"
+					}
+					return 5
+				}
 			if grep -qw "$module" <<< "$modules_after_load"; then
 				module_${module}_after_load
 			fi
