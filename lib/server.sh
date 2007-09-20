@@ -128,7 +128,7 @@ server_handle_nick() {
 server_handle_nick_in_use() {
 	if [[ $on_nick -eq 3 ]]; then
 		log_stdout "Third nick is ALSO in use. I give up"
-		quit_bot 2
+		bot_quit 2
 	fi
 	if [[ $on_nick -eq 2 ]]; then
 		log_stdout "Second nick is ALSO in use, trying third"

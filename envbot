@@ -20,6 +20,9 @@
 ###########################################################################
 config_file="bot_settings.sh"
 
+# Store command line for later use
+command_line="$@"
+
 print_cmd_help() {
 	echo 'envbot - A modular IRC bot in bash.'
 	echo "Syntax:"
@@ -187,7 +190,7 @@ while true; do
 		module_${module}_before_connect
 	done
 	IRC_CONNECT
-	trap 'quit_bot "ctrl-C"' TERM INT
+	trap 'bot_quit "ctrl-C"' TERM INT
 	for module in $modules_after_connect; do
 		module_${module}_after_connect
 	done

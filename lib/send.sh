@@ -105,7 +105,7 @@ send_raw_flood() {
 # Module authors: go away                                                 #
 ###########################################################################
 
-# Module authors: use the wrapper: quit_bot in misc.sh instead!
+# Module authors: use the wrapper: bot_quit in misc.sh instead!
 # $1 = if set, a quit reason
 send_quit() {
 	local reason=""

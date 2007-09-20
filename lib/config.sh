@@ -51,12 +51,12 @@ config_rehash() {
 			log_stdout "ERROR: Rehash of ${module} failed, trying to unload it."
 			modules_unload "${module}" || {
 				log_stdout "FATAL ERROR: Unloading of ${module} after failed rehash failed."
-				quit_bot "Fatal error in unload of module that failed to rehash"
+				bot_quit "Fatal error in unload of module that failed to rehash"
 			}
 		fi
 		if [[ $status -eq 2 ]]; then
 			log_stdout "FATAL ERROR: Rehash of ${module} failed in a FATAL way. Quitting"
-			quit_bot "Fatal error in rehash of module"
+			bot_quit "Fatal error in rehash of module"
 		fi
 	done
 	log_stdout "Rehash successfull"

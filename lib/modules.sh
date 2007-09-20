@@ -124,7 +124,7 @@ modules_unload() {
 		eval "modules_$hook=\"$newval\""
 	done
 	module_${module}_UNLOAD || \
-		{ log_stdout "ERROR: Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"; quit_bot "Fatal error in module unload"; }
+		{ log_stdout "ERROR: Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"; bot_quit "Fatal error in module unload"; }
 	unset module_${module}_UNLOAD
 	unset module_${module}_INIT
 	unset module_${module}_REHASH
@@ -155,7 +155,7 @@ modules_load() {
 					# Try to unload.
 					modules_unload "$module" || {
 						log_stdout "Unloading of failed load failed. Aborting all and everything"
-						quit_bot "Fatal error in module unload of failed module load"
+						bot_quit "Fatal error in module unload of failed module load"
 					}
 					return 5
 				}

@@ -23,7 +23,7 @@
 # Optional parameters:
 # $1 = Reason to quit
 # $2 = Return status (if not given, then exit 0).
-quit_bot() {
+bot_quit() {
 	for module in $modules_before_disconnect; do
 		module_${module}_before_disconnect
 	done
@@ -43,6 +43,27 @@ quit_bot() {
 	else
 		exit 0
 	fi
+}
+
+# Restart the bot in a graceful way. I hope.
+# Optional parameters:
+# $1 = Reason to restart
+bot_restart() {
+	for module in $modules_before_disconnect; do
+		module_${module}_before_disconnect
+	done
+	local reason=$1
+	send_quit "$reason"
+	connected=0
+	for module in $modules_after_disconnect; do
+		module_${module}_after_disconnect
+	done
+	for module in $modules_FINALISE; do
+		${module}_FINALISE
+	done
+	log "Bot quit gracefully"
+	transport_disconnect
+	exec env -i "$(type -p bash)" $0 $command_line
 }
 
 # Remove a value from a space separated list
