@@ -122,22 +122,22 @@ IRC_CONNECT(){
 			module_${module}_on_connect "$line"
 		done
 		# Part of motd, that goes to dev null.
-		if  [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_MOTD  ]]; then
+		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTD  ]]; then
 			continue
 		fi
 		log_raw_in "$line"
 		# Start of motd, note that we don't display that.
-		if  [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_MOTDSTART  ]]; then
+		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTDSTART  ]]; then
 			log "Motd is not displayed in log"
-		elif  [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_YOURHOST  ]]; then
+		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_YOURHOST  ]]; then
 			if [[ $line =~ Your\ host\ is\ ([^ ,]*)  ]]; then # just to get the regex, this should always be true
 				server_name="${BASH_REMATCH[1]}"
 			fi
-		elif  [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_MYINFO ]]; then
-			server_004="$( echo $line | cut -d' ' -f4- )"
+		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MYINFO ]]; then
+			server_004="$(cut -d' ' -f4- <<< "$line")"
 			server_004=$(tr -d $'\r\n' <<< "$server_004")  # Get rid of ending newline
-		elif  [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_ISUPPORT ]]; then
-			server_005="$server_005 $( echo $line | cut -d' ' -f4- )"
+		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ISUPPORT ]]; then
+			server_005="$server_005 $(cut -d' ' -f4- <<< "$line")"
 			server_005=$(tr -d $'\r\n' <<< "$server_005") # Get rid of newlines
 			server_005="${server_005/ :are supported by this server/}" # Get rid of :are supported by this server
 			server_handle_005 "$line"
@@ -151,11 +151,11 @@ IRC_CONNECT(){
 			send_raw_flood "USER $config_ident 0 * :${config_gecos}"
 		fi
 		server_handle_ping "$line"
-		if [[ $( echo $line | cut -d' ' -f2 ) == $numeric_ERR_NICKNAMEINUSE  ]]; then # Nick in use.
+		if [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_NICKNAMEINUSE  ]]; then # Nick in use.
 			server_handle_nick_in_use
-		elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
+		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
 			server_handle_nick_in_use
-		elif [[ $( echo $line | cut -d' ' -f2 ) == $numeric_RPL_ENDOFMOTD  ]]; then # 376 = End of motd
+		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ENDOFMOTD  ]]; then # 376 = End of motd
 			sleep 1
 			log_stdout 'Connected'
 			connected=1
