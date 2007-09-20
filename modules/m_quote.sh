@@ -19,18 +19,18 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Allow owners to make to bot say something
+# Quotes module
 
 module_quote_INIT() {
-	echo "on_PRIVMSG"
+	echo "after_load on_PRIVMSG"
 
 
 }
 
 module_quote_UNLOAD() {
 	unset module_quote_on_PRIVMSG
-        unset config_module_quotes_file
 	unset module_quote_quotes
+
 }
 
 module_quote_REHASH() {
@@ -38,29 +38,31 @@ module_quote_REHASH() {
 }
 
 module_quote_load() {
-        local i=0
-	declare -a module_quote_quotes
+	local i=0
+	local line=""
         if [ -e "$config_module_quotes_file" ]; then
-          while read -d $'\n' line ;do
-                  i=$((i+1))
-                  module_quote_quotes[$i]="$line"
-          done < "${config_module_faq_file}"
-          log 'Loaded Quotes.'
-          return 1
+		while read -d $'\n' line ;
+			do
+				i=$((i+1))
+				module_quote_quotes[$i]="$line"
+			done < "${config_module_quotes_file}"
+		log 'Loaded Quotes.'
+		return 1
         else
-          log "Cannot load '$config_module_quotes_file'. File doesn't exist."
-	  return 0
+		log "Cannot load '$config_module_quotes_file'. File doesn't exist."
+		return 0
         fi
 
 }
 
 
 module_quote_after_load() {
-if module_quote_load; then
- return 1;
-else
-  return 0;
-fi
+	if module_quote_load; then
+		echo "pass"
+		return 1;
+	else
+		return 0;
+	fi
 }
 
 
@@ -75,14 +77,14 @@ module_quote_on_PRIVMSG() {
 	local channel="$2"
 	local query="$3"
 	local parameters
-        local number=$RANDOM
-        local myval="${#module_quote_quotes}"
-        let "myval = $myval - 1" ;
-        let "number %= $myval";
-        
+	local number=$RANDOM
+	local myval="${#module_quote_quotes[*]}"
+	let "myval = $myval - 1" ;
+	let "number %= $myval";
+
 	if parameters="$(parse_query_is_command "$query" "quote")"; then
-			send_msg "$channel" "${module_quote_quotes[$number]}"
-        return 1
+		send_msg "$channel" "${module_quote_quotes[$number]}"
+		return 1
 	fi
 	return 0
 }
