@@ -47,7 +47,7 @@ module_factoids_after_load() {
 	fi
 	if ! [[ -r $config_module_factoids_database ]]; then
 		log_stdout "Factiods database file doesn't exist or can't be read!"
-		log_stdout "See doc/factoids.sql for how to create one."
+		log_stdout "See comment in doc/factoids.sql for how to create one."
 		return 1
 	fi
 }

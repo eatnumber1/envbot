@@ -159,4 +159,5 @@ config_module_umodes_default_umodes="+isB-w"
 # Factoids module
 #
 # (*) Location of sqlite3 database file for factoids
+#     See comment in doc/factoids.sql for how to create a database file.
 #config_module_factoids_database='data/factoids.db'
