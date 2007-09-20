@@ -78,7 +78,7 @@ transport_read_line() {
 	# Fail.
 	[[ $? -ne 0 ]] && return 1
 	# Yes this looks mad!
-	line="${line//"$'\r'"/}"
+	line=${line//$'\r'/}
 }
 
 # Send a line

@@ -1,8 +1,13 @@
 envbot - A modular IRC bot in bash
 ==================================
-envbot is a modular irc bot coded
-in bash.
+envbot is a modular irc bot coded in bash.
 
+Features
+--------
+ * SSL
+ * IPv6
+ * Loading and unloading of modules at runtime
+See TODO for other planed features
 
 Dependencies
 ------------
