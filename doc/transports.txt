@@ -71,4 +71,5 @@ transport_read_line()
 transport_write_line()
 	Send a line
 	$* = send this
+	The transport module should add a \n (LF) to the end of the data it get.
 	Return code not checked.
