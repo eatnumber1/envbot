@@ -82,7 +82,6 @@ module_faq_on_PRIVMSG() {
 				module_faq_last_query="$(date +%H%M)$line"
 				if [[ "$query" =~ ^\ *([0-9]+)\ *$ ]]; then
 					local index="${BASH_REMATCH[1]}"
-					log "$channel :$query is numeric"
 					send_msg "$channel" "${module_faq_array[$index]}"
 				elif [[ "${#query}" -ge 3 ]] ; then
 					local i=0

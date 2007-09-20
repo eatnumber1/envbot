@@ -28,7 +28,8 @@ transport_supports=""
 # Return status: 0 = yes
 #                1 = no
 transport_check_support() {
-	echo 'WARNING: stunnel support is EXPERIMENTAL. gnutls seems to work better'
+	echo 'WARNING: stunnel support is known to be semi-broken.'
+	echo 'For SSL it is better to use gnutls or openssl transports!'
 	if [[ $config_transport_stunnel_ireallywantstunnel -ne 1 ]]; then
 		local i
 		for i in {1..10}; do

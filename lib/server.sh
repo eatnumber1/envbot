@@ -61,7 +61,7 @@ server_handle_005() {
 	local line="$1"
 	if [[ $line =~ EXCEPTS(=([^ ]+))? ]]; then
 		# Some, but not all also send what char the modes for EXCEPTS is.
-		# If it isn't sent, guess one +e
+		# If it isn't sent, lets guess it is +e
 		if [[ ${BASH_REMATCH[2]} ]]; then
 			server_EXCEPTS="${BASH_REMATCH[2]}"
 		else
@@ -70,7 +70,7 @@ server_handle_005() {
 	fi
 	if [[ $line =~ INVEX(=([^ ]+))? ]]; then
 		# Some, but not all also send what char the modes for INVEX is.
-		# If it isn't sent, guess one +I
+		# If it isn't sent, lets guess it is +I
 		if [[ ${BASH_REMATCH[2]} ]]; then
 			server_INVEX="${BASH_REMATCH[2]}"
 		else
