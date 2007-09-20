@@ -28,7 +28,7 @@ channels_current=""
 channels_join() {
 	local channel="$1"
 	local key=""
-	[ -n "$2" ] && key=" $2"
+	[[ -n "$2" ]] && key=" $2"
 	send_raw "JOIN ${channel}${key}"
 }
 
@@ -38,7 +38,7 @@ channels_join() {
 channels_part() {
 	local channel="$1"
 	local reason=""
-	[ -n "$2" ] && reason=" :$2"
+	[[ -n "$2" ]] && reason=" :$2"
 	send_raw "PART ${channel}${reason}"
 }
 

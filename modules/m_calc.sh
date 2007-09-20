@@ -30,7 +30,7 @@ module_calc_empty_tmpfile() {
 }
 
 module_calc_remove_tmpfile() {
-	if [ -e "$module_calc_tmpfile" ]; then
+	if [[ -e "$module_calc_tmpfile" ]]; then
 		rm -f "$module_calc_tmpfile"
 	fi
 }

@@ -109,6 +109,6 @@ send_raw_flood() {
 # $1 = if set, a quit reason
 send_quit() {
 	local reason=""
-	[ -n "$1" ] && reason=" :$1"
+	[[ -n "$1" ]] && reason=" :$1"
 	send_raw "QUIT${reason}"
 }

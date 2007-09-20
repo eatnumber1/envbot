@@ -145,7 +145,7 @@ modules_load() {
 		log_stdout "Module ${module} is already loaded."
 		return 2
 	fi
-	if [ -f "modules/m_${module}.sh" ]; then
+	if [[ -f "modules/m_${module}.sh" ]]; then
 		source modules/m_${module}.sh
 		if [[ $? -eq 0 ]]; then
 			modules_loaded="$modules_loaded $module"

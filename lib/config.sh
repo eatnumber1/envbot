@@ -68,19 +68,19 @@ config_rehash() {
 # Module authors: go away                                                 #
 ###########################################################################
 config_validate() {
-	if [ -z "$config_firstnick" ]; then
+	if [[ -z "$config_firstnick" ]]; then
 		echo "ERROR: YOU MUST SET A config_firstnick IN THE CONFIG"
 		exit 1
 	fi
-	if [ -z "$config_log_dir" ]; then
+	if [[ -z "$config_log_dir" ]]; then
 		echo "ERROR: YOU MUST SET A config_log_dir IN THE CONFIG"
 		exit 1
 	fi
-	if [ -z "$config_log_stdout" ]; then
+	if [[ -z "$config_log_stdout" ]]; then
 		echo "ERROR: YOU MUST SET config_log_stdout IN THE CONFIG"
 		exit 1
 	fi
-	if [ -z "${config_owners[1]}" ]; then
+	if [[ -z "${config_owners[1]}" ]]; then
 		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
 		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_owners[1] that is)."
 		exit 1
