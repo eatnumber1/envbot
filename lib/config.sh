@@ -68,15 +68,6 @@ config_rehash() {
 # Module authors: go away                                                 #
 ###########################################################################
 config_validate() {
-	if [ -z "$config_version" ]; then
-		echo "ERROR: YOU MUST SET THE CORRECT config_version IN THE CONFIG"
-		exit 1
-	fi
-	if [ $config_version -ne $config_current_version ]; then
-		echo "ERROR: YOUR config_version IS $config_version BUT THE BOT'S CONFIG VERSION IS $config_current_version."
-		echo "PLEASE UPDATE YOUR CONFIG. Check bot_settings.sh.example for current format."
-		exit 1
-	fi
 	if [ -z "$config_firstnick" ]; then
 		echo "ERROR: YOU MUST SET A config_firstnick IN THE CONFIG"
 		exit 1

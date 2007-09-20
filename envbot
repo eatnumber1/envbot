@@ -71,6 +71,18 @@ fi
 
 config_current_version=10
 
+# This is hackish, the reason is that we need to load transport
+# before libraries:
+if [ -z "$config_version" ]; then
+	echo "ERROR: YOU MUST SET THE CORRECT config_version IN THE CONFIG"
+	exit 1
+fi
+if [ $config_version -ne $config_current_version ]; then
+	echo "ERROR: YOUR config_version IS $config_version BUT THE BOT'S CONFIG VERSION IS $config_current_version."
+	echo "PLEASE UPDATE YOUR CONFIG. Check bot_settings.sh.example for current format."
+	exit 1
+fi
+
 # Must be checked here and not in validate_config because of
 # loading order.
 if [ ! -r "transport/${config_transport}.sh" ]; then
