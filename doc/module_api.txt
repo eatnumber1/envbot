@@ -3,6 +3,13 @@ Module API
 
 This file contains info needed to write a module.
 
+File name
+---------
+
+The module should follow this pattern:
+m_modulename.sh
+Example:
+m_faq.sh
 
 Variables
 ---------
