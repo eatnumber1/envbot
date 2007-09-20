@@ -171,10 +171,10 @@ numeric[671]=RPL_WHOISSECURE     # Used on unreal for ssl clients.
 # As we can't include more than one meaning for every numeric conflicting
 # ones may be added as comments. Modules depending on 9xx numerics should use the raw value.
 # As I mainly use InspIRCd I prioritize those. ;)
-numeric[902]=RPL_COMMANDS      # 902 <nick> :<command> <module name> <minimum parameters>
-numeric[903]=RPL_ENDOFCOMMANDS # 903 <nick> :End of COMMANDS list
-# Unreal uses 972 (ERR_CANNOTDOCOMMAND) for umode +q, and other failed kicks.
-# According to http://www.alien.net.au/irc/irc2numerics.html:
-#  "Works similarly to all of KineIRCd's CANNOT* numerics. This one indicates that a
-#   command could not be performed for an arbitrary reason. For example, a halfop trying to kick an op."
-# Unreal uses 974 (ERR_CANNOTCHANGECHANMODE ?) for ERR_ALLMUSTUSESSL.
+numeric[902]=RPL_COMMANDS              # 902 <nick> :<command> <module name> <minimum parameters>
+numeric[903]=RPL_ENDOFCOMMANDS         # 903 <nick> :End of COMMANDS list
+numeric[972]=ERR_CANNOTDOCOMMAND       # Unreal uses 972 (ERR_CANNOTDOCOMMAND) for umode +q, and other failed kicks.
+                                       # According to http://www.alien.net.au/irc/irc2numerics.html:
+                                       #  "Works similarly to all of KineIRCd's CANNOT* numerics. This one indicates that a
+                                       #   command could not be performed for an arbitrary reason. For example, a halfop trying to kick an op."
+numeric[974]=ERR_CANNOTCHANGECHANMODE  # Unreal uses 974 (ERR_CANNOTCHANGECHANMODE ?) for ERR_ALLMUSTUSESSL.

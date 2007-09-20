@@ -148,6 +148,8 @@ numeric_RPL_ENDOFWATCHLIST='607'
 numeric_RPL_WHOISSECURE='671'
 numeric_RPL_COMMANDS='902'
 numeric_RPL_ENDOFCOMMANDS='903'
+numeric_ERR_CANNOTDOCOMMAND='972'
+numeric_ERR_CANNOTCHANGECHANMODE='974'
 
 ##########################
 # Number -> name mapping #
@@ -267,5 +269,7 @@ numeric[607]='RPL_ENDOFWATCHLIST'
 numeric[671]='RPL_WHOISSECURE'
 numeric[902]='RPL_COMMANDS'
 numeric[903]='RPL_ENDOFCOMMANDS'
+numeric[972]='ERR_CANNOTDOCOMMAND'
+numeric[974]='ERR_CANNOTCHANGECHANMODE'
 
 # End of generated file.
