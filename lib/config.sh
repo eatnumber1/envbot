@@ -103,4 +103,10 @@ config_validate() {
 			exit 1
 		fi
 	fi
+	if ! [[ -d "$config_modules_dir" ]]; then
+		if ! list_contains transport_supports "bind"; then
+			echo "ERROR: $config_modules_dir DOES NOT EXIST OR IS NOT A DIRECTORY."
+			exit 1
+		fi
+	fi
 }

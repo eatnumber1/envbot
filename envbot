@@ -19,6 +19,8 @@
 #                                                                         #
 ###########################################################################
 config_file="bot_settings.sh"
+# Where to load libraries from
+library_dir="lib"
 
 # Make some system behave sane for this bot:
 unset LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY
@@ -79,7 +81,7 @@ if [[ $? -ne 0 ]]; then
 	exit 1
 fi
 
-config_current_version=10
+config_current_version=11
 
 # This is hackish, it should be in config.sh (config_validate)
 # The reason is that we need to load transport before libraries:
@@ -110,17 +112,17 @@ fi
 
 echo "Loading library functions"
 # Load library functions.
-source lib/log.sh
-source lib/send.sh
-source lib/feedback.sh
-source lib/numerics.sh
-source lib/channels.sh
-source lib/parse.sh
-source lib/access.sh
-source lib/misc.sh
-source lib/config.sh
-source lib/modules.sh
-source lib/server.sh
+source "${library_dir}/log.sh"
+source "${library_dir}/send.sh"
+source "${library_dir}/feedback.sh"
+source "${library_dir}/numerics.sh"
+source "${library_dir}/channels.sh"
+source "${library_dir}/parse.sh"
+source "${library_dir}/access.sh"
+source "${library_dir}/misc.sh"
+source "${library_dir}/config.sh"
+source "${library_dir}/modules.sh"
+source "${library_dir}/server.sh"
 
 config_validate
 log_init

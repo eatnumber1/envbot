@@ -23,7 +23,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=10
+config_version=11
 
 ####################
 # General settings #
@@ -109,6 +109,10 @@ config_transport='dev-tcp'
 # The list should normally start with "load services umodes"
 # Some modules should be placed last. "factoids" is such a module.
 config_modules="modules rehash services umodes autojoin"
+
+# Where are modules stored, this can be a relative path from the
+# main script of the bot, or an absolute path.
+config_modules_dir="modules"
 
 
 ############################

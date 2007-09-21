@@ -152,8 +152,8 @@ modules_load() {
 		log_stdout "Module ${module} is already loaded."
 		return 2
 	fi
-	if [[ -f "modules/m_${module}.sh" ]]; then
-		source modules/m_${module}.sh
+	if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
+		source "${config_modules_dir}/m_${module}.sh"
 		if [[ $? -eq 0 ]]; then
 			modules_loaded="$modules_loaded $module"
 			modules_add_hooks "$module" || \
@@ -190,7 +190,7 @@ modules_loaded=""
 # Load modules from the config
 modules_load_from_config() {
 	for module in $config_modules; do
-		if [[ -f "modules/m_${module}.sh" ]]; then
+		if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
 			modules_load "$module"
 		else
 			log "WARNING: $module doesn't exist! Removing it from list"
