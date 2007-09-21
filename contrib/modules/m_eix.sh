@@ -19,6 +19,12 @@
 #                                                                         #
 ###########################################################################
 # Check eix and return output from it.
+# eix is a tool to search Gentoo packages
+# From eix eix:
+#   Description:         Small utility for searching ebuilds with indexing for fast results
+# This module therefore depends on:
+#   Gentoo
+#   eix.
 
 module_eix_INIT() {
 	echo "on_PRIVMSG after_load"
