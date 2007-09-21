@@ -112,17 +112,12 @@ fi
 
 echo "Loading library functions"
 # Load library functions.
-source "${library_dir}/log.sh"
-source "${library_dir}/send.sh"
-source "${library_dir}/feedback.sh"
-source "${library_dir}/numerics.sh"
-source "${library_dir}/channels.sh"
-source "${library_dir}/parse.sh"
-source "${library_dir}/access.sh"
-source "${library_dir}/misc.sh"
-source "${library_dir}/config.sh"
-source "${library_dir}/modules.sh"
-source "${library_dir}/server.sh"
+libraries="log send feedback numerics channels parse \
+           access misc config modules server"
+for library in $libraries; do
+	source "${library_dir}/${library}.sh"
+done
+unset library
 
 config_validate
 log_init
