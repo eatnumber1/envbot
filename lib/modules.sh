@@ -139,6 +139,7 @@ modules_unload() {
 #         3 = Failed to source it
 #         4 = No such module
 #         5 = Getting hooks failed
+#         6 = after_load failed
 modules_load() {
 	module="$1"
 	if grep -qw "$module" <<< "${modules_loaded}"; then
@@ -166,6 +167,7 @@ modules_load() {
 						log_stdout "Unloading of $module that failed after_load failed. Aborting all and everything"
 						bot_quit "Fatal error in module unload of failed module load (after_load)"
 					}
+					return 6
 				fi
 			fi
 		else

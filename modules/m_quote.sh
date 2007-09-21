@@ -23,45 +23,45 @@
 
 module_quote_INIT() {
 	echo "after_load on_PRIVMSG"
-
-
 }
 
 module_quote_UNLOAD() {
-	unset module_quote_on_PRIVMSG
+	unset module_quote_on_PRIVMSG module_quote_load
 	unset module_quote_quotes
-
 }
 
 module_quote_REHASH() {
+	module_quote_load
 	return 0
 }
 
 module_quote_load() {
 	local i=0
 	local line=""
-        if [ -e "$config_module_quotes_file" ]; then
-		while read -d $'\n' line ;
-			do
-				i=$((i+1))
+	unset module_quote_quotes
+	if [[ -e "$config_module_quotes_file" ]]; then
+		while read -d $'\n' line ; do
+			# Skip empty lines
+			if [[ "$line" ]]; then
 				module_quote_quotes[$i]="$line"
-			done < "${config_module_quotes_file}"
+				i=$((i+1))
+			fi
+		done < "${config_module_quotes_file}"
 		log 'Loaded Quotes.'
-		return 1
-        else
-		log "Cannot load '$config_module_quotes_file'. File doesn't exist."
 		return 0
-        fi
-
+	else
+		log "Cannot load '$config_module_quotes_file'. File doesn't exist."
+		return 1
+	fi
 }
 
 
 module_quote_after_load() {
 	if module_quote_load; then
 		echo "pass"
-		return 1;
-	else
 		return 0;
+	else
+		return 1;
 	fi
 }
 
@@ -77,12 +77,10 @@ module_quote_on_PRIVMSG() {
 	local channel="$2"
 	local query="$3"
 	local parameters
-	local number=$RANDOM
-	local myval="${#module_quote_quotes[*]}"
-	let "myval = $myval - 1" ;
-	let "number %= $myval";
-
 	if parameters="$(parse_query_is_command "$query" "quote")"; then
+		local number=$RANDOM
+		local myval="${#module_quote_quotes[*]}"
+		(( number %= $myval ))
 		send_msg "$channel" "${module_quote_quotes[$number]}"
 		return 1
 	fi

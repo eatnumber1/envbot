@@ -44,6 +44,7 @@ module_modules_doload() {
 		3) status_message="Failed to source it" ;;
 		4) status_message="Module \"$target_module\" could not be found" ;;
 		5) status_message="Getting hooks from module failed" ;;
+		6) status_message="after_load failed" ;;
 		*) status_message="Unknown error (code $status)" ;;
 	esac
 	send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
