@@ -1,10 +1,12 @@
 /*
  * This is how to create a factoid database
  * Use this file like this:
- * sqlite3 -batch data/factoids.db < doc/factoids.sql
+ * sqlite3 -batch data/envbot.db < doc/factoids.sql
  *
- * If you use another table name, change below
+ * If you use another table name, change below in
+ * both places
  */
+DROP TABLE IF EXISTS factoids;
 CREATE TABLE factoids (
 	name       TEXT UNIQUE NOT NULL PRIMARY KEY,
 	value      TEXT        NOT NULL,

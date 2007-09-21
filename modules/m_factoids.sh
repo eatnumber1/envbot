@@ -47,19 +47,10 @@ module_factoids_after_load() {
 		log_stdout "The factoids module depends upon the SQLite3 module being loaded before it"
 		return 1
 	fi
-	if ! [[ -r $config_module_factoids_database ]]; then
-		log_stdout "Factiods database file doesn't exist or can't be read!"
-		log_stdout "See comment in doc/factoids.sql for how to create one."
-		return 1
-	fi
 	if [[ -z $config_module_factoids_table ]]; then
 		log_stdout "Factiods table (config_module_factoids_table) must be set in config."
 		return 1
 	fi
-}
-
-module_factoids_exec_sql() {
-	module_sqlite3_exec_sql "$config_module_factoids_database" "$1"
 }
 
 # Get an item from DB
@@ -67,7 +58,7 @@ module_factoids_exec_sql() {
 module_factoids_SELECT() {
 	#$ sqlite3 -list data/factoids.sqlite "SELECT value from factoids WHERE name='factoids';"
 	#A system that stores useful bits of information
-	module_factoids_exec_sql "SELECT value FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';"
+	module_sqlite3_exec_sql "SELECT value FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 # Insert a new item into DB
@@ -75,7 +66,7 @@ module_factoids_SELECT() {
 # $2 = value
 # $3 = hostmask of person who added it
 module_factoids_INSERT() {
-	module_factoids_exec_sql \
+	module_sqlite3_exec_sql \
 		"INSERT INTO $config_module_factoids_table (name, value, who) VALUES('$(module_sqlite3_clean_string "$1")', '$(module_sqlite3_clean_string "$2")', '$(module_sqlite3_clean_string "$3")');"
 }
 
@@ -84,30 +75,30 @@ module_factoids_INSERT() {
 # $2 = new value
 # $3 = hostmask of person who changed it
 module_factoids_UPDATE() {
-	module_factoids_exec_sql \
+	module_sqlite3_exec_sql \
 		"UPDATE $config_module_factoids_table SET value='$(module_sqlite3_clean_string "$2")', who='$(module_sqlite3_clean_string "$3")' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 # Remove an item
 # $1 = key
 module_factoids_DELETE() {
-	module_factoids_exec_sql "DELETE FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';"
+	module_sqlite3_exec_sql "DELETE FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 # How many factoids are there
 module_factoids_get_count() {
-	module_factoids_exec_sql "SELECT COUNT(name) FROM $config_module_factoids_table;"
+	module_sqlite3_exec_sql "SELECT COUNT(name) FROM $config_module_factoids_table;"
 }
 # How many locked factoids are there
 module_factoids_get_locked_count() {
-	module_factoids_exec_sql "SELECT COUNT(name) FROM $config_module_factoids_table WHERE is_locked='1';"
+	module_sqlite3_exec_sql "SELECT COUNT(name) FROM $config_module_factoids_table WHERE is_locked='1';"
 }
 # Check if factoid is locked or not.
 # $1 = key
 # Return 0 = locked
 #        1 = not locked
 module_factoids_is_locked() {
-	local lock="$(module_factoids_exec_sql "SELECT is_locked FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';")"
+	local lock="$(module_sqlite3_exec_sql "SELECT is_locked FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';")"
 	if [[ $lock == "1" ]]; then
 		return 0
 	else
@@ -118,13 +109,13 @@ module_factoids_is_locked() {
 # Lock a factoid against changes from non-owners
 # $1 = key
 module_factoids_lock() {
-	module_factoids_exec_sql "UPDATE $config_module_factoids_table SET is_locked='1' WHERE name='$(module_sqlite3_clean_string "$1")';"
+	module_sqlite3_exec_sql "UPDATE $config_module_factoids_table SET is_locked='1' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 # Unlock a factoid from protection against non-owners
 # $1 = key
 module_factoids_unlock() {
-	module_factoids_exec_sql "UPDATE $config_module_factoids_table SET is_locked='0' WHERE name='$(module_sqlite3_clean_string "$1")';"
+	module_sqlite3_exec_sql "UPDATE $config_module_factoids_table SET is_locked='0' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 # Wrapper, call either INSERT or UPDATE

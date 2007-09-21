@@ -43,25 +43,16 @@ module_seen_after_load() {
 		log_stdout "The factoids module depends upon the SQLite3 module being loaded before it"
 		return 1
 	fi
-	if ! [[ -r $config_module_seen_database ]]; then
-		log_stdout "Seen database file doesn't exist or can't be read!"
-		log_stdout "See comment in doc/seen.sql for how to create one."
-		return 1
-	fi
 	if [[ -z $config_module_seen_table ]]; then
 		log_stdout "Seen table (config_module_seen_table) must be set in config."
 		return 1
 	fi
 }
 
-module_seen_exec_sql() {
-	module_sqlite3_exec_sql "$config_module_seen_database" "$1"
-}
-
 # Get the data about nick
 # $1 The nick
 module_seen_SELECT() {
-	module_seen_exec_sql "SELECT timestamp, channel, message FROM $config_module_seen_table WHERE nick='$(module_sqlite3_clean_string "$1")';"
+	module_sqlite3_exec_sql "SELECT timestamp, channel, message FROM $config_module_seen_table WHERE nick='$(module_sqlite3_clean_string "$1")';"
 }
 
 # Insert a new item into DB
@@ -70,7 +61,7 @@ module_seen_SELECT() {
 # $3 = timestamp
 # $4 = query
 module_seen_INSERT() {
-	module_seen_exec_sql \
+	module_sqlite3_exec_sql \
 		"INSERT INTO $config_module_seen_table (nick, channel, timestamp, message) VALUES('$(module_sqlite3_clean_string "$1")', '$(module_sqlite3_clean_string "$2")', '$(module_sqlite3_clean_string "$3")', '$(module_sqlite3_clean_string "$4")');"
 }
 
@@ -80,7 +71,7 @@ module_seen_INSERT() {
 # $3 = timestamp
 # $4 = message
 module_seen_UPDATE() {
-	module_seen_exec_sql \
+	module_sqlite3_exec_sql \
 		"UPDATE $config_module_seen_table SET channel='$(module_sqlite3_clean_string "$2")', timestamp='$(module_sqlite3_clean_string "$3")', message='$(module_sqlite3_clean_string "$4")' WHERE nick='$(module_sqlite3_clean_string "$1")';"
 }
 
@@ -128,8 +119,10 @@ module_seen_find() {
 			if [[ $found_message =~ ^ACTION\ (.*) ]]; then
 				found_message="* $nick ${BASH_REMATCH[1]}"
 			fi
-			send_msg "$channel" "$nick was last seen on $(config_module_seen_function "$found_timestamp") in $found_channel saying \"$found_message\""
+			send_msg "$channel" "$3 was last seen on $(config_module_seen_function "$found_timestamp") in $found_channel saying \"$found_message\""
 		fi
+	else
+		send_msg "$channel" "I have not seen $3."
 	fi
 }
 

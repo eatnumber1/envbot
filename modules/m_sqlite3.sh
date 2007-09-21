@@ -43,6 +43,11 @@ module_sqlite3_after_load() {
 		log_stdout "Couldn't find sqlite3 command line tool. The sqlite3 module depend on that tool."
 		return 1
 	fi
+	if ! [[ -r $config_module_sqlite3_database ]]; then
+		log_stdout "Seen database file doesn't exist or can't be read!"
+		log_stdout "See comment in doc/seen.sql for how to create one."
+		return 1
+	fi
 }
 
 # Make string safe for SQL.
@@ -54,8 +59,7 @@ module_sqlite3_clean_string() {
 }
 
 # Parameters:
-#   $1 Database file to run on
-#   $2 Query to run
+#   $1 Query to run
 module_sqlite3_exec_sql() {
-	sqlite3 -list "$1" "$2"
+	sqlite3 -list "$config_module_sqlite3_database" "$1"
 }

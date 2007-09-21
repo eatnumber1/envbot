@@ -1,10 +1,12 @@
 /*
  * This is how to create a factoid database
  * Use this file like this:
- * sqlite3 -batch data/seen.db < doc/seen.sql
+ * sqlite3 -batch data/envbot.db < doc/seen.sql
  *
- * If you use another table name, change below
+ * If you use another table name, change below in
+ * both places
  */
+DROP TABLE IF EXISTS seen;
 CREATE TABLE seen (
 	nick       TEXT UNIQUE NOT NULL PRIMARY KEY,
 	channel    TEXT        NOT NULL,

@@ -160,14 +160,14 @@ server_connect(){
 			module_${module}_on_connect "$line"
 		done
 		# Part of motd, that goes to dev null.
-		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTD  ]]; then
+		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTD ]]; then
 			continue
 		fi
 		log_raw_in "$line"
 		# Start of motd, note that we don't display that.
-		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTDSTART  ]]; then
+		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTDSTART ]]; then
 			log "Motd is not displayed in log"
-		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_YOURHOST  ]]; then
+		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_YOURHOST ]]; then
 			if [[ $line =~ ^:([^ ]+)  ]]; then # just to get the server name, this should always be true
 				server_name="${BASH_REMATCH[1]}"
 			fi
@@ -189,11 +189,14 @@ server_connect(){
 			send_raw_flood "USER $config_ident 0 * :${config_gecos}"
 		fi
 		server_handle_ping "$line"
-		if [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_NICKNAMEINUSE  ]]; then # Nick in use.
+		if [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_NICKNAMEINUSE ]]; then # Nick in use.
 			server_handle_nick_in_use
-		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
+		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_ERRONEUSNICKNAME ]]; then # Erroneous Nickname Being Held...
 			server_handle_nick_in_use
-		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ENDOFMOTD  ]]; then # 376 = End of motd
+		# Just in case check for either of these
+		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ENDOFMOTD ]] || \
+		     [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ERR_NOMOTD ]] || \
+		     [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_LUSERCLIENT ]]; then
 			sleep 1
 			log_stdout 'Connected'
 			server_connected=1
