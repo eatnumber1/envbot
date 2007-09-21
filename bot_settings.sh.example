@@ -139,6 +139,11 @@ config_module_services_server_alias=1
 # (*) Location of FAQ items.
 #config_module_faq_file='data/faq.txt'
 
+####################################################################
+# Quote module
+#
+# (*) Location of quotes file
+#config_module_quotes_file='data/quotes.txt'
 
 #####################################################################
 # AutoJoin module.
