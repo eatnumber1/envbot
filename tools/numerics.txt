@@ -58,10 +58,10 @@ numeric[256]=RPL_ADMINME
 numeric[257]=RPL_ADMINLOC1
 numeric[258]=RPL_ADMINLOC2
 numeric[259]=RPL_ADMINEMAIL
-numeric[265]=RPL_LOCALUSERS   # Not from any RFC.
-numeric[266]=RPL_GLOBALUSERS  # Not from any RFC.
-numeric[271]=RPL_SILELIST      #Not from any RFC
-numeric[272]=RPL_ENDOFSILELIST #Not from any RFC
+numeric[265]=RPL_LOCALUSERS    # Not from any RFC.
+numeric[266]=RPL_GLOBALUSERS   # Not from any RFC.
+numeric[271]=RPL_SILELIST      # Not from any RFC
+numeric[272]=RPL_ENDOFSILELIST # Not from any RFC
 
 numeric[301]=RPL_AWAY
 numeric[302]=RPL_USERHOST
@@ -81,6 +81,7 @@ numeric[319]=RPL_WHOISCHANNELS
 numeric[320]=RPL_WHOISSPECIAL # Not from any RFC. Numeric called other things on other ircds.
                               # RPL_WHOISSPECIAL is what it is called on unreal.
                               # Used for "connecting using ssl" on inspircd. Also used for SWHOIS.
+                              # On hyperion used for "is identified to services".
 numeric[321]=RPL_LISTSTART
 numeric[322]=RPL_LIST
 numeric[323]=RPL_LISTEND
