@@ -3,7 +3,6 @@
  * Use this file like this:
  * sqlite3 -batch data/factoids.db < doc/factoids.sql
  *
- * is_locked isn't used yet, it will be soon.
  */
 CREATE TABLE factoids (
 	name      TEXT UNIQUE NOT NULL PRIMARY KEY,
