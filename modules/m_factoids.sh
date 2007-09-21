@@ -25,9 +25,11 @@ module_factoids_INIT() {
 }
 
 module_factoids_UNLOAD() {
+	# Ok this is a LOT. I hope I got all...
 	unset module_factoids_exec_sql module_factoids_clean_string
 	unset module_factoids_set module_factoids_set_SELECT_or_UPDATE
-	unset module_factoids_remove module_factoids_get_count module_factoids_get_locked_count
+	unset module_factoids_remove module_factoids_send_factoid
+	unset module_factoids_get_count module_factoids_get_locked_count
 	unset module_factoids_is_locked module_factoids_lock module_factoids_unlock
 	unset module_factoids_SELECT module_factoids_INSERT module_factoids_UPDATE module_factoids_DELETE
 	unset module_factoids_after_load module_factoids_on_PRIVMSG
@@ -178,6 +180,25 @@ module_factoids_remove() {
 	fi
 }
 
+# Send the factoid:
+# $1 To where (channel or nick)
+# $2 What factoid.
+module_factoids_send_factoid() {
+	local channel="$1"
+	local key="$2"
+	local value="$(module_factoids_SELECT "$key")"
+	if [[ "$value" ]]; then
+		if [[ $value =~ ^\<REPLY\>(.*) ]]; then
+			send_msg "$channel" "${BASH_REMATCH[1]}"
+		elif [[ $value =~ ^\<ACTION\>(.*) ]]; then
+			send_ctcp "$channel" "ACTION ${BASH_REMATCH[1]}"
+		else
+			send_msg "$channel" "$key is $value"
+		fi
+	else
+		send_msg "$channel" "I don't know what \"$key\" is."
+	fi
+}
 
 # Called on a PRIVMSG
 #
@@ -237,12 +258,7 @@ module_factoids_on_PRIVMSG() {
 	elif parameters="$(parse_query_is_command "$query" "whatis")"; then
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			local key="${BASH_REMATCH[1]}"
-			local value="$(module_factoids_SELECT "$key")"
-			if [[ "$value" ]]; then
-				send_msg "$channel" "$key is $value"
-			else
-				send_msg "$channel" "I don't know what \"$key\" is."
-			fi
+			module_factoids_send_factoid "$channel" "$key"
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "whatis" "key"
 		fi
@@ -258,7 +274,7 @@ module_factoids_on_PRIVMSG() {
 		local key="${BASH_REMATCH[@]: -1}"
 		local value="$(module_factoids_SELECT "$key")"
 		if [[ "$value" ]]; then
-			send_msg "$channel" "$key is $value"
+			module_factoids_send_factoid "$channel" "$key"
 			return 1
 		fi
 	fi
