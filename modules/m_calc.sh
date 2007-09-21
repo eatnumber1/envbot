@@ -58,7 +58,8 @@ module_calc_FINALISE() {
 }
 
 module_calc_REHASH() {
-	module_calc_empty_tmpfile
+	module_calc_remove_tmpfile
+	module_calc_create_tmpfile
 }
 
 # Called on a PRIVMSG
