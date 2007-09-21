@@ -68,7 +68,7 @@ module_eix_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			local pattern="${BASH_REMATCH[1]}"
 				log_to_file eix.log "$sender made the bot run eix on \"$pattern\""
-				send_msg "$channel" "$(eix -ps --format "$module_eix_format_string" "$pattern" | head -n 1)"
+				send_msg "$channel" "$(eix -pSCs --format "$module_eix_format_string" "$pattern" | head -n 1)"
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "eix" "pattern"
 		fi
