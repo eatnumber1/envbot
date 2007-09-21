@@ -25,7 +25,7 @@ log_prefix="---------------"
 # Log to log file.
 # $* = the log message to log
 log() {
-	do_log "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
+	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 
 # Always print log message to STDOUT as well
@@ -44,16 +44,16 @@ log_stdout() {
 
 # Used internally in core
 log_raw_in() {
-	do_log "< $(date +'%Y-%m-%d %k:%M:%S') $@"
+	log_write "< $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 # Used internally in core
 log_raw_out() {
-	do_log "> $(date +'%Y-%m-%d %k:%M:%S') $@"
+	log_write "> $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 
 
 # Internal function to this file.
-do_log() {
+log_write() {
 	echo "$1" >> "$log_file"
 	if [[ $config_log_stdout -eq 1 ]]; then
 		echo "$1" | tr -d $'\\007'
@@ -62,8 +62,14 @@ do_log() {
 
 # Create log file.
 log_init() {
-	# This creates logfile for this run:
-	log_file="${config_log_dir}/$(date -u +%s).log"
+	# This creates log dir for this run:
+	log_dir="${config_log_dir}/$(date -u +%s)"
+	mkdir -m 700 "$log_dir"
+	if [[ $? -ne 0 ]]; then
+		echo "Error: couldn't create log dir"
+		exit 1
+	fi
+	log_file="${log_dir}/main.log"
 	touch "$log_file"
 	if [[ $? -ne 0 ]]; then
 		echo "Error: couldn't create logfile"
