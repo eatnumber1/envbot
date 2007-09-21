@@ -168,7 +168,7 @@ server_connect(){
 		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTDSTART  ]]; then
 			log "Motd is not displayed in log"
 		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_YOURHOST  ]]; then
-			if [[ $line =~ Your\ host\ is\ ([^ ,]*)  ]]; then # just to get the server name, this should always be true
+			if [[ $line =~ ^:([^ ]+)  ]]; then # just to get the server name, this should always be true
 				server_name="${BASH_REMATCH[1]}"
 			fi
 		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MYINFO ]]; then
