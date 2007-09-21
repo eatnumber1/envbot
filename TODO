@@ -7,3 +7,7 @@ TODO list
 * Periodic events
 * Some framework (as a module) for help.
 * Separate logs for different things as an option.
+
+Some modules notes for modules:
+* seen
+* factoids, stats (how many)
