@@ -92,11 +92,13 @@ server_handle_005() {
 	fi
 	# Enable NAMESX is supported.
 	if [[ $line =~ NAMESX ]]; then
+		log "Enabled NAMESX support"
 		send_raw_flood "PROTOCTL NAMESX"
 		server_NAMESX=1
 	fi
 	# Enable UHNAMES if it is there.
 	if [[ $line =~ UHNAMES ]]; then
+		log "Enabled UHNAMES support"
 		send_raw_flood "PROTOCTL UHNAMES"
 		server_UHNAMES=1
 	fi
@@ -105,7 +107,6 @@ server_handle_005() {
 server_handle_ping() {
 	if [[ "$1" =~ ^PING.* ]] ;then
 		local pingdata="$(parse_get_colon_arg "$1")"
-		log "$pingdata pinged me, answering ..."
 		send_raw "PONG :$pingdata"
 	fi
 }
