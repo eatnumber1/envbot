@@ -187,7 +187,7 @@ modules_load() {
 }
 
 modules_loaded=""
-# Load modules
+# Load modules from the config
 modules_load_from_config() {
 	for module in $config_modules; do
 		if [[ -f "modules/m_${module}.sh" ]]; then

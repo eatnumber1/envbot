@@ -70,8 +70,8 @@ bot_restart() {
 # Parameters
 #   $1 List to remove from.
 #   $2 Value to remove.
-# Returns
-#   New list on STDOUT.
+# Returns on STDOUT
+#   New list
 list_remove() {
 	local oldlist="${!1}"
 	local newlist=${oldlist//$2}

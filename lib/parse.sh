@@ -19,41 +19,43 @@
 #                                                                         #
 ###########################################################################
 
-# Bad name of function, it gets the argument
-# after a ":", the last multiword argument
-# Only reads FIRST as data
-# Returns on STDOUT
-# FIXME: Can't handle a ":" in a word before the place to split
-parse_get_colon_arg() {
-	cut -d':' -f2- <<< "$1"
-}
-
 # Get nick from hostmask
-# Returns on STDOUT: nick
-# parameter: n!u@h mask
+# Parameters
+#   $1 n!u@h mask
+# Returns on STDOUT
+#   nick
 parse_hostmask_nick() {
 	cut -d'!' -f1 <<< "$1"
 }
 # Get ident from hostmask
-# Returns on STDOUT: nick
-# parameter: n!u@h mask
+# Parameters
+#   $1 n!u@h mask
+# Returns on STDOUT
+#   ident
 parse_hostmask_ident() {
 	cut -d'!' -f2 <<< "$1" | cut -d'@' -f1
 }
 # Get host from hostmask
-# Returns on STDOUT: nick
-# parameter: n!u@h mask
+# Parameters
+#   $1 n!u@h mask
+# Returns on STDOUT
+#   host
 parse_hostmask_host() {
 	cut -d'@' -f2 <<< "$1"
 }
 
 # This is used to get data out of 005.
-# $1 = Name of data to get
-# Returns 0 if found, otherwise 1.
-# Returns on STDOUT the variable data in question, if any
-#         Note that if the variable doesn't have any data,
-#         but still exist it will return nothing on STDOUT
-#         but 0 as error code
+# Parameters
+#   $1 Name of data to get
+# Return status
+#   0 If found
+#   1 If not found
+# Returns on STDOUT
+#   The variable data in question, if any
+# Note
+#   That if the variable doesn't have any data,
+#   but still exist it will return nothing on STDOUT
+#   but 0 as error code
 parse_005() {
 	if [[ $server_005 =~ ${1}(=([^ ]+))? ]]; then
 		# Some, but not all also send what char the modes for INVEX is.
@@ -66,12 +68,16 @@ parse_005() {
 	return 1
 }
 
-# $1 = The query to check, this should be the part
-#      after the : in PRIVMSG.
-# $2 = What command to look for.
-# Return: 0 = Matches
-#         1 = Doesn't match
-# Returned on STDOUT if matches: The parameters
+# Check if a query matches a command. If it matches extract the
+# parameters.
+# Parameters
+#   $1 The query to check, this should be the part after the : in PRIVMSG.
+#   $2 What command to look for.
+# Return status
+#   0 = Matches
+#   1 = Doesn't match
+# Returns on STDOUT
+#   If matches: The parameters
 parse_query_is_command() {
 	if [[ "$1" =~ ^${config_listenregex}${2}(\ (.*)|$) ]]; then
 		echo "${BASH_REMATCH[@]: -1}"
@@ -79,4 +85,13 @@ parse_query_is_command() {
 	else
 		return 1
 	fi
+}
+
+# Bad name of function, it gets the argument
+# after a ":", the last multiword argument
+# Only reads FIRST as data
+# Returns on STDOUT
+# FIXME: Can't handle a ":" in a word before the place to split
+parse_get_colon_arg() {
+	cut -d':' -f2- <<< "$1"
 }
