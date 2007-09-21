@@ -19,10 +19,10 @@
 #                                                                         #
 ###########################################################################
 
-# Quits the bot in a graceful way:
-# Optional parameters:
-# $1 = Reason to quit
-# $2 = Return status (if not given, then exit 0).
+# Quits the bot in a graceful way.
+# Parameters
+#   $1 Reason to quit (optional)
+#   $2 Return status (optional, if not given, then exit 0).
 bot_quit() {
 	for module in $modules_before_disconnect; do
 		module_${module}_before_disconnect
@@ -46,8 +46,8 @@ bot_quit() {
 }
 
 # Restart the bot in a graceful way. I hope.
-# Optional parameters:
-# $1 = Reason to restart
+# Parameters
+#   $1 Reason to restart (optional)
 bot_restart() {
 	for module in $modules_before_disconnect; do
 		module_${module}_before_disconnect
@@ -66,20 +66,25 @@ bot_restart() {
 	exec env -i "$(type -p bash)" $0 $command_line
 }
 
-# Remove a value from a space separated list
-# $1 = List to remove from
-# $2 = Value to remove
-# Returns new list on STDOUT
+# Remove a value from a space separated list.
+# Parameters
+#   $1 List to remove from.
+#   $2 Value to remove.
+# Returns
+#   New list on STDOUT.
 list_remove() {
 	local oldlist="${!1}"
 	local newlist=${oldlist//$2}
 	echo "$(sed 's/^ \+//;s/ \+$//;s/ \{2,\}/ /g' <<< "$newlist")" # Get rid of the unneeded spaces.
 }
 
-# Checks if a space separated list contains a value
-# $1 = List to check
-# $2 = Value to check for
-# Returns 0 if found, otherwise 1.
+# Checks if a space separated list contains a value.
+# Parameters
+#   $1 List to check.
+#   $2 Value to check for.
+# Return code
+#   0 If found.
+#   1 If not found.
 list_contains() {
 	grep -wq "$2" <<< "${!1}"
 }

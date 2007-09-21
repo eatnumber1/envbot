@@ -23,27 +23,31 @@ log_prefix="---------------"
 
 
 # Log to main log file.
-# $* = the log message to log
+# Parameters
+#   $* The log message to log
 log() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 
 # Log to to a specific log file as well as main log.
-# $1 = The extra log file (relative to the current log dir)
-# $2 = the log message to log
+# Parameters
+#   $1 The extra log file (relative to the current log dir)
+#   $2 The log message to log
 log_to_file() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $2" "0" "$1"
 }
 
 # Always print log message to STDOUT as well
-# $* = the log message to log
+# Parameters
+#   $* The log message to log
 log_stdout() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@" "1"
 }
 
 # Log to to a specific log file as well as main log and STDOUT.
-# $1 = The extra log file (relative to the current log dir)
-# $2 = the log message to log
+# Parameters
+#   $1 The extra log file (relative to the current log dir)
+#   $2 The log message to log
 log_stdout_file() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $2" "1" "$1"
 }

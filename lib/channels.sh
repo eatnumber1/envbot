@@ -34,8 +34,9 @@ channels_join() {
 }
 
 # Part a channel
-# $1 the channel to part
-# $2 is a reason.
+# Parameters
+#   $1 The channel to part
+#   $2 Is a reason.
 channels_part() {
 	local channel="$1"
 	local reason=""
@@ -48,14 +49,18 @@ channels_part() {
 # Module authors: go away                                                 #
 ###########################################################################
 
-# Internal function
+# Internal function!
 # Adds channels to the list
+# Parameters
+#   $1 The channel to add
 channels_add() {
 	channels_current="$channels_current $1"
 }
 
-# Internal function
+# Internal function!
 # Removes channels to the list
+# Parameters
+#   $1 The channel to remove
 channels_remove() {
 	channels_current="$(list_remove channels_current $1)"
 }

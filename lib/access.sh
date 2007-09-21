@@ -22,7 +22,7 @@
 # Check for owner access.
 # Parameters
 #   $1 n!u@h mask
-# Returns
+# Return status
 #   0 On owner
 #   1 Otherwise
 access_check_owner() {

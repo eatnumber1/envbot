@@ -105,10 +105,12 @@ modules_add_hooks() {
 # List of all the optional hooks.
 modules_hooks="FINALISE after_load before_connect on_connect after_connect before_disconnect after_disconnect on_server_ERROR on_NOTICE on_PRIVMSG on_TOPIC on_channel_MODE on_JOIN on_PART on_KICK on_QUIT on_KILL on_NICK on_numeric on_raw"
 
-
-# $1 = module name
-# Return: 0 = unloaded
-#         2 = Module not loaded
+# Unload a module
+# Parameters
+#   $1 Module name
+# Return status
+#   0 Unloaded
+#   2 Module not loaded
 # If the unload fails the bot will quit.
 modules_unload() {
 	local module="$1"
@@ -132,14 +134,18 @@ modules_unload() {
 	return 0
 }
 
-# $1 = Name of module to load
-# Returns 0 = Loaded ok
-#         1 = Other errors
-#         2 = Module already loaded
-#         3 = Failed to source it
-#         4 = No such module
-#         5 = Getting hooks failed
-#         6 = after_load failed
+# Load a module
+# Parameters
+#   $1 Name of module to load
+# Returns status
+#   0 Loaded ok
+#   1 Other errors
+#   2 Module already loaded
+#   3 Failed to source it
+#   4 No such module
+#   5 Getting hooks failed
+#   6 after_load failed
+# If the load fails in a fatal way the bot will quit.
 modules_load() {
 	module="$1"
 	if grep -qw "$module" <<< "${modules_loaded}"; then

@@ -19,9 +19,11 @@
 #                                                                         #
 ###########################################################################
 
-# $1 = to who (nick or channel)
-# $2 = to what function
-# $3 = syntax help
+# Return a message that syntax was bad and what the correct syntax is.
+# Parameters
+#   $1 To who (nick or channel)
+#   $2 To what function
+#   $3 Syntax help
 feedback_bad_syntax() {
 	send_msg "$1" "Syntax error. Correct syntax for $2 is $2 $3"
 }

@@ -19,11 +19,12 @@
 #                                                                         #
 ###########################################################################
 
-# Return status:
-# 0 = Sucess
-# 2 = Not same config version
-# 3 = Failed to source. The bot should not be in an undefined state
-# 4 = Failed to source. The bot may be in an undefined state
+# Rehash config file.
+# Return status
+#   0 Sucess
+#   2 Not same config version
+#   3 Failed to source. The bot should not be in an undefined state
+#   4 Failed to source. The bot may be in an undefined state
 config_rehash() {
 	local new_conf_ver="$(grep -E '^config_version=' "$config_file")"
 	if ! [[ $new_conf_ver =~ ^config_version=$config_current_version ]]; then
