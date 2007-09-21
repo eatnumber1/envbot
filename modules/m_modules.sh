@@ -83,6 +83,7 @@ module_modules_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
+				log_stdout_file owner.log "$sender loaded the module $target_module"
 				module_modules_doload "$target_module"
 			else
 				access_fail "$sender" "load a module" "owner"
@@ -95,6 +96,7 @@ module_modules_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
+				log_stdout_file owner.log "$sender unloaded the module $target_module"
 				module_modules_dounload "$target_module"
 			else
 				access_fail "$sender" "unload a module" "owner"
@@ -107,12 +109,13 @@ module_modules_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
+				log_stdout_file owner.log "$sender reloaded the module $target_module"
 				module_modules_dounload "$target_module"
 				if [[ $? = 0 ]]; then
 					module_modules_doload "$target_module"
 				fi
 			else
-				access_fail "$sender" "unload a module" "owner"
+				access_fail "$sender" "reload a module" "owner"
 			fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "modunload" "modulename"
@@ -126,7 +129,7 @@ module_modules_on_PRIVMSG() {
 				done
 				send_msg "$(parse_hostmask_nick "$sender")" "Modules currently loaded:$modlist"
 			else
-				access_fail "$sender" "unload a module" "owner"
+				access_fail "$sender" "list modules" "owner"
 			fi
 		return 1
 	fi

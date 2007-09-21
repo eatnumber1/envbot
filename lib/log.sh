@@ -22,18 +22,30 @@
 log_prefix="---------------"
 
 
-# Log to log file.
+# Log to main log file.
 # $* = the log message to log
 log() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 
+# Log to to a specific log file as well as main log.
+# $1 = The extra log file (relative to the current log dir)
+# $2 = the log message to log
+log_to_file() {
+	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $2" "0" "$1"
+}
+
 # Always print log message to STDOUT as well
 # $* = the log message to log
 log_stdout() {
-	local logstring="$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
-	echo "$logstring" >> "$log_file"
-	echo "$logstring" | tr -d $'\\007'
+	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@" "1"
+}
+
+# Log to to a specific log file as well as main log and STDOUT.
+# $1 = The extra log file (relative to the current log dir)
+# $2 = the log message to log
+log_stdout_file() {
+	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $2" "1" "$1"
 }
 
 
@@ -53,9 +65,13 @@ log_raw_out() {
 
 
 # Internal function to this file.
+#  $1 = message to log
+#  $2 = if 1 always log to STDOUT as well
+#  $3 = may be optional extra log file
 log_write() {
 	echo "$1" >> "$log_file"
-	if [[ $config_log_stdout -eq 1 ]]; then
+	[[ $3 ]] && echo "$1" >> "$log_dir/$3"
+	if [[ $config_log_stdout -eq 1 ]] || [[ $2 -eq 1 ]]; then
 		echo "$1" | tr -d $'\\007'
 	fi
 }

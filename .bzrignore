@@ -4,3 +4,4 @@ bot_settings.sh
 ./data/faq.txt
 ./data/*.db
 ./data/quotes.txt
+./logs/*

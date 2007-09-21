@@ -32,7 +32,7 @@ clean:
 	rm -vf *~ */*~
 
 cleanlogs:
-	rm -vf logs/*.log
+	rm -vrf logs/*
 
 dist-dir:
 	rm -rf $(DISTDIR)
