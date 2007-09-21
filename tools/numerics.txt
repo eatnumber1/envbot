@@ -48,7 +48,7 @@ numeric[8]=RPL_SNOMASK   # Not from any RFC, used on unreal
 numeric[219]=RPL_ENDOFSTATS
 numeric[221]=RPL_UMODEIS
 numeric[242]=RPL_STATSUPTIME
-
+numeric[250]=RPL_STATSCONN     # Not from any RFC. Conflicting use on different ircds.
 numeric[251]=RPL_LUSERCLIENT
 numeric[252]=RPL_LUSEROP
 numeric[253]=RPL_LUSERUNKNOWN
