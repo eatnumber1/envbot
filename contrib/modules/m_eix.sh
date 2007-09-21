@@ -51,7 +51,7 @@ module_eix_after_load() {
 }
 
 # eix format string:
-module_eix_format_string='<category>/<name> \(<bestslots>\) \(<homepage>\): <description>'
+module_eix_format_string=$'<category>/\002<name>\002 \(<availableversionsshort>\) \(\002<homepage>\002\): <description>'
 
 # Called on a PRIVMSG
 #
@@ -65,10 +65,10 @@ module_eix_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "eix")"; then
-		if [[ "$parameters" =~ ^([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(.*) ]]; then
 			local pattern="${BASH_REMATCH[1]}"
 				log_to_file eix.log "$sender made the bot run eix on \"$pattern\""
-				send_msg "$channel" "$(eix -pSCs --format "$module_eix_format_string" "$pattern" | head -n 1)"
+				send_msg "$channel" "$(EIX_PRINT_IUSE='false' eix -pSCxs --format "$module_eix_format_string" "$pattern" | head -n 1)"
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "eix" "pattern"
 		fi
