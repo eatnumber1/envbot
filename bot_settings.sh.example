@@ -186,7 +186,6 @@ config_module_umodes_default_umodes="+isB-w"
 # Seen module
 #
 # (*) Table name for seen data in SQLite3 databse
-#config_module_seen_database='data/seen.db'
 #config_module_seen_table='seen'
 # A function that outputs date from an unix timestamp.
 #   There is no standard one so we let you chose one.
