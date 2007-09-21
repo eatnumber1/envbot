@@ -48,6 +48,7 @@ module_say_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
+				log_file owner.log "$sender made the bot say \"$message\" in/to \"$channel\""
 				send_msg "$channel" "$message"
 			else
 				access_fail "$sender" "make the bot talk with say" "owner"
@@ -61,6 +62,7 @@ module_say_on_PRIVMSG() {
 			local channel="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
 			if access_check_owner "$sender"; then
+				log_file owner.log "$sender made the bot act \"$message\" in/to \"$channel\""
 				send_ctcp "${channel}" "ACTION ${message}"
 			else
 				access_fail "$sender" "make the bot act" "owner"
