@@ -25,8 +25,10 @@ module_factoids_INIT() {
 }
 
 module_factoids_UNLOAD() {
-	unset module_factoids_clean_string module_factoids_set module_factoids_set_SELECT_or_UPDATE
-	unset module_factoids_remove module_factoids_is_locked module_factoids_lock module_factoids_unlock
+	unset module_factoids_exec_sql module_factoids_clean_string
+	unset module_factoids_set module_factoids_set_SELECT_or_UPDATE
+	unset module_factoids_remove module_factoids_get_count
+	unset module_factoids_is_locked module_factoids_lock module_factoids_unlock
 	unset module_factoids_SELECT module_factoids_INSERT module_factoids_UPDATE module_factoids_DELETE
 	unset module_factoids_after_load module_factoids_on_PRIVMSG
 }
@@ -59,36 +61,41 @@ module_factoids_clean_string() {
 	tr -Cd 'A-Za-z0-9 ,;.:-_<>*|~^!"#%&/()=?+\@${}[]+' <<< "$1"
 }
 
+module_factoids_exec_sql() {
+	sqlite3 -list "$config_module_factoids_database" "$1"
+}
+
 # Get an item from DB
 # $1 = key
 module_factoids_SELECT() {
 	#$ sqlite3 -list data/factoids.sqlite "SELECT value from factoids WHERE name='factoids';"
 	#A system that stores useful bits of information
-	echo "$(sqlite3 -list "$config_module_factoids_database" \
-		"SELECT value FROM factoids WHERE name='$(module_factoids_clean_string "$1")';")"
+	module_factoids_exec_sql "SELECT value FROM factoids WHERE name='$(module_factoids_clean_string "$1")';"
 }
 
 # Insert a new item into DB
 # $1 = key
 # $2 = value
 module_factoids_INSERT() {
-	sqlite3 -list "$config_module_factoids_database" \
-		"INSERT INTO factoids (name, value) VALUES('$(module_factoids_clean_string "$1")', '$(module_factoids_clean_string "$2")');"
+	module_factoids_exec_sql "INSERT INTO factoids (name, value) VALUES('$(module_factoids_clean_string "$1")', '$(module_factoids_clean_string "$2")');"
 }
 
 # Change the item in DB
 # $1 = key
 # $2 = new value
 module_factoids_UPDATE() {
-	sqlite3 -list "$config_module_factoids_database" \
-		"UPDATE factoids SET value='$(module_factoids_clean_string "$2")' WHERE name='$(module_factoids_clean_string "$1")';"
+	module_factoids_exec_sql "UPDATE factoids SET value='$(module_factoids_clean_string "$2")' WHERE name='$(module_factoids_clean_string "$1")';"
 }
 
 # Remove an item
 # $1 = key
 module_factoids_DELETE() {
-	sqlite3 -list "$config_module_factoids_database" \
-		"DELETE FROM factoids WHERE name='$(module_factoids_clean_string "$1")';"
+	module_factoids_exec_sql "DELETE FROM factoids WHERE name='$(module_factoids_clean_string "$1")';"
+}
+
+# How many factoids are there
+module_factoids_get_count() {
+	module_factoids_exec_sql "SELECT COUNT(name) FROM factoids;"
 }
 
 # Check if factoid is locked or not.
@@ -96,8 +103,7 @@ module_factoids_DELETE() {
 # Return 0 = locked
 #        1 = not locked
 module_factoids_is_locked() {
-	local lock="$(sqlite3 -list "$config_module_factoids_database" \
-		"SELECT is_locked FROM factoids WHERE name='$(module_factoids_clean_string "$1")';")"
+	local lock="$(module_factoids_exec_sql "SELECT is_locked FROM factoids WHERE name='$(module_factoids_clean_string "$1")';")"
 	if [[ $lock == "1" ]]; then
 		return 0
 	else
@@ -108,15 +114,13 @@ module_factoids_is_locked() {
 # Lock a factoid against changes from non-owners
 # $1 = key
 module_factoids_lock() {
-	sqlite3 -list "$config_module_factoids_database" \
-		"UPDATE factoids SET is_locked='1' WHERE name='$(module_factoids_clean_string "$1")';"
+	module_factoids_exec_sql "UPDATE factoids SET is_locked='1' WHERE name='$(module_factoids_clean_string "$1")';"
 }
 
 # Unlock a factoid from protection against non-owners
 # $1 = key
 module_factoids_unlock() {
-	sqlite3 -list "$config_module_factoids_database" \
-		"UPDATE factoids SET is_locked='0' WHERE name='$(module_factoids_clean_string "$1")';"
+	module_factoids_exec_sql "UPDATE factoids SET is_locked='0' WHERE name='$(module_factoids_clean_string "$1")';"
 }
 
 # Wrapper, call either INSERT or UPDATE
@@ -238,6 +242,12 @@ module_factoids_on_PRIVMSG() {
 			fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "whatis" "key"
+		fi
+		return 1
+	elif parameters="$(parse_query_is_command "$query" "factoid stats")"; then
+		local value="$(module_factoids_get_count)"
+		if [[ "$value" ]]; then
+			send_msg "$channel" "There are $value items in my factoid database"
 		fi
 		return 1
 	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|to)\ )?([^ \?]+)\?? ]]; then
