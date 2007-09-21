@@ -44,12 +44,13 @@ The hooks
 ---------
 module_modulename_INIT (REQUIRED)
 	Called directly after loading the module.
-	No parameters.
-	If return code isn't 0 the module is considered as failed to load.
-	The module should clean up after itself in this case before it returns
-	from INIT.
-	On STDOUT should be returned a space separated list of the optional functions
-	that the module implements. FAQ would return "before_connect on_PRIVMSG"
+	Parameters:
+		None
+	Return status:
+		If return status isn't 0 the module is considered as failed to load.
+	Return on STDOUT:
+		On STDOUT should be returned a space separated list of the optional functions
+		that the module implements. FAQ would return "before_connect on_PRIVMSG"
 
 
 module_modulename_UNLOAD (REQUIRED)
@@ -59,18 +60,21 @@ module_modulename_UNLOAD (REQUIRED)
 	The unload function and other REQUIRED functions will be undefined
 	after unload finished.
 	The module may or may not get reloaded after this.
-	This function is NOT called when the bot is exiting. To check for that
-	use the FINALISE hook!
-	No parameters
-	Return code:
+	Parameters:
+		None
+	Return status:
 		0 = Unloaded correctly
 		1 = Failed to unload. On this the bot will quit.
+	Notes:
+		This function is NOT called when the bot is exiting. To check for that
+		use the FINALISE hook!
 
 
 module_modulename_REHASH (REQUIRED) (TODO)
 	Called to make the module reparse any config options.
-	No parameters
-	Return code:
+	Parameters:
+		None
+	Return status:
 		0 = Rehashed correctly
 		1 = Non fatal error for the bot itself. The bot will call UNLOAD on the module.
 		2 = Fatal error of some kind. On this the bot will quit.
@@ -80,44 +84,55 @@ module_modulename_FINALISE
 	Called directly before the bot quits. The bot has already closed
 	the connection to the IRC server at this point. This is for saving
 	stuff.
-	No parameters.
-	Return code isn't checked.
+	Parameters:
+		None
+	Return status:
+		Not checked.
 
 
 module_modulename_after_load
 	Called after all the hooks are added for the module.
-	No parameters
-	Return code:
+	Parameters:
+		None
+	Return status:
 		0 = Unloaded correctly
 		1 = Failed. On this the bot will call unload on the module.
-	Note: This is useful for stuff that needs to echo log messages
-	      as that can't be done in modulename_INIT.
+	Notes:
+		This is useful for stuff that needs to echo log messages
+		as that can't be done in modulename_INIT.
 
 
 module_modulename_before_connect
 	Called before the bot connected.
-	No parameters
-	Return code not checked.
+	Parameters:
+		None
+	Return status:
+		Not checked.
 
 
 module_modulename_on_connect
 	Called for each line that the bot
 	receives from the server during connecting.
-	$1 = raw line.
-	Return code not checked.
+	Parameters:
+		$1 = Raw line.
+	Return status:
+		Not checked.
 
 
 module_modulename_after_connect
 	Called after the bot connected.
-	No parameters
-	Return code not checked.
+	Parameters:
+		None
+	Return status:
+		Not checked.
 
 
 module_modulename_on_PRIVMSG
 	Called when bot gets a PRIVMSG
-	$1 = from who (n!u@h)
-	$2 = to who (channel or botnick)
-	$3 = the message
+	Parameters:
+		$1 = From who (n!u@h)
+		$2 = To who (channel or botnick)
+		$3 = The message
 	Return code:
 		0 = pass it on to next module
 		1 = I have taken care of this, and don't
@@ -126,9 +141,10 @@ module_modulename_on_PRIVMSG
 
 module_modulename_on_NOTICE
 	Called when bot gets a NOTICE
-	$1 = from who (n!u@h)
-	$2 = to who (channel or botnick)
-	$3 = the message
+	Parameters:
+		$1 = From who (n!u@h)
+		$2 = To who (channel or botnick)
+		$3 = The message
 	Return code:
 		0 = pass it on to next module
 		1 = I have taken care of this, and don't
@@ -138,66 +154,78 @@ module_modulename_on_NOTICE
 module_modulename_on_NICK
 	# :AnMaster!AnMaster@staff.kuonet-ng.org NICK AnMaster_test
 	Called when someone changes nick in a channel the bot is in
-	$1 = from who (n!u@h)
-	$2 = new nick
-	Return code not checked.
-		Reason: A module with a list of users could get desynced if it didn't
-		get the nick change.
+	Parameters:
+		$1 = From who (n!u@h)
+		$2 = New nick
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the nick change.
 
 
 module_modulename_on_JOIN
 	# :AnMaster!AnMaster@staff.kuonet-ng.org JOIN :#test
 	Called when someone joins a channel the bot is in
-	$1 = who did it (n!u@h)
-	$2 = what channel
-	Return code not checked.
-		Reason: A module with a list of users could get desynced if it didn't
-		get the join.
+	Parameters:
+		$1 = Who did it (n!u@h)
+		$2 = What channel
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the join.
 
 
 module_modulename_on_PART
 	# :AnMaster!AnMaster@staff.kuonet-ng.org PART #test
 	# :AnMaster!AnMaster@staff.kuonet-ng.org PART #test :with a reason
 	Called when someone parts a channel the bot is in
-	$1 = who did it (n!u@h)
-	$2 = what channel
-	$3 = a reason if one exists.
-	Return code not checked.
-		Reason: A module with a list of users could get desynced if it didn't
-		get the part.
+	Parameters:
+		$1 = Who did it (n!u@h)
+		$2 = What channel
+		$3 = A reason if one exists.
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the part.
 
 
 module_modulename_on_KICK
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test AnMaster_test :this is a test
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KICK #test envbot :another test
 	Called when someone parts a channel the bot is in
-	$1 = Who did it (n!u@h).
-	$2 = What channel.
-	$3 = Who got kicked.
-	$4 = A reason if one exists.
-	Return code not checked.
-		Reason: A module with a list of users could get desynced if it didn't
-		get the kick.
+	Parameters:
+		$1 = Who did it (n!u@h).
+		$2 = What channel.
+		$3 = Who got kicked.
+		$4 = A reason if one exists.
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the kick.
 
 
 module_modulename_on_QUIT
 	# :AnMaster_test!AnMaster@staff.kuonet-ng.org QUIT :Quit: ERC Version 5.2 (IRC client for Emacs)
 	Called when someone quits
-	$1 = Who did it (n!u@h).
-	$2 = A reason if one exists.
-	Return code not checked.
-		Reason: A module with a list of users could get desynced if it didn't
-		get the quit.
+	Parameters:
+		$1 = Who did it (n!u@h).
+		$2 = A reason if one exists.
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the quit.
 
 
 module_modulename_on_TOPIC
 	# :AnMaster!AnMaster@staff.kuonet-ng.org TOPIC #test :Bash bot testing channel
 	Called when a topic is set or on channel join
-	$1 = Who did it (n!u@h).
-	$2 = What channel.
-	$3 = New topic.
-	Return code not checked.
-		Reason: We don't want to get desynced modules.
+	Parameters:
+		$1 = Who did it (n!u@h).
+		$2 = What channel.
+		$3 = New topic.
+	Return status:
+		Not checked.
+			Reason: We don't want to get desynced modules.
 
 
 module_modulename_on_channel_MODE
@@ -206,23 +234,27 @@ module_modulename_on_channel_MODE
 	# :ChanServ!ChanServ@services.kuonet-ng.org MODE #test +nt-k 5
 	# :AnMaster!AnMaster@staff.kuonet-ng.org MODE #test -s
 	Called when someone changes a mode in the channel
-	$1 = Who did it (n!u@h).
-	$2 = On what channel.
-	$3 = The mode change with it's parameters.
-	Return code not checked.
-		Reason: A module with a list of users could get desynced if it didn't
-		get the mode change.
+	Parameters:
+		$1 = Who did it (n!u@h).
+		$2 = On what channel.
+		$3 = The mode change with it's parameters.
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the mode change.
 
 
 module_modulename_on_numeric
 	Called on any numeric after connect.
-	$1 = The numeric.
-	$2 = It's data.
-	Return code:
+	Parameters:
+		$1 = The numeric.
+		$2 = It's data.
+	Return status:
 		0 = pass it on to next module
 		1 = I have taken care of this, and don't
 		    consult other modules about this.
-	Note: In most cases you DON'T want to return 1 for this. If you do be very very careful.
+	Notes:
+		In most cases you DON'T want to return 1 for this. If you do be very very careful.
 
 
 module_modulename_on_server_ERROR
@@ -231,37 +263,48 @@ module_modulename_on_server_ERROR
 	# ERROR :Closing Link: envbot[host.name.se] Brain ([hurricane.KuoNET.org] Local kill by Brain (testing kill on unrealircd))
 	# ERROR :Closing Link: envbot[host.name.se] hurricane.KuoNET.org (Killed (Brain (testing kill on unrealircd, remote one)))
 	Called when the bot get an ERROR from the server.
-	$1 = The ERROR message.
-	Return code not checked.
-		Reason: There isn't much point in swallowing this.
+	Parameters:
+		$1 = The ERROR message.
+	Return status:
+		Not checked.
+			Reason: There isn't much point in swallowing this.
 
 module_modulename_on_KILL
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KILL envbot :photon.kuonet-ng.org!staff.kuonet-ng.org!AnMaster (killing to test on inspircd)
 	# :Brain!brain@staff.kuonet.org KILL envbot :staff.kuonet.org!Brain (testing kill on unrealircd)
 	# :Brain!brain@staff.kuonet.org KILL envbot :hurricane!staff.kuonet.org!Brain (testing kill on unrealircd, remote one)
 	Called when the bot get a KILL message from the server.
-	$1 = The sender of the kill.
-	$2 = The target of the kill.
-	$3 = The KILL path.
-	$4 = The reason.
+	Parameters:
+		$1 = The sender of the kill.
+		$2 = The target of the kill.
+		$3 = The KILL path.
+		$4 = The reason.
+	Return status:
+		Not checked.
+			Reason: Risk for desync of modules.
 
 module_modulename_before_disconnect
 	Called when the bot is about to disconnect from server.
 	The bot may or may not reconnect after this depending on what caused this.
-	Note that this won't be called if the disconnect wasn't planned, like
-	a ping timeout, getting killed, and so on.
 	the disconnect.
-	No parameters.
-	Return code not checked.
+	Parameters:
+		None
+	Return status:
+		Not checked.
+	Notes:
+		This won't be called if the disconnect wasn't planned, like
+		a ping timeout, getting killed, and so on.
 
 
 module_modulename_after_disconnect
 	Called when the bot gets disconnected from server.
 	The bot may or may not reconnect after this depending on what caused
 	the disconnect.
-	No parameters.
-	Return code not checked.
-		Reason: A module may need clean up, don't let it desync.
+	Parameters:
+		None
+	Return status:
+		Not checked.
+			Reason: A module may need clean up, don't let it desync.
 
 
 module_modulename_on_RAW
@@ -277,7 +320,7 @@ module_modulename_on_RAW
 	  PART, KICK or possibly others. Or make it ping out by swallowing PING.
 	Parameters:
 		$1 = The raw line
-	Return code:
+	Return status:
 		0 = pass it on to next module
 		1 = I have taken care of this, and don't
 		    consult other modules about this.

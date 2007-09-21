@@ -41,37 +41,51 @@ normal modules. You can only use one transport module at a time.
 transport_check_support()
 	Check if all the stuff needed to use this transport is available
 	on this system.
-	Return status: 0 = Yes
-	               1 = No
+	Return status:
+		0 = Yes
+		1 = No
 
 
 transport_connect()
 	Try to connect
-	Return status: 0 = Connection successful
-	               1 = Connection failed
-	$1 = Hostname/IP
-	$2 = Port
-	$3 = If 1 use SSL. If the module does not support it, just ignore it.
-	$3 = IP to bind to if any and if supported
-	     If the module does not support it, just ignore it.
+	Return status:
+		0 = Connection successful
+		1 = Connection failed
+	Parameters:
+		$1 = Hostname/IP
+		$2 = Port
+		$3 = If 1 use SSL. If the module does not support it, just ignore it.
+		$3 = IP to bind to if any and if supported
+		     If the module does not support it, just ignore it.
 
 
 transport_disconnect()
 	Called to close connection
-	No parameters, no return code check
-	The module must handle this getting called even when not connected.
+	Parameters:
+		None
+	Return status:
+		Not checked.
+	Notes:
+		The module must handle this getting called even when not connected or when
+		partly connected (it should clean up any program the module is running in
+		the background on a ping time out for example).
 
 
 transport_read_line()
 	Return a line in the variable $line.
-	Return status: 0 = Success
-	               1 = Connection has failed (timeout or whatever)
-	The transport module should remove any trailing \r and/or \n (CR and/or LF)
-	from the string before it returns it.
+	Return status:
+		0 = Success
+		1 = Connection has failed (timeout or whatever)
+	Notes
+		The transport module should remove any trailing \r and/or \n (CR and/or LF)
+		from the string before it returns it.
 
 
 transport_write_line()
 	Send a line
-	$* = send this
-	Return code not checked.
-	The transport module should add a \n (LF) to the end of the data it get.
+	Parameters:
+		$* = send this
+	Return status:
+		Not checked.
+	Notes:
+		The transport module should add a \n (LF) to the end of the data it get.
