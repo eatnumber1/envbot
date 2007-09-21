@@ -5,6 +5,7 @@
  *
  */
 CREATE TABLE factoids (
-	name      TEXT UNIQUE NOT NULL PRIMARY KEY,
-	value     TEXT        NOT NULL,
-	is_locked INTEGER     NOT NULL DEFAULT 0);
+	name       TEXT UNIQUE NOT NULL PRIMARY KEY,
+	value      TEXT        NOT NULL,
+	who        TEXT        NOT NULL,
+	is_locked  INTEGER     NOT NULL DEFAULT 0);

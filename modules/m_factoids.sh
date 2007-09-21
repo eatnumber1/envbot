@@ -78,15 +78,19 @@ module_factoids_SELECT() {
 # Insert a new item into DB
 # $1 = key
 # $2 = value
+# $3 = hostmask of person who added it
 module_factoids_INSERT() {
-	module_factoids_exec_sql "INSERT INTO factoids (name, value) VALUES('$(module_factoids_clean_string "$1")', '$(module_factoids_clean_string "$2")');"
+	module_factoids_exec_sql \
+		"INSERT INTO factoids (name, value, who) VALUES('$(module_factoids_clean_string "$1")', '$(module_factoids_clean_string "$2")', '$(module_factoids_clean_string "$3")');"
 }
 
 # Change the item in DB
 # $1 = key
 # $2 = new value
+# $3 = hostmask of person who changed it
 module_factoids_UPDATE() {
-	module_factoids_exec_sql "UPDATE factoids SET value='$(module_factoids_clean_string "$2")' WHERE name='$(module_factoids_clean_string "$1")';"
+	module_factoids_exec_sql \
+		"UPDATE factoids SET value='$(module_factoids_clean_string "$2")', who='$(module_factoids_clean_string "$3")' WHERE name='$(module_factoids_clean_string "$1")';"
 }
 
 # Remove an item
@@ -131,11 +135,12 @@ module_factoids_unlock() {
 # Wrapper, call either INSERT or UPDATE
 # $1 = key
 # $2 = value
+# $3 = hostmask of person set it
 module_factoids_set_SELECT_or_UPDATE() {
 	if [[ $(module_factoids_SELECT "$1") ]]; then
-		module_factoids_UPDATE "$1" "$2"
+		module_factoids_UPDATE "$1" "$2" "$3"
 	else
-		module_factoids_INSERT "$1" "$2"
+		module_factoids_INSERT "$1" "$2" "$3"
 	fi
 }
 
@@ -151,13 +156,13 @@ module_factoids_set() {
 	local channel="$4"
 	if module_factoids_is_locked "$key"; then
 		if access_check_owner "$sender"; then
-			module_factoids_set_SELECT_or_UPDATE "$key" "$value"
+			module_factoids_set_SELECT_or_UPDATE "$key" "$value" "$sender"
 			send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), I will remember, $key is $value"
 		else
 			access_fail "$sender" "change a locked faq item" "owner"
 		fi
 	else
-		module_factoids_set_SELECT_or_UPDATE "$key" "$value"
+		module_factoids_set_SELECT_or_UPDATE "$key" "$value" "$sender"
 		send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), I will remember, $key is $value"
 	fi
 }
