@@ -27,7 +27,7 @@ module_factoids_INIT() {
 module_factoids_UNLOAD() {
 	unset module_factoids_exec_sql module_factoids_clean_string
 	unset module_factoids_set module_factoids_set_SELECT_or_UPDATE
-	unset module_factoids_remove module_factoids_get_count
+	unset module_factoids_remove module_factoids_get_count module_factoids_get_locked_count
 	unset module_factoids_is_locked module_factoids_lock module_factoids_unlock
 	unset module_factoids_SELECT module_factoids_INSERT module_factoids_UPDATE module_factoids_DELETE
 	unset module_factoids_after_load module_factoids_on_PRIVMSG
@@ -97,7 +97,10 @@ module_factoids_DELETE() {
 module_factoids_get_count() {
 	module_factoids_exec_sql "SELECT COUNT(name) FROM factoids;"
 }
-
+# How many locked factoids are there
+module_factoids_get_locked_count() {
+	module_factoids_exec_sql "SELECT COUNT(name) FROM factoids WHERE is_locked='1';"
+}
 # Check if factoid is locked or not.
 # $1 = key
 # Return 0 = locked
@@ -245,9 +248,10 @@ module_factoids_on_PRIVMSG() {
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "factoid stats")"; then
-		local value="$(module_factoids_get_count)"
-		if [[ "$value" ]]; then
-			send_msg "$channel" "There are $value items in my factoid database"
+		local count="$(module_factoids_get_count)"
+		local lockedcount="$(module_factoids_get_locked_count)"
+		if [[ "$count" ]]; then
+			send_msg "$channel" "There are $count items in my factoid database. $lockedcount of the factoids are locked."
 		fi
 		return 1
 	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|to)\ )?([^ \?]+)\?? ]]; then
