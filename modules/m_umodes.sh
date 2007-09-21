@@ -25,17 +25,22 @@ module_umodes_INIT() {
 }
 
 module_umodes_UNLOAD() {
-	unset module_connect_umodes_after_connect
+	unset module_connect_umodes_after_connect module_umodes_set_modes
 }
 
 module_umodes_REHASH() {
+	module_umodes_set_modes
 	return 0
 }
 
-# Called after bot has connected
-module_umodes_after_connect() {
+module_umodes_set_modes() {
 	if [[ $config_module_umodes_default_umodes ]]; then
 		log "Setting umodes: $config_module_umodes_default_umodes"
 		send_umodes "$config_module_umodes_default_umodes"
 	fi
+}
+
+# Called after bot has connected
+module_umodes_after_connect() {
+	module_umodes_set_modes
 }

@@ -159,7 +159,7 @@ config_module_autojoin_channels[2]='#otherchannel channelkey'
 #####################################################################
 # Umodes module.
 #
-# Default umodes to set on connect.
+# (*) Default umodes to set on connect. Also set these at a rehash.
 config_module_umodes_default_umodes="+isB-w"
 
 
