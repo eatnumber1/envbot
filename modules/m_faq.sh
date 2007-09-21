@@ -37,11 +37,20 @@ module_faq_REHASH() {
 module_faq_load() {
 	local i=0
 	unset module_faq_array
-	while read -d $'\n' line ;do
-		i=$((i+1))
-		module_faq_array[$i]="$line"
-	done < "${config_module_faq_file}"
-	log 'Loaded FAQ items'
+	if [[ -r ${config_module_faq_file} ]]; then
+		while read -d $'\n' line ;do
+			# Skip empty lines
+			if [[ "$line" ]]; then
+				(( i++ ))
+				module_faq_array[$i]="$line"
+			fi
+		done < "${config_module_faq_file}"
+		log 'Loaded FAQ items'
+		return 0
+	else
+		log "Cannot load '${config_module_faq_file}'. File doesn't exist or can't be read."
+		return 1
+	fi
 }
 
 # Called after module has loaded.

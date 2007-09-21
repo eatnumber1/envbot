@@ -32,19 +32,18 @@ module_quote_UNLOAD() {
 
 module_quote_REHASH() {
 	module_quote_load
-	return 0
 }
 
 module_quote_load() {
 	local i=0
 	local line=""
 	unset module_quote_quotes
-	if [[ -e "$config_module_quotes_file" ]]; then
+	if [[ -r "$config_module_quotes_file" ]]; then
 		while read -d $'\n' line ; do
 			# Skip empty lines
 			if [[ "$line" ]]; then
 				module_quote_quotes[$i]="$line"
-				i=$((i+1))
+				(( i++ ))
 			fi
 		done < "${config_module_quotes_file}"
 		log 'Loaded Quotes.'
@@ -57,12 +56,9 @@ module_quote_load() {
 
 
 module_quote_after_load() {
-	if module_quote_load; then
-		echo "pass"
-		return 0;
-	else
-		return 1;
-	fi
+	# Return code from last command in a function
+	# will be return code for the function by default.
+	module_quote_load
 }
 
 
