@@ -1,0 +1,6 @@
+contrib modules and scripts
+===========================
+This directory contain stuff that the normal developers doesn't want to support 
+(even though they may have coded it)
+
+See each file for description

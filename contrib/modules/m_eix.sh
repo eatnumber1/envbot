@@ -1,3 +1,4 @@
+#!/bin/bash
 ###########################################################################
 #                                                                         #
 #  envbot - an irc bot in bash                                            #
@@ -17,25 +18,55 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# This file is used to generate some, uh, generated files.
-# Also some other tasks
+# Check eix and return output from it.
 
-# For make dest-dir
-DISTDIR ?= dist
+module_eix_INIT() {
+	echo "on_PRIVMSG after_load"
+}
 
-all: numerics
+module_eix_UNLOAD() {
+	unset module_eix_format_string
+	unset module_eix_on_PRIVMSG module_eix_after_load
+}
 
-numerics:
-	tools/build_numerics.sh > lib/numerics.sh
+module_eix_REHASH() {
+	return 0
+}
 
-clean:
-	rm -vf *~ */*~ */*/*~
+# Called after module has loaded.
+# Loads FAQ items
+module_eix_after_load() {
+	# Check (silently) for sqlite3
+	type -p eix &> /dev/null
+	if [[ $? -ne 0 ]]; then
+		log_stdout "Couldn't find eix command line tool. The eix module depend on that tool."
+		return 1
+	fi
+}
 
-cleanlogs:
-	rm -vrf logs/*
+# eix format string:
+module_eix_format_string='<category>/<name> \(<bestslots>\) \(<homepage>\): <description>'
 
-dist-dir:
-	rm -rf $(DISTDIR)
-	bzr export $(DISTDIR)
-
-.PHONY: all numerics clean cleanlogs dist-dir
+# Called on a PRIVMSG
+#
+# $1 = from who (n!u@h)
+# $2 = to who (channel or botnick)
+# $3 = the message
+module_eix_on_PRIVMSG() {
+	# Accept this anywhere, unless someone can give a good reason not to.
+	local sender="$1"
+	local channel="$2"
+	local query="$3"
+	local parameters
+	if parameters="$(parse_query_is_command "$query" "eix")"; then
+		if [[ "$parameters" =~ ^([^ ]+) ]]; then
+			local pattern="${BASH_REMATCH[1]}"
+				log_file eix.log "$sender made the bot run eix on \"$pattern\""
+				send_msg "$channel" "$(eix -ps --format "$module_eix_format_string" "$pattern" | head 1)"
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "eix" "pattern"
+		fi
+		return 1
+	fi
+	return 0
+}
