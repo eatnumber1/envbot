@@ -42,6 +42,8 @@ server_CHMODES_SIMPLE="imnpst"
 server_PREFIX_modes="ov"
 server_PREFIX_prefixes="@+"
 
+server_nick_current=""
+server_connected=0
 
 ###########################################################################
 # Internal functions to core or this file below this line!                #
@@ -110,18 +112,18 @@ server_handle_ping() {
 
 server_handle_numerics() { # $1 = numeric, $2 = target (self), $3 = data
 	# Slight sanity check
-	if [[ $2 != $nick_current ]]; then
+	if [[ $2 != $server_nick_current ]]; then
 		log_stdout 'WARNING: Own nick desynced!'
-		log_stdout "WARNING: It should be $nick_current but is $2"
+		log_stdout "WARNING: It should be $server_nick_current but is $2"
 		log_stdout "WARNING: Correcting own nick and lets hope that doesn't break anything"
-		nick_current="$2"
+		server_nick_current="$2"
 	fi
 }
 
 server_handle_nick() {
 	local oldnick="$(parse_hostmask_nick "$1")"
-	if [[ $oldnick == $nick_current ]]; then
-		nick_current="$2"
+	if [[ $oldnick == $server_nick_current ]]; then
+		server_nick_current="$2"
 	fi
 }
 
@@ -133,13 +135,68 @@ server_handle_nick_in_use() {
 	if [[ $on_nick -eq 2 ]]; then
 		log_stdout "Second nick is ALSO in use, trying third"
 		send_nick "$config_thirdnick"
-		nick_current="$config_thirdnick"
+		server_nick_current="$config_thirdnick"
 		on_nick=3
 	fi
 	log_stdout "First nick is in use, trying second"
 	send_nick "$config_secondnick"
 	on_nick=2
 	# FIXME: THIS IS HACKISH AND MAY BREAK
-	nick_current="$config_secondnick"
+	server_nick_current="$config_secondnick"
 	sleep 1
+}
+
+server_connect(){
+	server_connected=0
+	on_nick=1
+	# HACK: Clean up if we are aborted, replaced after connect with one that sends QUIT
+	trap 'transport_disconnect; exit 1' TERM INT
+	log_stdout "Connecting..."
+	transport_connect "$config_server" "$config_server_port" "$config_server_ssl" "$config_server_bind" || return 1
+	while transport_read_line; do
+		# Check with modules first, needed so we don't skip them.
+		for module in $modules_on_connect; do
+			module_${module}_on_connect "$line"
+		done
+		# Part of motd, that goes to dev null.
+		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTD  ]]; then
+			continue
+		fi
+		log_raw_in "$line"
+		# Start of motd, note that we don't display that.
+		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTDSTART  ]]; then
+			log "Motd is not displayed in log"
+		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_YOURHOST  ]]; then
+			if [[ $line =~ Your\ host\ is\ ([^ ,]*)  ]]; then # just to get the server name, this should always be true
+				server_name="${BASH_REMATCH[1]}"
+			fi
+		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MYINFO ]]; then
+			server_004="$(cut -d' ' -f4- <<< "$line")"
+			server_004=$(tr -d $'\r\n' <<< "$server_004")  # Get rid of ending newline
+		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ISUPPORT ]]; then
+			server_005="$server_005 $(cut -d' ' -f4- <<< "$line")"
+			server_005=$(tr -d $'\r\n' <<< "$server_005") # Get rid of newlines
+			server_005="${server_005/ :are supported by this server/}" # Get rid of :are supported by this server
+			server_handle_005 "$line"
+		elif [[ $line =~ "Looking up your hostname" ]]; then
+			log_stdout "logging in as $config_firstnick..."
+			send_nick "$config_firstnick"
+			# FIXME: THIS IS HACKISH AND MAY BREAK
+			$server_nick_current="$config_firstnick"
+			# If a server password is set, send it.
+			[[ $config_server_passwd ]] && send_raw_flood "PASS $config_server_passwd"
+			send_raw_flood "USER $config_ident 0 * :${config_gecos}"
+		fi
+		server_handle_ping "$line"
+		if [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_NICKNAMEINUSE  ]]; then # Nick in use.
+			server_handle_nick_in_use
+		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
+			server_handle_nick_in_use
+		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ENDOFMOTD  ]]; then # 376 = End of motd
+			sleep 1
+			log_stdout 'Connected'
+			server_connected=1
+			break
+		fi
+	done;
 }

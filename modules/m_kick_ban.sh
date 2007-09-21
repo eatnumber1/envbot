@@ -46,7 +46,7 @@ module_kick_ban_after_connect() {
 #       get called, therefore lets check if we are connected here and check for
 #       TBAN here if that is the case.
 module_kick_ban_after_load() {
-	if [[ $connected -eq 1 ]]; then
+	if [[ $server_connected -eq 1 ]]; then
 		module_kick_ban_TBAN_supported=0
 		send_raw "TBAN"
 	fi

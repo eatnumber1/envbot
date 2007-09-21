@@ -62,7 +62,7 @@ channels_remove() {
 # Check if we parted
 channels_handle_part() {
 	local whoparted="$(parse_hostmask_nick "$1")"
-	if [[ $whoparted == $nick_current ]]; then
+	if [[ $whoparted == $server_nick_current ]]; then
 		channels_remove "$2"
 	fi
 }
@@ -70,7 +70,7 @@ channels_handle_part() {
 # Check if we got kicked
 channels_handle_kick() {
 	local whogotkicked="$3"
-	if [[ $whogotkicked == $nick_current ]]; then
+	if [[ $whogotkicked == $server_nick_current ]]; then
 		channels_remove "$2"
 	fi
 }
@@ -78,7 +78,7 @@ channels_handle_kick() {
 # Check if we joined
 channels_handle_join() {
 	local whojoined="$(parse_hostmask_nick "$1")"
-	if [[ $whojoined == $nick_current ]]; then
+	if [[ $whojoined == $server_nick_current ]]; then
 		channels_add "$2"
 	fi
 }
