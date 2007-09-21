@@ -195,8 +195,7 @@ server_connect(){
 			server_handle_nick_in_use
 		# Just in case check for either of these
 		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ENDOFMOTD ]] || \
-		     [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ERR_NOMOTD ]] || \
-		     [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_LUSERCLIENT ]]; then
+		     [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ERR_NOMOTD ]]; then
 			sleep 1
 			log_stdout 'Connected'
 			server_connected=1
