@@ -49,8 +49,7 @@ module_services_on_connect() {
 		module_services_ghost=1
 	elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
 		module_services_ghost=1
-	elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ENDOFMOTD ]] || \
-	     [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ERR_NOMOTD ]]; then
+	elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ENDOFMOTD ]]; then
 		if [[ $config_module_services_style == atheme ]]; then
 			send_raw "${module_services_nickserv_command}IDENTIFY $config_firstnick $config_module_services_nickserv_passwd"
 		fi
