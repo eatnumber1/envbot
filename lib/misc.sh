@@ -66,6 +66,15 @@ bot_restart() {
 	exec env -i "$(type -p bash)" $0 $command_line
 }
 
+# Strip leading/trailing spaces.
+# Parameters
+#   $1 String to strip
+# Returns on STDOUT
+#   New string
+misc_clean_spaces() {
+	sed 's/^ \+//;s/ \+$//;s/ \{2,\}/ /g' <<< "$1"
+}
+
 # Remove a value from a space separated list.
 # Parameters
 #   $1 List to remove from.
@@ -75,7 +84,7 @@ bot_restart() {
 list_remove() {
 	local oldlist="${!1}"
 	local newlist=${oldlist//$2}
-	echo "$(sed 's/^ \+//;s/ \+$//;s/ \{2,\}/ /g' <<< "$newlist")" # Get rid of the unneeded spaces.
+	misc_clean_spaces "$newlist" # Get rid of the unneeded spaces.
 }
 
 # Checks if a space separated list contains a value.

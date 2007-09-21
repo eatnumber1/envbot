@@ -115,7 +115,7 @@ modules_hooks="FINALISE after_load before_connect on_connect after_connect befor
 modules_unload() {
 	local module="$1"
 	local hook newval
-	if ! grep -qw "$module" <<< "${modules_loaded}"; then
+	if ! list_contains "modules_loaded" "$module"; then
 		log_stdout "No such module as $1 is loaded."
 		return 2
 	fi

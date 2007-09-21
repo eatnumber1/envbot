@@ -106,8 +106,9 @@ config_transport='dev-tcp'
 # What modules to load, space separated list
 # For a list of modules see the modules dir.
 # Note that the order of the modules may be important
-# The list should normally start with "load services umodes"
-# Some modules should be placed last. "factoids" is such a module.
+#   The list should normally start with "load services umodes"
+#   Some modules should be placed last. "factoids" is such a module.
+#   sqlite3 module should be LOADED BEFORE factoids and/or seen modules.
 config_modules="modules rehash services umodes autojoin"
 
 # Where are modules stored, this can be a relative path from the
@@ -173,3 +174,25 @@ config_module_umodes_default_umodes="+isB-w"
 # (*) Location of sqlite3 database file for factoids
 #     See comment in doc/factoids.sql for how to create a database file.
 #config_module_factoids_database='data/factoids.db'
+
+
+#####################################################################
+# Seen module
+#
+# (*) Location of sqlite3 database file for factoids
+#     See comment in doc/seen.sql for how to create a database file.
+#     This can be the same as for other SQL modules as long as table is
+#     different.
+#config_module_seen_database='data/seen.db'
+#config_module_seen_table='seen'
+# A function that outputs date from an unix timestamp.
+#   There is no standard one so we let you chose one.
+#   Parameter is timestamp
+#config_module_seen_function() {
+	# Using perl:
+	#perl -le "print scalar localtime $1"
+	# Using recent GNU date:
+	#date -d "@${1}"
+	# Using older GNU date
+	#date -d "1970-01-01 UTC + ${1} seconds"
+#}

@@ -26,9 +26,8 @@ module_factoids_INIT() {
 
 module_factoids_UNLOAD() {
 	# Ok this is a LOT. I hope I got all...
-	unset module_factoids_exec_sql module_factoids_clean_string
-	unset module_factoids_set module_factoids_set_SELECT_or_UPDATE
-	unset module_factoids_remove module_factoids_send_factoid
+	unset module_factoids_exec_sql module_factoids_set module_factoids_remove
+	unset module_factoids_set_INSERT_or_UPDATE module_factoids_send_factoid
 	unset module_factoids_get_count module_factoids_get_locked_count
 	unset module_factoids_is_locked module_factoids_lock module_factoids_unlock
 	unset module_factoids_SELECT module_factoids_INSERT module_factoids_UPDATE module_factoids_DELETE
@@ -43,10 +42,9 @@ module_faq_REHASH() {
 # Called after module has loaded.
 # Loads FAQ items
 module_factoids_after_load() {
-	# Check (silently) for sqlite3
-	type -p sqlite3 &> /dev/null
-	if [[ $? -ne 0 ]]; then
-		log_stdout "Couldn't find sqlite3 command line tool. The factoids module depend on that tool."
+	# HACK: I should add proper dependency checking. This will break on unloading sqlite3 module
+	if ! list_contains "modules_loaded" "sqlite3"; then
+		log_stdout "The factoids module depends upon the SQLite3 module being loaded before it"
 		return 1
 	fi
 	if ! [[ -r $config_module_factoids_database ]]; then
@@ -54,17 +52,14 @@ module_factoids_after_load() {
 		log_stdout "See comment in doc/factoids.sql for how to create one."
 		return 1
 	fi
-}
-
-
-# Make string safe for SQL.
-# Yes we just discard double quotes atm.
-module_factoids_clean_string() {
-	tr -Cd 'A-Za-z0-9 ,;.:-_<>*|~^!"#%&/()=?+\@${}[]+'\' <<< "$1" | sed "s/'/''/g"
+	if [[ -z $config_module_factoids_table ]]; then
+		log_stdout "Factiods table (config_module_factoids_table) must be set in config."
+		return 1
+	fi
 }
 
 module_factoids_exec_sql() {
-	sqlite3 -list "$config_module_factoids_database" "$1"
+	module_sqlite3_exec_sql "$config_module_factoids_database" "$1"
 }
 
 # Get an item from DB
@@ -72,7 +67,7 @@ module_factoids_exec_sql() {
 module_factoids_SELECT() {
 	#$ sqlite3 -list data/factoids.sqlite "SELECT value from factoids WHERE name='factoids';"
 	#A system that stores useful bits of information
-	module_factoids_exec_sql "SELECT value FROM factoids WHERE name='$(module_factoids_clean_string "$1")';"
+	module_factoids_exec_sql "SELECT value FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 # Insert a new item into DB
@@ -81,7 +76,7 @@ module_factoids_SELECT() {
 # $3 = hostmask of person who added it
 module_factoids_INSERT() {
 	module_factoids_exec_sql \
-		"INSERT INTO factoids (name, value, who) VALUES('$(module_factoids_clean_string "$1")', '$(module_factoids_clean_string "$2")', '$(module_factoids_clean_string "$3")');"
+		"INSERT INTO $config_module_factoids_table (name, value, who) VALUES('$(module_sqlite3_clean_string "$1")', '$(module_sqlite3_clean_string "$2")', '$(module_sqlite3_clean_string "$3")');"
 }
 
 # Change the item in DB
@@ -90,29 +85,29 @@ module_factoids_INSERT() {
 # $3 = hostmask of person who changed it
 module_factoids_UPDATE() {
 	module_factoids_exec_sql \
-		"UPDATE factoids SET value='$(module_factoids_clean_string "$2")', who='$(module_factoids_clean_string "$3")' WHERE name='$(module_factoids_clean_string "$1")';"
+		"UPDATE $config_module_factoids_table SET value='$(module_sqlite3_clean_string "$2")', who='$(module_sqlite3_clean_string "$3")' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 # Remove an item
 # $1 = key
 module_factoids_DELETE() {
-	module_factoids_exec_sql "DELETE FROM factoids WHERE name='$(module_factoids_clean_string "$1")';"
+	module_factoids_exec_sql "DELETE FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 # How many factoids are there
 module_factoids_get_count() {
-	module_factoids_exec_sql "SELECT COUNT(name) FROM factoids;"
+	module_factoids_exec_sql "SELECT COUNT(name) FROM $config_module_factoids_table;"
 }
 # How many locked factoids are there
 module_factoids_get_locked_count() {
-	module_factoids_exec_sql "SELECT COUNT(name) FROM factoids WHERE is_locked='1';"
+	module_factoids_exec_sql "SELECT COUNT(name) FROM $config_module_factoids_table WHERE is_locked='1';"
 }
 # Check if factoid is locked or not.
 # $1 = key
 # Return 0 = locked
 #        1 = not locked
 module_factoids_is_locked() {
-	local lock="$(module_factoids_exec_sql "SELECT is_locked FROM factoids WHERE name='$(module_factoids_clean_string "$1")';")"
+	local lock="$(module_factoids_exec_sql "SELECT is_locked FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';")"
 	if [[ $lock == "1" ]]; then
 		return 0
 	else
@@ -123,20 +118,20 @@ module_factoids_is_locked() {
 # Lock a factoid against changes from non-owners
 # $1 = key
 module_factoids_lock() {
-	module_factoids_exec_sql "UPDATE factoids SET is_locked='1' WHERE name='$(module_factoids_clean_string "$1")';"
+	module_factoids_exec_sql "UPDATE $config_module_factoids_table SET is_locked='1' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 # Unlock a factoid from protection against non-owners
 # $1 = key
 module_factoids_unlock() {
-	module_factoids_exec_sql "UPDATE factoids SET is_locked='0' WHERE name='$(module_factoids_clean_string "$1")';"
+	module_factoids_exec_sql "UPDATE $config_module_factoids_table SET is_locked='0' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 # Wrapper, call either INSERT or UPDATE
 # $1 = key
 # $2 = value
 # $3 = hostmask of person set it
-module_factoids_set_SELECT_or_UPDATE() {
+module_factoids_set_INSERT_or_UPDATE() {
 	if [[ $(module_factoids_SELECT "$1") ]]; then
 		module_factoids_UPDATE "$1" "$2" "$3"
 	else
@@ -156,13 +151,13 @@ module_factoids_set() {
 	local channel="$4"
 	if module_factoids_is_locked "$key"; then
 		if access_check_owner "$sender"; then
-			module_factoids_set_SELECT_or_UPDATE "$key" "$value" "$sender"
+			module_factoids_set_INSERT_or_UPDATE "$key" "$value" "$sender"
 			send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), I will remember, $key is $value"
 		else
 			access_fail "$sender" "change a locked faq item" "owner"
 		fi
 	else
-		module_factoids_set_SELECT_or_UPDATE "$key" "$value" "$sender"
+		module_factoids_set_INSERT_or_UPDATE "$key" "$value" "$sender"
 		send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), I will remember, $key is $value"
 	fi
 }
