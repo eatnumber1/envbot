@@ -117,7 +117,7 @@ module_seen_find() {
 			local found_channel="${BASH_REMATCH[2]}"
 			local found_message="${BASH_REMATCH[3]}"
 			if [[ $found_message =~ ^ACTION\ (.*) ]]; then
-				found_message="* $nick ${BASH_REMATCH[1]}"
+				found_message="* $3 ${BASH_REMATCH[1]}"
 			fi
 			send_msg "$channel" "$3 was last seen on $(config_module_seen_function "$found_timestamp") in $found_channel saying \"$found_message\""
 		fi
