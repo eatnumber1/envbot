@@ -113,7 +113,7 @@ server_handle_ping() {
 
 server_handle_numerics() { # $1 = numeric, $2 = target (self), $3 = data
 	# Slight sanity check
-	if [[ $2 != $server_nick_current ]]; then
+	if [[ "$2" != "$server_nick_current" ]]; then
 		log_stdout 'WARNING: Own nick desynced!'
 		log_stdout "WARNING: It should be $server_nick_current but is $2"
 		log_stdout "WARNING: Correcting own nick and lets hope that doesn't break anything"
@@ -183,7 +183,7 @@ server_connect(){
 			log_stdout "logging in as $config_firstnick..."
 			send_nick "$config_firstnick"
 			# FIXME: THIS IS HACKISH AND MAY BREAK
-			$server_nick_current="$config_firstnick"
+			server_nick_current="$config_firstnick"
 			# If a server password is set, send it.
 			[[ $config_server_passwd ]] && send_raw_flood "PASS $config_server_passwd"
 			send_raw_flood "USER $config_ident 0 * :${config_gecos}"
