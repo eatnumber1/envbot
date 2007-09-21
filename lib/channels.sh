@@ -23,8 +23,9 @@
 channels_current=""
 
 # Join a channel
-# $1 the channel to join
-# $2 is a channel key, if any.
+# Parameters
+#   $1 The channel to join.
+#   $2 Is a channel key, if any.
 channels_join() {
 	local channel="$1"
 	local key=""

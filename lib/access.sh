@@ -20,9 +20,11 @@
 ###########################################################################
 
 # Check for owner access.
-# Returns 0 on owner
-#         1 otherwise
-# parameter: n!u@h mask
+# Parameters
+#   $1 n!u@h mask
+# Returns
+#   0 On owner
+#   1 Otherwise
 access_check_owner() {
 	local owner
 	for owner in "${config_owners[@]}"; do
@@ -34,9 +36,10 @@ access_check_owner() {
 }
 
 # Return error, and log it
-# $1  n!u@h
-# $2 what they tried to do
-# $3 what access they need
+# Parameters
+#   $1 n!u@h
+#   $2 What they tried to do
+#   $3 What access they need
 access_fail() {
 	log_stdout_file access.log "$1 tried to \"$2\" but lacks access"
 	send_msg "$(parse_hostmask_nick $sender)" "Permission denied. You need $3 access for this."
