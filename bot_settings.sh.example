@@ -169,21 +169,23 @@ config_module_umodes_default_umodes="+isB-w"
 
 
 #####################################################################
+# SQLite3 module
+#
+# (*) Location of sqlite3 database file
+#config_module_sqlite3_database='data/envbot.db'
+
+
+#####################################################################
 # Factoids module
 #
-# (*) Location of sqlite3 database file for factoids
-#     See comment in doc/factoids.sql for how to create a database file.
-#config_module_factoids_database='data/factoids.db'
+# (*) Table name for factoids in SQLite3 databse
 #config_module_factoids_table='factoids'
 
 
 #####################################################################
 # Seen module
 #
-# (*) Location of sqlite3 database file for factoids
-#     See comment in doc/seen.sql for how to create a database file.
-#     This can be the same as for other SQL modules as long as table is
-#     different.
+# (*) Table name for seen data in SQLite3 databse
 #config_module_seen_database='data/seen.db'
 #config_module_seen_table='seen'
 # A function that outputs date from an unix timestamp.
