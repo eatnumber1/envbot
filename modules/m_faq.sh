@@ -110,7 +110,7 @@ module_faq_on_PRIVMSG() {
 					done
 				fi
 			else
-				log "ERROR : FLOOD DETECTED"
+				log_stdout "ERROR: FLOOD DETECTED in FAQ module"
 			fi
 			return 1
 		fi
