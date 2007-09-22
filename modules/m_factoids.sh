@@ -177,7 +177,7 @@ module_factoids_remove() {
 module_factoids_send_factoid() {
 	local channel="$1"
 	local key="$2"
-	local value="$(module_factoids_SELECT "$key")"
+	local value="$(module_factoids_SELECT "$(tr '[:upper:]' '[:lower:]' <<< "$key")")"
 	if [[ "$value" ]]; then
 		if [[ $value =~ ^\<REPLY\>(.*) ]]; then
 			send_msg "$channel" "${BASH_REMATCH[1]}"
@@ -209,7 +209,7 @@ module_factoids_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^(.+)\ (as|is|=)\ (.*) ]]; then
 			local key="${BASH_REMATCH[1]}"
 			local value="${BASH_REMATCH[3]}"
-			module_factoids_set "$key" "$value" "$sender" "$channel"
+			module_factoids_set "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$value" "$sender" "$channel"
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "learn" "key (as|is|was|=) value"
 		fi
@@ -217,7 +217,7 @@ module_factoids_on_PRIVMSG() {
 	elif parameters="$(parse_query_is_command "$query" "forget")"; then
 		if [[ "$parameters" =~ ^(.+) ]]; then
 			local key="${BASH_REMATCH[1]}"
-			module_factoids_remove "$key" "$sender" "$channel"
+			module_factoids_remove "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$sender" "$channel"
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "forget" "key"
 		fi
@@ -226,7 +226,7 @@ module_factoids_on_PRIVMSG() {
 		if access_check_owner "$sender"; then
 			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
-				module_factoids_lock "$key"
+				module_factoids_lock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
 				send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), the factoid \"$key\" is now protected from changes"
 			else
 				feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "lock" "key"
@@ -239,7 +239,7 @@ module_factoids_on_PRIVMSG() {
 		if access_check_owner "$sender"; then
 			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
-				module_factoids_unlock "$key"
+				module_factoids_unlock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
 				send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), the factoid \"$key\" is no longer protected from changes"
 			else
 				feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "lock" "key"
@@ -265,7 +265,7 @@ module_factoids_on_PRIVMSG() {
 		return 1
 	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|to)\ )?([^\?]+)\?? ]]; then
 		local key="${BASH_REMATCH[@]: -1}"
-		local value="$(module_factoids_SELECT "$key")"
+		local value="$(module_factoids_SELECT "$(tr '[:upper:]' '[:lower:]' <<< "$key")")"
 		if [[ "$value" ]]; then
 			module_factoids_send_factoid "$channel" "$key"
 			return 1
