@@ -198,9 +198,11 @@ module_factoids_send_factoid() {
 # $3 = the message
 module_factoids_on_PRIVMSG() {
 	# Only respond in channel.
-	[[ $2 =~ ^# ]] || return 0
 	local sender="$1"
 	local channel="$2"
+	if ! [[ $2 =~ ^# ]]; then
+		channel="$(parse_hostmask_nick "$sender")"
+	fi
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "learn")"; then
@@ -225,7 +227,7 @@ module_factoids_on_PRIVMSG() {
 			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
 				module_factoids_lock "$key"
-				send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), $key is now protected from changes"
+				send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), the factoid \"$key\" is now protected from changes"
 			else
 				feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "lock" "key"
 			fi
@@ -238,7 +240,7 @@ module_factoids_on_PRIVMSG() {
 			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
 				module_factoids_unlock "$key"
-				send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), $key is no longer protected from changes"
+				send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), the factoid \"$key\" is no longer protected from changes"
 			else
 				feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "lock" "key"
 			fi
@@ -261,7 +263,7 @@ module_factoids_on_PRIVMSG() {
 			send_msg "$channel" "There are $count items in my factoid database. $lockedcount of the factoids are locked."
 		fi
 		return 1
-	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|to)\ )?([^\?]+)\? ]]; then
+	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|to)\ )?([^\?]+)\?? ]]; then
 		local key="${BASH_REMATCH[@]: -1}"
 		local value="$(module_factoids_SELECT "$key")"
 		if [[ "$value" ]]; then
