@@ -204,7 +204,7 @@ module_factoids_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "learn")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ (as|is|=)\ (.*) ]]; then
+		if [[ "$parameters" =~ ^(.+)\ (as|is|=)\ (.*) ]]; then
 			local key="${BASH_REMATCH[1]}"
 			local value="${BASH_REMATCH[3]}"
 			module_factoids_set "$key" "$value" "$sender" "$channel"
@@ -213,7 +213,7 @@ module_factoids_on_PRIVMSG() {
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "forget")"; then
-		if [[ "$parameters" =~ ^([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(.+) ]]; then
 			local key="${BASH_REMATCH[1]}"
 			module_factoids_remove "$key" "$sender" "$channel"
 		else
@@ -222,7 +222,7 @@ module_factoids_on_PRIVMSG() {
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "lock factoid")"; then
 		if access_check_owner "$sender"; then
-			if [[ "$parameters" =~ ^([^ ]+) ]]; then
+			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
 				module_factoids_lock "$key"
 				send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), $key is now protected from changes"
@@ -235,7 +235,7 @@ module_factoids_on_PRIVMSG() {
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "unlock factoid")"; then
 		if access_check_owner "$sender"; then
-			if [[ "$parameters" =~ ^([^ ]+) ]]; then
+			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
 				module_factoids_unlock "$key"
 				send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), $key is no longer protected from changes"
@@ -247,7 +247,7 @@ module_factoids_on_PRIVMSG() {
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "whatis")"; then
-		if [[ "$parameters" =~ ^([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(.+) ]]; then
 			local key="${BASH_REMATCH[1]}"
 			module_factoids_send_factoid "$channel" "$key"
 		else
@@ -261,7 +261,7 @@ module_factoids_on_PRIVMSG() {
 			send_msg "$channel" "There are $count items in my factoid database. $lockedcount of the factoids are locked."
 		fi
 		return 1
-	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|to)\ )?([^ \?]+)\?? ]]; then
+	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|to)\ )?([^\?]+)\? ]]; then
 		local key="${BASH_REMATCH[@]: -1}"
 		local value="$(module_factoids_SELECT "$key")"
 		if [[ "$value" ]]; then
