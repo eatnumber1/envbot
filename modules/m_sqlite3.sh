@@ -20,7 +20,14 @@
 ###########################################################################
 # This module allows other modules to access a SQLite3 database in a
 # "simple" way.
-
+###########################################
+# WARNING WARNING WARNING WARNING WARNING #
+#                                         #
+#    USE UTF8 when editing this file!!    #
+#      Otherwise the file WILL break      #
+#                                         #
+# WARNING WARNING WARNING WARNING WARNING #
+###########################################
 module_sqlite3_INIT() {
 	echo "after_load"
 }
@@ -55,7 +62,7 @@ module_sqlite3_after_load() {
 #   $1 String to clean
 # Yes we just discard double quotes atm.
 module_sqlite3_clean_string() {
-	tr -Cd 'A-Za-z0-9 ,;.:-_<>*|~^!"#%&/()=?+\@${}[]+'\' <<< "$1" | sed "s/'/''/g"
+	tr -Cd 'A-Za-z0-9 ,;.:-_<>*|~^!"#%&/()=?+\@${}[]+ÅÄÖåäö'\' <<< "$1" | sed "s/'/''/g"
 }
 
 # Parameters:
