@@ -21,12 +21,12 @@
 # Simple factoids module using sqlite3
 
 module_factoids_INIT() {
-	echo "after_load on_PRIVMSG"
+	echo 'after_load on_PRIVMSG'
 }
 
 module_factoids_UNLOAD() {
 	# Ok this is a LOT. I hope I got all...
-	unset module_factoids_exec_sql module_factoids_set module_factoids_remove
+	unset module_factoids_set module_factoids_remove
 	unset module_factoids_set_INSERT_or_UPDATE module_factoids_send_factoid
 	unset module_factoids_get_count module_factoids_get_locked_count
 	unset module_factoids_is_locked module_factoids_lock module_factoids_unlock

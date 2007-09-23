@@ -22,7 +22,7 @@
 # Quotes module
 
 module_quote_INIT() {
-	echo "after_load on_PRIVMSG"
+	echo 'after_load on_PRIVMSG'
 }
 
 module_quote_UNLOAD() {
@@ -35,8 +35,7 @@ module_quote_REHASH() {
 }
 
 module_quote_load() {
-	local i=0
-	local line=""
+	local i=0 line
 	unset module_quote_quotes
 	if [[ -r "$config_module_quotes_file" ]]; then
 		while read -d $'\n' line ; do
@@ -49,7 +48,7 @@ module_quote_load() {
 		log 'Loaded Quotes.'
 		return 0
 	else
-		log "Cannot load '$config_module_quotes_file'. File doesn't exist."
+		log_stdout "Cannot load \"$config_module_quotes_file\". File doesn't exist."
 		return 1
 	fi
 }
@@ -71,6 +70,11 @@ module_quote_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
+	# If it isn't in a channel send message back to person who send it,
+	# otherwise send in channel
+	if ! [[ $2 =~ ^# ]]; then
+		channel="$(parse_hostmask_nick "$sender")"
+	fi
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "quote")"; then

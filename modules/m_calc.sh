@@ -21,6 +21,27 @@
 ###########################################################################
 # Calculate with bc
 
+module_calc_INIT() {
+	echo 'on_PRIVMSG after_load FINALISE'
+}
+
+module_calc_UNLOAD() {
+	module_calc_remove_tmpfile
+	unset module_calc_tmpfile
+	unset module_calc_on_PRIVMSG module_calc_after_load module_calc_FINALISE
+	unset module_calc_create_tmpfile module_calc_remove_tmpfile module_calc_empty_tmpfile
+}
+
+module_calc_REHASH() {
+	module_calc_remove_tmpfile
+	module_calc_create_tmpfile
+}
+
+module_calc_FINALISE() {
+	module_calc_remove_tmpfile
+	return 0
+}
+
 module_calc_create_tmpfile() {
 	unset module_calc_tmpfile
 	module_calc_tmpfile="$(mktemp -t envbot.calc.XXXXXXXXXX)" || return 1
@@ -36,30 +57,9 @@ module_calc_remove_tmpfile() {
 	fi
 }
 
-module_calc_INIT() {
-	echo "on_PRIVMSG after_load FINALISE"
-}
-
-module_calc_UNLOAD() {
-	module_calc_remove_tmpfile
-	unset module_calc_tmpfile
-	unset module_calc_on_PRIVMSG module_calc_after_load module_calc_FINALISE
-	unset module_calc_create_tmpfile module_calc_remove_tmpfile module_calc_empty_tmpfile
-}
-
 module_calc_after_load() {
 	module_calc_create_tmpfile
 	return 0
-}
-
-module_calc_FINALISE() {
-	module_calc_remove_tmpfile
-	return 0
-}
-
-module_calc_REHASH() {
-	module_calc_remove_tmpfile
-	module_calc_create_tmpfile
 }
 
 # Called on a PRIVMSG
@@ -68,9 +68,12 @@ module_calc_REHASH() {
 # $2 = to who (channel or botnick)
 # $3 = the message
 module_calc_on_PRIVMSG() {
-	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
+	# If it isn't in a channel send message back to person who send it,
+	# otherwise send in channel
+	if ! [[ $2 =~ ^# ]]; then
+		channel="$(parse_hostmask_nick "$sender")"
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "calc")"; then

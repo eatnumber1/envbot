@@ -22,7 +22,7 @@
 # Allow owners to make the bot eval any code
 
 module_eval_INIT() {
-	echo "on_PRIVMSG"
+	echo 'on_PRIVMSG'
 }
 
 module_eval_UNLOAD() {
@@ -41,7 +41,6 @@ module_eval_REHASH() {
 module_eval_on_PRIVMSG() {
 	# Accept anywhere
 	local sender="$1"
-	local channel="$2"
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "eval")"; then

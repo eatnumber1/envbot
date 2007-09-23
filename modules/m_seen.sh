@@ -21,12 +21,13 @@
 # Simple seen module using sqlite3
 
 module_seen_INIT() {
-	echo "after_load on_PRIVMSG"
+	echo 'after_load on_PRIVMSG'
 }
 
 module_seen_UNLOAD() {
 	unset module_seen_after_load module_seen_on_PRIVMSG
-	unset module_seen_exec_sql module_seen_SELECT
+	unset module_seen_exec_sql module_seen_SELECT module_seen_INSERT module_seen_UPDATE
+	unset module_seen_set_INSERT_or_UPDATE
 	unset module_seen_store module_seen_find
 }
 
@@ -127,13 +128,17 @@ module_seen_find() {
 }
 
 module_seen_on_PRIVMSG() {
-	# Only respond in channel.
-	[[ $2 =~ ^# ]] || return 0
 	local sender="$1"
 	local channel="$(misc_clean_spaces "$2")"
 	local query="$3"
+	# If in channel, store
+	if [[ $2 =~ ^# ]]; then
+		module_seen_store "$sender" "$channel" "$(date -u +%s)" "$query"
+	# If not in channel respond to any commands in /msg
+	else
+		channel="$(parse_hostmask_nick "$sender")"
+	fi
 	# Lets store messages
-	module_seen_store "$sender" "$channel" "$(date -u +%s)" "$query"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "seen")"; then
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then

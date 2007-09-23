@@ -21,7 +21,7 @@
 # Debug module, dump all variables to console.
 
 module_dumpvars_INIT() {
-	echo "on_PRIVMSG"
+	echo 'on_PRIVMSG'
 }
 
 module_dumpvars_UNLOAD() {
@@ -40,7 +40,6 @@ module_dumpvars_REHASH() {
 module_dumpvars_on_PRIVMSG() {
 	# Accept both in /msg and channel
 	local sender="$1"
-	local channel="$2"
 	local query="$3"
 	# We don't care about parameters.
 	if parse_query_is_command "$query" "dumpvars" > /dev/null; then

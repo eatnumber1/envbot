@@ -21,7 +21,7 @@
 # For debugging, report any unknown numerics.
 
 module_check_numerics_INIT() {
-	echo "on_numeric"
+	echo 'on_numeric'
 }
 
 module_check_numerics_UNLOAD() {
@@ -33,6 +33,7 @@ module_check_numerics_REHASH() {
 }
 
 module_check_numerics_on_numeric() {
+	# Make sure it is in base 10 here.
 	if [[ -z "${numeric[10#${1}]}" ]]; then
 		log_stdout_file numerics.log "Unknown numeric $1 Data: $2"
 	fi

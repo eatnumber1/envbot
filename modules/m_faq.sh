@@ -21,7 +21,7 @@
 # Simple FAQ module
 
 module_faq_INIT() {
-	echo "after_load on_PRIVMSG"
+	echo 'after_load on_PRIVMSG'
 }
 
 module_faq_UNLOAD() {
@@ -67,10 +67,13 @@ module_faq_after_load() {
 # $2 = to who (channel or botnick)
 # $3 = the message
 module_faq_on_PRIVMSG() {
-	# Only respond in channel.
-	[[ $2 =~ ^# ]] || return 0
 	local sender="$1"
 	local channel="$2"
+	# If it isn't in a channel send message back to person who send it,
+	# otherwise send in channel
+	if ! [[ $2 =~ ^# ]]; then
+		channel="$(parse_hostmask_nick "$sender")"
+	fi
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "faq")"; then
@@ -87,8 +90,8 @@ module_faq_on_PRIVMSG() {
 				return 1
 			fi
 			local query_time="$(date +%H%M)$line"
-			if [[ "$module_faq_last_query" != "$query_time" ]] ; then #must be atleast 1 min old or different query...
-				module_faq_last_query="$(date +%H%M)$line"
+			if [[ "$module_faq_last_query" != "$query_time" ]] ; then # Must be atleast 1 min old or different query...
+				module_faq_last_query="$query_time"
 				if [[ "$query" =~ ^\ *([0-9]+)\ *$ ]]; then
 					local index="${BASH_REMATCH[1]}"
 					if [[ "${module_faq_array[$index]}" ]]; then
@@ -102,8 +105,7 @@ module_faq_on_PRIVMSG() {
 						i=$((i+1))
 						# FIXME: This seems very odd, what does it do?
 						# This module needs rewriting...
-						if echo ${module_faq_array[$i]} | cut -d " " -f 3- | /bin/grep -i -F -m 1 "$query" ; then
-							log "$channel :${module_faq_array[$i]}"
+						if echo ${module_faq_array[$i]} | /bin/grep -i -F -m 1 "$query" ; then
 							send_msg "$channel" "${module_faq_array[$i]}"
 							break 1
 						fi

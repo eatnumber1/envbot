@@ -22,7 +22,7 @@
 # Allow owners to make bot send any line.
 
 module_sendraw_INIT() {
-	echo "on_PRIVMSG"
+	echo 'on_PRIVMSG'
 }
 
 module_sendraw_UNLOAD() {
@@ -41,7 +41,6 @@ module_sendraw_REHASH() {
 module_sendraw_on_PRIVMSG() {
 	# Accept anywhere
 	local sender="$1"
-	local channel="$2"
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "raw")"; then

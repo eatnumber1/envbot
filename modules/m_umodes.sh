@@ -21,7 +21,7 @@
 # Set umodes when connecting
 
 module_umodes_INIT() {
-	echo "after_connect"
+	echo 'after_connect'
 }
 
 module_umodes_UNLOAD() {

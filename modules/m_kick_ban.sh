@@ -22,7 +22,7 @@
 # Kicking (insert comment about Chuck Norris ;) and banning.
 
 module_kick_ban_INIT() {
-	echo "on_PRIVMSG after_connect after_load on_numeric"
+	echo 'on_PRIVMSG after_connect after_load on_numeric'
 }
 
 module_kick_ban_UNLOAD() {
@@ -68,14 +68,21 @@ module_kick_ban_on_numeric() {
 module_kick_ban_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
-	local sendon_channel="$2"
+	local sendon_channel="$(misc_clean_spaces "$2")"
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "kick")"; then
-		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+)\ (.+) ]]; then
-			local channel="${BASH_REMATCH[1]}"
-			local nick="${BASH_REMATCH[2]}"
-			local kickmessage="${BASH_REMATCH[3]}"
+		if [[ "$parameters" =~ ^((#[^ ]+)\ )?([^ ]+)\ (.+) ]]; then
+			local channel="${BASH_REMATCH[2]}"
+			local nick="${BASH_REMATCH[@]: -2}"
+			local kickmessage="${BASH_REMATCH[@]: -1}"
+			if ! [[ $channel =~ ^# ]]; then
+				if [[ $sendon_channel =~ ^# ]]; then
+					channel="$sendon_channel"
+				else
+					feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "kick" "#channel nick reason # Channel must be send when the message is not sent in a channel"
+				fi
+			fi
 			if access_check_owner "$sender"; then
 				send_raw "KICK $channel $nick $kickmessage"
 				log_stdout "$nick kicked from $channel with kick message: $kickmessage"
@@ -83,7 +90,7 @@ module_kick_ban_on_PRIVMSG() {
 				access_fail "$sender" "make the bot kick somebody" "owner"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "kick" "#channel nick reason"
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "ban")"; then
@@ -93,8 +100,15 @@ module_kick_ban_on_PRIVMSG() {
 			# Optional parameter.
 			local duration="${BASH_REMATCH[4]}"
 			if access_check_owner "$sender"; then
-				if [[ $duration ]] && [[ $module_kick_ban_TBAN_supported -eq 1 ]]; then
-					send_raw "TBAN $channel $duration $nick"
+				if [[ $duration ]]; then
+					if [[ $module_kick_ban_TBAN_supported -eq 1 ]]; then
+						send_raw "TBAN $channel $duration $nick"
+					else
+						send_modes "$channel" "+b $nick"
+						# Hackish temp fix.
+						# FIXME: THIS WILL/MAY BREAK if bot get disconnected and so on.
+						( sleep $duration && send_modes "$channel" "-b $nick" ) &
+					fi
 				else
 					send_modes "$channel" "+b $nick"
 				fi

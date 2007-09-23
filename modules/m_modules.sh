@@ -21,7 +21,7 @@
 # Manage (load/unload/list) modules.
 
 module_modules_INIT() {
-	echo "on_PRIVMSG"
+	echo 'on_PRIVMSG'
 }
 
 module_modules_UNLOAD() {
@@ -75,13 +75,11 @@ module_modules_dounload() {
 module_modules_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
-	local channel="$2"
 	local query="$3"
-	local target_module
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "modload")"; then
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
-			target_module="${BASH_REMATCH[1]}"
+			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
 				log_stdout_file owner.log "$sender loaded the module $target_module"
 				module_modules_doload "$target_module"
@@ -94,7 +92,7 @@ module_modules_on_PRIVMSG() {
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "modunload")"; then
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
-			target_module="${BASH_REMATCH[1]}"
+			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
 				log_stdout_file owner.log "$sender unloaded the module $target_module"
 				module_modules_dounload "$target_module"
@@ -107,7 +105,7 @@ module_modules_on_PRIVMSG() {
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "modreload")"; then
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
-			target_module="${BASH_REMATCH[1]}"
+			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
 				log_stdout_file owner.log "$sender reloaded the module $target_module"
 				module_modules_dounload "$target_module"

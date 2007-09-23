@@ -21,8 +21,7 @@
 # Identify to nickserv
 
 module_services_INIT() {
-	echo "on_connect after_load"
-	module_services_ghost=0
+	echo 'on_connect after_load'
 }
 
 module_services_UNLOAD() {
@@ -35,6 +34,7 @@ module_services_REHASH() {
 }
 
 module_services_after_load() {
+	module_services_ghost=0
 	if [[ $config_module_services_server_alias -eq 0 ]]; then
 		module_services_nickserv_command="PRIVMSG $config_module_services_nickserv_name :"
 	else

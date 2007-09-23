@@ -21,7 +21,7 @@
 # Allow owners to make to bot say something
 
 module_say_INIT() {
-	echo "on_PRIVMSG"
+	echo 'on_PRIVMSG'
 }
 
 module_say_UNLOAD() {
@@ -40,7 +40,6 @@ module_say_REHASH() {
 module_say_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
-	local channel="$2"
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "say")"; then

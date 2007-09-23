@@ -22,7 +22,7 @@
 # Quit the bot.
 
 module_die_INIT() {
-	echo "on_PRIVMSG"
+	echo 'on_PRIVMSG'
 }
 
 module_die_UNLOAD() {

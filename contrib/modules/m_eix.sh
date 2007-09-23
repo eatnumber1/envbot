@@ -27,7 +27,7 @@
 #   eix.
 
 module_eix_INIT() {
-	echo "on_PRIVMSG after_load"
+	echo 'on_PRIVMSG after_load'
 }
 
 module_eix_UNLOAD() {

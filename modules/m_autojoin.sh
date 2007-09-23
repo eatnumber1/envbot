@@ -21,7 +21,7 @@
 # This module does autojoin after connect.
 
 module_autojoin_INIT() {
-	echo "after_connect"
+	echo 'after_connect'
 }
 
 module_autojoin_UNLOAD() {
@@ -29,6 +29,7 @@ module_autojoin_UNLOAD() {
 }
 
 module_autojoin_REHASH() {
+	module_autojoin_join_from_config
 	return 0
 }
 

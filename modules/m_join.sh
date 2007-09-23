@@ -22,7 +22,7 @@
 # Join/part
 
 module_join_INIT() {
-	echo "on_PRIVMSG"
+	echo 'on_PRIVMSG'
 }
 
 module_join_UNLOAD() {
@@ -42,7 +42,6 @@ module_join_REHASH() {
 module_join_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
-	local channel="$2"
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "part")"; then

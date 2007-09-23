@@ -32,7 +32,7 @@
 
 
 module_bugzilla_INIT() {
-	echo "on_PRIVMSG after_load"
+	echo 'on_PRIVMSG after_load'
 }
 
 module_bugzilla_UNLOAD() {
@@ -85,13 +85,11 @@ module_bugzilla_on_PRIVMSG() {
 				local query_time="$(date +%H%M)$sender"
 				if [[ "$module_bugzilla_last_query" != "$query_time" ]] ; then
 					module_bugzilla_last_query="$query_time"
-					local bugs_parameters
+					local bugs_parameters=""
 					if [[ $mode = "all" ]]; then
 						bugs_parameters="-s all"
 					elif [[ $mode = "closed" ]]; then
 						bugs_parameters="-s CLOSED -s RESOLVED"
-					else
-						bugs_parameters=""
 					fi
 					log_file bugzilla.log "$sender made the bot run pybugz search on \"$pattern\""
 					local result="$(bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"

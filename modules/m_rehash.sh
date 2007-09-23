@@ -21,11 +21,11 @@
 # Rehashing
 
 module_rehash_INIT() {
-	echo "on_PRIVMSG"
+	echo 'on_PRIVMSG'
 }
 
 module_load_UNLOAD() {
-	uset module_rehash_dorehash
+	unset module_rehash_dorehash
 	unset module_rehash_on_PRIVMSG
 }
 
@@ -33,7 +33,9 @@ module_rehash_REHASH() {
 	return 0
 }
 
+# $1 = sender
 module_rehash_dorehash() {
+	local sender="$1"
 	config_rehash
 	local status_message status=$?
 	case $status in
@@ -54,14 +56,13 @@ module_rehash_dorehash() {
 module_rehash_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
-	local channel="$2"
 	local query="$3"
 	local target_module
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "rehash")"; then
 		if access_check_owner "$sender"; then
 			log_stdout_file owner.log "$sender did a rehash"
-			module_rehash_dorehash
+			module_rehash_dorehash "$sender"
 		else
 			access_fail "$sender" "load a module" "owner"
 		fi

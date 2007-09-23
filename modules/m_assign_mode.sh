@@ -22,7 +22,7 @@
 # Channel modes
 
 module_assign_mode_INIT() {
-	echo "on_PRIVMSG"
+	echo 'on_PRIVMSG'
 }
 
 module_assign_mode_UNLOAD() {
