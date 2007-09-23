@@ -43,13 +43,26 @@ Modules:
 		same deps as it
 
 
+Contrib modules
+---------------
+These are extra modules in contrib/modules. They are not really
+supported by the developers. Information about dependencies and
+extra configuration options is in each contrib module.
+
+If you want to use a contrib module the recommended way is:
+  cd modules
+  ln -s ../contrib/modules/m_modulename.sh
+That way if the contrib module is updated you will get the new
+version automatically.
+
+
 Installing
 ----------
 There is no installation.
 
 All you have to do is to get the bot running is:
  * Copy bot_settings.sh.example to bot_settings.sh
- * Edit bot_settings.sh to set correct nick, 
+ * Edit bot_settings.sh to set correct nick,
    irc server, service password, and so on.
  * Run ./envbot
 
