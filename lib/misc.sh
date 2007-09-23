@@ -29,6 +29,7 @@ bot_quit() {
 	done
 	local reason=$1
 	send_quit "$reason"
+	sleep 1
 	server_connected=0
 	for module in $modules_after_disconnect; do
 		module_${module}_after_disconnect
@@ -54,6 +55,7 @@ bot_restart() {
 	done
 	local reason=$1
 	send_quit "$reason"
+	sleep 1
 	server_connected=0
 	for module in $modules_after_disconnect; do
 		module_${module}_after_disconnect

@@ -22,12 +22,15 @@ config_file="bot_settings.sh"
 # Where to load libraries from
 library_dir="lib"
 
-# Make some system behave sane for this bot:
+# Set some variables to make bot work sane
+# For example tr + some LC_COLLATE = breaks in some cases.
 unset LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY
 unset LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS
 unset LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
 export LC_ALL=C
 export LANG=C
+# To make set -x more usable
+export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]}\n\t'
 
 # Store command line for later use
 command_line="$@"
