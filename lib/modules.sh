@@ -95,8 +95,8 @@ modules_add_hooks() {
 				modules_on_raw="$modules_on_raw $module"
 				;;
 			*)
-				log "ERROR: Unknown hook $hook requested. Module may malfunction. Shutting down bot to prevent damage"
-				exit 1
+				log "ERROR: Unknown hook $hook requested. Module may malfunction. Function will be unloaded"
+				return 1
 				;;
 		esac
 	done

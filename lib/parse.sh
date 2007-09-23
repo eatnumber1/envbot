@@ -58,8 +58,6 @@ parse_hostmask_host() {
 #   but 0 as error code
 parse_005() {
 	if [[ $server_005 =~ ${1}(=([^ ]+))? ]]; then
-		# Some, but not all also send what char the modes for INVEX is.
-		# If it isn't sent, guess one +I
 		if [[ ${BASH_REMATCH[2]} ]]; then
 			echo -n "${BASH_REMATCH[2]}"
 		fi

@@ -96,5 +96,5 @@ log_init() {
 		exit 1
 	fi
 
-	echo "Logfile is $log_file"
+	echo "Log directory is $log_dir"
 }

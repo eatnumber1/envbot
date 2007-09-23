@@ -41,6 +41,6 @@ access_check_owner() {
 #   $2 What they tried to do
 #   $3 What access they need
 access_fail() {
-	log_stdout_file access.log "$1 tried to \"$2\" but lacks access"
+	log_stdout_file access.log "$1 tried to \"$2\" but lacks access."
 	send_msg "$(parse_hostmask_nick $sender)" "Permission denied. You need $3 access for this."
 }
