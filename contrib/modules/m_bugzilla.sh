@@ -104,7 +104,7 @@ module_bugzilla_on_PRIVMSG() {
 					fi
 					send_msg "$channel" "${header}${pretty_result}"
 				else
-					log_stdout "ERROR: FLOOD DETECTED in eix module"
+					log_stdout "ERROR: FLOOD DETECTED in bugzilla module"
 				fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "bugs search" "pattern"
