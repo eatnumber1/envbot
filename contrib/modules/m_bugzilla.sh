@@ -70,6 +70,9 @@ module_bugzilla_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
+	if ! [[ $2 =~ ^# ]]; then
+		channel="$(parse_hostmask_nick "$sender")"
+	fi
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "bugs search")"; then
@@ -88,7 +91,7 @@ module_bugzilla_on_PRIVMSG() {
 					else
 						bugs_parameters=""
 					fi
-					log_file bugzilla.log "$sender made the bot run pybugz on \"$pattern\""
+					log_file bugzilla.log "$sender made the bot run pybugz search on \"$pattern\""
 					local result="$(bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
 					local chars="$(wc -c <<< "$result")"
 					local lines="$(wc -l <<< "$result")"
@@ -110,6 +113,47 @@ module_bugzilla_on_PRIVMSG() {
 				fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "bugs search" "pattern"
+		fi
+		return 1
+	elif parameters="$(parse_query_is_command "$query" "bug")"; then
+		if [[ "$parameters" =~ ^([0-9]+) ]]; then
+			local id="${BASH_REMATCH[1]}"
+				local query_time="$(date +%H%M)$sender"
+				if [[ "$module_bugzilla_last_query" != "$query_time" ]] ; then
+					module_bugzilla_last_query="$query_time"
+					log_file bugzilla.log "$sender made the bot check with pybugz for bug \"$id\""
+					local result="$(bugz -fqb "$config_module_bugzilla_url" get -n "$id" | grep -E 'Title|Status|Resolution')"
+					local resultread pretty_result
+					local title status resolution
+					# Read the data out of the multiline result.
+					while read -r resultread; do
+						if [[ $resultread =~ ^Title[\ :]+([^ ].*) ]]; then
+							title="${BASH_REMATCH[1]}"
+						elif [[ $resultread =~ ^Status[\ :]+([^ ].*) ]]; then
+							status="${BASH_REMATCH[1]}"
+						elif [[ $resultread =~ ^Resolution[\ :]+([^ ].*) ]]; then
+							resolution="${BASH_REMATCH[1]}"
+						fi
+					done <<< "$result"
+					# Yes this is a bit of a mess
+					if [[ "$title" ]]; then
+						# This info is always here
+						pretty_result="${format_bold}Bug $id${format_bold} (${format_bold}Status${format_bold} $status"
+						# The resolution may not exist, add it if it does.
+						if [[ $resolution ]]; then
+							pretty_result="${pretty_result}, ${format_bold}Resolution${format_bold} $resolution"
+						fi
+						# And add the title in. Does not depend on if resolution exist.
+						pretty_result="${pretty_result}): $title (${config_module_bugzilla_url}${id})"
+					else
+						pretty_result="Bug $id not found"
+					fi
+					send_msg "$channel" "${pretty_result}"
+				else
+					log_stdout_file bugzilla.log "ERROR: FLOOD DETECTED in bugzilla module"
+				fi
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "bug" "id"
 		fi
 		return 1
 	fi
