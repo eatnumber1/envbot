@@ -73,10 +73,10 @@ module_eix_on_PRIVMSG() {
 				local query_time="$(date +%H%M)$sender"
 				if [[ "$module_eix_last_query" != "$query_time" ]] ; then
 					module_eix_last_query="$query_time"
-					log_to_file eix.log "$sender made the bot run eix on \"$pattern\""
+					log_file eix.log "$sender made the bot run eix on \"$pattern\""
 					send_msg "$channel" "$(EIX_PRINT_IUSE='false' eix -pSCxs --format "$module_eix_format_string" "$pattern" | head -n 1)"
 				else
-					log_stdout "ERROR: FLOOD DETECTED in eix module"
+					log_stdout_file eix.log "ERROR: FLOOD DETECTED in eix module"
 				fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "eix" "pattern"

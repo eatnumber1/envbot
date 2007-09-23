@@ -87,7 +87,7 @@ module_bugzilla_on_PRIVMSG() {
 					else
 						bugs_parameters=""
 					fi
-					log_to_file bugs.log "$sender made the bot run pybugz on \"$pattern\""
+					log_file bugzilla.log "$sender made the bot run pybugz on \"$pattern\""
 					local result="$(bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
 					local chars="$(wc -c <<< "$result")"
 					local lines="$(wc -l <<< "$result")"
@@ -104,7 +104,7 @@ module_bugzilla_on_PRIVMSG() {
 					fi
 					send_msg "$channel" "${header}${pretty_result}"
 				else
-					log_stdout "ERROR: FLOOD DETECTED in bugzilla module"
+					log_stdout_file bugzilla.log "ERROR: FLOOD DETECTED in bugzilla module"
 				fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "bugs search" "pattern"

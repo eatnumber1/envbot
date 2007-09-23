@@ -33,7 +33,7 @@ log() {
 # Parameters
 #   $1 The extra log file (relative to the current log dir)
 #   $2 The log message to log
-log_to_file() {
+log_file() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $2" "0" "$1"
 }
 
