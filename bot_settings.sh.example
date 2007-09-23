@@ -81,6 +81,7 @@ config_log_dir="logs"
 # (*) Should we always log to STDOUT as well?
 config_log_stdout=1
 
+
 #############
 # Transport #
 #############
@@ -89,14 +90,15 @@ config_log_stdout=1
 #   The recommended non-SSL module is dev-tcp.
 #   The recommended SSL module is gnutls.
 config_transport='dev-tcp'
+#config_transport='netcat'  # Not well tested, for Debian users and other
+                            # with broken distros.
 #config_transport='gnutls'
 #config_transport='openssl' # Not well tested
-#config_transport='stunnel' # Tested and depressingly broken. Don't use.
 
-# stunnel options
-#   MAKE SURE THEY ARE CORRECT if you use stunnel.
-#config_transport_stunnel_path='/usr/sbin/stunnel'
-#config_transport_stunnel_localport='9741'
+# netcat options
+#   MAKE SURE THEY ARE CORRECT if you use netcat.
+#config_transport_netcat_path='/usr/bin/netcat'
+
 
 ###########
 # Modules #

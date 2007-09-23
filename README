@@ -33,10 +33,6 @@ Transports:
 		You need the program gnutls-cli. (http://www.gnutls.org/)
 	openssl:
 		You need the program openssl. (http://www.openssl.org/)
-	stunnel:
-		The bash you use must support the psedo device /dev/tcp. Debian is known
-		to disable this. Most other distros are sane and have it on.
-		You need the program stunnel. (http://stunnel.mirt.net/)
 Modules:
 	sqlite3
 		You need the program sqlite3. (http://www.sqlite.org/)
