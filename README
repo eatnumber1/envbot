@@ -27,7 +27,7 @@ Transports:
 	netcat:
 		You need the program netcat.
 		This is for Debian users and others with a broken distro. If your
-		distro supports it use dev-tcp transport.
+		distro supports it use dev-tcp transport instead.
 		I have only tested with GNU netcat. (http://netcat.sourceforge.net/)
 	gnutls:
 		You need the program gnutls-cli. (http://www.gnutls.org/)
