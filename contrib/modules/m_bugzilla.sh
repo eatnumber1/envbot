@@ -27,6 +27,7 @@
 
 # To set default bugzilla to use something like this in config:
 # config_module_bugzilla_url='https://bugs.gentoo.org/'
+# Must end in trailing slash!
 
 
 
@@ -91,18 +92,19 @@ module_bugzilla_on_PRIVMSG() {
 					local result="$(bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
 					local chars="$(wc -c <<< "$result")"
 					local lines="$(wc -l <<< "$result")"
-					local header
+					local header footer
 					if [[ $chars -le 10 ]]; then
 						header="No bugs matching \"$pattern\" found"
 					elif [[ $lines -gt 1 ]]; then
-						header="Found $lines result matching \"$pattern\". Only showing first: "
+						header="First bug matching \"$pattern\": "
+						footer=" ($lines more bugs found)"
 					else
 						header="One bug matching \"$pattern\" found: "
 					fi
 					if [[ $(head -n 1 <<< "$result") =~ \ ([0-9]+)\ +([^ ]+)\ +(.*)$ ]]; then
-						local pretty_result="${format_bold}Id${format_bold}: ${BASH_REMATCH[1]}  ${format_bold}Assigned To${format_bold}: ${BASH_REMATCH[2]}  ${format_bold}Description${format_bold}: ${BASH_REMATCH[3]}"
+						local pretty_result="${format_bold}${config_module_bugzilla_url}${BASH_REMATCH[1]}${format_bold}  ${format_bold}Description${format_bold}: ${BASH_REMATCH[3]}  ${format_bold}Assigned To${format_bold}: ${BASH_REMATCH[2]}"
 					fi
-					send_msg "$channel" "${header}${pretty_result}"
+					send_msg "$channel" "${header}${pretty_result}${footer}"
 				else
 					log_stdout_file bugzilla.log "ERROR: FLOOD DETECTED in bugzilla module"
 				fi
