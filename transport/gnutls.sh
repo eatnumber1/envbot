@@ -25,8 +25,9 @@
 transport_supports="ipv4 ipv6 ssl"
 
 # Check if all the stuff needed to use this transport is available
-# Return status: 0 = yes
-#                1 = no
+# Return status
+#   0 yes
+#   1 no
 transport_check_support() {
 	# If anyone can tell me how to check if /dev/tcp is supported
 	# without trying to make a connection (that could fail for so
@@ -37,13 +38,15 @@ transport_check_support() {
 }
 
 # Try to connect
-# Return status: 0 if ok
-#                1 if connection failed
-# $1 = hostname/ip
-# $2 = port
-# $3 = If 1 use SSL. If the module does not support it, just ignore it.
-# $3 = IP to bind to if any and if supported
+# Parameters
+#   $1 hostname/ip
+#   $2 port
+#   $3 If 1 use SSL. If the module does not support it, just ignore it.
+#   $4 IP to bind to if any and if supported
 #      If the module does not support it, just ignore it.
+# Return status
+#   0 if ok
+#   1 if connection failed
 transport_connect() {
 	transport_tmp_dir_file="$(mktemp -dt envbot.gnutls.XXXXXXXXXX)" || return 1
 	# To keep this simple, from client perspective.
@@ -71,18 +74,19 @@ transport_disconnect() {
 }
 
 # Return a line in the variable line.
-# Return status: 0 if ok
-#                1 if connection failed
+# Return status
+#   0 If ok
+#   1 If connection failed
 transport_read_line() {
 	read -ru 4 -t 600 line
 	# Fail.
 	[[ $? -ne 0 ]] && return 1
-	# Yes this looks mad!
 	line=${line//$'\r'/}
 }
 
 # Send a line
-# $* = send this
+# Parameters
+#   $* send this
 # Return code not checked.
 transport_write_line() {
 	echo "$@" >&3

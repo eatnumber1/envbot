@@ -25,8 +25,9 @@
 transport_supports=""
 
 # Check if all the stuff needed to use this transport is available
-# Return status: 0 = yes
-#                1 = no
+# Return status
+#   0 yes
+#   1 no
 transport_check_support() {
 	echo 'WARNING: stunnel support is known to be semi-broken.'
 	echo 'For SSL it is better to use gnutls or openssl transports!'
@@ -71,13 +72,15 @@ transport_create_config() {
 
 
 # Try to connect
-# Return status: 0 if ok
-#                1 if connection failed
-# $1 = hostname/ip
-# $2 = port
-# $3 = If 1 use SSL. If the module does not support it, just ignore it.
-# $3 = IP to bind to if any and if supported
+# Parameters
+#   $1 hostname/ip
+#   $2 port
+#   $3 If 1 use SSL. If the module does not support it, just ignore it.
+#   $4 IP to bind to if any and if supported
 #      If the module does not support it, just ignore it.
+# Return status
+#   0 if ok
+#   1 if connection failed
 transport_connect() {
 	transport_pid_file="$(mktemp -t envbot.stunnel.pid.XXXXXXXXXX)" || return 1
 	transport_output_file="$(mktemp -t envbot.stunnel.output.XXXXXXXXXX)" || return 1
@@ -97,8 +100,9 @@ transport_disconnect() {
 }
 
 # Return a line in the variable line.
-# Return status: 0 if ok
-#                1 if connection failed
+# Return status
+#   0 If ok
+#   1 If connection failed
 transport_read_line() {
 	read -ru 3 -t 600 line
 	# Fail.
@@ -108,7 +112,8 @@ transport_read_line() {
 }
 
 # Send a line
-# $* = send this
+# Parameters
+#   $* send this
 # Return code not checked.
 transport_write_line() {
 	echo "$@" >&3
