@@ -63,7 +63,8 @@ transport_connect() {
 # Called to close connection
 # No parameters, no return code check
 transport_disconnect() {
-	kill "$(< "${transport_tmp_dir_file}/pid")"
+	# It might not be running.
+	kill "$(< "${transport_tmp_dir_file}/pid")" >/dev/null 2>&1
 	rm -rf "${transport_tmp_dir_file}"
 	exec 3<&-
 	exec 4<&-
