@@ -198,3 +198,7 @@ config_module_umodes_default_umodes="+isB-w"
 	# Using older GNU date
 	#date -d "1970-01-01 UTC + ${1} seconds"
 #}
+
+#####################################################################
+# For contrib modules please see the contrib module in question
+# for information on what variables it use.

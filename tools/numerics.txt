@@ -45,8 +45,11 @@ numeric[7]=RPL_MAPEND    # Not from any RFC
 numeric[8]=RPL_SNOMASK   # Not from any RFC, used on unreal
 
 # Command replies.
+numeric[205]=RPL_TRACEUSER
+numeric[213]=RPL_STATSCLINE
 numeric[219]=RPL_ENDOFSTATS
 numeric[221]=RPL_UMODEIS
+numeric[223]=RPL_STATSELINE    # Not from any RFC. Conflicting use on different ircds.
 numeric[242]=RPL_STATSUPTIME
 numeric[250]=RPL_STATSCONN     # Not from any RFC. Conflicting use on different ircds.
 numeric[251]=RPL_LUSERCLIENT
@@ -111,6 +114,8 @@ numeric[374]=RPL_ENDOFINFO
 numeric[375]=RPL_MOTDSTART
 numeric[376]=RPL_ENDOFMOTD
 numeric[378]=RPL_WHOISHOST
+numeric[381]=RPL_YOUREOPER
+numeric[382]=RPL_REHASHING
 numeric[391]=RPL_TIME
 numeric[396]=RPL_HOSTHIDDEN   # Not from any RFC.
 
@@ -172,6 +177,8 @@ numeric[671]=RPL_WHOISSECURE     # Used on unreal for ssl clients.
 # As we can't include more than one meaning for every numeric conflicting
 # ones may be added as comments. Modules depending on 9xx numerics should use the raw value.
 # As I mainly use InspIRCd I prioritize those. ;)
+numeric[900]=RPL_MODULES
+numeric[901]=RPL_ENDOFMODULES
 numeric[902]=RPL_COMMANDS              # 902 <nick> :<command> <module name> <minimum parameters>
 numeric[903]=RPL_ENDOFCOMMANDS         # 903 <nick> :End of COMMANDS list
 numeric[972]=ERR_CANNOTDOCOMMAND       # Unreal uses 972 (ERR_CANNOTDOCOMMAND) for umode +q, and other failed kicks.
