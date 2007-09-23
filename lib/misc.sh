@@ -19,6 +19,42 @@
 #                                                                         #
 ###########################################################################
 
+# Some codes for IRC formatting
+format_bold=$'\002'
+format_underline=$'\037'
+format_color=$'\003'
+format_inverse=$'\026'
+format_normal=$'\017'
+# Please. Don't. Abuse. This.
+format_bell=$'\007'
+
+# Color table:
+# white         0
+# black         1
+# blue          2
+# green         3
+# red           4
+# darkred       5
+# purple        6
+# darkyellow    7
+# yellow        8
+# brightgreen   9
+# darkaqua      10
+# aqua          11
+# lightblue     12
+# brightpurple  13
+# darkgrey      14
+# lightgrey     15
+
+# This will add colors around this text.
+# Parameters
+#   $1 Foreground color
+#   $2 Background color
+#   $3 String to colorise
+format_colorise() {
+	echo "${format_color}${1},${2}${3}${format_normal}"
+}
+
 # Quits the bot in a graceful way.
 # Parameters
 #   $1 Reason to quit (optional)
@@ -101,5 +137,3 @@ list_remove() {
 list_contains() {
 	grep -wq "$2" <<< "${!1}"
 }
-# Some codes for IRC formatting
-format_bold=$'\002'
