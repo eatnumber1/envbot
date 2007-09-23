@@ -64,6 +64,11 @@ module_eix_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
+	# If it isn't in a channel send message back to person who send it,
+	# otherwise send in channel
+	if ! [[ $2 =~ ^# ]]; then
+		channel="$(parse_hostmask_nick "$sender")"
+	fi
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "eix")"; then
