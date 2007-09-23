@@ -101,3 +101,5 @@ list_remove() {
 list_contains() {
 	grep -wq "$2" <<< "${!1}"
 }
+# Some codes for IRC formatting
+format_bold=$'\002'

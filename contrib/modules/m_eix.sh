@@ -53,7 +53,7 @@ module_eix_after_load() {
 }
 
 # eix format string:
-module_eix_format_string=$'<category>/\002<name>\002 \(<availableversionsshort>\) \(\002<homepage>\002\): <description>'
+module_eix_format_string="<category>/${format_bold}<name>${format_bold} \(<availableversionsshort>\) \(${format_bold}<homepage>${format_bold}\): <description>"
 
 # Called on a PRIVMSG
 #

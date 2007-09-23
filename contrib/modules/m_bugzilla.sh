@@ -89,16 +89,20 @@ module_bugzilla_on_PRIVMSG() {
 					fi
 					log_to_file bugs.log "$sender made the bot run pybugz on \"$pattern\""
 					local result="$(bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
-					local lines="$(wc -l <<< "$result")"
 					local chars="$(wc -c <<< "$result")"
+					local lines="$(wc -l <<< "$result")"
+					local header
 					if [[ $chars -le 10 ]]; then
-						result="No bugs matching \"$pattern\" found"
+						header="No bugs matching \"$pattern\" found"
 					elif [[ $lines -gt 1 ]]; then
-						result="Found $lines result matching \"$pattern\". Only showing first: $(head -n 1 <<< "$result")"
+						header="Found $lines result matching \"$pattern\". Only showing first: "
 					else
-						result="One bug matching \"$pattern\": $result"
+						header="One bug matching \"$pattern\" found: "
 					fi
-					send_msg "$channel" "$result"
+					if [[ $(head -n 1 <<< "$result") =~ \ ([0-9]+)\ +([^ ]+)\ +(.*)$ ]]; then
+						local pretty_result="${format_bold}Id${format_bold}: ${BASH_REMATCH[1]}  ${format_bold}Assigned To${format_bold}: ${BASH_REMATCH[2]}  ${format_bold}Description${format_bold}: ${BASH_REMATCH[3]}"
+					fi
+					send_msg "$channel" "${header}${pretty_result}"
 				else
 					log_stdout "ERROR: FLOOD DETECTED in eix module"
 				fi
