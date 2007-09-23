@@ -25,6 +25,11 @@
 # This module therefore depends on:
 #   pybugz
 
+# To set default bugzilla to use something like this in config:
+# config_module_bugzilla_url='https://bugs.gentoo.org/'
+
+
+
 module_bugzilla_INIT() {
 	echo "on_PRIVMSG after_load"
 }
@@ -45,6 +50,10 @@ module_bugzilla_after_load() {
 	type -p bugz &> /dev/null
 	if [[ $? -ne 0 ]]; then
 		log_stdout "Couldn't find bugz command line tool. The bugzilla module depend on that tool (emerge pybugz to get it on gentoo)."
+		return 1
+	fi
+	if [[ -z $config_module_bugzilla_url ]]; then
+		log_stdout "Please set config_module_bugzilla_url in config. The bugzilla module depend on that tool (emerge pybugz to get it on gentoo)."
 		return 1
 	fi
 	unset module_bugzilla_last_query
@@ -79,7 +88,7 @@ module_bugzilla_on_PRIVMSG() {
 						bugs_parameters=""
 					fi
 					log_to_file bugs.log "$sender made the bot run pybugz on \"$pattern\""
-					local result="$(bugz -fq search $bugs_parameters "$pattern")"
+					local result="$(bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
 					local lines="$(wc -l <<< "$result")"
 					local chars="$(wc -c <<< "$result")"
 					if [[ $chars -le 10 ]]; then
