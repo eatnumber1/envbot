@@ -29,11 +29,18 @@ unset LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS
 unset LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
 export LC_ALL=C
 export LANG=C
+# If you need something else, override in config...
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+# This is needed when we run the bot with env -i as recommended.
+# I don't want to end up with rm -rf $HOME...
+declare -r tmp_home="$(mktemp -dt envbot.home.XXXXXXXXXX)"
+export HOME="$tmp_home"
 # To make set -x more usable
 export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]}\n\t'
 
 # Store command line for later use
 command_line="$@"
+
 
 print_cmd_help() {
 	echo 'envbot - A modular IRC bot in bash.'

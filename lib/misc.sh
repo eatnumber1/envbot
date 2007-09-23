@@ -39,6 +39,7 @@ bot_quit() {
 	done
 	log "Bot quit gracefully"
 	transport_disconnect
+	rm -rf "$tmp_home"
 	if [[ $2 ]]; then
 		exit $2
 	else
@@ -65,6 +66,7 @@ bot_restart() {
 	done
 	log "Bot quit gracefully"
 	transport_disconnect
+	rm -rf "$tmp_home"
 	exec env -i "$(type -p bash)" $0 $command_line
 }
 
