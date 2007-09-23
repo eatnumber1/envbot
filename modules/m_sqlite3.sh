@@ -37,7 +37,7 @@ module_sqlite3_UNLOAD() {
 	unset module_sqlite3_clean_string module_sqlite3_exec_sql
 }
 
-module_faq_REHASH() {
+module_sqlite3_REHASH() {
 	return 0
 }
 

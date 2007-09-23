@@ -34,7 +34,7 @@ module_factoids_UNLOAD() {
 	unset module_factoids_after_load module_factoids_on_PRIVMSG
 }
 
-module_faq_REHASH() {
+module_factoids_REHASH() {
 	return 0
 }
 
