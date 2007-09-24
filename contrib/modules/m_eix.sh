@@ -25,6 +25,10 @@
 # This module therefore depends on:
 #   Gentoo
 #   eix.
+# You need to specify flood limiting jn config.
+# (how often in seconds)
+#config_module_eix_rate='5'
+
 
 module_eix_INIT() {
 	echo 'on_PRIVMSG after_load'
@@ -75,9 +79,8 @@ module_eix_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^(.+) ]]; then
 			local pattern="${BASH_REMATCH[1]}"
 				# Simple flood limiting
-				local query_time="$(date +%H%M)$sender"
-				if [[ "$module_eix_last_query" != "$query_time" ]] ; then
-					module_eix_last_query="$query_time"
+				if time_check_interval "$module_eix_last_query" "$config_module_eix_rate"; then
+					module_eix_last_query="$(date -u +%s)"
 					log_file eix.log "$sender made the bot run eix on \"$pattern\""
 					send_msg "$channel" "$(EIX_PRINT_IUSE='false' eix -pSCxs --format "$module_eix_format_string" "$pattern" | head -n 1)"
 				else

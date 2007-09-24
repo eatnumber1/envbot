@@ -30,7 +30,7 @@
 # Must end in trailing slash!
 # You also need to specify flood limiting
 # (how often in seconds)
-#config_module_bugzilla_rate='5'
+#config_module_bugzilla_rate='10'
 
 
 module_bugzilla_INIT() {
@@ -87,7 +87,6 @@ module_bugzilla_on_PRIVMSG() {
 			local mode="${BASH_REMATCH[2]}"
 			local pattern="${BASH_REMATCH[@]: -1}"
 				# Simple flood limiting
-
 				if time_check_interval "$module_bugzilla_last_query" "$config_module_bugzilla_rate"; then
 					module_bugzilla_last_query="$(date -u +%s)"
 					local bugs_parameters=""
