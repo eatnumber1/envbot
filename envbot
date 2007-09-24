@@ -35,7 +35,7 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 # I don't want to end up with rm -rf $HOME...
 declare -r tmp_home="$(mktemp -dt envbot.home.XXXXXXXXXX)"
 # Temp one until the next "stage" of trap gets loaded (at connect)
-trap 'rm -rvf tmp_home; exit 1' TERM INT
+trap 'rm -rvf $tmp_home; exit 1' TERM INT
 export HOME="$tmp_home"
 # To make set -x more usable
 export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]}\n\t'
