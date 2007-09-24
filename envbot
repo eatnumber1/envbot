@@ -43,6 +43,8 @@ export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]}\n\t'
 # Store command line for later use
 command_line="$@"
 
+# Current config version.
+declare -r config_current_version=12
 
 print_cmd_help() {
 	echo 'envbot - A modular IRC bot in bash.'
@@ -92,8 +94,6 @@ if [[ $? -ne 0 ]]; then
 	echo "Error: couldn't load config from bot_settings.sh"
 	exit 1
 fi
-
-config_current_version=11
 
 # This is hackish, it should be in config.sh (config_validate)
 # The reason is that we need to load transport before libraries:

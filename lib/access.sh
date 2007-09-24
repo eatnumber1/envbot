@@ -23,17 +23,41 @@
 # Parameters
 #   $1 n!u@h mask
 # Return status
-#   0 On owner
-#   1 Otherwise
+#   0 Access granted.
+#   1 Access denied.
 access_check_owner() {
-	local owner
-	for owner in "${config_owners[@]}"; do
-		if [[ "$1" =~ $owner ]]; then
+	local index
+	for index in ${!config_access_mask[*]}; do
+		if [[ "$1" =~ ${config_access_mask[$index]} ]] && list_contains "config_access_capab[$index]" 'owner'; then
 			return 0
 		fi
 	done
 	return 1
 }
+
+
+# Check for access in scope.
+# Parameters
+#   $1 Capability to check for.
+#   $2 n!u@h mask
+#   $3 What scope
+# Return status
+#   0 Access granted.
+#   1 Access denied.
+access_check_capab() {
+	local index
+	for index in ${!config_access_mask[*]}; do
+		if [[ "$2" =~ ${config_access_mask[$index]} ]] && \
+		   [[ "$3" =~ ${config_access_scope[$index]} ]]; then
+			if list_contains "config_access_capab[$index]" "$1" || \
+			   list_contains "config_access_capab[$index]" "owner"; then
+				return 0
+			fi
+		fi
+	done
+	return 1
+}
+
 
 # Return error, and log it
 # Parameters

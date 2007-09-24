@@ -23,7 +23,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=11
+config_version=12
 
 ####################
 # General settings #
@@ -65,11 +65,20 @@ config_server_passwd=""
 # (*) A regular expression of prefixes we should listen to.
 config_listenregex="(;|${config_firstnick}[:,] )"
 
-# (*) Owner regexes.
-#     THESE ARE EXAMPLES, don't use these, replace them
+# (*) Access regexes
 #     Without at least one set, the bot won't start
-#config_owners[1]='.*!brain@staff\.kuonet\.org'
-#config_owners[2]='.*!AnMaster@staff\.kuonet-ng\.org'
+#     "owner" is a special capab that grants all other access.
+#     The first regex must be an owner.
+#     Scope is a regex of channels where access is effective.
+#     A /msg or something affecting a specifc channel will
+#     have the special scope "msg"
+# config_access_mask[1]='^Brain!brain@staff\.kuonet\.org$'
+#config_access_capab[1]='owner'
+#config_access_scope[1]='.*'
+
+# config_access_mask[2]='^Someone!whatever@customer-1234\.isp\.com$'
+#config_access_capab[2]='say kick'
+#config_access_scope[2]='#channel'
 
 
 ###########

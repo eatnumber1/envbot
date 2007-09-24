@@ -82,9 +82,14 @@ config_validate() {
 		echo "ERROR: YOU MUST SET config_log_stdout IN THE CONFIG"
 		exit 1
 	fi
-	if [[ -z "${config_owners[1]}" ]]; then
+	if [[ -z "${config_access_mask[1]}" ]]; then
 		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
-		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_owners[1] that is)."
+		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_access_mask[1] that is)."
+		exit 1
+	fi
+	if ! list_contains "config_access_capab[1]" "owner"; then
+		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
+		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_access_capab[1] that is)."
 		exit 1
 	fi
 	if [[ $config_server_ssl -ne 0 ]]; then
