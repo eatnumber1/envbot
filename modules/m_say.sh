@@ -46,7 +46,13 @@ module_say_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+)\ (.*) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
-			if access_check_capab "say" "$sender" "$channel"; then
+			local scope
+			if [[ $channel =~ ^# ]]; then
+				scope="$channel"
+			else
+				scope="MSG"
+			fi
+			if access_check_capab "say" "$sender" "$scope"; then
 				log_file owner.log "$sender made the bot say \"$message\" in/to \"$channel\""
 				send_msg "$channel" "$message"
 			else
@@ -60,7 +66,13 @@ module_say_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+)\ (.*) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
-			if access_check_capab "say" "$sender" "$channel"; then
+			local scope
+			if [[ $channel =~ ^# ]]; then
+				scope="$channel"
+			else
+				scope="MSG"
+			fi
+			if access_check_capab "say" "$sender" "$scope"; then
 				log_file owner.log "$sender made the bot act \"$message\" in/to \"$channel\""
 				send_ctcp "${channel}" "ACTION ${message}"
 			else

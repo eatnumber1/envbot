@@ -69,9 +69,13 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 #     Without at least one set, the bot won't start
 #     "owner" is a special capab that grants all other access.
 #     The first regex must be an owner.
+#
 #     Scope is a regex of channels where access is effective.
-#     A /msg or something not affecting a specifc channel will
-#     have the special scope "GLOBAL"
+#     A /msg (like say to a non channel) will get the scope MSG
+#     Anything affecting global state will have the scope "GLOBAL"
+#
+#     There can be several access masks matching same host (to allow
+#     for different scope/capab combinations).
 # config_access_mask[1]='^Brain!brain@staff\.kuonet\.org$'
 #config_access_capab[1]='owner'
 #config_access_scope[1]='.*'
@@ -80,6 +84,9 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 #config_access_capab[2]='say kick'
 #config_access_scope[2]='#channel'
 
+# config_access_mask[3]='^Someone!whatever@customer-1234\.isp\.com$'
+#config_access_capab[3]='facoid_admin'
+#config_access_scope[3]='GLOBAL'
 
 ###########
 # Logging #
