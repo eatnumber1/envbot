@@ -148,7 +148,7 @@ modules_unload() {
 # If the load fails in a fatal way the bot will quit.
 modules_load() {
 	module="$1"
-	if grep -qw "$module" <<< "${modules_loaded}"; then
+	if list_contains "modules_loaded" "$module"; then
 		log_stdout "Module ${module} is already loaded."
 		return 2
 	fi
@@ -191,7 +191,9 @@ modules_loaded=""
 modules_load_from_config() {
 	for module in $config_modules; do
 		if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
-			modules_load "$module"
+			if ! list_contains modules_loaded "$module"; then
+				modules_load "$module"
+			fi
 		else
 			log "WARNING: $module doesn't exist! Removing it from list"
 		fi

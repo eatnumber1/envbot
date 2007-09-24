@@ -45,6 +45,7 @@ config_rehash() {
 		return 4
 	fi
 	local status
+	modules_load_from_config
 	for module in $modules_loaded; do
 		module_${module}_REHASH
 		status=$?

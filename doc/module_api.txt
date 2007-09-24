@@ -70,7 +70,7 @@ module_modulename_UNLOAD (REQUIRED)
 		use the FINALISE hook!
 
 
-module_modulename_REHASH (REQUIRED) (TODO)
+module_modulename_REHASH (REQUIRED)
 	Called to make the module reparse any config options.
 	Parameters:
 		None
