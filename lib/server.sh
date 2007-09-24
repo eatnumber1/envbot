@@ -151,7 +151,7 @@ server_connect(){
 	server_connected=0
 	on_nick=1
 	# HACK: Clean up if we are aborted, replaced after connect with one that sends QUIT
-	trap 'transport_disconnect; rm -rvf $tmp_home; exit 1' TERM INT
+	trap 'transport_disconnect; rm -rvf "$tmp_home"; exit 1' TERM INT
 	log_stdout "Connecting..."
 	transport_connect "$config_server" "$config_server_port" "$config_server_ssl" "$config_server_bind" || return 1
 	while transport_read_line; do
