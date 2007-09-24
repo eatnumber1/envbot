@@ -4,6 +4,5 @@ TODO list
 * Nick tracking
 * Module (un)loading on rehash.
 * Module dependencies to track what module depends on what other modules.
-* More detailed access control
 * Periodic events
 * Some framework (as a module) for help.
