@@ -133,7 +133,7 @@ module_helloworld_on_PRIVMSG() {
 				# Lets tell the sender they lack access!
 				# access_fail will send a PRIVMSG to the sender saying permission denied
 				# and also log the failed attempt.
-				access_fail "$sender" "make the hi" "hi"
+				access_fail "$sender" "make the bot hi" "hi"
 			fi
 		else
 			# As above, provide feedback about bad syntax.
