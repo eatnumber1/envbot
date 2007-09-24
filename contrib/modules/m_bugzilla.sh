@@ -25,10 +25,12 @@
 # This module therefore depends on:
 #   pybugz
 
-# To set default bugzilla to use something like this in config:
-# config_module_bugzilla_url='https://bugs.gentoo.org/'
+# To set bugzilla to use something like this in config:
+#config_module_bugzilla_url='https://bugs.gentoo.org/'
 # Must end in trailing slash!
-
+# You also need to specify flood limiting
+# (how often in seconds)
+#config_module_bugzilla_rate='5'
 
 
 module_bugzilla_INIT() {
@@ -47,14 +49,17 @@ module_bugzilla_REHASH() {
 # Called after module has loaded.
 # Check for bugz
 module_bugzilla_after_load() {
-	# Check (silently) for sqlite3
 	type -p bugz &> /dev/null
 	if [[ $? -ne 0 ]]; then
 		log_stdout "Couldn't find bugz command line tool. The bugzilla module depend on that tool (emerge pybugz to get it on gentoo)."
 		return 1
 	fi
 	if [[ -z $config_module_bugzilla_url ]]; then
-		log_stdout "Please set config_module_bugzilla_url in config. The bugzilla module depend on that tool (emerge pybugz to get it on gentoo)."
+		log_stdout "Please set config_module_bugzilla_url in config."
+		return 1
+	fi
+	if [[ -z $config_module_bugzilla_url ]]; then
+		log_stdout "Please set config_module_bugzilla_rate in config."
 		return 1
 	fi
 	unset module_bugzilla_last_query
@@ -82,9 +87,9 @@ module_bugzilla_on_PRIVMSG() {
 			local mode="${BASH_REMATCH[2]}"
 			local pattern="${BASH_REMATCH[@]: -1}"
 				# Simple flood limiting
-				local query_time="$(date +%H%M)$sender"
-				if [[ "$module_bugzilla_last_query" != "$query_time" ]] ; then
-					module_bugzilla_last_query="$query_time"
+
+				if time_check_interval "$module_bugzilla_last_query" "$config_module_bugzilla_rate"; then
+					module_bugzilla_last_query="$(date -u +%s)"
 					local bugs_parameters=""
 					if [[ $mode = "all" ]]; then
 						bugs_parameters="-s all"

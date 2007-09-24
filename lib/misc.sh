@@ -106,6 +106,20 @@ bot_restart() {
 	exec env -i "$(type -p bash)" $0 $command_line
 }
 
+
+# Check if a set time has passed
+# Parameters
+#   $1 Unix timestamp to check against
+#   $2 Number of seconds
+# Return code
+#   0 If at least the given number of seconds has passed
+#   1 If it hasn't
+time_check_interval() {
+	local newtime="$(date -u +%s)"
+	(( ( $newtime - $1 ) > $2 ))
+}
+
+
 # Strip leading/trailing spaces.
 # Parameters
 #   $1 String to strip
