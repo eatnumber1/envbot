@@ -46,7 +46,7 @@ module_eix_REHASH() {
 # Called after module has loaded.
 # Check for eix
 module_eix_after_load() {
-	# Check (silently) for sqlite3
+	# Check (silently) for eix
 	type -p eix &> /dev/null
 	if [[ $? -ne 0 ]]; then
 		log_stdout "Couldn't find eix command line tool. The eix module depend on that tool."
