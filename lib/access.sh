@@ -63,8 +63,8 @@ access_check_capab() {
 # Parameters
 #   $1 n!u@h
 #   $2 What they tried to do
-#   $3 What access they need
+#   $3 What capability they need
 access_fail() {
 	log_stdout_file access.log "$1 tried to \"$2\" but lacks access."
-	send_msg "$(parse_hostmask_nick $sender)" "Permission denied. You need $3 access for this."
+	send_msg "$(parse_hostmask_nick $sender)" "Permission denied. You need the capability \"$3\" to do this action."
 }

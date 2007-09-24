@@ -51,7 +51,7 @@ module_assign_mode_on_PRIVMSG() {
 			if access_check_capab "op" "$sender" "$channel"; then
 				send_modes "$channel" "+o $nick"
 			else
-				access_fail "$sender" "make the bot op somebody" "owner"
+				access_fail "$sender" "make the bot op somebody" "op"
 			fi
 			return 1
 		fi
@@ -62,7 +62,7 @@ module_assign_mode_on_PRIVMSG() {
 			if access_check_capab "op" "$sender" "$channel"; then
 				send_modes "$channel" "-o $nick"
 			else
-				access_fail "$sender" "make the bot deop somebody" "owner"
+				access_fail "$sender" "make the bot deop somebody" "op"
 			fi
 			return 1
 		fi
@@ -73,7 +73,7 @@ module_assign_mode_on_PRIVMSG() {
 			if access_check_capab "halfop" "$sender" "$channel"; then
 					send_modes "$channel" "+h $nick"
 			else
-				access_fail "$sender" "make the bot halfop somebody" "owner"
+				access_fail "$sender" "make the bot halfop somebody" "halfop"
 			fi
 			return 1
 		fi
@@ -84,7 +84,7 @@ module_assign_mode_on_PRIVMSG() {
 			if access_check_capab "halfop" "$sender" "$channel"; then
 				send_modes "$channel" "-h $nick"
 			else
-				access_fail "$sender" "make the bot dehalfop somebody" "owner"
+				access_fail "$sender" "make the bot dehalfop somebody" "halfop"
 			fi
 			return 1
 		fi
@@ -95,7 +95,7 @@ module_assign_mode_on_PRIVMSG() {
 			if access_check_capab "voice" "$sender" "$channel"; then
 				send_modes "$channel" "+v $nick"
 			else
-				access_fail "$sender" "make the bot give voice to somebody" "owner"
+				access_fail "$sender" "make the bot give voice to somebody" "voice"
 			fi
 			return 1
 		fi
@@ -106,7 +106,7 @@ module_assign_mode_on_PRIVMSG() {
 			if access_check_capab "voice" "$sender" "$channel"; then
 				send_modes "$channel" "-v $nick"
 			else
-				access_fail "$sender" "make the bot take voice from somebody" "owner"
+				access_fail "$sender" "make the bot take voice from somebody" "voice"
 			fi
 			return 1
 		fi
@@ -117,7 +117,7 @@ module_assign_mode_on_PRIVMSG() {
 			if access_check_capab "protect" "$sender" "$channel"; then
 				send_modes "$channel" "+a $nick"
 			else
-				access_fail "$sender" "make the bot protect somebody" "owner"
+				access_fail "$sender" "make the bot protect somebody" "protect"
 			fi
 			return 1
 		fi
@@ -128,7 +128,7 @@ module_assign_mode_on_PRIVMSG() {
 			if access_check_capab "protect" "$sender" "$channel"; then
 				send_modes "$channel" "-a $nick"
 			else
-				access_fail "$sender" "make the bot deprotect somebody" "owner"
+				access_fail "$sender" "make the bot deprotect somebody" "protect"
 			fi
 			return 1
 		fi
@@ -139,7 +139,7 @@ module_assign_mode_on_PRIVMSG() {
 			if access_check_capab "topic" "$sender" "$channel"; then
 				send_topic "$channel" "$message"
 			else
-				access_fail "$sender" "make the bot protect somebody" "owner"
+				access_fail "$sender" "make the bot protect somebody" "topic"
 			fi
 			return 1
 		fi

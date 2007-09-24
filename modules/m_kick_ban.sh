@@ -87,7 +87,7 @@ module_kick_ban_on_PRIVMSG() {
 				send_raw "KICK $channel $nick $kickmessage"
 				log_stdout "$nick kicked from $channel with kick message: $kickmessage"
 			else
-				access_fail "$sender" "make the bot kick somebody" "owner"
+				access_fail "$sender" "make the bot kick somebody" "kick"
 			fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
@@ -115,7 +115,7 @@ module_kick_ban_on_PRIVMSG() {
 				# send_modes "$channel" "+b" get_hostmask $nick <-- not implemented yet
 				log_stdout "$nick banned from $channel"
 			else
-				access_fail "$sender" "make the bot ban somebody" "owner"
+				access_fail "$sender" "make the bot ban somebody" "ban"
 			fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "ban" "#channel nick [duration]"

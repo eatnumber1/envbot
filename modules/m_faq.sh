@@ -85,7 +85,7 @@ module_faq_on_PRIVMSG() {
 					module_faq_load
 					send_msg "$channel" "Done."
 				else
-					access_fail "$sender" "reload faq items" "owner"
+					access_fail "$sender" "reload faq items" "faq_admin"
 				fi
 				return 1
 			fi

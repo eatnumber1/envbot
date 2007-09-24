@@ -56,7 +56,7 @@ module_say_on_PRIVMSG() {
 				log_file owner.log "$sender made the bot say \"$message\" in/to \"$channel\""
 				send_msg "$channel" "$message"
 			else
-				access_fail "$sender" "make the bot talk with say" "owner"
+				access_fail "$sender" "make the bot talk with say" "say"
 			fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "say" "target message # Where target is a nick or channel"
@@ -76,7 +76,7 @@ module_say_on_PRIVMSG() {
 				log_file owner.log "$sender made the bot act \"$message\" in/to \"$channel\""
 				send_ctcp "${channel}" "ACTION ${message}"
 			else
-				access_fail "$sender" "make the bot act" "owner"
+				access_fail "$sender" "make the bot act" "say"
 			fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "act" "target message # Where target is a nick or channel"

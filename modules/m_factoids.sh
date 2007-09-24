@@ -145,7 +145,7 @@ module_factoids_set() {
 			module_factoids_set_INSERT_or_UPDATE "$key" "$value" "$sender"
 			send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), I will remember, $key is $value"
 		else
-			access_fail "$sender" "change a locked faq item" "owner"
+			access_fail "$sender" "change a locked faq item" "factoid_admin"
 		fi
 	else
 		module_factoids_set_INSERT_or_UPDATE "$key" "$value" "$sender"
@@ -163,7 +163,7 @@ module_factoids_remove() {
 			module_factoids_DELETE "$1"
 			send_msg "$channel" "I forgot $key"
 		else
-			access_fail "$sender" "remove a locked faq item" "owner"
+			access_fail "$sender" "remove a locked faq item" "factoid_admin"
 		fi
 	else
 		module_factoids_DELETE "$1"
@@ -232,7 +232,7 @@ module_factoids_on_PRIVMSG() {
 				feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "lock" "key"
 			fi
 		else
-			access_fail "$sender" "lock a factoid" "owner"
+			access_fail "$sender" "lock a factoid" "factoid_admin"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "unlock factoid")"; then
@@ -245,7 +245,7 @@ module_factoids_on_PRIVMSG() {
 				feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "lock" "key"
 			fi
 		else
-			access_fail "$sender" "lock a factoid" "owner"
+			access_fail "$sender" "lock a factoid" "factoid_admin"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "whatis")"; then

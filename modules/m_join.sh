@@ -55,7 +55,7 @@ module_join_on_PRIVMSG() {
 					channels_part "$channel" "$message"
 				fi
 			else
-				access_fail "$sender" "make the bot part channel" "owner"
+				access_fail "$sender" "make the bot part channel" "join"
 			fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "part" "#channel [reason]"
@@ -73,7 +73,7 @@ module_join_on_PRIVMSG() {
 					channels_join "${channel}" "$key"
 				fi
 			else
-				access_fail "$sender" "make the join channel" "owner"
+				access_fail "$sender" "make the join channel" "join"
 			fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "join" "#channel [key]"
