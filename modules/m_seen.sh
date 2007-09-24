@@ -104,13 +104,16 @@ module_seen_find() {
 	local channel="$2"
 	local nick="$(tr '[:upper:]' '[:lower:]' <<< "$3")"
 	local sender_nick="$(parse_hostmask_nick "$sender")"
-	local match
 	# Classical ones. We just HAVE to do them.
 	if [[ "$nick" == "$(tr '[:upper:]' '[:lower:]' <<< "$server_nick_current")" ]]; then
 		send_msg "$channel" "$sender_nick, you found me!"
+		return 0
 	elif [[ "$nick" == "$(tr '[:upper:]' '[:lower:]' <<< "$sender_nick")" ]]; then
 		send_ctcp "$channel" "ACTION holds up a mirror for $sender_nick"
-	elif match="$(module_seen_SELECT $nick)"; then
+		return 0
+	fi
+	local match="$(module_seen_SELECT $nick)"
+	if [[ $match ]]; then
 		# So we got a match
 		# Lets use regex
 		if [[ $match =~ ([0-9]+)\|(#[^ |]+)\|(.*) ]]; then
