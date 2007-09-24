@@ -71,7 +71,7 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 #     The first regex must be an owner.
 #     Scope is a regex of channels where access is effective.
 #     A /msg or something affecting a specifc channel will
-#     have the special scope "msg"
+#     have the special scope "GLOBAL"
 # config_access_mask[1]='^Brain!brain@staff\.kuonet\.org$'
 #config_access_capab[1]='owner'
 #config_access_scope[1]='.*'

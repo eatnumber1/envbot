@@ -48,7 +48,7 @@ module_assign_mode_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "op" "$sender" "$channel"; then
 				send_modes "$channel" "+o $nick"
 			else
 				access_fail "$sender" "make the bot op somebody" "owner"
@@ -59,7 +59,7 @@ module_assign_mode_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "op" "$sender" "$channel"; then
 				send_modes "$channel" "-o $nick"
 			else
 				access_fail "$sender" "make the bot deop somebody" "owner"
@@ -70,7 +70,7 @@ module_assign_mode_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "halfop" "$sender" "$channel"; then
 					send_modes "$channel" "+h $nick"
 			else
 				access_fail "$sender" "make the bot halfop somebody" "owner"
@@ -81,7 +81,7 @@ module_assign_mode_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "halfop" "$sender" "$channel"; then
 				send_modes "$channel" "-h $nick"
 			else
 				access_fail "$sender" "make the bot dehalfop somebody" "owner"
@@ -92,7 +92,7 @@ module_assign_mode_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "voice" "$sender" "$channel"; then
 				send_modes "$channel" "+v $nick"
 			else
 				access_fail "$sender" "make the bot give voice to somebody" "owner"
@@ -103,7 +103,7 @@ module_assign_mode_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "voice" "$sender" "$channel"; then
 				send_modes "$channel" "-v $nick"
 			else
 				access_fail "$sender" "make the bot take voice from somebody" "owner"
@@ -114,7 +114,7 @@ module_assign_mode_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "protect" "$sender" "$channel"; then
 				send_modes "$channel" "+a $nick"
 			else
 				access_fail "$sender" "make the bot protect somebody" "owner"
@@ -125,7 +125,7 @@ module_assign_mode_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "protect" "$sender" "$channel"; then
 				send_modes "$channel" "-a $nick"
 			else
 				access_fail "$sender" "make the bot deprotect somebody" "owner"
@@ -136,7 +136,7 @@ module_assign_mode_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^(#[^ ]+)\ (.*) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "topic" "$sender" "$channel"; then
 				send_topic "$channel" "$message"
 			else
 				access_fail "$sender" "make the bot protect somebody" "owner"

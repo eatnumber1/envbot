@@ -48,7 +48,7 @@ module_join_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^(#[^ ]+)(\ (.*))? ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[3]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "join" "$sender" "$channel"; then
 				if [[ -z "$reason" ]]; then
 					channels_part "$channel"
 				else
@@ -65,7 +65,7 @@ module_join_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^(#[^ ]+)(\ .*)? ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local key="${BASH_REMATCH[2]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "join" "$sender" "$channel"; then
 				key="${key/# /}"
 				if [[ -z "$key" ]]; then
 					channels_join "${channel}"

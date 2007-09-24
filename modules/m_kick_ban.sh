@@ -83,7 +83,7 @@ module_kick_ban_on_PRIVMSG() {
 					feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "kick" "#channel nick reason # Channel must be send when the message is not sent in a channel"
 				fi
 			fi
-			if access_check_owner "$sender"; then
+			if access_check_capab "kick" "$sender" "$channel"; then
 				send_raw "KICK $channel $nick $kickmessage"
 				log_stdout "$nick kicked from $channel with kick message: $kickmessage"
 			else
@@ -99,7 +99,7 @@ module_kick_ban_on_PRIVMSG() {
 			local nick="${BASH_REMATCH[2]}"
 			# Optional parameter.
 			local duration="${BASH_REMATCH[4]}"
-			if access_check_owner "$sender"; then
+			if access_check_capab "ban" "$sender" "$channel"; then
 				if [[ $duration ]]; then
 					if [[ $module_kick_ban_TBAN_supported -eq 1 ]]; then
 						send_raw "TBAN $channel $duration $nick"

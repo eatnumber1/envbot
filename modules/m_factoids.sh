@@ -141,7 +141,7 @@ module_factoids_set() {
 	local sender="$3"
 	local channel="$4"
 	if module_factoids_is_locked "$key"; then
-		if access_check_owner "$sender"; then
+		if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
 			module_factoids_set_INSERT_or_UPDATE "$key" "$value" "$sender"
 			send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), I will remember, $key is $value"
 		else
@@ -159,7 +159,7 @@ module_factoids_set() {
 # $3 = channel
 module_factoids_remove() {
 	if module_factoids_is_locked "$1"; then
-		if access_check_owner "$2"; then
+		if access_check_capab "factoid_admin" "$2" "GLOBAL"; then
 			module_factoids_DELETE "$1"
 			send_msg "$channel" "I forgot $key"
 		else
@@ -223,7 +223,7 @@ module_factoids_on_PRIVMSG() {
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "lock factoid")"; then
-		if access_check_owner "$sender"; then
+		if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
 			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
 				module_factoids_lock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
@@ -236,7 +236,7 @@ module_factoids_on_PRIVMSG() {
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "unlock factoid")"; then
-		if access_check_owner "$sender"; then
+		if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
 			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
 				module_factoids_unlock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
