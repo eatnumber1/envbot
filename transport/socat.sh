@@ -35,7 +35,7 @@ transport_check_support() {
 	type -p socat >/dev/null || return 1
 	type -p mkfifo >/dev/null || return 1
 	# Build transport_supports
-	local features="$(socat -V | grep 'define')"
+	local features="$(socat -V | grep -E 'socat version|define')"
 	# These seems to always be supported?
 	transport_supports="nossl bind"
 	if grep -q WITH_IP4 <<< "$features"; then
@@ -47,14 +47,26 @@ transport_check_support() {
 	if grep -q WITH_OPENSSL <<< "$features"; then
 		transport_supports="$transport_supports ssl"
 	fi
-	# SSL + IPv6 is not supported with socat :(
-	if [[ $config_server_ssl -ne 0 ]]; then
-		# list_remove is not yet loaded so we can't use that here...
-		transport_supports="$(sed "s/ipv6//" <<< "$transport_supports")"
-	fi
-
-	if [[ -z $config_transport_socat_use_ipv6 ]]; then
+	if [[ -z $config_transport_socat_protocol_family ]]; then
 		echo "ERROR: you need to set config_transport_socat_use_ipv6 in your config to either 0 or 1."
+	fi
+	# Check for older version
+	if grep -q "socat version 1.4" <<< "$features"; then
+		# SSL + IPv6 is not supported with socat-1.4.x
+		if [[ $config_server_ssl -ne 0 ]]; then
+			# list_remove is not yet loaded so we can't use that here...
+			transport_supports="$(sed "s/ipv6//" <<< "$transport_supports")"
+		fi
+		# This is to be sure socat-1.4.x works
+		# Modules should normally never set config_* in them
+		# This is an exception.
+		if [[ -z $config_transport_socat_protocol_family ]]; then
+			config_transport_socat_protocol_family="ipv4"
+		fi
+		# Remember version to find what workaround to use in transport_connect()
+		transport_socat_is_14="1"
+	else
+		transport_socat_is_14="0"
 	fi
 	return 0
 }
@@ -77,24 +89,39 @@ transport_connect() {
 	mkfifo "${transport_tmp_dir_file}/out"
 	exec 3<&-
 	exec 4<&-
-	local addrargs
+	local addrargs socatnewargs
 	if [[ $3 -eq 1 ]]; then
 		addrargs="OPENSSL"
-	elif [[ $config_transport_socat_use_ipv6 -eq 1 ]]; then
+		# HACK: Support IPv6 with SSL if socat is new enough.
+		if [[ $transport_socat_is_14 -eq 0 ]]; then
+			if [[ $config_transport_socat_protocol_family = "ipv6" ]]; then
+				socatnewargs=",pf=ip6"
+			elif [[ $config_transport_socat_protocol_family = "ipv4" ]]; then
+				socatnewargs=",pf=ip4"
+			fi
+		fi
+	elif [[ $config_transport_socat_protocol_family = "ipv6" ]]; then
 		addrargs="TCP6"
-	else
+	elif [[ $config_transport_socat_protocol_family = "ipv4" ]]; then
 		addrargs="TCP4"
 	fi
+	# Add in hostname and port.
 	addrargs="${addrargs}:${1}:${2}"
+	# Should we bind an IP? Then lets do that.
 	if [[ $4 ]]; then
 		addrargs="${addrargs},bind=$4"
+	fi
+	# If version 1.5 or later add in extra args
+	if [[ $transport_socat_is_14 -eq 0 ]]; then
+		addrargs="${addrargs}${socatnewargs}"
 	fi
 	# If we use SSL check if we should verify.
 	if [[ $3 -eq 1 ]] && [[ $config_server_ssl_accept_invalid -eq 1 ]]; then
 		addrargs="${addrargs},verify=0"
 	fi
 	socat STDIO "$addrargs" < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
-	echo $! >> "${transport_tmp_dir_file}/pid"
+	transport_pid="$!"
+	echo "$transport_pid" >> "${transport_tmp_dir_file}/pid"
 	exec 3>"${transport_tmp_dir_file}/out"
 	exec 4<"${transport_tmp_dir_file}/in"
 }
@@ -125,5 +152,5 @@ transport_read_line() {
 #   $* send this
 # Return code not checked.
 transport_write_line() {
-	echo "$@" >&3
+	kill -0 "$transport_pid" >/dev/null 2>&1 && echo "$@" >&3
 }

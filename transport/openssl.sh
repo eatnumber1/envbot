@@ -63,7 +63,8 @@ transport_connect() {
 	fi
 	[[ $config_server_ssl_verbose -ne 1 ]] && myargs="$myargs -quiet"
 	openssl s_client -connect "$1:$2" $myargs < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
-	echo $! >> "${transport_tmp_dir_file}/pid"
+	transport_pid="$!"
+	echo "$transport_pid" >> "${transport_tmp_dir_file}/pid"
 	exec 3>"${transport_tmp_dir_file}/out"
 	exec 4<"${transport_tmp_dir_file}/in"
 }
@@ -94,5 +95,5 @@ transport_read_line() {
 #   $* send this
 # Return code not checked.
 transport_write_line() {
-	echo "$@" >&3
+	kill -0 "$transport_pid" >/dev/null 2>&1 && echo "$@" >&3
 }

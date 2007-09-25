@@ -64,6 +64,7 @@ bot_quit() {
 		module_${module}_before_disconnect
 	done
 	local reason=$1
+	set -x
 	send_quit "$reason"
 	sleep 1
 	server_connected=0
@@ -76,6 +77,7 @@ bot_quit() {
 	log "Bot quit gracefully"
 	transport_disconnect
 	rm -rvf "$tmp_home"
+	set +x
 	if [[ $2 ]]; then
 		exit $2
 	else

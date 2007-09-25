@@ -25,8 +25,10 @@
 # Yes I know some versions of netcat support encryption and some
 # other ones support ipv6. I used GNU netcat and I couldn't find
 # a way to detect what is supported in current netcat.
-# Also those other netcat variants need you to pass some command
-# line argument to enable use of ipv6.
+# Also those other netcat variants require you to pass some command
+# line argument to enable use of IPv6. (nc6 doesn't)
+# netcat got to many problems, use either dev-tcp or socat for
+# non-SSL transport really!
 transport_supports="ipv4 nossl bind"
 
 # Check if all the stuff needed to use this transport is available
@@ -65,7 +67,8 @@ transport_connect() {
 		myargs="-s $4"
 	fi
 	"$config_transport_netcat_path" "$1" "$2" < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
-	echo $! >> "${transport_tmp_dir_file}/pid"
+	transport_pid="$!"
+	echo "$transport_pid" >> "${transport_tmp_dir_file}/pid"
 	exec 3>"${transport_tmp_dir_file}/out"
 	exec 4<"${transport_tmp_dir_file}/in"
 }
@@ -96,5 +99,5 @@ transport_read_line() {
 #   $* send this
 # Return code not checked.
 transport_write_line() {
-	echo "$@" >&3
+	kill -0 "$transport_pid" >/dev/null 2>&1 && echo "$@" >&3
 }
