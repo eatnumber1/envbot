@@ -48,7 +48,7 @@ Transports:
 		You need the program gnutls-cli. (http://www.gnutls.org/)
 	openssl:
 		You need the program openssl. (http://www.openssl.org/)
-	openssl:
+	socat:
 		You need the program socat. (http://www.dest-unreach.org/socat/)
 		Note that while socat support ipv4, ipv6, ssl and non-ssl it doesn't
 		support both ssl and ipv6 AT THE SAME TIME.
