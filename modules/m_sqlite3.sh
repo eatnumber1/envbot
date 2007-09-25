@@ -66,6 +66,7 @@ module_sqlite3_clean_string() {
 	tr -Cd 'A-Za-z0-9\055 ,;.:_<>*|~^!"#%&/()=?+\@${}[]+ÅÄÖåäö'\' <<< "$1" | sed "s/'/''/g"
 }
 
+# Run the query against the data base.
 # Parameters:
 #   $1 Query to run
 module_sqlite3_exec_sql() {
