@@ -120,15 +120,16 @@ module_modules_on_PRIVMSG() {
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "modlist")"; then
-			if access_check_owner "$sender"; then
-				local modlist
-				for target_module in $modules_loaded; do
-					modlist="$modlist $target_module"
-				done
-				send_msg "$(parse_hostmask_nick "$sender")" "Modules currently loaded:$modlist"
-			else
-				access_fail "$sender" "list modules" "owner"
-			fi
+		if [[ $2 =~ ^# ]]; then
+			local target="$2"
+		else
+			local target="$(parse_hostmask_nick "$sender")"
+		fi
+		local modlist
+		for target_module in $modules_loaded; do
+			modlist="$modlist $target_module"
+		done
+		send_msg "$target" "Modules currently loaded:$modlist"
 		return 1
 	fi
 	return 0
