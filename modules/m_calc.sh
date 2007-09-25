@@ -74,6 +74,7 @@ module_calc_on_PRIVMSG() {
 	# otherwise send in channel
 	if ! [[ $2 =~ ^# ]]; then
 		channel="$(parse_hostmask_nick "$sender")"
+	fi
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "calc")"; then
