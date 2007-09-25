@@ -43,10 +43,16 @@ Transports:
 		This is for Debian users and others with a broken distro. If your
 		distro supports it use dev-tcp transport instead.
 		I have only tested with GNU netcat. (http://netcat.sourceforge.net/)
+		Supports binding to a specific IP.
 	gnutls:
 		You need the program gnutls-cli. (http://www.gnutls.org/)
 	openssl:
 		You need the program openssl. (http://www.openssl.org/)
+	openssl:
+		You need the program socat. (http://www.dest-unreach.org/socat/)
+		Note that while socat support ipv4, ipv6, ssl and non-ssl it doesn't
+		support both ssl and ipv6 AT THE SAME TIME.
+		Supports binding to a specific IP.
 Modules:
 	sqlite3
 		You need the program sqlite3. (http://www.sqlite.org/)

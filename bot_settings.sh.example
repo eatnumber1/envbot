@@ -109,11 +109,19 @@ config_transport='dev-tcp'
 #config_transport='netcat'  # Not well tested, for Debian users and other
                             # with broken distros.
 #config_transport='gnutls'
+#config_transport='socat'   # Not well tested
 #config_transport='openssl' # Not well tested
 
 # netcat options
 #   MAKE SURE THEY ARE CORRECT if you use netcat.
 #config_transport_netcat_path='/usr/bin/netcat'
+
+# socat options
+#   MAKE SURE THEY ARE CORRECT if you use socat.
+# This tells if to use ipv6 or ipv4 to connect.
+#   socat doesn't support automatic choice of this.
+#   socat does not support using ipv6 and ssl at the same time.
+#config_transport_socat_use_ipv6=0
 
 
 ###########
