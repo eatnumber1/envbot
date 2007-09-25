@@ -153,7 +153,7 @@ while true; do
 		module_${module}_after_connect
 	done
 
-	exit 0
+
 	while transport_read_line ; do #-d $'\n'
 		log_raw_in "$line"
 		for module in $modules_on_raw; do
