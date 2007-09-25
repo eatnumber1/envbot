@@ -1,6 +1,7 @@
 envbot - A modular IRC bot in bash
 ==================================
 envbot is a modular irc bot coded in bash.
+http://kuonet.org/~anmaster/envbot/trac/wiki
 
 Features include:
  * SSL
@@ -8,8 +9,21 @@ Features include:
  * Transport (ssl, whatever) to server are also modules
  * Modularity
  * Loading, unloading and reloading of modules at runtime
- * Rehashing at runtime
+ * Rehashing configuration at runtime
+ * Advanced access control
 See TODO for other planed features
+
+
+Installing
+----------
+There is no installation.
+
+All you have to do is to get the bot running is:
+ * Copy bot_settings.sh.example to bot_settings.sh
+ * Edit bot_settings.sh to set correct nick,
+   irc server, service password, and so on.
+ * Run ./envbot
+
 
 Dependencies
 ------------
@@ -55,17 +69,6 @@ If you want to use a contrib module the recommended way is:
   ln -s ../contrib/modules/m_modulename.sh
 That way if the contrib module is updated you will get the new
 version automatically.
-
-
-Installing
-----------
-There is no installation.
-
-All you have to do is to get the bot running is:
- * Copy bot_settings.sh.example to bot_settings.sh
- * Edit bot_settings.sh to set correct nick,
-   irc server, service password, and so on.
- * Run ./envbot
 
 
 Contacting developers
