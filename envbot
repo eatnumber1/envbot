@@ -38,7 +38,7 @@ declare -r tmp_home="$(mktemp -dt envbot.home.XXXXXXXXXX)"
 trap 'rm -rvf "$tmp_home"; exit 1' TERM INT
 export HOME="$tmp_home"
 # To make set -x more usable
-export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]}\n\t'
+export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
 
 # Store command line for later use
 command_line="$@"
