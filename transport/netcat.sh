@@ -64,7 +64,7 @@ transport_connect() {
 	if [[ $4 ]]; then
 		myargs="-s $4"
 	fi
-	netcat "$1" "$2" < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
+	"$config_transport_netcat_path" "$1" "$2" < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
 	echo $! >> "${transport_tmp_dir_file}/pid"
 	exec 3>"${transport_tmp_dir_file}/out"
 	exec 4<"${transport_tmp_dir_file}/in"
