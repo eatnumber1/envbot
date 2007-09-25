@@ -33,6 +33,7 @@ send_last=0
 # Paramaters
 #   $* Line to send
 send_raw() {
+	# Do the flood limiting
 	if [[ "$send_last" == "$(date -u +%s)" ]]; then
 		sleep 1
 	fi
