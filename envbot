@@ -44,7 +44,7 @@ export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
 command_line="$@"
 
 # Current config version.
-declare -r config_current_version=12
+declare -r config_current_version=13
 
 print_cmd_help() {
 	echo 'envbot - A modular IRC bot in bash.'
@@ -109,12 +109,16 @@ fi
 
 # Must be checked here and not in validate_config because of
 # loading order.
-if [ ! -r "transport/${config_transport}.sh" ]; then
+if [ ! -d "${config_transport_dir}" ]; then
+	echo "ERROR: The transport directory ${config_transport_dir} doesn't seem to exist"
+	exit 1
+fi
+if [ ! -r "${config_transport_dir}/${config_transport}.sh" ]; then
 	echo "ERROR: The transport ${config_transport} doesn't seem to exist"
 	exit 1
 fi
 echo "Loading transport"
-source "transport/${config_transport}.sh"
+source "${config_transport_dir}/${config_transport}.sh"
 
 if ! transport_check_support; then
 	echo "ERROR: The transport reported it can't work on this system."

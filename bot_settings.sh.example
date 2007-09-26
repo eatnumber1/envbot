@@ -23,7 +23,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=12
+config_version=13
 
 ####################
 # General settings #
@@ -122,6 +122,10 @@ config_transport='dev-tcp'
 #   socat doesn't support automatic choice of this.
 #   socat does not support using ipv6 and ssl at the same time.
 #config_transport_socat_use_ipv6=0
+
+# Where are transports stored, this can be a relative path from the
+# main script of the bot, or an absolute path.
+config_transport_dir="transport"
 
 
 ###########
