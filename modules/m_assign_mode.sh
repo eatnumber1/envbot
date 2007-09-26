@@ -45,7 +45,7 @@ module_assign_mode_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "op")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_capab "op" "$sender" "$channel"; then
@@ -56,7 +56,7 @@ module_assign_mode_on_PRIVMSG() {
 			return 1
 		fi
 	elif parameters="$(parse_query_is_command "$query" "deop")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_capab "op" "$sender" "$channel"; then
@@ -67,7 +67,7 @@ module_assign_mode_on_PRIVMSG() {
 			return 1
 		fi
 	elif parameters="$(parse_query_is_command "$query" "halfop")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_capab "halfop" "$sender" "$channel"; then
@@ -78,7 +78,7 @@ module_assign_mode_on_PRIVMSG() {
 			return 1
 		fi
 	elif parameters="$(parse_query_is_command "$query" "dehalfop")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_capab "halfop" "$sender" "$channel"; then
@@ -89,7 +89,7 @@ module_assign_mode_on_PRIVMSG() {
 			return 1
 		fi
 	elif parameters="$(parse_query_is_command "$query" "voice")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_capab "voice" "$sender" "$channel"; then
@@ -100,7 +100,7 @@ module_assign_mode_on_PRIVMSG() {
 			return 1
 		fi
 	elif parameters="$(parse_query_is_command "$query" "devoice")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_capab "voice" "$sender" "$channel"; then
@@ -111,7 +111,7 @@ module_assign_mode_on_PRIVMSG() {
 			return 1
 		fi
 	elif parameters="$(parse_query_is_command "$query" "protect")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_capab "protect" "$sender" "$channel"; then
@@ -122,7 +122,7 @@ module_assign_mode_on_PRIVMSG() {
 			return 1
 		fi
 	elif parameters="$(parse_query_is_command "$query" "deprotect")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ ([^ ]+) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
 			if access_check_capab "protect" "$sender" "$channel"; then
@@ -133,7 +133,7 @@ module_assign_mode_on_PRIVMSG() {
 			return 1
 		fi
 	elif parameters="$(parse_query_is_command "$query" "topic")"; then
-		if [[ "$parameters" =~ ^(#[^ ]+)\ (.*) ]]; then
+		if [[ "$parameters" =~ ^(#[^ ]+)\ (.+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
 			if access_check_capab "topic" "$sender" "$channel"; then
