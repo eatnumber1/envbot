@@ -46,7 +46,8 @@ module_dumpvars_on_PRIVMSG() {
 		if access_check_owner "$sender"; then
 			# This is hackish, we only display
 			# lines unique to "file" 1.
-			comm -2 -3 <(declare) <(declare -f)
+			# Also remove one variable that may fill our scrollback.
+			comm -2 -3 <(declare) <(declare -f) 2>&1 | grep -Ev '^module_quote_quotes'
 		else
 			access_fail "$sender" "dump variables to STDOUT" "owner"
 		fi
