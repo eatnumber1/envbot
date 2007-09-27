@@ -84,6 +84,7 @@ log_write() {
 log_init() {
 	# This creates log dir for this run:
 	log_dir="${config_log_dir}/$(date -u +%s)"
+	# Security, the log may contain passwords.
 	mkdir -m 700 "$log_dir"
 	if [[ $? -ne 0 ]]; then
 		echo "Error: couldn't create log dir"

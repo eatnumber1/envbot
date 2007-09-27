@@ -112,6 +112,16 @@ send_topic() {
 	send_raw "TOPIC $1 :$2"
 }
 
+# This is semi-internal only
+# This may flood ourself off. Use send_raw instead in most cases.
+# Also this doesn't log the actual line, so used for passwords.
+# Parameters
+#   $1 What to log instead (example could be: "NickServ IDENTIFY (password)")
+#   $2 The line to send
+send_raw_flood_nolog() {
+	log_raw_out "<hidden line from logs>: $1"
+	transport_write_line "$2"$'\r'
+}
 
 # This is semi-internal only
 # This may flood ourself off. Use send_raw instead in most cases.
