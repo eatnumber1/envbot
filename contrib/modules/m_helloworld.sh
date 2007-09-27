@@ -58,14 +58,15 @@ module_helloworld_REHASH() {
 module_helloworld_after_load() {
 	# Set a global variable, this can't be done in INIT.
 	# Remember to unset all global variables on UNLOAD!
-	module_helloworld_variable="foobar!"
+	module_helloworld_variable="world!"
 }
 
 # This logs hello world to STDOUT when called
 # Note that this is a custom function used by
 # some other part of the script
 module_helloworld_function() {
-	log_stdout "Hello world!"
+	# Lets use the variable defined above!
+	log_stdout "Hello $module_helloworld_variable"
 }
 
 # Called on a PRIVMSG
@@ -129,6 +130,8 @@ module_helloworld_on_PRIVMSG() {
 				# really get logged even if it fails! ;)
 				log_file owner.log "$sender made the hi channel \"$message\" in/to \"$target_channel\""
 				send_msg "${target_channel}" "Hi $target_channel! $(parse_hostmask_nick "$sender") wants you to know ${message}"
+				# As an example also call our function.
+				module_helloworld_function
 			else
 				# Lets tell the sender they lack access!
 				# access_fail will send a PRIVMSG to the sender saying permission denied

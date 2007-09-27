@@ -53,7 +53,7 @@ module_eix_after_load() {
 		return 1
 	fi
 	unset module_eix_last_query
-	module_eix_last_query='null'
+	module_eix_last_query='0'
 }
 
 # eix format string:

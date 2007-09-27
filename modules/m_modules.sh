@@ -34,8 +34,10 @@ module_modules_REHASH() {
 }
 
 # $1 = Module to load
+# $2 = Sender
 module_modules_doload() {
 	local target_module="$1"
+	local sender="$2"
 	modules_load "$target_module"
 	local status_message status=$?
 	case $status in
@@ -51,11 +53,14 @@ module_modules_doload() {
 }
 
 # $1 = Module to unload
+# $2 = Sender
 module_modules_dounload() {
 	local target_module="$1"
+	local sender="$2"
 	if [[ $target_module == modules ]]; then
 		send_msg "$(parse_hostmask_nick "$sender")" \
-			"You can't reload the modules module using itself. The hackish way would be to use the eval module for this."
+			"You can't unload/reload the modules module using itself. (The hackish way would be to use the eval module for this.)"
+		return 1
 	fi
 	modules_unload "$target_module"
 	local status_message status=$?
@@ -82,7 +87,7 @@ module_modules_on_PRIVMSG() {
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
 				log_stdout_file owner.log "$sender loaded the module $target_module"
-				module_modules_doload "$target_module"
+				module_modules_doload "$target_module" "$sender"
 			else
 				access_fail "$sender" "load a module" "owner"
 			fi
@@ -95,7 +100,7 @@ module_modules_on_PRIVMSG() {
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
 				log_stdout_file owner.log "$sender unloaded the module $target_module"
-				module_modules_dounload "$target_module"
+				module_modules_dounload "$target_module" "$sender"
 			else
 				access_fail "$sender" "unload a module" "owner"
 			fi
@@ -108,9 +113,9 @@ module_modules_on_PRIVMSG() {
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
 				log_stdout_file owner.log "$sender reloaded the module $target_module"
-				module_modules_dounload "$target_module"
+				module_modules_dounload "$target_module" "$sender"
 				if [[ $? = 0 ]]; then
-					module_modules_doload "$target_module"
+					module_modules_doload "$target_module" "$sender"
 				fi
 			else
 				access_fail "$sender" "reload a module" "owner"
