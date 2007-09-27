@@ -45,10 +45,11 @@ module_modules_doload() {
 		3) status_message="Failed to source it" ;;
 		4) status_message="Module \"$target_module\" could not be found" ;;
 		5) status_message="Getting hooks from module failed" ;;
-		6) status_message="after_load failed" ;;
+		6) status_message="after_load failed, see log for details" ;;
 		*) status_message="Unknown error (code $status)" ;;
 	esac
 	send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
+	return $status
 }
 
 # $1 = Module to unload
@@ -66,9 +67,11 @@ module_modules_dounload() {
 	case $status in
 		0) status_message="Unload successful" ;;
 		2) status_message="Module \"$target_module\" is not loaded" ;;
+		3) status_message="Module \"$target_module\" can't be unloaded, some other module(s) depend(s) on it. See log for details" ;;
 		*) status_message="Unknown error (code $status)" ;;
 	esac
 	send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
+	return $status
 }
 
 # Called on a PRIVMSG
@@ -115,6 +118,8 @@ module_modules_on_PRIVMSG() {
 				module_modules_dounload "$target_module" "$sender"
 				if [[ $? = 0 ]]; then
 					module_modules_doload "$target_module" "$sender"
+				else
+					send_msg "$(parse_hostmask_nick "$sender")" "Reload of $target_module failed because it could not be unloaded."
 				fi
 			else
 				access_fail "$sender" "reload a module" "owner"

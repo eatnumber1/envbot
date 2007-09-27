@@ -269,6 +269,7 @@ module_modulename_on_server_ERROR
 		Not checked.
 			Reason: There isn't much point in swallowing this.
 
+
 module_modulename_on_KILL
 	# :AnMaster!AnMaster@staff.kuonet-ng.org KILL envbot :photon.kuonet-ng.org!staff.kuonet-ng.org!AnMaster (killing to test on inspircd)
 	# :Brain!brain@staff.kuonet.org KILL envbot :staff.kuonet.org!Brain (testing kill on unrealircd)
@@ -282,6 +283,7 @@ module_modulename_on_KILL
 	Return status:
 		Not checked.
 			Reason: Risk for desync of modules.
+
 
 module_modulename_before_disconnect
 	Called when the bot is about to disconnect from server.

@@ -41,11 +41,13 @@ module_factoids_REHASH() {
 # Called after module has loaded.
 # Loads FAQ items
 module_factoids_after_load() {
-	# HACK: I should add proper dependency checking. This will break on unloading sqlite3 module
-	if ! list_contains "modules_loaded" "sqlite3"; then
-		log_stdout "The factoids module depends upon the SQLite3 module being loaded before it"
+	modules_depends_register "factoids" "sqlite3" || {
+		# This error reporting is hackish, will fix later.
+		if ! list_contains "modules_loaded" "sqlite3"; then
+			log_stdout "The factoids module depends upon the SQLite3 module being loaded before it"
+		fi
 		return 1
-	fi
+	}
 	if [[ -z $config_module_factoids_table ]]; then
 		log_stdout "Factiods table (config_module_factoids_table) must be set in config."
 		return 1
