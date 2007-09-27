@@ -136,9 +136,9 @@ config_transport_dir="transport"
 # What modules to load, space separated list
 # For a list of modules see the modules dir.
 # Note that the order of the modules may be important
-#   The list should normally start with "load services umodes"
-#   Some modules should be placed last. "factoids" is such a module.
-#   sqlite3 module should be LOADED BEFORE factoids and/or seen modules.
+#
+# The list should normally start with "modules rehash services umodes autojoin"
+# Some modules should be placed last. "factoids" is such a module.
 config_modules="modules rehash services umodes autojoin"
 
 # Where are modules stored, this can be a relative path from the
