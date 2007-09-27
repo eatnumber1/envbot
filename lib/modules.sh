@@ -204,7 +204,7 @@ modules_load_from_config() {
 				modules_load "$module"
 			fi
 		else
-			log "WARNING: $module doesn't exist! Removing it from list"
+			log_stdout "WARNING: $module doesn't exist! Removing it from list"
 		fi
 	done
 }
