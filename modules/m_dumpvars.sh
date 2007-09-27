@@ -47,7 +47,7 @@ module_dumpvars_on_PRIVMSG() {
 			# This is hackish, we only display
 			# lines unique to "file" 1.
 			# Also remove one variable that may fill our scrollback.
-			comm -2 -3 <(declare) <(declare -f) 2>&1 | grep -Ev '^module_quote_quotes'
+			comm -2 -3 <(declare) <(declare -f) | grep -Ev '^module_quote_quotes'
 		else
 			access_fail "$sender" "dump variables to STDOUT" "owner"
 		fi
