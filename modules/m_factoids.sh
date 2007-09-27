@@ -268,7 +268,7 @@ module_factoids_on_PRIVMSG() {
 			send_msg "$channel" "There are $count items in my factoid database. $lockedcount of the factoids are locked."
 		fi
 		return 1
-	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|to|can I find)\ )?([^\?]+)\?? ]]; then
+	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|was|to|can I find)\ )?([^\?]+)\?? ]]; then
 		local key="${BASH_REMATCH[@]: -1}"
 		local value="$(module_factoids_SELECT "$(tr '[:upper:]' '[:lower:]' <<< "$key")")"
 		if [[ "$value" ]]; then
