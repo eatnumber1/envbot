@@ -26,8 +26,8 @@ All you have to do is to get the bot running is:
 
 License
 -------
-envbot is licensed under GPL3, with the exception of data/quotes.txt.example.pqf:
-The source (games-misc/fortune-mod-pqf/fortune-mod-pqf-6.0.ebuild from gentoo portage)
+envbot is licensed under GPL version 3, with the exception of data/quotes.txt.example.pqf:
+The source (games-misc/fortune-mod-pqf/fortune-mod-pqf-6.0.ebuild from Gentoo portage)
 says it is under GPL-2.
 
 Dependencies
