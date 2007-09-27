@@ -1,12 +1,12 @@
 envbot - A modular IRC bot in bash
 ==================================
-envbot is a modular irc bot coded in bash.
+envbot is a modular IRC bot coded in bash.
 http://kuonet.org/~anmaster/envbot/trac/wiki
 
 Features include:
  * SSL
  * IPv6
- * Transport (ssl, whatever) to server are also modules
+ * Transport (SSL, whatever) to server are also modules
  * Modularity
  * Loading, unloading and reloading of modules at runtime
  * Rehashing configuration at runtime
@@ -21,9 +21,14 @@ There is no installation.
 All you have to do is to get the bot running is:
  * Copy bot_settings.sh.example to bot_settings.sh
  * Edit bot_settings.sh to set correct nick,
-   irc server, service password, and so on.
+   IRC server, service password, and so on.
  * Run ./envbot
 
+License
+-------
+envbot is licensed under GPL3, with the exception of data/quotes.txt.example.pqf:
+The source (games-misc/fortune-mod-pqf/fortune-mod-pqf-6.0.ebuild from gentoo portage)
+says it is under GPL-2.
 
 Dependencies
 ------------
@@ -36,7 +41,7 @@ Some transports and module have extra dependencies. Note that when it says
 a program with this name.
 Transports:
 	dev-tcp:
-		The bash you use must support the psedo device /dev/tcp. Debian is known
+		The bash you use must support the pseudo device /dev/tcp. Debian is known
 		to disable this. Most other distros are sane and have it on.
 	netcat:
 		You need the program netcat.
@@ -50,18 +55,19 @@ Transports:
 		You need the program openssl. (http://www.openssl.org/)
 	socat:
 		You need the program socat. (http://www.dest-unreach.org/socat/)
-		Note that while socat support ipv4, ipv6, ssl and non-ssl it doesn't
-		support both ssl and ipv6 AT THE SAME TIME.
+		Note that while socat support ipv4, ipv6, SSL and non-SSL it doesn't
+		support both SSL and ipv6 at the same time if the version of socat
+		is lower than 1.5.
 		Supports binding to a specific IP.
 Modules:
 	sqlite3
 		You need the program sqlite3. (http://www.sqlite.org/)
 	factoids
 		This depends on the sqlite3 module and therefore have the
-		same deps as it
+		same dependencies as it
 	seen
 		This depends on the sqlite3 module and therefore have the
-		same deps as it
+		same dependencies as it
 
 
 Contrib modules
@@ -79,7 +85,7 @@ version automatically.
 
 Contacting developers
 ---------------------
-You can reach us on irc.
+You can reach us on IRC.
 1)  Server: irc.kuonet-ng.org
     Channel: #envbot
 2)  Server: irc.securitychat.org
