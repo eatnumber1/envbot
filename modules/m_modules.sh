@@ -67,7 +67,7 @@ module_modules_dounload() {
 	case $status in
 		0) status_message="Unload successful" ;;
 		2) status_message="Module \"$target_module\" is not loaded" ;;
-		3) status_message="Module \"$target_module\" can't be unloaded, some other module(s) depend(s) on it. See log for details" ;;
+		3) status_message="Module \"$target_module\" can't be unloaded, some these module(s) depend(s) on it: $(modules_depends_list_deps "$target_module")" ;;
 		*) status_message="Unknown error (code $status)" ;;
 	esac
 	send_msg "$(parse_hostmask_nick "$sender")" "$status_message"

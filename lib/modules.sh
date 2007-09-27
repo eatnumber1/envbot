@@ -59,6 +59,18 @@ modules_depends_register() {
 	done
 }
 
+# Semi internal!
+# List modules that depend on another module.
+# Parameters
+#   $1 Module to check
+# Returns on STDOUT
+#   List of modules that depend on this.
+modules_depends_list_deps() {
+	# This is needed to be able to use indirect refs
+	local deplistname="modules_depends_${1}"
+	misc_clean_spaces "${!deplistname}"
+}
+
 ###########################################################################
 # Internal functions to core or this file below this line!                #
 # Module authors: go away                                                 #
@@ -96,18 +108,6 @@ modules_depends_can_unload() {
 	fi
 	return 0
 }
-
-# List modules that depend on another module.
-# Parameters
-#   $1 Module to check
-# Returns on STDOUT
-#   List of modules that depend on this.
-modules_depends_what() {
-	# This is needed to be able to use indirect refs
-	local deplistname="modules_depends_${1}"
-	misc_clean_spaces "${!deplistname}"
-}
-
 
 modules_add_hooks() {
 	local module="$1"
@@ -203,7 +203,7 @@ modules_unload() {
 		return 2
 	fi
 	if ! modules_depends_can_unload "$module"; then
-		log_stdout_file modules.log "Can't unload $module because these module(s) depend(s) on it: $(modules_depends_list_ "$module")"
+		log_stdout_file modules.log "Can't unload $module because these module(s) depend(s) on it: $(modules_depends_list_deps "$module")"
 		return 3
 	fi
 	# Remove hooks from list first in case unloading fails so we can do quit hooks if something break.
