@@ -126,7 +126,7 @@ module_seen_find() {
 			send_msg "$channel" "$3 was last seen on $(config_module_seen_function "$found_timestamp") in $found_channel saying \"$found_message\""
 		fi
 	else
-		send_msg "$channel" "I have not seen $3."
+		send_msg "$channel" "Sorry, I have not seen $3."
 	fi
 }
 

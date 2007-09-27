@@ -41,7 +41,7 @@ module_quote_load() {
 		log_stdout "You need to set config_module_quotes_file in your config!"
 		return 1
 	elif [[ -r "$config_module_quotes_file" ]]; then
-		while read -d $'\n' line ; do
+		while read -rd $'\n' line ; do
 			# Skip empty lines
 			if [[ "$line" ]]; then
 				module_quote_quotes[$i]="$line"

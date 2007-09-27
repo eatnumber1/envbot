@@ -63,7 +63,7 @@ module_bugzilla_after_load() {
 		return 1
 	fi
 	unset module_bugzilla_last_query
-	module_bugzilla_last_query='null'
+	module_bugzilla_last_query='0'
 }
 
 # Called on a PRIVMSG

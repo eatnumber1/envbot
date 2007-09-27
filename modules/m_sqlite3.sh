@@ -23,7 +23,7 @@
 ###########################################
 # WARNING WARNING WARNING WARNING WARNING #
 #                                         #
-#    USE UTF8 when editing this file!!    #
+#    Use UTF8 when editing this file!!    #
 #      Otherwise the file WILL break      #
 #                                         #
 # WARNING WARNING WARNING WARNING WARNING #
