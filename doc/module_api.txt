@@ -259,7 +259,7 @@ module_modulename_on_numeric
 
 module_modulename_on_server_ERROR
 	# ERROR :Closing link (rfc3092@1.2.3.4) [Killed (AnMaster (testing a kill on inspircd))]
-	# ERROR :Closing Link: [1.2.3.4] (Throttled: Reconnecting too fast) -Email staff@kuonet.org for more information.
+	# ERROR :Closing Link: [1.2.3.4] (Throttled: Reconnecting too fast) -Email staff@example.com for more information.
 	# ERROR :Closing Link: envbot[host.name.se] Brain ([hurricane.KuoNET.org] Local kill by Brain (testing kill on unrealircd))
 	# ERROR :Closing Link: envbot[host.name.se] hurricane.KuoNET.org (Killed (Brain (testing kill on unrealircd, remote one)))
 	Called when the bot get an ERROR from the server.
