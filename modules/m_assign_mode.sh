@@ -53,8 +53,10 @@ module_assign_mode_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot op somebody" "op"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "op" "#channel nick"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "deop")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
@@ -64,8 +66,10 @@ module_assign_mode_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot deop somebody" "op"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "deop" "#channel nick"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "halfop")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
@@ -75,8 +79,10 @@ module_assign_mode_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot halfop somebody" "halfop"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "halfop" "#channel nick"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "dehalfop")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
@@ -86,8 +92,10 @@ module_assign_mode_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot dehalfop somebody" "halfop"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "dehalfop" "#channel nick"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "voice")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
@@ -97,8 +105,10 @@ module_assign_mode_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot give voice to somebody" "voice"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "voice" "#channel nick"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "devoice")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
@@ -108,8 +118,10 @@ module_assign_mode_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot take voice from somebody" "voice"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "devoice" "#channel nick"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "protect")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
@@ -119,8 +131,10 @@ module_assign_mode_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot protect somebody" "protect"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "protect" "#channel nick"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "deprotect")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
@@ -130,8 +144,10 @@ module_assign_mode_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot deprotect somebody" "protect"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "deprotect" "#channel nick"
 		fi
+		return 1
 	elif parameters="$(parse_query_is_command "$query" "topic")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ (.+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
@@ -141,8 +157,10 @@ module_assign_mode_on_PRIVMSG() {
 			else
 				access_fail "$sender" "make the bot protect somebody" "topic"
 			fi
-			return 1
+		else
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "topic" "#channel topic"
 		fi
+		return 1
 	fi
 
 	return 0

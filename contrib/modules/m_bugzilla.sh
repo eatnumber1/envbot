@@ -18,7 +18,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Check bugz and return output from it.
+# Check bugs using the program bugz and return output from it.
 # bugz is a tool to search Gentoo bug reports (or other bugzillas)
 # From eix pybugz:
 #   Description:         Command line interface to (Gentoo) Bugzilla
