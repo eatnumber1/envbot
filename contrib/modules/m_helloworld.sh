@@ -38,7 +38,7 @@ module_helloworld_UNLOAD() {
 	# Here we unset any functions and variables that we have defined
 	unset module_helloworld_variable module_helloworld_function
 	# We also unset any optional hooks (that is all but INIT, UNLOAD and REHASH)
-	unset module_helloworld_on_PRIVMSG
+	unset module_helloworld_after_load module_helloworld_on_PRIVMSG
 }
 
 # Here do anything needed at rehash
