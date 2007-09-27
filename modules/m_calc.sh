@@ -1,7 +1,7 @@
 #!/bin/bash
 ###########################################################################
 #                                                                         #
-#  envbot - an irc bot in bash                                            #
+#  envbot - an IRC bot in bash                                            #
 #  Copyright (C) 2007  EmErgE <halt.system@gmail.com>                     #
 #  Copyright (C) 2007  Arvid Norlander                                    #
 #                                                                         #
