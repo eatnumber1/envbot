@@ -44,13 +44,17 @@ module_factoids_after_load() {
 	modules_depends_register "factoids" "sqlite3" || {
 		# This error reporting is hackish, will fix later.
 		if ! list_contains "modules_loaded" "sqlite3"; then
-			log_stdout "The factoids module depends upon the SQLite3 module being loaded before it"
+			log_stdout "ERROR: The factoids module depends upon the SQLite3 module being loaded."
 		fi
 		return 1
 	}
 	if [[ -z $config_module_factoids_table ]]; then
-		log_stdout "Factiods table (config_module_factoids_table) must be set in config."
+		log_stdout "ERROR: Factiods table (config_module_factoids_table) must be set in config."
 		return 1
+	fi
+	if ! module_sqlite3_table_exists "$config_module_factoids_table"; then
+		log_stdout "ERROR: $config_module_factoids_table does not exist in the database file."
+		log_stdout "See comment in doc/factoids.sql for how to create the table."
 	fi
 }
 
@@ -207,12 +211,12 @@ module_factoids_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "learn")"; then
-		if [[ "$parameters" =~ ^(.+)\ (as|is|=)\ (.*) ]]; then
+		if [[ "$parameters" =~ ^(.+)\ (as|is|are|=)\ (.*) ]]; then
 			local key="${BASH_REMATCH[1]}"
 			local value="${BASH_REMATCH[3]}"
 			module_factoids_set "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$value" "$sender" "$channel"
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "learn" "key (as|is|was|=) value"
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "learn" "key (as|is|are|=) value"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "forget")"; then
@@ -264,7 +268,7 @@ module_factoids_on_PRIVMSG() {
 			send_msg "$channel" "There are $count items in my factoid database. $lockedcount of the factoids are locked."
 		fi
 		return 1
-	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|to)\ )?([^\?]+)\?? ]]; then
+	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|to|can I find)\ )?([^\?]+)\?? ]]; then
 		local key="${BASH_REMATCH[@]: -1}"
 		local value="$(module_factoids_SELECT "$(tr '[:upper:]' '[:lower:]' <<< "$key")")"
 		if [[ "$value" ]]; then

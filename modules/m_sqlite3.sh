@@ -33,7 +33,7 @@ module_sqlite3_INIT() {
 }
 
 module_sqlite3_UNLOAD() {
-	unset module_sqlite3_clean_string module_sqlite3_exec_sql
+	unset module_sqlite3_clean_string module_sqlite3_exec_sql module_sqlite3_table_exists
 }
 
 module_sqlite3_REHASH() {
@@ -49,8 +49,12 @@ module_sqlite3_after_load() {
 		log_stdout "Couldn't find sqlite3 command line tool. The sqlite3 module depend on that tool."
 		return 1
 	fi
+	if [[ -z $config_module_sqlite3_database ]]; then
+		log_stdout "You must set config_module_sqlite3_database in your config to use the SQLite3 module."
+		return 1
+	fi
 	if ! [[ -r $config_module_sqlite3_database ]]; then
-		log_stdout "Seen database file doesn't exist or can't be read!"
+		log_stdout "Database file doesn't exist or can't be read!"
 		log_stdout "See comment in doc/seen.sql for how to create one."
 		return 1
 	fi
@@ -70,4 +74,14 @@ module_sqlite3_clean_string() {
 #   $1 Query to run
 module_sqlite3_exec_sql() {
 	sqlite3 -list "$config_module_sqlite3_database" "$1"
+}
+
+# Check if a table exists in the database file.
+# Parameters
+#   $1 The table name to check for
+# Return status
+#   0 If table exists
+#   1 If table doesn't exist.
+module_sqlite3_table_exists() {
+	sqlite3 -list "$config_module_sqlite3_database" ".tables" | grep -qw "$1"
 }
