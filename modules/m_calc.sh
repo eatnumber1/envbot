@@ -28,7 +28,6 @@ module_calc_INIT() {
 module_calc_UNLOAD() {
 	module_calc_remove_tmpfile
 	unset module_calc_tmpfile
-	unset module_calc_on_PRIVMSG module_calc_after_load module_calc_FINALISE
 	unset module_calc_create_tmpfile module_calc_remove_tmpfile module_calc_empty_tmpfile
 }
 

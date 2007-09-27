@@ -25,7 +25,7 @@ module_autojoin_INIT() {
 }
 
 module_autojoin_UNLOAD() {
-	unset module_autojoin_join_from_config module_autojoin_after_connect
+	unset module_autojoin_join_from_config
 }
 
 module_autojoin_REHASH() {

@@ -26,7 +26,6 @@ module_services_INIT() {
 
 module_services_UNLOAD() {
 	unset module_services_ghost module_services_nickserv_command
-	unset module_services_on_connect module_services_after_load
 }
 
 module_services_REHASH() {

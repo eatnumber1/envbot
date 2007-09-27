@@ -33,7 +33,6 @@ module_sqlite3_INIT() {
 }
 
 module_sqlite3_UNLOAD() {
-	unset module_sqlite3_after_load
 	unset module_sqlite3_clean_string module_sqlite3_exec_sql
 }
 

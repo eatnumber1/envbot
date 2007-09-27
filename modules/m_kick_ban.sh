@@ -27,7 +27,6 @@ module_kick_ban_INIT() {
 
 module_kick_ban_UNLOAD() {
 	unset module_kick_ban_TBAN_supported
-	unset module_kick_ban_on_PRIVMSG module_kick_ban_after_connect module_kick_ban_after_load module_kick_ban_on_numeric
 }
 
 module_kick_ban_REHASH() {

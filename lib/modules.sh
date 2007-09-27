@@ -114,22 +114,31 @@ modules_hooks="FINALISE after_load before_connect on_connect after_connect befor
 # If the unload fails the bot will quit.
 modules_unload() {
 	local module="$1"
-	local hook newval
+	local hook newval to_unset
 	if ! list_contains "modules_loaded" "$module"; then
 		log_stdout "No such module as $1 is loaded."
 		return 2
 	fi
-	# Remove hooks from list first in case unloading fails so we an do quit hooks.
+	# Remove hooks from list first in case unloading fails so we can do quit hooks if something break.
 	for hook in $modules_hooks; do
+		# List so we can unset.
+		if list_contains "modules_${hook}" "$module"; then
+			to_unset="$to_unset module_${module}_${hook}"
+		fi
 		newval="$(list_remove "modules_${hook}" "$module")"
 		# I can't think of a better way :(
 		eval "modules_$hook=\"$newval\""
 	done
 	module_${module}_UNLOAD || \
-		{ log_stdout "ERROR: Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"; bot_quit "Fatal error in module unload"; }
+		{ log_stdout "ERROR: Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"; bot_quit "Fatal error in module unload, please see log"; }
 	unset module_${module}_UNLOAD
 	unset module_${module}_INIT
 	unset module_${module}_REHASH
+	# Unset from list created above.
+	for hook in $to_unset; do
+		unset "$hook" || \
+			{ log_stdout "ERROR: Could not unset the hook $hook of module $module!"; bot_quit "Fatal error in module unload, please see log"; }
+	done
 	modules_loaded="$(list_remove "modules_loaded" "$module")"
 	return 0
 }
@@ -162,7 +171,7 @@ modules_load() {
 					# Try to unload.
 					modules_unload "$module" || {
 						log_stdout "Unloading of $module that failed to load failed. Aborting all and everything"
-						bot_quit "Fatal error in module unload of failed module load"
+						bot_quit "Fatal error in module unload of failed module load, please see log"
 					}
 					return 5
 				}
@@ -171,7 +180,7 @@ modules_load() {
 				if [[ $? -ne 0 ]]; then
 					modules_unload ${module} || {
 						log_stdout "Unloading of $module that failed after_load failed. Aborting all and everything"
-						bot_quit "Fatal error in module unload of failed module load (after_load)"
+						bot_quit "Fatal error in module unload of failed module load (after_load), please see log"
 					}
 					return 6
 				fi

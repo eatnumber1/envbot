@@ -26,7 +26,7 @@ module_quote_INIT() {
 }
 
 module_quote_UNLOAD() {
-	unset module_quote_on_PRIVMSG module_quote_load
+	unset module_quote_load
 	unset module_quote_quotes
 }
 

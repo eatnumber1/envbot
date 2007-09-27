@@ -26,7 +26,7 @@ module_join_INIT() {
 }
 
 module_join_UNLOAD() {
-	unset module_join_on_PRIVMSG
+	return 0
 }
 
 module_join_REHASH() {

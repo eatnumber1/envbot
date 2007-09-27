@@ -25,7 +25,7 @@ module_umodes_INIT() {
 }
 
 module_umodes_UNLOAD() {
-	unset module_connect_umodes_after_connect module_umodes_set_modes
+	unset module_umodes_set_modes
 }
 
 module_umodes_REHASH() {

@@ -25,7 +25,7 @@ module_dumpvars_INIT() {
 }
 
 module_dumpvars_UNLOAD() {
-	unset module_dumpvars_on_PRIVMSG
+	return 0
 }
 
 module_dumpvars_REHASH() {

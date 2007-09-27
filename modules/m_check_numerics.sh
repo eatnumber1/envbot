@@ -25,7 +25,7 @@ module_check_numerics_INIT() {
 }
 
 module_check_numerics_UNLOAD() {
-	unset module_check_numerics_on_numeric
+	return 0
 }
 
 module_check_numerics_REHASH() {

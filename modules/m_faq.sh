@@ -26,7 +26,7 @@ module_faq_INIT() {
 
 module_faq_UNLOAD() {
 	unset module_faq_array module_faq_last_query
-	unset module_faq_load module_faq_after_load module_faq_on_PRIVMSG
+	unset module_faq_load
 }
 
 module_faq_REHASH() {

@@ -26,7 +26,7 @@ module_eval_INIT() {
 }
 
 module_eval_UNLOAD() {
-	unset module_eval_on_PRIVMSG
+	return 0
 }
 
 module_eval_REHASH() {

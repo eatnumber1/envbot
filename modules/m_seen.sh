@@ -25,7 +25,6 @@ module_seen_INIT() {
 }
 
 module_seen_UNLOAD() {
-	unset module_seen_after_load module_seen_on_PRIVMSG
 	unset module_seen_exec_sql module_seen_SELECT module_seen_INSERT module_seen_UPDATE
 	unset module_seen_set_INSERT_or_UPDATE
 	unset module_seen_store module_seen_find

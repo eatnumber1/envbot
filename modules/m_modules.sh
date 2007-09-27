@@ -26,7 +26,6 @@ module_modules_INIT() {
 
 module_modules_UNLOAD() {
 	unset module_modules_doload module_modules_dounload
-	unset module_modules_on_PRIVMSG
 }
 
 module_modules_REHASH() {

@@ -26,7 +26,7 @@ module_sendraw_INIT() {
 }
 
 module_sendraw_UNLOAD() {
-	unset module_sendraw_on_PRIVMSG
+	return 0
 }
 
 module_sendraw_REHASH() {

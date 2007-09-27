@@ -26,7 +26,6 @@ module_rehash_INIT() {
 
 module_load_UNLOAD() {
 	unset module_rehash_dorehash
-	unset module_rehash_on_PRIVMSG
 }
 
 module_rehash_REHASH() {

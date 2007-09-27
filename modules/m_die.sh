@@ -26,7 +26,7 @@ module_die_INIT() {
 }
 
 module_die_UNLOAD() {
-	unset module_die_on_PRIVMSG
+	return 0
 }
 
 module_die_REHASH() {

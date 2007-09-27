@@ -25,7 +25,7 @@ module_say_INIT() {
 }
 
 module_say_UNLOAD() {
-	unset module_say_on_PRIVMSG
+	return 0
 }
 
 module_say_REHASH() {

@@ -31,7 +31,6 @@ module_factoids_UNLOAD() {
 	unset module_factoids_get_count module_factoids_get_locked_count
 	unset module_factoids_is_locked module_factoids_lock module_factoids_unlock
 	unset module_factoids_SELECT module_factoids_INSERT module_factoids_UPDATE module_factoids_DELETE
-	unset module_factoids_after_load module_factoids_on_PRIVMSG
 }
 
 module_factoids_REHASH() {

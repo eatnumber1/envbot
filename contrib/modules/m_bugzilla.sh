@@ -39,7 +39,6 @@ module_bugzilla_INIT() {
 
 module_bugzilla_UNLOAD() {
 	unset module_bugzilla_last_query
-	unset module_bugzilla_on_PRIVMSG module_bugzilla_after_load
 }
 
 module_bugzilla_REHASH() {

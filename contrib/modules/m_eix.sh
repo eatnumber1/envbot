@@ -36,7 +36,6 @@ module_eix_INIT() {
 
 module_eix_UNLOAD() {
 	unset module_eix_format_string module_eix_last_query
-	unset module_eix_on_PRIVMSG module_eix_after_load
 }
 
 module_eix_REHASH() {

@@ -26,7 +26,7 @@ module_assign_mode_INIT() {
 }
 
 module_assign_mode_UNLOAD() {
-	unset module_assign_mode_on_PRIVMSG
+	return 0
 }
 
 module_assign_mode_REHASH() {
