@@ -16,19 +16,7 @@ See TODO for other planed features
 
 Installing
 ----------
-Installation isn't needed, you can run it from source directory.
-Installation is possible though, but not recommended.
-
-All you have to do is to get the bot running is:
- * Run: make
- * Copy bot_settings.sh.example to bot_settings.sh
- * Edit bot_settings.sh to set correct nick,
-   IRC server, service password, and so on.
- * Run ./envbot
-
-If you install you will have to use --config when you start envbot
-to tell it where the configuration file is.
-
+See the file INSTALL.
 
 License
 -------
