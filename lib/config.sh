@@ -72,47 +72,47 @@ config_rehash() {
 config_validate() {
 	if [[ -z "$config_firstnick" ]]; then
 		echo "ERROR: YOU MUST SET A config_firstnick IN THE CONFIG"
-		exit 1
+		envbot_quit 1
 	fi
 	if [[ -z "$config_log_dir" ]]; then
 		echo "ERROR: YOU MUST SET A config_log_dir IN THE CONFIG"
-		exit 1
+		envbot_quit 1
 	fi
 	if [[ -z "$config_log_stdout" ]]; then
 		echo "ERROR: YOU MUST SET config_log_stdout IN THE CONFIG"
-		exit 1
+		envbot_quit 1
 	fi
 	if [[ -z "${config_access_mask[1]}" ]]; then
 		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
 		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_access_mask[1] that is)."
-		exit 1
+		envbot_quit 1
 	fi
 	if ! list_contains "config_access_capab[1]" "owner"; then
 		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
 		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_access_capab[1] that is)."
-		exit 1
+		envbot_quit 1
 	fi
 	if [[ $config_server_ssl -ne 0 ]]; then
 		if ! list_contains transport_supports "ssl"; then
 			echo "ERROR: THIS TRANSPORT DOES NOT SUPORT SSL"
-			exit 1
+			envbot_quit 1
 		fi
 	else
 		if ! list_contains transport_supports "nossl"; then
 			echo "ERROR: THIS TRANSPORT REQUIRES SSL"
-			exit 1
+			envbot_quit 1
 		fi
 	fi
 	if [[ "$config_server_bind" ]]; then
 		if ! list_contains transport_supports "bind"; then
 			echo "ERROR: THIS TRANSPORT DOES NOT SUPORT BINDING AN IP"
-			exit 1
+			envbot_quit 1
 		fi
 	fi
 	if ! [[ -d "$config_modules_dir" ]]; then
 		if ! list_contains transport_supports "bind"; then
 			echo "ERROR: $config_modules_dir DOES NOT EXIST OR IS NOT A DIRECTORY."
-			exit 1
+			envbot_quit 1
 		fi
 	fi
 }

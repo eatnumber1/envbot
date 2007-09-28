@@ -31,14 +31,26 @@ export LC_ALL=C
 export LANG=C
 # If you need something else, override in config...
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+# To make set -x more usable
+export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
+
+if [[ $EUID -eq 0 ]]; then
+	echo "ERROR: Don't run envbot as root. Please run it under a normal user. Really."
+	exit 2
+fi
+
 # This is needed when we run the bot with env -i as recommended.
-# I don't want to end up with rm -rf $HOME...
 declare -r tmp_home="$(mktemp -dt envbot.home.XXXXXXXXXX)"
+# I don't want to end up with rm -rf $HOME...
 # Temp one until the next "stage" of trap gets loaded (at connect)
 trap 'rm -rvf "$tmp_home"; exit 1' TERM INT
 export HOME="$tmp_home"
-# To make set -x more usable
-export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
+# Now create a temp function to quit in a way that cleans up temp stuff until we
+# are up enough to use the normal function bot_quit.
+envbot_quit() {
+	rm -rvf "$tmp_home"
+	exit "$1"
+}
 
 force_verbose=0
 
@@ -65,7 +77,7 @@ print_cmd_help() {
 	echo '  envbot -c bot.config    Runs envbot with the config bot.config.'
 	echo ''
 	echo 'Report bugs to http://kuonet.org/~anmaster/envbot/trac/simpleticket'
-	exit 0
+	envbot_quit 0
 }
 
 print_version() {
@@ -77,7 +89,7 @@ print_version() {
 	echo 'warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.'
 	echo ''
 	echo 'Written by Arvid Norlander and EmErgE.'
-	exit 0
+	envbot_quit 0
 }
 
 if [ $# -gt 0 ]; then # there are arguments to the command
@@ -114,26 +126,26 @@ if [ ! -r "$config_file" ]; then
 	echo "ERROR: Can't read config file ${config_file}."
 	echo "Check that is really there and correct permissions are set."
 	echo "If you used --config to specify name of config file, check that you spelled it correctly."
-	exit 1
+	envbot_quit 1
 fi
 
 echo "Loading config"
 source "$config_file"
 if [[ $? -ne 0 ]]; then
 	echo "Error: couldn't load config from bot_settings.sh"
-	exit 1
+	envbot_quit 1
 fi
 
 # This is hackish, it should be in config.sh (config_validate)
 # The reason is that we need to load transport before libraries:
 if [ -z "$config_version" ]; then
 	echo "ERROR: YOU MUST SET THE CORRECT config_version IN THE CONFIG"
-	exit 1
+	envbot_quit 1
 fi
 if [ $config_version -ne $config_current_version ]; then
 	echo "ERROR: YOUR config_version IS $config_version BUT THE BOT'S CONFIG VERSION IS $config_current_version."
 	echo "PLEASE UPDATE YOUR CONFIG. Check bot_settings.sh.example for current format."
-	exit 1
+	envbot_quit 1
 fi
 
 if [[ $force_verbose -eq 1 ]]; then
@@ -144,11 +156,11 @@ fi
 # loading order.
 if [ ! -d "${config_transport_dir}" ]; then
 	echo "ERROR: The transport directory ${config_transport_dir} doesn't seem to exist"
-	exit 1
+	envbot_quit 1
 fi
 if [ ! -r "${config_transport_dir}/${config_transport}.sh" ]; then
 	echo "ERROR: The transport ${config_transport} doesn't seem to exist"
-	exit 1
+	envbot_quit 1
 fi
 echo "Loading transport"
 source "${config_transport_dir}/${config_transport}.sh"
@@ -156,7 +168,7 @@ source "${config_transport_dir}/${config_transport}.sh"
 if ! transport_check_support; then
 	echo "ERROR: The transport reported it can't work on this system."
 	echo "Please consult documentation for the transport module you are using."
-	exit 1
+	envbot_quit 1
 fi
 
 echo "Loading library functions"

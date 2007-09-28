@@ -88,13 +88,13 @@ log_init() {
 	mkdir -m 700 "$log_dir"
 	if [[ $? -ne 0 ]]; then
 		echo "Error: couldn't create log dir"
-		exit 1
+		envbot_quit 1
 	fi
 	log_file="${log_dir}/main.log"
 	touch "$log_file"
 	if [[ $? -ne 0 ]]; then
 		echo "Error: couldn't create logfile"
-		exit 1
+		envbot_quit 1
 	fi
 
 	echo "Log directory is $log_dir"
