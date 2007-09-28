@@ -1,0 +1,46 @@
+#!/bin/bash
+###########################################################################
+#                                                                         #
+#  envbot - an IRC bot in bash                                            #
+#  Copyright (C) 2007 Remo Ford                                           #
+#                                                                         #
+#  This program is free software: you can redistribute it and/or modify   #
+#  it under the terms of the GNU General Public License as published by   #
+#  the Free Software Foundation, either version 3 of the License, or      #
+#  (at your option) any later version.                                    #
+#                                                                         #
+#  This program is distributed in the hope that it will be useful,        #
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of         #
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          #
+#  GNU General Public License for more details.                           #
+#                                                                         #
+#  You should have received a copy of the GNU General Public License      #
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
+#                                                                         #
+###########################################################################
+
+ENVBOT_DIR="/path/to/envbot"
+ENVBOT_USER="envbot"
+PID_FILE="/var/run/envbot.pid"
+
+test -f /lib/lsb/init-functions || exit 1
+. /lib/lsb/init-functions
+
+case "$1" in
+	start)
+		log_begin_msg "Starting envbot..."
+		start-stop-daemon -b -d $ENVBOT_DIR --start -m -p $PID_FILE -c $ENVBOT_USER --exec $ENVBOT_DIR/envbot  || log_end_msg 1
+		log_end_msg 0
+		;;
+	stop)
+		log_begin_msg "Stopping envbot..."
+		start-stop-daemon --stop --quiet -p $PID_FILE || log_end_msg 1
+		log_end_msg 0
+		;;
+	*)
+		log_success_msg "Usage: /etc/init.d/envbot {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0
