@@ -95,6 +95,7 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 # Directory for logfiles
 config_log_dir="@@logdir@@"
 # (*) Should we always log to STDOUT as well?
+#     This is the verbose output option.
 config_log_stdout=0
 
 

@@ -40,6 +40,8 @@ export HOME="$tmp_home"
 # To make set -x more usable
 export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
 
+force_verbose=0
+
 # Store command line for later use
 command_line="$@"
 
@@ -48,11 +50,23 @@ declare -r config_current_version=13
 
 print_cmd_help() {
 	echo 'envbot - A modular IRC bot in bash.'
-	echo "Syntax:"
-	echo "  --config file       Use file instead of the default $config_file as config file."
-	echo "  --libdir directory  Use directory instead of the default $library_dir as library directory."
+	echo ''
+	echo 'Usage: envbot [OPTION]...'
+	echo ''
+	echo 'Options:'
+	echo "      --config file       Use file instead of the default $config_file as config file."
+	echo "      --libdir directory  Use directory instead of the default $library_dir as library directory."
+	echo '  -v, --verbose           Force verbose output even if config_log_stdout is 0.'
+	echo '      --help              Display this help and exit'
+	echo '      --version           Output version information and exit'
+	echo ''
+	echo 'Examples:'
+	echo '  envbot                  Runs envbot with default options.'
+	echo ''
+	echo 'Report bugs to http://kuonet.org/~anmaster/envbot/trac/simpleticket'
 	exit 0
 }
+
 print_version() {
 	echo 'envbot 0.0.1-alpha'
 	echo 'A modular IRC bot in bash.'
@@ -76,6 +90,13 @@ if [ $# -gt 0 ]; then # there are arguments to the command
 			'--libdir')
 				library_dir="$2"
 				shift 2
+				;;
+			'--verbose')
+				force_verbose=1
+				shift 1
+				;;
+			'--version')
+				print_version
 				;;
 			*)
 				print_cmd_help
@@ -110,6 +131,10 @@ if [ $config_version -ne $config_current_version ]; then
 	echo "ERROR: YOUR config_version IS $config_version BUT THE BOT'S CONFIG VERSION IS $config_current_version."
 	echo "PLEASE UPDATE YOUR CONFIG. Check bot_settings.sh.example for current format."
 	exit 1
+fi
+
+if [[ $force_verbose -eq 1 ]]; then
+	config_log_stdout='1'
 fi
 
 # Must be checked here and not in validate_config because of
