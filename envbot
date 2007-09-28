@@ -49,7 +49,8 @@ declare -r config_current_version=13
 print_cmd_help() {
 	echo 'envbot - A modular IRC bot in bash.'
 	echo "Syntax:"
-	echo "  --config file   Use file instead of the default $config_file as config file."
+	echo "  --config file       Use file instead of the default $config_file as config file."
+	echo "  --libdir directory  Use directory instead of the default $library_dir as library directory."
 	exit 0
 }
 print_version() {
@@ -70,6 +71,10 @@ if [ $# -gt 0 ]; then # there are arguments to the command
 				;;
 			'--config'|'-c')
 				config_file="$2"
+				shift 2
+				;;
+			'--libdir')
+				library_dir="$2"
 				shift 2
 				;;
 			*)
