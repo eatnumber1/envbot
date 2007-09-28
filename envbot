@@ -53,7 +53,7 @@ print_cmd_help() {
 	exit 0
 }
 print_version() {
-	echo 'envbot 0.0.0.1-bzr'
+	echo 'envbot 0.0.1-alpha'
 	echo 'A modular IRC bot in bash.'
 	echo "Copyright (C) 2007 Arvid Norlander"
 	echo "Copyright (C) 2007 EmErgE"

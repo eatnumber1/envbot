@@ -76,7 +76,7 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 #
 #     There can be several access masks matching same host (to allow
 #     for different scope/capab combinations).
-# config_access_mask[1]='^Brain!brain@staff\.kuonet\.org$'
+# config_access_mask[1]='^The!owner@shellhost\.net$'
 #config_access_capab[1]='owner'
 #config_access_scope[1]='.*'
 
@@ -95,7 +95,7 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 # Directory for logfiles
 config_log_dir="logs"
 # (*) Should we always log to STDOUT as well?
-config_log_stdout=1
+config_log_stdout=0
 
 
 #############
@@ -125,7 +125,7 @@ config_transport='dev-tcp'
 
 # Where are transports stored, this can be a relative path from the
 # main script of the bot, or an absolute path.
-config_transport_dir="transport"
+config_transport_dir="@@transportdir@@"
 
 
 ###########
@@ -133,7 +133,7 @@ config_transport_dir="transport"
 ###########
 
 
-# What modules to load, space separated list
+# What modules to load on startup, space separated list
 # For a list of modules see the modules dir.
 # Note that the order of the modules may be important
 #
@@ -143,7 +143,7 @@ config_modules="modules rehash services umodes autojoin"
 
 # Where are modules stored, this can be a relative path from the
 # main script of the bot, or an absolute path.
-config_modules_dir="modules"
+config_modules_dir="@@moddir@@"
 
 
 ############################
@@ -172,14 +172,14 @@ config_module_services_server_alias=1
 # FAQ module
 #
 # (*) Location of FAQ items.
-#config_module_faq_file='data/faq.txt'
+#config_module_faq_file='@@datadir@@/faq.txt'
 
 
 ####################################################################
 # Quote module
 #
 # (*) Location of quotes file
-#config_module_quotes_file='data/quotes.txt'
+#config_module_quotes_file='@@datadir@@/quotes.txt'
 
 
 #####################################################################
@@ -202,7 +202,7 @@ config_module_umodes_default_umodes="+isB-w"
 # SQLite3 module
 #
 # (*) Location of sqlite3 database file
-#config_module_sqlite3_database='data/envbot.db'
+#config_module_sqlite3_database='@@datadir@@/envbot.db'
 
 
 #####################################################################

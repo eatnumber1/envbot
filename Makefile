@@ -20,16 +20,41 @@
 # This file is used to generate some, uh, generated files.
 # Also some other tasks
 
-# For make dest-dir
-DISTDIR ?= dist
+ENVBOT_VERSION = 0.0.1
 
-all: numerics
+# For make dest-dir, defaults
+DISTDIR ?= dist
+# For make install, defaults
+DESTDIR ?= DEST
+PREFIX  ?= /usr/local
+BINDIR  ?= $(PREFIX)/bin
+CONFDIR ?= $(PREFIX)/etc
+LIBDIR  ?= $(PREFIX)/lib
+DATADIR ?= $(PREFIX)/share
+# And now for actual place of stuff
+ENVBOT_LIBDIR       ?= $(LIBDIR)/envbot
+ENVBOT_TRANSPORTDIR ?= $(ENVBOT_LIBDIR)/transport
+ENVBOT_LIBRARYDIR   ?= $(ENVBOT_LIBDIR)/lib
+ENVBOT_MODULESDIR   ?= $(ENVBOT_LIBDIR)/modules
+ENVBOT_DATADIR      ?= $(DATADIR)/envbot/data
+ENVBOT_CONFDIR      ?= $(CONFDIR)/envbot
+ENVBOT_DOCDIR       ?= $(DATADIR)/doc/envbot-$(ENVBOT_VERSION)
+
+# Now for some commands
+INSTALL ?= install -p
+SED     ?= sed
+RM      ?= rm
+
+all: numerics config
+
+config:
+	$(SED) "s|@@moddir@@|modules|;s|@@transportdir@@|transport|;s|@@datadir@@|data|" bot_settings.sh.example.in > bot_settings.sh.example
 
 numerics:
 	tools/build_numerics.sh > lib/numerics.sh
 
 clean:
-	rm -vf *~ */*~ */*/*~
+	rm -vf *~ */*~ */*/*~ bot_settings.sh.example
 
 cleanlogs:
 	rm -vrf logs/*
@@ -37,5 +62,26 @@ cleanlogs:
 dist-dir:
 	rm -rf $(DISTDIR)
 	bzr export $(DISTDIR)
+
+install: all
+	@echo "#########################################################################"
+	@echo "#                                                                       #"
+	@echo "# Installing... Note that running from source directory is recommended! #"
+	@echo "#                                                                       #"
+	@echo "#########################################################################"
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)            $(DESTDIR)$(BINDIR)
+	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LIBDIR)     $(DESTDIR)$(ENVBOT_CONFDIR)
+	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DATADIR)    $(DESTDIR)$(ENVBOT_TRANSPORTDIR)
+	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LIBRARYDIR) $(DESTDIR)$(ENVBOT_MODULESDIR)
+	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DOCDIR)
+	$(INSTALL) envbot                         $(DESTDIR)$(BINDIR)
+	$(INSTALL) -m 644 lib/*.sh                $(DESTDIR)$(ENVBOT_LIBRARYDIR)
+	$(INSTALL) -m 644 modules/*.sh            $(DESTDIR)$(ENVBOT_MODULESDIR)
+	$(INSTALL) -m 644 transport/*.sh          $(DESTDIR)$(ENVBOT_TRANSPORTDIR)
+	$(INSTALL) -m 644 doc/*.{sql,txt}         $(DESTDIR)$(ENVBOT_DOCDIR)
+	$(INSTALL) -m 644 data/{faq.txt.example,quotes.txt.example.pqf} $(DESTDIR)$(ENVBOT_DATADIR)
+	$(SED) "s|@@moddir@@|$(ENVBOT_MODULESDIR)|;s|@@transportdir@@|$(ENVBOT_TRANSPORTDIR)|;s|@@datadir@@|$(ENVBOT_DATADIR)|" bot_settings.sh.example.in > bot_settings.tmp
+	$(INSTALL) -m 644 bot_settings.tmp $(DESTDIR)$(ENVBOT_CONFDIR)/bot_settings.sh.example
+	$(RM) bot_settings.tmp
 
 .PHONY: all numerics clean cleanlogs dist-dir

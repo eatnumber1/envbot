@@ -16,19 +16,26 @@ See TODO for other planed features
 
 Installing
 ----------
-There is no installation.
+Installation isn't needed, you can run it from source directory.
+Installation is possible though, but not recommended.
 
 All you have to do is to get the bot running is:
+ * Run: make
  * Copy bot_settings.sh.example to bot_settings.sh
  * Edit bot_settings.sh to set correct nick,
    IRC server, service password, and so on.
  * Run ./envbot
+
+If you install you will have to use --config when you start envbot
+to tell it where the configuration file is.
+
 
 License
 -------
 envbot is licensed under GPL version 3, with the exception of data/quotes.txt.example.pqf:
 The source (games-misc/fortune-mod-pqf/fortune-mod-pqf-6.0.ebuild from Gentoo portage)
 says it is under GPL-2.
+
 
 Dependencies
 ------------

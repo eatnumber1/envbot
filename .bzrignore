@@ -5,3 +5,4 @@ bot_settings.sh
 ./data/*.db
 ./data/quotes.txt
 ./logs/*
+./bot_settings.sh.example
