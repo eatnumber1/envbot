@@ -31,6 +31,7 @@ BINDIR  ?= $(PREFIX)/bin
 CONFDIR ?= $(PREFIX)/etc
 LIBDIR  ?= $(PREFIX)/lib
 DATADIR ?= $(PREFIX)/share
+MANDIR  ?= $(DATADIR)/man
 # And now for actual place of stuff
 ENVBOT_LIBDIR       ?= $(LIBDIR)/envbot
 ENVBOT_TRANSPORTDIR ?= $(ENVBOT_LIBDIR)/transport
@@ -54,6 +55,10 @@ config:
 numerics:
 	tools/build_numerics.sh > lib/numerics.sh
 
+# Used by developers to update man page.
+man:
+	help2man -NS envbot -n 'An advanced modular IRC bot in bash' "/bin/bash envbot" > doc/envbot.1
+
 clean:
 	rm -vf *~ */*~ */*/*~ bot_settings.sh.example
 
@@ -74,7 +79,7 @@ install: all
 	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LIBDIR)     $(DESTDIR)$(ENVBOT_CONFDIR)
 	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DATADIR)    $(DESTDIR)$(ENVBOT_TRANSPORTDIR)
 	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LIBRARYDIR) $(DESTDIR)$(ENVBOT_MODULESDIR)
-	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DOCDIR)
+	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DOCDIR)     $(DESTDIR)$(MANDIR)/man1
 	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LOGDIR)
 	$(SED) "s|^library_dir=.*|library_dir='$(ENVBOT_LIBRARYDIR)'|;s|^config_file=.*|config_file='$(ENVBOT_CONFDIR)/bot_settings.sh'|" envbot > envbot.tmp
 	$(INSTALL) envbot.tmp                     $(DESTDIR)$(BINDIR)/envbot
@@ -83,6 +88,7 @@ install: all
 	$(INSTALL) -m 644 modules/*.sh            $(DESTDIR)$(ENVBOT_MODULESDIR)
 	$(INSTALL) -m 644 transport/*.sh          $(DESTDIR)$(ENVBOT_TRANSPORTDIR)
 	$(INSTALL) -m 644 doc/*.{sql,txt}         $(DESTDIR)$(ENVBOT_DOCDIR)
+	$(INSTALL) -m 644 doc/envbot.1            $(DESTDIR)$(MANDIR)/man1
 	$(INSTALL) -m 644 data/{faq.txt.example,quotes.txt.example.pqf} $(DESTDIR)$(ENVBOT_DATADIR)
 	$(SED) "s|@@moddir@@|$(ENVBOT_MODULESDIR)|;s|@@transportdir@@|$(ENVBOT_TRANSPORTDIR)|;s|@@datadir@@|$(ENVBOT_DATADIR)|;s|@@logdir@@|$(ENVBOT_LOGDIR)|" doc/bot_settings.sh.example.in > bot_settings.tmp
 	$(INSTALL) -m 644 bot_settings.tmp $(DESTDIR)$(ENVBOT_CONFDIR)/bot_settings.sh.example

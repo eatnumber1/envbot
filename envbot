@@ -61,13 +61,13 @@ command_line="$@"
 declare -r config_current_version=13
 
 print_cmd_help() {
-	echo 'envbot - A modular IRC bot in bash.'
+	echo 'envbot is an advanced modular IRC bot coded in bash.'
 	echo ''
 	echo 'Usage: envbot [OPTION]...'
 	echo ''
 	echo 'Options:'
-	echo "  -c, --config file       Use file instead of the default $config_file as config file."
-	echo "      --libdir directory  Use directory instead of the default $library_dir as library directory."
+	echo "  -c, --config file       Use file instead of the default as config file."
+	echo "      --libdir directory  Use directory instead of the default as library directory."
 	echo '  -v, --verbose           Force verbose output even if config_log_stdout is 0.'
 	echo '      --help              Display this help and exit'
 	echo '  -V, --version           Output version information and exit'
@@ -81,7 +81,7 @@ print_cmd_help() {
 }
 
 print_version() {
-	echo 'envbot 0.0.1-alpha - A modular IRC bot in bash.'
+	echo 'envbot 0.0.1-alpha - An advanced modular IRC bot in bash.'
 	echo ''
 	echo 'Copyright (C) 2007 Arvid Norlander'
 	echo 'Copyright (C) 2007 EmErgE'
