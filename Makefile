@@ -49,7 +49,7 @@ RM      ?= rm
 all: numerics config
 
 config:
-	$(SED) "s|@@moddir@@|modules|;s|@@transportdir@@|transport|;s|@@datadir@@|data|;s|@@logdir@@|logs|" bot_settings.sh.example.in > bot_settings.sh.example
+	$(SED) "s|@@moddir@@|modules|;s|@@transportdir@@|transport|;s|@@datadir@@|data|;s|@@logdir@@|logs|" doc/bot_settings.sh.example.in > bot_settings.sh.example
 
 numerics:
 	tools/build_numerics.sh > lib/numerics.sh
@@ -84,7 +84,7 @@ install: all
 	$(INSTALL) -m 644 transport/*.sh          $(DESTDIR)$(ENVBOT_TRANSPORTDIR)
 	$(INSTALL) -m 644 doc/*.{sql,txt}         $(DESTDIR)$(ENVBOT_DOCDIR)
 	$(INSTALL) -m 644 data/{faq.txt.example,quotes.txt.example.pqf} $(DESTDIR)$(ENVBOT_DATADIR)
-	$(SED) "s|@@moddir@@|$(ENVBOT_MODULESDIR)|;s|@@transportdir@@|$(ENVBOT_TRANSPORTDIR)|;s|@@datadir@@|$(ENVBOT_DATADIR)|;s|@@logdir@@|$(ENVBOT_LOGDIR)|" bot_settings.sh.example.in > bot_settings.tmp
+	$(SED) "s|@@moddir@@|$(ENVBOT_MODULESDIR)|;s|@@transportdir@@|$(ENVBOT_TRANSPORTDIR)|;s|@@datadir@@|$(ENVBOT_DATADIR)|;s|@@logdir@@|$(ENVBOT_LOGDIR)|" doc/bot_settings.sh.example.in > bot_settings.tmp
 	$(INSTALL) -m 644 bot_settings.tmp $(DESTDIR)$(ENVBOT_CONFDIR)/bot_settings.sh.example
 	$(RM) bot_settings.tmp
 
