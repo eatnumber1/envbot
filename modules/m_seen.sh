@@ -49,6 +49,10 @@ module_seen_after_load() {
 		log_stdout "Seen table (config_module_seen_table) must be set in config."
 		return 1
 	fi
+	if ! declare -F | grep -wq 'declare -f config_module_seen_function'; then
+		log_stdout "Seen date function (config_module_seen_function) must be set in config."
+		return 1
+	fi
 	if ! module_sqlite3_table_exists "$config_module_seen_table"; then
 		log_stdout "ERROR: $config_module_seen_table does not exist in the database file."
 		log_stdout "See comment in doc/seen.sql for how to create the table."
