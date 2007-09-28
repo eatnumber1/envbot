@@ -48,7 +48,7 @@ export HOME="$tmp_home"
 # Now create a temp function to quit in a way that cleans up temp stuff until we
 # are up enough to use the normal function bot_quit.
 envbot_quit() {
-	rm -rvf "$tmp_home"
+	rm -rf "$tmp_home"
 	exit "$1"
 }
 
