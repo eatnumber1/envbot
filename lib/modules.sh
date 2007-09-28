@@ -19,6 +19,9 @@
 #                                                                         #
 ###########################################################################
 
+# List of loaded modules
+modules_loaded=""
+
 # Call from after_load with a list of modules that you depend on
 # Parameters
 #   $1 What module you are calling from.
@@ -283,7 +286,6 @@ modules_load() {
 	fi
 }
 
-#modules_loaded=""
 # Load modules from the config
 modules_load_from_config() {
 	for module in $config_modules; do

@@ -23,7 +23,7 @@
 # Parameters
 #   $1 n!u@h mask
 # Returns on STDOUT
-#   nick
+#   Nick
 parse_hostmask_nick() {
 	cut -d'!' -f1 <<< "$1"
 }
@@ -31,7 +31,7 @@ parse_hostmask_nick() {
 # Parameters
 #   $1 n!u@h mask
 # Returns on STDOUT
-#   ident
+#   Ident
 parse_hostmask_ident() {
 	cut -d'!' -f2 <<< "$1" | cut -d'@' -f1
 }
@@ -39,7 +39,7 @@ parse_hostmask_ident() {
 # Parameters
 #   $1 n!u@h mask
 # Returns on STDOUT
-#   host
+#   Host
 parse_hostmask_host() {
 	cut -d'@' -f2 <<< "$1"
 }
@@ -72,10 +72,10 @@ parse_005() {
 #   $1 The query to check, this should be the part after the : in PRIVMSG.
 #   $2 What command to look for.
 # Return status
-#   0 = Matches
-#   1 = Doesn't match
+#   0 Matches
+#   1 Doesn't match
 # Returns on STDOUT
-#   If matches: The parameters
+#   If matches: The parameters (if any)
 parse_query_is_command() {
 	if [[ "$1" =~ ^${config_listenregex}${2}(\ (.*)|$) ]]; then
 		echo "${BASH_REMATCH[@]: -1}"
@@ -87,8 +87,11 @@ parse_query_is_command() {
 
 # Bad name of function, it gets the argument
 # after a ":", the last multiword argument
-# Only reads FIRST as data
+# Parameters
+#   $1 Line to parse
+# Deprecated function! Don't use!
 # Returns on STDOUT
+#   Everything after first : in line.
 # FIXME: Can't handle a ":" in a word before the place to split
 parse_get_colon_arg() {
 	cut -d':' -f2- <<< "$1"
