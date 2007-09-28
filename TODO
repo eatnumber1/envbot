@@ -3,6 +3,7 @@ TODO list
 
 * Nick tracking
 * Module (un)loading on rehash.
-* Module dependencies to track what module depends on what other modules.
 * Periodic events
 * Some framework (as a module) for help.
+
+Please see bug tracker at website for an up-to-date list.
