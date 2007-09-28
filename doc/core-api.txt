@@ -1,0 +1,410 @@
+Core API
+========
+
+This file details the API of the core of envbot that is available for plugins
+to use.
+
+
+access.sh
+---------
+
+access_check_owner()
+	Check for owner access.
+	Parameters
+		$1 n!u@h mask
+	Return status
+		0 Access granted.
+		1 Access denied.
+
+access_check_capab()
+	Check for access in scope.
+	Parameters
+		$1 Capability to check for.
+		$2 n!u@h mask
+		$3 What scope
+	Return status
+		0 Access granted.
+		1 Access denied.
+
+access_fail()
+	Return error, and log it
+	Parameters
+		$1 n!u@h
+		$2 What they tried to do
+		$3 What capability they need
+
+
+channels.sh
+-----------
+
+$channels_current
+	Space separated list of current channels
+
+
+channels_join()
+	Join a channel
+	Parameters
+		$1 The channel to join.
+		$2 Is a channel key, if any.
+
+channels_part()
+	Part a channel
+	Parameters
+		$1 The channel to part
+		$2 Is a reason.
+
+
+config.sh
+---------
+
+config_rehash()
+	Rehash config file.
+	Return status
+		0 Success
+		2 Not same config version
+		3 Failed to source. The bot should not be in an undefined state
+		4 Failed to source. The bot may be in an undefined state
+
+
+feedback.sh
+-----------
+
+feedback_bad_syntax()
+	Return a message that syntax was bad and what the correct syntax is.
+	Parameters
+		$1 To who (nick or channel)
+		$2 To what function
+		$3 Syntax help
+
+
+log.sh
+------
+
+log()
+	Log to main log file.
+	Parameters
+		$* The log message to log
+
+log_file()
+	Log to to a specific log file as well as main log.
+	Parameters
+		$1 The extra log file (relative to the current log dir)
+		$2 The log message to log
+
+log_stdout()
+	Always print log message to STDOUT as well
+	Parameters
+		$* The log message to log
+
+log_stdout_file()
+	Log to to a specific log file as well as main log and STDOUT.
+	Parameters
+		$1 The extra log file (relative to the current log dir)
+		$2 The log message to log
+
+
+misc.sh
+-------
+
+$format_bold
+	Formatting code for bold.
+
+$format_underline
+	Formatting code for underline.
+
+$format_color
+	Formatting code for color.
+	Color table to help module developers:
+		white         0
+		black         1
+		blue          2
+		green         3
+		red           4
+		darkred       5
+		purple        6
+		darkyellow    7
+		yellow        8
+		brightgreen   9
+		darkaqua      10
+		aqua          11
+		lightblue     12
+		brightpurple  13
+		darkgrey      14
+		lightgrey     15
+
+$format_inverse
+	Formatting code for inverse.
+
+$format_normal
+	Formatting code for remove all formatting.
+
+$format_bell
+	Formatting code for ASCII bell.
+	Please don't abuse this, it can be very annoying.
+
+format_colorise()
+	This will add colors around this text.
+	Parameters
+		$1 Foreground color
+		$2 Background color
+		$3 String to colorise
+
+bot_quit()
+	Quits the bot in a graceful way.
+	Parameters
+		$1 Reason to quit (optional)
+		$2 Return status (optional, if not given, then exit 0).
+
+bot_restart()
+	Restart the bot in a graceful way. I hope.
+	Parameters
+		$1 Reason to restart (optional)
+
+time_check_interval()
+	Check if a set time has passed
+	Parameters
+		$1 Unix timestamp to check against
+		$2 Number of seconds
+	Return code
+		0 If at least the given number of seconds has passed
+		1 If it hasn't
+
+misc_clean_spaces()
+	Strip leading/trailing spaces.
+	Parameters
+		$1 String to strip
+	Returns on STDOUT
+		New string
+
+list_remove()
+	Remove a value from a space separated list.
+	Parameters
+		$1 List to remove from.
+		$2 Value to remove.
+	Returns on STDOUT
+		New list
+
+list_contains()
+	Checks if a space separated list contains a value.
+	Parameters
+		$1 List to check.
+		$2 Value to check for.
+	Return code
+		0 If found.
+		1 If not found.
+
+
+modules.sh
+----------
+
+$modules_loaded
+	List of loaded modules
+
+modules_depends_register()
+	Call from after_load with a list of modules that you depend on
+	Parameters
+		$1 What module you are calling from.
+		$2 Space separated list of modules you depend on
+	Return codes
+		0 Success
+		1 Other error
+		  You should return 1 from after_load.
+		2 One or several of the dependencies could found.
+		  You should return 1 from after_load.
+		3 Not all of the dependencies could be loaded (modules exist but did not
+		  load correctly).
+		  You should return 1 from after_load.
+
+modules_depends_list_deps()
+	Semi internal function, in 99% of the cases you shouldn't use this!
+	List modules that depend on another module.
+	Parameters
+		$1 Module to check
+	Returns on STDOUT
+		List of modules that depend on this.
+
+
+parse.sh
+--------
+
+parse_hostmask_nick()
+	Get nick from hostmask
+	Parameters
+		$1 n!u@h mask
+	Returns on STDOUT
+		Nick
+
+parse_hostmask_ident()
+	Get ident from hostmask
+	Parameters
+		$1 n!u@h mask
+	Returns on STDOUT
+		Ident
+
+parse_hostmask_host()
+	Get host from hostmask
+	Parameters
+		$1 n!u@h mask
+	Returns on STDOUT
+		Host
+
+parse_005()
+	This is used to get data out of 005.
+	Parameters
+		$1 Name of data to get
+	Return status
+		0 If found
+		1 If not found
+	Returns on STDOUT
+		The variable data in question, if any
+	Note
+		That if the variable doesn't have any data,
+		but still exist it will return nothing on STDOUT
+		but 0 as error code
+
+parse_query_is_command()
+	Check if a query matches a command. If it matches extract the
+	parameters.
+	Parameters
+		$1 The query to check, this should be the part after the : in PRIVMSG.
+		$2 What command to look for.
+	Return status
+		0 Matches
+		1 Doesn't match
+	Returns on STDOUT
+		If matches: The parameters (if any)
+
+parse_get_colon_arg()
+	Deprecated function! Don't use!
+	Bad name of function, it gets the argument
+	after a ":", the last multiword argument
+	Parameters
+		$1 Line to parse
+	Returns on STDOUT
+		Everything after first : in line.
+
+
+send.sh
+-------
+
+send_raw()
+	Send a "raw" line to the server.
+	Paramaters
+		$* Line to send
+	Notes
+		This is flood limited to once / second.
+
+send_msg()
+	Send a PRIVMSG
+	Paramaters
+		$1 Who (channel or nick)
+		$* Message
+
+send_notice()
+	Send a NOTICE
+	Paramaters
+		$1 Who (channel or nick)
+		$* Message
+
+send_ctcp()
+	Send a CTCP
+	Paramaters
+		$1 Who (channel or nick)
+		$* Message
+
+send_nctcp()
+	Send a NCTCP (ctcp reply)
+	Paramaters
+		$1 Who (channel or nick)
+		$* Message
+
+send_nick()
+	Send a NICK to change nick
+	Paramaters
+		$1 New nick
+
+send_umodes()
+	Send a MODE to change umodes.
+	Paramaters
+		$1 Modes to send
+
+send_modes()
+	Send a MODE to change channel modes.
+	Paramaters
+		$1 Target channel
+		$2 Modes to set
+
+send_topic()
+	Send a TOPIC to change channel topic.
+	Paramaters
+		$1 Channel to change topic of
+		$2 New topic.
+
+send_raw_flood_nolog()
+	Semi internal function, in 99% of the cases you shouldn't use this!
+	This may flood ourself off. Use send_raw instead in most cases.
+	Also this doesn't log the actual line, so used for passwords.
+	Parameters
+		$1 What to log instead (example could be: "NickServ IDENTIFY (password)")
+		$2 The line to send
+
+send_raw_flood()
+	Semi internal function, in 99% of the cases you shouldn't use this!
+	This may flood ourself off. Use send_raw instead in most cases.
+	Same syntax as send_raw
+
+
+server.sh
+---------
+
+Server info variables
+
+$server_name
+	Name of server (example: server1.example.net)
+
+$server_004
+	The 004 received from the server.
+
+$server_005
+	The 005 received from the server. Use parse_005 to get data out of this.
+	See http://www.irc.org/tech_docs/005.html for an incomplete list of 005 values.
+
+$server_UHNAMES
+	1 if UHNAMES enabled, otherwise 0
+	NAMES output with UHNAMES and NAMESX:
+		:photon.kuonet-ng.org 353 envbot = #bots :@%+AnMaster!AnMaster@staff.kuonet-ng.org @ChanServ!ChanServ@services.kuonet-ng.org bashbot!rfc3092@1F1794B2:769091B3
+
+$server_NAMESX
+	1 if NAMESX enabled, otherwise 0
+	NAMES output with NAMESX only:
+		:hurricane.KuoNET.org 353 envbot = #test :bashbot ~@Brain ~@EmErgE &@AnMaster
+
+$server_EXCEPTS=""
+	The mode char (if any) for ban excepts (normally +e)
+
+$server_INVEX=""
+	The mode char (if any) for invite excepts (normally +I)
+
+$server_CHMODES_LISTMODES
+	List channel modes supported by server.
+
+$server_CHMODES_ALWAYSPARAM
+	"Always parameters" channel modes supported by server.
+
+$server_CHMODES_PARAMONSET
+	"Parameter on set" channel modes supported by server.
+
+$server_CHMODES_SIMPLE
+	Simple channel modes supported by server.
+
+$server_PREFIX_modes
+	Prefix channel modes supported by server.
+
+$server_PREFIX_prefixes
+	Channel prefixes supported by server.
+
+$server_nick_current
+	What is our current nick?
+
+$server_connected
+	1 if we are connected, otherwise 0
