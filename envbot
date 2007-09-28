@@ -54,26 +54,29 @@ print_cmd_help() {
 	echo 'Usage: envbot [OPTION]...'
 	echo ''
 	echo 'Options:'
-	echo "      --config file       Use file instead of the default $config_file as config file."
+	echo "  -c, --config file       Use file instead of the default $config_file as config file."
 	echo "      --libdir directory  Use directory instead of the default $library_dir as library directory."
 	echo '  -v, --verbose           Force verbose output even if config_log_stdout is 0.'
 	echo '      --help              Display this help and exit'
-	echo '      --version           Output version information and exit'
+	echo '  -V, --version           Output version information and exit'
 	echo ''
 	echo 'Examples:'
 	echo '  envbot                  Runs envbot with default options.'
+	echo '  envbot -c bot.config    Runs envbot with the config bot.config.'
 	echo ''
 	echo 'Report bugs to http://kuonet.org/~anmaster/envbot/trac/simpleticket'
 	exit 0
 }
 
 print_version() {
-	echo 'envbot 0.0.1-alpha'
-	echo 'A modular IRC bot in bash.'
-	echo "Copyright (C) 2007 Arvid Norlander"
-	echo "Copyright (C) 2007 EmErgE"
-	echo "This is free software; see the source for copying conditions.  There is NO"
-	echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+	echo 'envbot 0.0.1-alpha - A modular IRC bot in bash.'
+	echo ''
+	echo 'Copyright (C) 2007 Arvid Norlander'
+	echo 'Copyright (C) 2007 EmErgE'
+	echo 'This is free software; see the source for copying conditions.  There is NO'
+	echo 'warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.'
+	echo ''
+	echo 'Written by Arvid Norlander and EmErgE.'
 	exit 0
 }
 
@@ -91,11 +94,11 @@ if [ $# -gt 0 ]; then # there are arguments to the command
 				library_dir="$2"
 				shift 2
 				;;
-			'--verbose')
+			'--verbose'|'-v')
 				force_verbose=1
 				shift 1
 				;;
-			'--version')
+			'--version'|'-V')
 				print_version
 				;;
 			*)
