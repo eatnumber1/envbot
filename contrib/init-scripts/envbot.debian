@@ -20,6 +20,7 @@
 ###########################################################################
 
 ENVBOT_DIR="/path/to/envbot"
+ENVBOT_OPTIONS=""
 ENVBOT_USER="envbot"
 PID_FILE="/var/run/envbot.pid"
 
@@ -29,7 +30,7 @@ test -f /lib/lsb/init-functions || exit 1
 case "$1" in
 	start)
 		log_begin_msg "Starting envbot..."
-		start-stop-daemon -b -d $ENVBOT_DIR --start -m -p $PID_FILE -c $ENVBOT_USER --exec $ENVBOT_DIR/envbot  || log_end_msg 1
+		start-stop-daemon -b -d $ENVBOT_DIR --start -m -p $PID_FILE -c $ENVBOT_USER --exec $ENVBOT_DIR/envbot $ENVBOT_OPTIONS || log_end_msg 1
 		log_end_msg 0
 		;;
 	stop)
