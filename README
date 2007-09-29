@@ -1,7 +1,7 @@
 envbot - A modular IRC bot in bash
 ==================================
 envbot is a modular IRC bot coded in bash.
-http://kuonet.org/~anmaster/envbot/trac/wiki
+http://envbot.org/trac
 
 Features include:
  * SSL

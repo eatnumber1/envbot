@@ -76,7 +76,7 @@ print_cmd_help() {
 	echo '  envbot                  Runs envbot with default options.'
 	echo '  envbot -c bot.config    Runs envbot with the config bot.config.'
 	echo ''
-	echo 'Report bugs to http://kuonet.org/~anmaster/envbot/trac/simpleticket'
+	echo 'Report bugs to http://envbot.org/trac/simpleticket'
 	envbot_quit 0
 }
 
