@@ -152,34 +152,50 @@ server_connect(){
 	on_nick=1
 	# HACK: Clean up if we are aborted, replaced after connect with one that sends QUIT
 	trap 'transport_disconnect; rm -rvf "$tmp_home"; exit 1' TERM INT
-	log_stdout "Connecting..."
+	log_stdout "Connecting to \"${config_server}:${config_server_port}\"..."
 	transport_connect "$config_server" "$config_server_port" "$config_server_ssl" "$config_server_bind" || return 1
 	while transport_read_line; do
 		# Check with modules first, needed so we don't skip them.
 		for module in $modules_on_connect; do
 			module_${module}_on_connect "$line"
 		done
-		# Part of motd, that goes to dev null.
-		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTD ]]; then
-			continue
+		if [[ $(cut -d' ' -f2 <<< "$line") =~ ([0-9]{3}) ]]; then
+			local numeric="${BASH_REMATCH[1]}"
+			case $numeric in
+				"$numeric_RPL_MOTD")
+					continue
+					;;
+				"$numeric_RPL_MOTDSTART")
+					log "Motd is not displayed in log";
+					;;
+				"$numeric_RPL_YOURHOST")
+					if [[ $line =~ ^:([^ ]+)  ]]; then # just to get the server name, this should always be true
+						server_name="${BASH_REMATCH[1]}"
+					fi
+					;;
+				"$numeric_RPL_MYINFO")
+					server_004="$(cut -d' ' -f4- <<< "$line")"
+					server_004=$(tr -d $'\r\n' <<< "$server_004")  # Get rid of ending newline
+					;;
+				"$numeric_RPL_ISUPPORT")
+					server_005="$server_005 $(cut -d' ' -f4- <<< "$line")"
+					server_005=$(tr -d $'\r\n' <<< "$server_005") # Get rid of newlines
+					server_005="${server_005/ :are supported by this server/}" # Get rid of :are supported by this server
+					server_handle_005 "$line"
+					;;
+				"$numeric_ERR_NICKNAMEINUSE"|"$numeric_ERR_ERRONEUSNICKNAME")
+					server_handle_nick_in_use
+					;;
+				"$numeric_RPL_ENDOFMOTD")
+					sleep 1
+					log_stdout 'Connected'
+					server_connected=1
+					break
+					;;
+			esac
 		fi
 		log_raw_in "$line"
-		# Start of motd, note that we don't display that.
-		if  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MOTDSTART ]]; then
-			log "Motd is not displayed in log"
-		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_YOURHOST ]]; then
-			if [[ $line =~ ^:([^ ]+)  ]]; then # just to get the server name, this should always be true
-				server_name="${BASH_REMATCH[1]}"
-			fi
-		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_MYINFO ]]; then
-			server_004="$(cut -d' ' -f4- <<< "$line")"
-			server_004=$(tr -d $'\r\n' <<< "$server_004")  # Get rid of ending newline
-		elif  [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ISUPPORT ]]; then
-			server_005="$server_005 $(cut -d' ' -f4- <<< "$line")"
-			server_005=$(tr -d $'\r\n' <<< "$server_005") # Get rid of newlines
-			server_005="${server_005/ :are supported by this server/}" # Get rid of :are supported by this server
-			server_handle_005 "$line"
-		elif [[ $line =~ "Looking up your hostname" ]]; then
+		if [[ $line =~ "Looking up your hostname" ]]; then
 			log_stdout "logging in as $config_firstnick..."
 			send_nick "$config_firstnick"
 			# FIXME: THIS IS HACKISH AND MAY BREAK
@@ -189,16 +205,5 @@ server_connect(){
 			send_raw_flood "USER $config_ident 0 * :${config_gecos}"
 		fi
 		server_handle_ping "$line"
-		if [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_NICKNAMEINUSE ]]; then # Nick in use.
-			server_handle_nick_in_use
-		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_ERRONEUSNICKNAME ]]; then # Erroneous Nickname Being Held...
-			server_handle_nick_in_use
-		# Just in case check for either of these
-		elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ENDOFMOTD ]]; then
-			sleep 1
-			log_stdout 'Connected'
-			server_connected=1
-			break
-		fi
 	done;
 }

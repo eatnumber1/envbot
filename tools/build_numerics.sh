@@ -78,7 +78,7 @@ cat << EOF
 
 EOF
 for index in ${!numeric[*]}; do
-	echo "numeric[$index]='${numeric[$index]}'"
+	echo "numerics[$index]='${numeric[$index]}'"
 done
 
 cat << EOF

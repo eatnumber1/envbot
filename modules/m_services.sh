@@ -44,26 +44,30 @@ module_services_after_load() {
 # Called for each line on connect
 module_services_on_connect() {
 	local line="$1"
-	if [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_NICKNAMEINUSE  ]]; then # Nick in use
-		module_services_ghost=1
-	elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_ERR_ERRONEUSNICKNAME  ]]; then # Erroneous Nickname Being Held...
-		module_services_ghost=1
-	elif [[ $(cut -d' ' -f2 <<< "$line") == $numeric_RPL_ENDOFMOTD ]]; then
-		if [[ $config_module_services_style == atheme ]]; then
-			send_raw_flood_nolog "NickServ IDENTIFY (password)" "${module_services_nickserv_command}IDENTIFY $config_firstnick $config_module_services_nickserv_passwd"
-		fi
-		if [[ $module_services_ghost == 1 ]]; then
-			log_stdout "Recovering ghost"
-			send_raw_flood_nolog "NickServ GHOST (password)" "${module_services_nickserv_command}GHOST $config_firstnick $config_module_services_nickserv_passwd"
-			# Try to release too, just in case.
-			send_raw_flood_nolog "NickServ RELEASE (password)" "${module_services_nickserv_command}RELEASE $config_firstnick $config_module_services_nickserv_passwd"
-			sleep 2
-			send_nick "$config_firstnick"
-		fi
-		log_stdout "Identifying..."
-		if [[ $config_module_services_style != atheme ]]; then
-			send_raw_flood_nolog "NickServ IDENTIFY (password)" "${module_services_nickserv_command}IDENTIFY $config_module_services_nickserv_passwd"
-		fi
-		sleep 1
+	if [[ $(cut -d' ' -f2 <<< "$line") =~ ([0-9]{3}) ]]; then
+		local numeric="${BASH_REMATCH[1]}"
+		case $numeric in
+			"$numeric_ERR_NICKNAMEINUSE"|"$numeric_ERR_ERRONEUSNICKNAME")
+				module_services_ghost=1
+				;;
+			"$numeric_RPL_ENDOFMOTD")
+				if [[ $config_module_services_style == atheme ]]; then
+					send_raw_flood_nolog "NickServ IDENTIFY (password)" "${module_services_nickserv_command}IDENTIFY $config_firstnick $config_module_services_nickserv_passwd"
+				fi
+				if [[ $module_services_ghost == 1 ]]; then
+					log_stdout "Recovering ghost"
+					send_raw_flood_nolog "NickServ GHOST (password)" "${module_services_nickserv_command}GHOST $config_firstnick $config_module_services_nickserv_passwd"
+					# Try to release too, just in case.
+					send_raw_flood_nolog "NickServ RELEASE (password)" "${module_services_nickserv_command}RELEASE $config_firstnick $config_module_services_nickserv_passwd"
+					sleep 2
+					send_nick "$config_firstnick"
+				fi
+				log_stdout "Identifying..."
+				if [[ $config_module_services_style != atheme ]]; then
+					send_raw_flood_nolog "NickServ IDENTIFY (password)" "${module_services_nickserv_command}IDENTIFY $config_module_services_nickserv_passwd"
+				fi
+				sleep 1
+				;;
+		esac
 	fi
 }
