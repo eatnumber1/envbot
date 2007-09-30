@@ -81,7 +81,7 @@ print_cmd_help() {
 }
 
 print_version() {
-	echo 'envbot 0.0.1-alpha - An advanced modular IRC bot in bash.'
+	echo 'envbot 0.0.1-beta - An advanced modular IRC bot in bash.'
 	echo ''
 	echo 'Copyright (C) 2007 Arvid Norlander'
 	echo 'Copyright (C) 2007 EmErgE'
