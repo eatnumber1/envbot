@@ -22,6 +22,10 @@ config_file="bot_settings.sh"
 # Where to load libraries from
 library_dir="lib"
 
+# Version
+declare -r envbot_version='0.0.1-beta1+bzr'
+declare -r envbot_homepage='http://envbot.kuonet-ng.org'
+
 # Set some variables to make bot work sane
 # For example tr + some LC_COLLATE = breaks in some cases.
 unset LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY
@@ -76,12 +80,12 @@ print_cmd_help() {
 	echo '  envbot                  Runs envbot with default options.'
 	echo '  envbot -c bot.config    Runs envbot with the config bot.config.'
 	echo ''
-	echo 'Report bugs to http://envbot.org/trac/simpleticket'
+	echo "Report bugs to ${envbot_homepage}/trac/simpleticket"
 	envbot_quit 0
 }
 
 print_version() {
-	echo 'envbot 0.0.1-beta - An advanced modular IRC bot in bash.'
+	echo "envbot $envbot_version - An advanced modular IRC bot in bash."
 	echo ''
 	echo 'Copyright (C) 2007 Arvid Norlander'
 	echo 'Copyright (C) 2007 EmErgE'
