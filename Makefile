@@ -20,7 +20,15 @@
 # This file is used to generate some, uh, generated files.
 # Also some other tasks
 
-ENVBOT_VERSION = 0.0.1
+# Useful targets:
+#   all:      Builds numerics file and generates example config
+#   man:      Generates man page using help2man
+#   install:  Installs to a DESTDIR (don't confuse with DISTDIR),
+#             See variables below.
+#   dist-dir: Generates a clean checkout of current version, ready to be
+#             tared up. Can only be done in a bzr branch/checkout
+
+ENVBOT_VERSION = 0.0.1-beta1+bzr
 
 # For make dest-dir, defaults
 DISTDIR ?= dist
