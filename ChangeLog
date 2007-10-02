@@ -7,8 +7,8 @@ Example (list changes compared to 0.0.1-beta1)
   bzr log -rtag:0.0.1-beta1.. --short
 
 
-Development version
--------------------
+0.0.1-beta2
+-----------
 This information may be out dated for development version.
 379:       Actually more than one space between parameters on irc is possible, yes that sucks, and no sane server would send it, but just to be on the safe side
 377:       Added this ChangeLog.
