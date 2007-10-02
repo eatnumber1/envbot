@@ -170,8 +170,8 @@ echo "Loading transport"
 source "${config_transport_dir}/${config_transport}.sh"
 
 if ! transport_check_support; then
-	echo "ERROR: The transport reported it can't work on this system."
-	echo "Please consult documentation for the transport module you are using."
+	echo "ERROR: The transport reported it can't work on this system or with this configuration."
+	echo "Please read any other errors displayed above and consult documentation for the transport module you are using."
 	envbot_quit 1
 fi
 
@@ -318,7 +318,7 @@ while true; do
 			server_handle_ping "$line"
 			if [[ "$line" =~ ^ERROR\ :(.*) ]]; then
 				error="${BASH_REMATCH[1]}"
-				log_stdout "Got ERROR from server: $error"
+				log_error "Got ERROR from server: $error"
 				for module in $modules_on_server_ERROR; do
 						module_${module}_on_server_ERROR "$error"
 				done
@@ -326,7 +326,7 @@ while true; do
 		fi
 	done
 
-	log "DIED FOR SOME REASON"
+	log_error "DIED FOR SOME REASON"
 	transport_disconnect
 	server_connected=0
 	for module in $modules_after_disconnect; do

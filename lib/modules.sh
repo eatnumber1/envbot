@@ -40,12 +40,12 @@ modules_depends_register() {
 	local dep
 	for dep in $2; do
 		if [[ $dep == $callermodule ]]; then
-			log_stdout_file modules.log "To the module author of $callermodule: You can't list yourself as a dependency of yourself!"
-			log_stdout_file modules.log "Aborting!"
+			log_error_file modules.log "To the module author of $callermodule: You can't list yourself as a dependency of yourself!"
+			log_error_file modules.log "Aborting!"
 			return 1
 		fi
 		if ! list_contains "modules_loaded" "$dep"; then
-			log_file modules.log "Loading dependency of $callermodule: $dep"
+			log_info_file modules.log "Loading dependency of $callermodule: $dep"
 			modules_load "$dep"
 			local status="$?"
 			if [[ $status -eq 4 ]]; then
@@ -55,7 +55,7 @@ modules_depends_register() {
 			fi
 		fi
 		if list_contains "modules_depends_${dep}" "$callermodule"; then
-			log_stdout_file modules.log "WARNING Dependency ${callermodule} already listed as depending on ${dep}!?"
+			log_warning_file modules.log "Dependency ${callermodule} already listed as depending on ${dep}!?"
 		fi
 		# HACK: If you find a better way than eval, please tell me!
 		eval "modules_depends_${dep}=\"\$modules_depends_${dep} $callermodule\""
@@ -115,7 +115,7 @@ modules_depends_can_unload() {
 modules_add_hooks() {
 	local module="$1"
 	local hooks="$(module_${module}_INIT)"
-	[[ $? -ne 0 ]] && { log "Failed to get hooks for $module"; return 1; }
+	[[ $? -ne 0 ]] && { log_error_file modules.log "Failed to get hooks for $module"; return 1; }
 	local hook
 	for hook in $hooks; do
 		case $hook in
@@ -180,7 +180,7 @@ modules_add_hooks() {
 				modules_on_raw="$modules_on_raw $module"
 				;;
 			*)
-				log "ERROR: Unknown hook $hook requested. Module may malfunction. Module will be unloaded"
+				log_error_file modules.log "ERROR: Unknown hook $hook requested. Module may malfunction. Module will be unloaded"
 				return 1
 				;;
 		esac
@@ -202,11 +202,11 @@ modules_unload() {
 	local module="$1"
 	local hook newval to_unset
 	if ! list_contains "modules_loaded" "$module"; then
-		log_stdout_file modules.log "No such module as $1 is loaded."
+		log_warning_file modules.log "No such module as $1 is loaded."
 		return 2
 	fi
 	if ! modules_depends_can_unload "$module"; then
-		log_stdout_file modules.log "Can't unload $module because these module(s) depend(s) on it: $(modules_depends_list_deps "$module")"
+		log_error_file modules.log "Can't unload $module because these module(s) depend(s) on it: $(modules_depends_list_deps "$module")"
 		return 3
 	fi
 	# Remove hooks from list first in case unloading fails so we can do quit hooks if something break.
@@ -219,15 +219,19 @@ modules_unload() {
 		# I can't think of a better way :(
 		eval "modules_$hook=\"$newval\""
 	done
-	module_${module}_UNLOAD || \
-		{ log_stdout_file modules.log "FATAL ERROR: Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"; bot_quit "Fatal error in module unload, please see log"; }
+	module_${module}_UNLOAD || {
+		log_fatal_file modules.log "Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"
+		bot_quit "Fatal error in module unload, please see log"
+	}
 	unset module_${module}_UNLOAD
 	unset module_${module}_INIT
 	unset module_${module}_REHASH
 	# Unset from list created above.
 	for hook in $to_unset; do
-		unset "$hook" || \
-			{ log_stdout_file modules.log "FATAL ERROR: Could not unset the hook $hook of module $module!"; bot_quit "Fatal error in module unload, please see log"; }
+		unset "$hook" || {
+			log_fatal_file modules.log "Could not unset the hook $hook of module $module!"
+			bot_quit "Fatal error in module unload, please see log"
+		}
 	done
 	modules_depends_unregister "$module"
 	modules_loaded="$(list_remove "modules_loaded" "$module")"
@@ -249,7 +253,7 @@ modules_unload() {
 modules_load() {
 	module="$1"
 	if list_contains "modules_loaded" "$module"; then
-		log_stdout_file modules.log "Module ${module} is already loaded."
+		log_warning_file modules.log "Module ${module} is already loaded."
 		return 2
 	fi
 	if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
@@ -258,10 +262,10 @@ modules_load() {
 			modules_loaded="$modules_loaded $module"
 			modules_add_hooks "$module" || \
 				{
-					log_stdout_file modules.log "Hooks failed for $module"
+					log_error_file modules.log "Hooks failed for $module"
 					# Try to unload.
 					modules_unload "$module" || {
-						log_stdout_file modules.log "FATAL ERROR: Failed Unloading of $module (that failed to load)."
+						log_fatal_file modules.log "Failed Unloading of $module (that failed to load)."
 						bot_quit "Fatal error in module unload of failed module load, please see log"
 					}
 					return 5
@@ -270,18 +274,18 @@ modules_load() {
 				module_${module}_after_load
 				if [[ $? -ne 0 ]]; then
 					modules_unload ${module} || {
-						log_stdout_file modules.log "FATAL ERROR: Unloading of $module that failed after_load failed."
+						log_fatal_file modules.log "Unloading of $module that failed after_load failed."
 						bot_quit "Fatal error in module unload of failed module load (after_load), please see log"
 					}
 					return 6
 				fi
 			fi
 		else
-			log_stdout "Could not load ${module}, failed to source it."
+			log_error_file modules.log "Could not load ${module}, failed to source it."
 			return 3
 		fi
 	else
-		log_stdout "No such module as ${module} exists."
+		log_error_file modules.log "No such module as ${module} exists."
 		return 4
 	fi
 }
@@ -294,7 +298,7 @@ modules_load_from_config() {
 				modules_load "$module"
 			fi
 		else
-			log_stdout "WARNING: $module doesn't exist! Removing it from list"
+			log_warning_file modules.log "$module doesn't exist! Removing it from list"
 		fi
 	done
 }

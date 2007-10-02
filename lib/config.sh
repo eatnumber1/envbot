@@ -28,20 +28,20 @@
 config_rehash() {
 	local new_conf_ver="$(grep -E '^config_version=' "$config_file")"
 	if ! [[ $new_conf_ver =~ ^config_version=$config_current_version ]]; then
-		log_stdout "REHASH: Not same config version"
+		log_error "REHASH: Not same config version"
 		return 2
 	fi
 	# Try sourcing in a subshell first to catch errors
 	# without causing bot to break
 	( source "$config_file" )
 	if [[ $? -ne 0 ]]; then
-		log_stdout "REHASH: Failed faked source."
+		log_error "REHASH: Failed faked source."
 		return 3
 	fi
 	# Source for real if that worked
 	source "$config_file"
 	if [[ $? -ne 0 ]]; then
-		log_stdout "REHASH: Failed real source."
+		log_error "REHASH: Failed real source."
 		return 4
 	fi
 	local status
@@ -50,18 +50,18 @@ config_rehash() {
 		module_${module}_REHASH
 		status=$?
 		if [[ $status -eq 1 ]]; then
-			log_stdout "ERROR: Rehash of ${module} failed, trying to unload it."
+			log_error "Rehash of ${module} failed, trying to unload it."
 			modules_unload "${module}" || {
-				log_stdout "FATAL ERROR: Unloading of ${module} after failed rehash failed."
+				log_fatal "Unloading of ${module} after failed rehash failed."
 				bot_quit "Fatal error in unload of module that failed to rehash"
 			}
 		fi
 		if [[ $status -eq 2 ]]; then
-			log_stdout "FATAL ERROR: Rehash of ${module} failed in a FATAL way. Quitting"
+			log_fatal "Rehash of ${module} failed in a FATAL way. Quitting"
 			bot_quit "Fatal error in rehash of module"
 		fi
 	done
-	log_stdout "Rehash successfull"
+	log_info_stdout "Rehash successfull"
 }
 
 

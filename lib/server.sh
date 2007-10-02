@@ -92,13 +92,13 @@ server_handle_005() {
 	fi
 	# Enable NAMESX is supported.
 	if [[ $line =~ NAMESX ]]; then
-		log "Enabled NAMESX support"
+		log_info "Enabled NAMESX support"
 		send_raw_flood "PROTOCTL NAMESX"
 		server_NAMESX=1
 	fi
 	# Enable UHNAMES if it is there.
 	if [[ $line =~ UHNAMES ]]; then
-		log "Enabled UHNAMES support"
+		log_info "Enabled UHNAMES support"
 		send_raw_flood "PROTOCTL UHNAMES"
 		server_UHNAMES=1
 	fi
@@ -114,9 +114,9 @@ server_handle_ping() {
 server_handle_numerics() { # $1 = numeric, $2 = target (self), $3 = data
 	# Slight sanity check
 	if [[ "$2" != "$server_nick_current" ]]; then
-		log_stdout 'WARNING: Own nick desynced!'
-		log_stdout "WARNING: It should be $server_nick_current but is $2"
-		log_stdout "WARNING: Correcting own nick and lets hope that doesn't break anything"
+		log_warning 'Own nick desynced!'
+		log_warning "It should be $server_nick_current but is $2"
+		log_warning "Correcting own nick and lets hope that doesn't break anything"
 		server_nick_current="$2"
 	fi
 }
@@ -130,16 +130,16 @@ server_handle_nick() {
 
 server_handle_nick_in_use() {
 	if [[ $on_nick -eq 3 ]]; then
-		log_stdout "Third nick is ALSO in use. I give up"
+		log_error "Third nick is ALSO in use. I give up"
 		bot_quit 2
 	fi
 	if [[ $on_nick -eq 2 ]]; then
-		log_stdout "Second nick is ALSO in use, trying third"
+		log_warning "Second nick is ALSO in use, trying third"
 		send_nick "$config_thirdnick"
 		server_nick_current="$config_thirdnick"
 		on_nick=3
 	fi
-	log_stdout "First nick is in use, trying second"
+	log_info_stdout "First nick is in use, trying second"
 	send_nick "$config_secondnick"
 	on_nick=2
 	# FIXME: THIS IS HACKISH AND MAY BREAK
@@ -152,7 +152,7 @@ server_connect(){
 	on_nick=1
 	# HACK: Clean up if we are aborted, replaced after connect with one that sends QUIT
 	trap 'transport_disconnect; rm -rvf "$tmp_home"; exit 1' TERM INT
-	log_stdout "Connecting to \"${config_server}:${config_server_port}\"..."
+	log_info_stdout "Connecting to \"${config_server}:${config_server_port}\"..."
 	transport_connect "$config_server" "$config_server_port" "$config_server_ssl" "$config_server_bind" || return 1
 	while transport_read_line; do
 		# Check with modules first, needed so we don't skip them.
@@ -166,7 +166,7 @@ server_connect(){
 					continue
 					;;
 				"$numeric_RPL_MOTDSTART")
-					log "Motd is not displayed in log";
+					log_info "Motd is not displayed in log";
 					;;
 				"$numeric_RPL_YOURHOST")
 					if [[ $line =~ ^:([^ ]+)  ]]; then # just to get the server name, this should always be true
@@ -196,7 +196,7 @@ server_connect(){
 		fi
 		log_raw_in "$line"
 		if [[ $line =~ "Looking up your hostname" ]]; then
-			log_stdout "logging in as $config_firstnick..."
+			log_info_stdout "logging in as $config_firstnick..."
 			send_nick "$config_firstnick"
 			# FIXME: THIS IS HACKISH AND MAY BREAK
 			server_nick_current="$config_firstnick"

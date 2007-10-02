@@ -26,8 +26,8 @@ transport_check_support=''
 
 # Check if all the stuff needed to use this transport is available
 # Return status
-#   0 yes
-#   1 no
+#   0 Yes
+#   1 No
 transport_check_support() {
 	# If anyone can tell me how to check if /dev/tcp is supported
 	# without trying to make a connection (that could fail for so
@@ -49,6 +49,7 @@ transport_check_support() {
 	fi
 	if [[ -z $config_transport_socat_protocol_family ]]; then
 		echo "ERROR: you need to set config_transport_socat_use_ipv6 in your config to either 0 or 1."
+		return 1
 	fi
 	# Check for older version
 	if grep -q "socat version 1.4" <<< "$features"; then

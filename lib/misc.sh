@@ -73,7 +73,7 @@ bot_quit() {
 	for module in $modules_FINALISE; do
 		${module}_FINALISE
 	done
-	log "Bot quit gracefully"
+	log_info_stdout "Bot quit gracefully"
 	transport_disconnect
 	rm -rvf "$tmp_home"
 	if [[ $2 ]]; then
@@ -100,7 +100,7 @@ bot_restart() {
 	for module in $modules_FINALISE; do
 		${module}_FINALISE
 	done
-	log "Bot quit gracefully"
+	log_info_stdout "Bot quit gracefully"
 	transport_disconnect
 	rm -rvf "$tmp_home"
 	exec env -i "$(type -p bash)" $0 $command_line
