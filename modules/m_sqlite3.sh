@@ -66,7 +66,7 @@ module_sqlite3_after_load() {
 # Yes we just discard double quotes atm.
 module_sqlite3_clean_string() {
 	# \055 = -, yes hackish workaround.
-	tr -Cd 'A-Za-z0-9\055 ,;.:_<>*|~^!"#%&/()=?+\@${}[]+ÅÄÖåäö'\' <<< "$1" | sed "s/'/''/g"
+	tr -Cd 'A-Za-z0-9\055 ,;.:_<>*|~^!"#%&/()=?+\@${}[]+ÅÄÖåäö'\' <<< "$1" | sed 's/\\/\\\\/g'";s/'/''/g"
 }
 
 # Run the query against the data base.
