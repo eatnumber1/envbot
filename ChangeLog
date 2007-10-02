@@ -1,0 +1,22 @@
+ChangeLog
+=========
+This is a overview of changes users may care about. Detailed changelog can be
+done using bzr (does not work in tarballs, you need development checkout for this):
+  bzr log -rtag:tag.. --short
+Example (list changes compared to 0.0.1-beta1)
+  bzr log -rtag:0.0.1-beta1.. --short
+
+
+Development version
+-------------------
+This information may be out dated for development version.
+377:       Added this ChangeLog.
+376:       Fix potential security problem in sql cleaning code in module_sqlite3_clean_string (I can't find a way to abuse this so I don't think the risk is very high)
+375:       Add access_log_action()
+373-375:   Introduced more advanced logging API with several levels (info, warn, error and fatal)
+371:       Optimize log_write() in lib/log.sh (something like 20 times as fast now if my testing is correct)
+
+
+0.0.1-beta1
+-----------
+First version, no ChangeLog as there is nothing to older to list changes against.
