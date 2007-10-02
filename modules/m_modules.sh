@@ -88,7 +88,7 @@ module_modules_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
-				log_stdout_file owner.log "$sender loaded the module $target_module"
+				access_log_action "$sender" "loaded the module $target_module"
 				module_modules_doload "$target_module" "$sender"
 			else
 				access_fail "$sender" "load a module" "owner"
@@ -101,7 +101,7 @@ module_modules_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
-				log_stdout_file owner.log "$sender unloaded the module $target_module"
+				access_log_action "$sender" "unloaded the module $target_module"
 				module_modules_dounload "$target_module" "$sender"
 			else
 				access_fail "$sender" "unload a module" "owner"
@@ -114,7 +114,7 @@ module_modules_on_PRIVMSG() {
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
-				log_stdout_file owner.log "$sender reloaded the module $target_module"
+				access_log_action "$sender" "reloaded the module $target_module"
 				module_modules_dounload "$target_module" "$sender"
 				if [[ $? = 0 ]]; then
 					module_modules_doload "$target_module" "$sender"

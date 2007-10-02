@@ -45,7 +45,7 @@ module_die_on_PRIVMSG() {
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "die")"; then
 		if access_check_owner "$sender"; then
-			log_stdout_file owner.log "$sender made the bot die with reason: $parameters"
+			access_log_action "$sender" "made the bot die with reason: $parameters"
 			bot_quit "$parameters"
 		else
 			access_fail "$sender" "make the bot die" "owner"
@@ -53,7 +53,7 @@ module_die_on_PRIVMSG() {
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "restart")"; then
 		if access_check_owner "$sender"; then
-			log_stdout_file owner.log "$sender made the bot restart with reason: $parameters"
+			access_log_action "$sender" "made the bot restart with reason: $parameters"
 			bot_restart "$parameters"
 		else
 			access_fail "$sender" "make the bot restart" "owner"

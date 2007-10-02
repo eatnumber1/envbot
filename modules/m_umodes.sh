@@ -35,7 +35,7 @@ module_umodes_REHASH() {
 
 module_umodes_set_modes() {
 	if [[ $config_module_umodes_default_umodes ]]; then
-		log "Setting umodes: $config_module_umodes_default_umodes"
+		log_info "Setting umodes: $config_module_umodes_default_umodes"
 		send_umodes "$config_module_umodes_default_umodes"
 	fi
 }

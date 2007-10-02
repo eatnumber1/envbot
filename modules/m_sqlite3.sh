@@ -46,16 +46,16 @@ module_sqlite3_after_load() {
 	# Check (silently) for sqlite3
 	type -p sqlite3 &> /dev/null
 	if [[ $? -ne 0 ]]; then
-		log_stdout "Couldn't find sqlite3 command line tool. The sqlite3 module depend on that tool."
+		log_error "Couldn't find sqlite3 command line tool. The sqlite3 module depend on that tool."
 		return 1
 	fi
 	if [[ -z $config_module_sqlite3_database ]]; then
-		log_stdout "You must set config_module_sqlite3_database in your config to use the SQLite3 module."
+		log_error "You must set config_module_sqlite3_database in your config to use the SQLite3 module."
 		return 1
 	fi
 	if ! [[ -r $config_module_sqlite3_database ]]; then
-		log_stdout "Database file doesn't exist or can't be read!"
-		log_stdout "See comment in doc/seen.sql for how to create one."
+		log_error "Database file doesn't exist or can't be read!"
+		log_error "See comment in doc/seen.sql for how to create one."
 		return 1
 	fi
 }

@@ -188,7 +188,7 @@ server_connect(){
 					;;
 				"$numeric_RPL_ENDOFMOTD")
 					sleep 1
-					log_stdout 'Connected'
+					log_info_stdout 'Connected'
 					server_connected=1
 					break
 					;;

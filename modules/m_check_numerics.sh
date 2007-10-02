@@ -35,6 +35,6 @@ module_check_numerics_REHASH() {
 module_check_numerics_on_numeric() {
 	# Make sure it is in base 10 here.
 	if [[ -z "${numerics[10#${1}]}" ]]; then
-		log_stdout_file numerics.log "Unknown numeric $1 Data: $2"
+		log_info_file numerics.log "Unknown numeric $1 Data: $2"
 	fi
 }

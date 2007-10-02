@@ -84,7 +84,7 @@ module_kick_ban_on_PRIVMSG() {
 			fi
 			if access_check_capab "kick" "$sender" "$channel"; then
 				send_raw "KICK $channel $nick $kickmessage"
-				log_stdout "$nick kicked from $channel with kick message: $kickmessage"
+				access_log_action "$sender" "kicked $nick from $channel with kick message: $kickmessage"
 			else
 				access_fail "$sender" "make the bot kick somebody" "kick"
 			fi
@@ -100,6 +100,7 @@ module_kick_ban_on_PRIVMSG() {
 			local duration="${BASH_REMATCH[4]}"
 			if access_check_capab "ban" "$sender" "$channel"; then
 				if [[ $duration ]]; then
+					# send_modes "$channel" "+b" get_hostmask $nick <-- not implemented yet
 					if [[ $module_kick_ban_TBAN_supported -eq 1 ]]; then
 						send_raw "TBAN $channel $duration $nick"
 					else
@@ -111,8 +112,7 @@ module_kick_ban_on_PRIVMSG() {
 				else
 					send_modes "$channel" "+b $nick"
 				fi
-				# send_modes "$channel" "+b" get_hostmask $nick <-- not implemented yet
-				log_stdout "$nick banned from $channel"
+				access_log_action "$sender" "banned $nick from $channel"
 			else
 				access_fail "$sender" "make the bot ban somebody" "ban"
 			fi

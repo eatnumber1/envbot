@@ -45,7 +45,7 @@ module_eval_on_PRIVMSG() {
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "eval")"; then
 		if access_check_owner "$sender"; then
-			log_stdout_file owner.log "$sender did eval with: $parameters"
+			access_log_action "$sender" "did eval with: $parameters"
 			eval "$parameters"
 		else
 			access_fail "$sender" "eval a command" "owner"

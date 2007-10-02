@@ -26,6 +26,12 @@ access_check_capab()
 		0 Access granted.
 		1 Access denied.
 
+access_log_action()
+	Used to log actions like "did a rehash" if access was granted.
+	Parameters:
+		$1 n!u@h mask
+		$2 What happened.
+
 access_fail()
 	Return error, and log it
 	Parameters

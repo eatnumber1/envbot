@@ -45,10 +45,10 @@ module_faq_load() {
 				module_faq_array[$i]="$line"
 			fi
 		done < "${config_module_faq_file}"
-		log 'Loaded FAQ items'
+		log_info 'Loaded FAQ items'
 		return 0
 	else
-		log "Cannot load '${config_module_faq_file}'. File doesn't exist or can't be read."
+		log_error "FAQ: Cannot load '${config_module_faq_file}'. File doesn't exist or can't be read."
 		return 1
 	fi
 }
@@ -112,7 +112,7 @@ module_faq_on_PRIVMSG() {
 					done
 				fi
 			else
-				log_stdout "ERROR: FLOOD DETECTED in FAQ module"
+				log_error "FLOOD DETECTED in FAQ module"
 			fi
 			return 1
 		fi

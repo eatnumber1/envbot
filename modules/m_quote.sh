@@ -38,7 +38,7 @@ module_quote_load() {
 	local i=0 line
 	unset module_quote_quotes
 	if [[ -z "$config_module_quotes_file" ]]; then
-		log_stdout "You need to set config_module_quotes_file in your config!"
+		log_error "You need to set config_module_quotes_file in your config!"
 		return 1
 	elif [[ -r "$config_module_quotes_file" ]]; then
 		while read -rd $'\n' line ; do
@@ -48,10 +48,10 @@ module_quote_load() {
 				(( i++ ))
 			fi
 		done < "${config_module_quotes_file}"
-		log 'Loaded Quotes.'
+		log_info 'Loaded Quotes.'
 		return 0
 	else
-		log_stdout "Quotes failed to load: Cannot load \"$config_module_quotes_file\". File doesn't exist."
+		log_error "Quotes failed to load: Cannot load \"$config_module_quotes_file\". File doesn't exist."
 		return 1
 	fi
 }

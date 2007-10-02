@@ -58,6 +58,14 @@ access_check_capab() {
 	return 1
 }
 
+# Used to log actions like "did a rehash"
+# if access was granted.
+# Parameters:
+#   $1 n!u@h mask
+#   $2 What happened.
+access_log_action() {
+	log_info_file owner.log "$1 performed the restricted action: $2"
+}
 
 # Return error, and log it
 # Parameters

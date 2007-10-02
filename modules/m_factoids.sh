@@ -44,17 +44,17 @@ module_factoids_after_load() {
 	modules_depends_register "factoids" "sqlite3" || {
 		# This error reporting is hackish, will fix later.
 		if ! list_contains "modules_loaded" "sqlite3"; then
-			log_stdout "ERROR: The factoids module depends upon the SQLite3 module being loaded."
+			log_error "The factoids module depends upon the SQLite3 module being loaded."
 		fi
 		return 1
 	}
 	if [[ -z $config_module_factoids_table ]]; then
-		log_stdout "ERROR: Factiods table (config_module_factoids_table) must be set in config."
+		log_error "ERROR: Factiods table (config_module_factoids_table) must be set in config."
 		return 1
 	fi
 	if ! module_sqlite3_table_exists "$config_module_factoids_table"; then
-		log_stdout "ERROR: $config_module_factoids_table does not exist in the database file."
-		log_stdout "See comment in doc/factoids.sql for how to create the table."
+		log_error "ERROR: $config_module_factoids_table does not exist in the database file."
+		log_error "See comment in doc/factoids.sql for how to create the table."
 	fi
 }
 

@@ -55,14 +55,14 @@ module_services_on_connect() {
 					send_raw_flood_nolog "NickServ IDENTIFY (password)" "${module_services_nickserv_command}IDENTIFY $config_firstnick $config_module_services_nickserv_passwd"
 				fi
 				if [[ $module_services_ghost == 1 ]]; then
-					log_stdout "Recovering ghost"
+					log_info_stdout "Recovering ghost"
 					send_raw_flood_nolog "NickServ GHOST (password)" "${module_services_nickserv_command}GHOST $config_firstnick $config_module_services_nickserv_passwd"
 					# Try to release too, just in case.
 					send_raw_flood_nolog "NickServ RELEASE (password)" "${module_services_nickserv_command}RELEASE $config_firstnick $config_module_services_nickserv_passwd"
 					sleep 2
 					send_nick "$config_firstnick"
 				fi
-				log_stdout "Identifying..."
+				log_info_stdout "Identifying..."
 				if [[ $config_module_services_style != atheme ]]; then
 					send_raw_flood_nolog "NickServ IDENTIFY (password)" "${module_services_nickserv_command}IDENTIFY $config_module_services_nickserv_passwd"
 				fi
