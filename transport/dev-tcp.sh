@@ -32,6 +32,9 @@ transport_check_support() {
 	# If anyone can tell me how to check if /dev/tcp is supported
 	# without trying to make a connection (that could fail for so
 	# many other reasons), please contact me.
+	echo "NOTE: It is possible that this transport is not supported on your system"
+	echo "      However, there is no way it can be checked except trying to connect."
+	echo "      If you see an error below try netcat or socat transport instead."
 	return 0
 }
 
