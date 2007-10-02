@@ -60,12 +60,13 @@ module_helloworld_after_load() {
 	module_helloworld_variable="world!"
 }
 
-# This logs hello world to STDOUT when called
+# This logs "hello world" as an informative level log item
+# when called
 # Note that this is a custom function used by
 # some other part of the script
 module_helloworld_function() {
 	# Lets use the variable defined above!
-	log_stdout "Hello $module_helloworld_variable"
+	log_info "Hello $module_helloworld_variable"
 }
 
 # Called on a PRIVMSG
@@ -75,14 +76,14 @@ module_helloworld_function() {
 # $3 = the message
 module_helloworld_on_PRIVMSG() {
 	local sender="$1"
-	local channel
+	local target
 	# If it isn't in a channel send message back to person who send it,
 	# otherwise send in channel
 	if [[ $2 =~ ^# ]]; then
-		channel="$2"
+		target="$2"
 	else
 		# parse_hostmask_nick gets the nick from a hostmask.
-		channel="$(parse_hostmask_nick "$sender")"
+		target="$(parse_hostmask_nick "$sender")"
 	fi
 	local query="$3"
 	local parameters
@@ -97,7 +98,7 @@ module_helloworld_on_PRIVMSG() {
 			# the variable message
 			local message="${BASH_REMATCH[1]}"
 			# Send a hello world message:
-			send_msg "$channel" "Hello world! I had the parameter $message"
+			send_msg "$target" "Hello world! I had the parameter $message"
 		else
 			# So the regex for matching parameters didn't work, lets provide
 			# the user with some feedback!
@@ -127,7 +128,7 @@ module_helloworld_on_PRIVMSG() {
 			if access_check_capab "hi" "$sender" "$scope"; then
 				# Such important events for security as a "hi channel" should
 				# really get logged even if it fails! ;)
-				log_file owner.log "$sender made the hi channel \"$message\" in/to \"$target_channel\""
+				access_log_action "$sender" "made the hi channel \"$message\" in/to \"$target_channel\""
 				send_msg "${target_channel}" "Hi $target_channel! $(parse_hostmask_nick "$sender") wants you to know ${message}"
 				# As an example also call our function.
 				module_helloworld_function

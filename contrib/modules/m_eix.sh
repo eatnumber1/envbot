@@ -48,7 +48,7 @@ module_eix_after_load() {
 	# Check (silently) for eix
 	type -p eix &> /dev/null
 	if [[ $? -ne 0 ]]; then
-		log_stdout "Couldn't find eix command line tool. The eix module depend on that tool."
+		log_error "Couldn't find eix command line tool. The eix module depend on that tool."
 		return 1
 	fi
 	unset module_eix_last_query
@@ -80,10 +80,10 @@ module_eix_on_PRIVMSG() {
 				# Simple flood limiting
 				if time_check_interval "$module_eix_last_query" "$config_module_eix_rate"; then
 					module_eix_last_query="$(date -u +%s)"
-					log_file eix.log "$sender made the bot run eix on \"$pattern\""
+					log_info_file eix.log "$sender made the bot run eix on \"$pattern\""
 					send_msg "$channel" "$(EIX_PRINT_IUSE='false' eix -pSCxs --format "$module_eix_format_string" "$pattern" | head -n 1)"
 				else
-					log_stdout_file eix.log "ERROR: FLOOD DETECTED in eix module"
+					log_error_file eix.log "FLOOD DETECTED in eix module"
 				fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "eix" "pattern"

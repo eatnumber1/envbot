@@ -50,15 +50,15 @@ module_bugzilla_REHASH() {
 module_bugzilla_after_load() {
 	type -p bugz &> /dev/null
 	if [[ $? -ne 0 ]]; then
-		log_stdout "Couldn't find bugz command line tool. The bugzilla module depend on that tool (emerge pybugz to get it on gentoo)."
+		log_error "Couldn't find bugz command line tool. The bugzilla module depend on that tool (emerge pybugz to get it on gentoo)."
 		return 1
 	fi
 	if [[ -z $config_module_bugzilla_url ]]; then
-		log_stdout "Please set config_module_bugzilla_url in config."
+		log_error "Please set config_module_bugzilla_url in config."
 		return 1
 	fi
 	if [[ -z $config_module_bugzilla_url ]]; then
-		log_stdout "Please set config_module_bugzilla_rate in config."
+		log_error "Please set config_module_bugzilla_rate in config."
 		return 1
 	fi
 	unset module_bugzilla_last_query
@@ -94,7 +94,7 @@ module_bugzilla_on_PRIVMSG() {
 					elif [[ $mode = "closed" ]]; then
 						bugs_parameters="-s CLOSED -s RESOLVED"
 					fi
-					log_file bugzilla.log "$sender made the bot run pybugz search on \"$pattern\""
+					log_info_file bugzilla.log "$sender made the bot run pybugz search on \"$pattern\""
 					local result="$(bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
 					local chars="$(wc -c <<< "$result")"
 					local lines="$(wc -l <<< "$result")"
@@ -112,7 +112,7 @@ module_bugzilla_on_PRIVMSG() {
 					fi
 					send_msg "$channel" "${header}${pretty_result}${footer}"
 				else
-					log_stdout_file bugzilla.log "ERROR: FLOOD DETECTED in bugzilla module"
+					log_error_file bugzilla.log "FLOOD DETECTED in bugzilla module"
 				fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "bugs search" "pattern"
@@ -124,7 +124,7 @@ module_bugzilla_on_PRIVMSG() {
 				local query_time="$(date +%H%M)$sender"
 				if [[ "$module_bugzilla_last_query" != "$query_time" ]] ; then
 					module_bugzilla_last_query="$query_time"
-					log_file bugzilla.log "$sender made the bot check with pybugz for bug \"$id\""
+					log_info_file bugzilla.log "$sender made the bot check with pybugz for bug \"$id\""
 					local result="$(bugz -fqb "$config_module_bugzilla_url" get -n "$id" | grep -E 'Title|Status|Resolution')"
 					local resultread pretty_result
 					local title status resolution
@@ -153,7 +153,7 @@ module_bugzilla_on_PRIVMSG() {
 					fi
 					send_msg "$channel" "${pretty_result}"
 				else
-					log_stdout_file bugzilla.log "ERROR: FLOOD DETECTED in bugzilla module"
+					log_error_file bugzilla.log "FLOOD DETECTED in bugzilla module"
 				fi
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "bug" "id"
