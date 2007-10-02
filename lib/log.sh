@@ -76,7 +76,8 @@ log_write() {
 	echo "$1" >> "$log_file"
 	[[ $3 ]] && echo "$1" >> "$log_dir/$3"
 	if [[ $config_log_stdout -eq 1 ]] || [[ $2 -eq 1 ]]; then
-		echo "$1" | tr -d $'\\007'
+		# Get rid of bell chars.
+		echo "${1//$'\007'}"
 	fi
 }
 
