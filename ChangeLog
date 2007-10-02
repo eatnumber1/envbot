@@ -10,6 +10,7 @@ Example (list changes compared to 0.0.1-beta1)
 Development version
 -------------------
 This information may be out dated for development version.
+379:       Actually more than one space between parameters on irc is possible, yes that sucks, and no sane server would send it, but just to be on the safe side
 377:       Added this ChangeLog.
 376:       Fix potential security problem in sql cleaning code in module_sqlite3_clean_string (I can't find a way to abuse this so I don't think the risk is very high)
 375:       Add access_log_action()

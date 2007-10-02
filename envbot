@@ -23,7 +23,7 @@ config_file="bot_settings.sh"
 library_dir="lib"
 
 # Version
-declare -r envbot_version='0.0.1-beta1+bzr'
+declare -r envbot_version='0.0.1-beta2'
 declare -r envbot_homepage='http://envbot.org'
 
 # Set some variables to make bot work sane
