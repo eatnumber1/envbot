@@ -102,7 +102,7 @@ module_helloworld_on_PRIVMSG() {
 		else
 			# So the regex for matching parameters didn't work, lets provide
 			# the user with some feedback!
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "helloworld" "message # Where message is one word!"
+			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "hello world" "message # Where message is one word!"
 		fi
 		# Return 1 because we handled this PRIVMSG.
 		return 1
