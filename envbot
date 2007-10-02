@@ -73,7 +73,7 @@ print_cmd_help() {
 	echo "  -c, --config file       Use file instead of the default as config file."
 	echo "      --libdir directory  Use directory instead of the default as library directory."
 	echo '  -v, --verbose           Force verbose output even if config_log_stdout is 0.'
-	echo '      --help              Display this help and exit'
+	echo '  -h, --help              Display this help and exit'
 	echo '  -V, --version           Output version information and exit'
 	echo ''
 	echo 'Examples:'

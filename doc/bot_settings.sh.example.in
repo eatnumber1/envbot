@@ -46,10 +46,10 @@ config_server='irc.kuonet-ng.org'
 config_server_port='6667'
 # If 1 use SSL, not all transport modules support this.
 config_server_ssl=0
-# Accept invalid certs?
+# Accept invalid server certificates?
 #   Note that some SSL modules (openssl for example) just
 #   print any errors and continues anyway
-config_server_ssl_accept_invalid=0
+config_server_ssl_accept_invalid=1
 # Be verbose when connecting?
 #   Not all SSL modules support it. The ones that doesn't
 #   support it will just ignore it.
@@ -76,17 +76,20 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 #
 #     There can be several access masks matching same host (to allow
 #     for different scope/capab combinations).
-# config_access_mask[1]='^The!owner@shellhost\.net$'
+#config_access_mask[1]='^The!owner@shellhost\.net$'
 #config_access_capab[1]='owner'
 #config_access_scope[1]='.*'
 
-# config_access_mask[2]='^Someone!whatever@customer-1234\.isp\.com$'
+# Some more access examples:
+
+#config_access_mask[2]='^Someone!whatever@customer-1234\.isp\.com$'
 #config_access_capab[2]='say kick'
 #config_access_scope[2]='#channel'
 
-# config_access_mask[3]='^Someone!whatever@customer-1234\.isp\.com$'
+#config_access_mask[3]='^Someone!whatever@customer-1234\.isp\.com$'
 #config_access_capab[3]='facoid_admin'
 #config_access_scope[3]='GLOBAL'
+
 
 ###########
 # Logging #
@@ -95,7 +98,7 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 # Directory for logfiles
 config_log_dir="@@logdir@@"
 # (*) Should we always log to STDOUT as well?
-#     This is the verbose output option.
+#     This is the same as --verbose.
 config_log_stdout=0
 
 
@@ -119,9 +122,11 @@ config_transport='dev-tcp'
 
 # socat options
 #   MAKE SURE THEY ARE CORRECT if you use socat.
-# This tells if to use ipv6 or ipv4 to connect.
+#
+#   This tells if to use IPv6 or IPv4 to connect.
 #   socat doesn't support automatic choice of this.
-#   socat does not support using ipv6 and ssl at the same time.
+#   Note that socat versions below 1.5 does not
+#   support using IPv6 and SSL at the same time.
 #config_transport_socat_use_ipv6=0
 
 # Where are transports stored, this can be a relative path from the
@@ -154,7 +159,7 @@ config_modules_dir="@@moddir@@"
 #####################################################################
 # Services module
 #
-# (*) Nickserv password
+# (*) NickServ password
 config_module_services_nickserv_passwd='nickserv password here'
 # (*) Name of NickServ
 #     Normaly this is correct
@@ -202,25 +207,29 @@ config_module_umodes_default_umodes="+isB-w"
 #####################################################################
 # SQLite3 module
 #
-# (*) Location of sqlite3 database file
+# (*) Location of SQLite3 database file
 #config_module_sqlite3_database='@@datadir@@/envbot.db'
 
 
 #####################################################################
 # Factoids module
 #
-# (*) Table name for factoids in SQLite3 databse
+# (*) Table name for factoids in SQLite3 database
 #config_module_factoids_table='factoids'
 
 
 #####################################################################
 # Seen module
 #
-# (*) Table name for seen data in SQLite3 databse
+# (*) Table name for seen data in SQLite3 database
 #config_module_seen_table='seen'
-# A function that outputs date from an unix timestamp.
-#   There is no standard one so we let you chose one.
-#   Parameter is timestamp
+# A function that outputs date from an Unix timestamp.
+#   There is no standard command for this so we let you
+#   chose one that exists on your system.
+#   Please uncomment the function below and ONE of the
+#   example commands.
+#
+#   Parameter to this function is a timestamp
 #config_module_seen_function() {
 	# Using perl:
 	#perl -le "print scalar localtime $1"
@@ -232,4 +241,4 @@ config_module_umodes_default_umodes="+isB-w"
 
 #####################################################################
 # For contrib modules please see the contrib module in question
-# for information on what variables it use.
+# for information on what variables it uses.
