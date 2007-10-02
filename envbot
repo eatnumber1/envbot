@@ -22,6 +22,16 @@ config_file="bot_settings.sh"
 # Where to load libraries from
 library_dir="lib"
 
+# Check bash version. We need at least 3.2.x
+if [[ "$(awk -F. '{print $1$2}' <<< $BASH_VERSION)" -lt 32 ]]; then
+	echo "Sorry your bash version is too old!"
+	echo "You need at least version 3.2 of bash"
+	echo "Please install a newer version:"
+	echo " * Either use your distro's packages"
+	echo " * Or see http://www.gnu.org/software/bash/"
+	exit 1
+fi
+
 # Version
 declare -r envbot_version='0.0.1-beta2'
 declare -r envbot_homepage='http://envbot.org'
