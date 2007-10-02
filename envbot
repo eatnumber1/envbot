@@ -216,7 +216,7 @@ while true; do
 				continue 2
 			fi
 		done
-		if [[ $line =~ ^:${server_name}\ ([0-9]{3})\ ([^ ]+)\ (.*) ]]; then
+		if [[ $line =~ ^:${server_name}[\ ]+([0-9]{3})[\ ]+([^ ]+)[\ ]+(.*) ]]; then
 			# this is a numeric
 			numeric="${BASH_REMATCH[1]}"
 			numericdata="${BASH_REMATCH[3]}"
@@ -227,7 +227,7 @@ while true; do
 					break
 				fi
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+PRIVMSG\ ([^:]*)(.*) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+PRIVMSG[\ ]+([^:]*)(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
@@ -238,7 +238,7 @@ while true; do
 					break
 				fi
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NOTICE\ ([^:]*)(.*) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NOTICE[\ ]+([^:]*)(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
@@ -249,21 +249,21 @@ while true; do
 					break
 				fi
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+TOPIC\ (#[^ ]+)(\ :(.*))? ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+TOPIC[\ ]+(#[^ ]+)([\ ]+:(.*))? ]]; then
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			topic="${BASH_REMATCH[4]}"
 			for module in $modules_on_TOPIC; do
 				module_${module}_on_TOPIC "$sender" "$channel" "$topic"
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+MODE\ (#[^ ]+)\ (.*) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+MODE[\ ]+(#[^ ]+)[\ ]+(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			modes="${BASH_REMATCH[3]}"
 			for module in $modules_on_channel_MODE ; do
 				module_${module}_on_channel_MODE "$sender" "$channel" "$modes"
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NICK\ (.*) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NICK[\ ]+(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			newnick="${BASH_REMATCH[2]}"
 			# Check if it was our own nick
@@ -271,7 +271,7 @@ while true; do
 			for module in $modules_on_NICK; do
 				module_${module}_on_NICK "$sender" "$newnick"
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+JOIN\ :(.*) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+JOIN[\ ]+:(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			# Check if it was our own nick that joined
@@ -279,7 +279,7 @@ while true; do
 			for module in $modules_on_JOIN; do
 				module_${module}_on_JOIN "$sender" "$channel"
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+PART\ (#[^ ]+)(\ :(.*))? ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+PART[\ ]+(#[^ ]+)([\ ]+:(.*))? ]]; then
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			reason="${BASH_REMATCH[4]}"
@@ -288,7 +288,7 @@ while true; do
 			for module in $modules_on_JOIN; do
 				module_${module}_on_PART "$sender" "$channel" "$reason"
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+KICK\ (#[^ ]+)\ ([^ ]+)(\ :(.*))? ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+KICK[\ ]+(#[^ ]+)[\ ]+([^ ]+)([\ ]+:(.*))? ]]; then
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			kicked="${BASH_REMATCH[3]}"
@@ -298,13 +298,13 @@ while true; do
 			for module in $modules_on_KICK; do
 				module_${module}_on_KICK "$sender" "$channel" "$kicked" "$reason"
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+QUIT(\ :(.*))? ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+QUIT([\ ]+:(.*))? ]]; then
 			sender="${BASH_REMATCH[1]}"
 			reason="${BASH_REMATCH[3]}"
 			for module in $modules_on_QUIT; do
 				module_${module}_on_QUIT "$sender" "$reason"
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+KILL\ ([^ ]*)\ :([^ ]*)\ \((.*)\) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+KILL[\ ]+([^ ]*)[\ ]+:([^ ]*)[\ ]+\((.*)\) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			target="${BASH_REMATCH[2]}"
 			path="${BASH_REMATCH[3]}"
