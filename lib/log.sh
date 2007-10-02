@@ -22,6 +22,7 @@
 log_prefix="---------------"
 
 # Log a fatal error to the main log file as well as STDOUT.
+# Parameters
 #   $1 The log message to log
 log_fatal() {
 	log_stdout "FATAL:   $1"
@@ -29,6 +30,7 @@ log_fatal() {
 
 # Log a fatal error to a specific log file as well as
 # the main log file and STDOUT.
+# Parameters
 #   $1 The extra log file (relative to the current log dir)
 #   $2 The log message to log
 log_fatal_file() {
@@ -37,6 +39,7 @@ log_fatal_file() {
 
 
 # Log an error to the main log file as well as STDOUT.
+# Parameters
 #   $1 The log message to log
 log_error() {
 	log_stdout "ERROR:   $1"
@@ -44,6 +47,7 @@ log_error() {
 
 # Log an error to a specific log file as well as
 # the main log file and STDOUT.
+# Parameters
 #   $1 The extra log file (relative to the current log dir)
 #   $2 The log message to log
 log_error_file() {
@@ -52,6 +56,7 @@ log_error_file() {
 
 
 # Log a warning to the main log file as well as STDOUT.
+# Parameters
 #   $1 The log message to log
 log_warning() {
 	log_stdout "WARNING: $1"
@@ -59,6 +64,7 @@ log_warning() {
 
 # Log a warning to a specific log file as well as
 # the main log file and STDOUT.
+# Parameters
 #   $1 The extra log file (relative to the current log dir)
 #   $2 The log message to log
 log_warning_file() {
@@ -67,6 +73,7 @@ log_warning_file() {
 
 
 # Log an info message to the main log file.
+# Parameters
 #   $1 The log message to log
 log_info() {
 	log "INFO:    $1"
@@ -75,6 +82,7 @@ log_info() {
 # Log an info message to the main log file and STDOUT.
 # Normally this shouldn't be used by modules.
 # It is used for things like "Connecting"
+# Parameters
 #   $1 The log message to log
 log_info_stdout() {
 	log_stdout "INFO:    $1"
@@ -82,6 +90,7 @@ log_info_stdout() {
 
 # Log an info message to a specific log file as well as
 # the main log file and STDOUT.
+# Parameters
 #   $1 The extra log file (relative to the current log dir)
 #   $2 The log message to log
 log_info_file() {
