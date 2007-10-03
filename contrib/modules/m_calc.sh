@@ -86,7 +86,7 @@ module_calc_on_PRIVMSG() {
 		else
 			echo "$parameters"$'\nquit' > "$module_calc_tmpfile"
 			# Force some security guards
-			local myresult="$(ulimit -Sm 1024; ulimit -t 5; bc -lq "$module_calc_tmpfile" 2>&1 | head -n 1)"
+			local myresult="$(ulimit -t 5; bc -lq "$module_calc_tmpfile" 2>&1 | head -n 1)"
 			send_msg "$channel" "$(parse_hostmask_nick "$sender"): $myresult"
 			module_calc_empty_tmpfile
 		fi
