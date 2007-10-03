@@ -36,7 +36,7 @@ module_autojoin_REHASH() {
 module_autojoin_join_from_config() {
 	local channel
 	for channel in "${config_module_autojoin_channels[@]}"; do
-		# No quotes here because then second arugment can be a key
+		# No quotes here because then second argument can be a key
 		channels_join $channel
 		sleep 2
 	done

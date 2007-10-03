@@ -38,7 +38,6 @@ module_dumpvars_REHASH() {
 # $2 = to who (channel or botnick)
 # $3 = the message
 module_dumpvars_on_PRIVMSG() {
-	# Accept both in /msg and channel
 	local sender="$1"
 	local query="$3"
 	# We don't care about parameters.

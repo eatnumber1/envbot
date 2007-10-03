@@ -25,7 +25,7 @@
 # This module therefore depends on:
 #   Gentoo
 #   eix.
-# You need to specify flood limiting jn config.
+# You need to specify flood limiting in config.
 # (how often in seconds)
 #config_module_eix_rate='5'
 

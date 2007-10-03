@@ -18,7 +18,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Simple seen module using sqlite3
+# Simple seen module using SQLite3
 
 module_seen_INIT() {
 	echo 'after_load on_PRIVMSG'
@@ -36,12 +36,11 @@ module_seen_REHASH() {
 
 
 # Called after module has loaded.
-# Loads FAQ items
 module_seen_after_load() {
 	modules_depends_register "seen" "sqlite3" || {
 		# This error reporting is hackish, will fix later.
 		if ! list_contains "modules_loaded" "sqlite3"; then
-			log_error "The factoids module depends upon the SQLite3 module being loaded."
+			log_error "The seen module depends upon the SQLite3 module being loaded."
 		fi
 		return 1
 	}

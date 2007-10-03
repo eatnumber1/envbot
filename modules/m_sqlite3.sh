@@ -41,7 +41,6 @@ module_sqlite3_REHASH() {
 }
 
 # Called after module has loaded.
-# Loads FAQ items
 module_sqlite3_after_load() {
 	# Check (silently) for sqlite3
 	type -p sqlite3 &> /dev/null
@@ -63,7 +62,7 @@ module_sqlite3_after_load() {
 # Make string safe for SQL.
 # Parameters:
 #   $1 String to clean
-# Yes we just discard double quotes atm.
+# FIXME: We just discard double quotes at the moment.
 module_sqlite3_clean_string() {
 	# \055 = -, yes hackish workaround.
 	tr -Cd 'A-Za-z0-9\055 ,;.:_<>*|~^!"#%&/()=?+\@${}[]+ÅÄÖåäö'\' <<< "$1" | sed 's/\\/\\\\/g'";s/'/''/g"

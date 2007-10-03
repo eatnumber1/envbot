@@ -18,7 +18,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Identify to nickserv
+# Identify to NickServ
 
 module_services_INIT() {
 	echo 'on_connect after_load'
@@ -51,7 +51,7 @@ module_services_on_connect() {
 				module_services_ghost=1
 				;;
 			"$numeric_RPL_ENDOFMOTD")
-				if [[ $config_module_services_style == atheme ]]; then
+				if [[ $config_module_services_style == 'atheme' ]]; then
 					send_raw_flood_nolog "NickServ IDENTIFY (password)" "${module_services_nickserv_command}IDENTIFY $config_firstnick $config_module_services_nickserv_passwd"
 				fi
 				if [[ $module_services_ghost == 1 ]]; then
@@ -63,7 +63,7 @@ module_services_on_connect() {
 					send_nick "$config_firstnick"
 				fi
 				log_info_stdout "Identifying..."
-				if [[ $config_module_services_style != atheme ]]; then
+				if [[ $config_module_services_style != 'atheme' ]]; then
 					send_raw_flood_nolog "NickServ IDENTIFY (password)" "${module_services_nickserv_command}IDENTIFY $config_module_services_nickserv_passwd"
 				fi
 				sleep 1

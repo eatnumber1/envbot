@@ -18,7 +18,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Simple factoids module using sqlite3
+# Simple factoids module using SQLite3
 
 module_factoids_INIT() {
 	echo 'after_load on_PRIVMSG'
@@ -49,11 +49,11 @@ module_factoids_after_load() {
 		return 1
 	}
 	if [[ -z $config_module_factoids_table ]]; then
-		log_error "ERROR: Factiods table (config_module_factoids_table) must be set in config."
+		log_error "Factiods table (config_module_factoids_table) must be set in config."
 		return 1
 	fi
 	if ! module_sqlite3_table_exists "$config_module_factoids_table"; then
-		log_error "ERROR: $config_module_factoids_table does not exist in the database file."
+		log_error "$config_module_factoids_table does not exist in the database file."
 		log_error "See comment in doc/factoids.sql for how to create the table."
 	fi
 }
@@ -150,7 +150,7 @@ module_factoids_set() {
 			module_factoids_set_INSERT_or_UPDATE "$key" "$value" "$sender"
 			send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), I will remember, $key is $value"
 		else
-			access_fail "$sender" "change a locked faq item" "factoid_admin"
+			access_fail "$sender" "change a locked factoid" "factoid_admin"
 		fi
 	else
 		module_factoids_set_INSERT_or_UPDATE "$key" "$value" "$sender"
@@ -168,7 +168,7 @@ module_factoids_remove() {
 			module_factoids_DELETE "$1"
 			send_msg "$channel" "I forgot $key"
 		else
-			access_fail "$sender" "remove a locked faq item" "factoid_admin"
+			access_fail "$sender" "remove a locked factoid" "factoid_admin"
 		fi
 	else
 		module_factoids_DELETE "$1"
