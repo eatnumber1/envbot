@@ -93,7 +93,8 @@ install: all
 	$(INSTALL) -m 644 modules/*.sh            $(DESTDIR)$(ENVBOT_MODULESDIR)
 	$(INSTALL) -m 644 transport/*.sh          $(DESTDIR)$(ENVBOT_TRANSPORTDIR)
 	$(INSTALL) -m 644 README AUTHORS GPL3.txt $(DESTDIR)$(ENVBOT_DOCDIR)
-	$(INSTALL) -m 644 doc/*.{sql,txt}         $(DESTDIR)$(ENVBOT_DOCDIR)
+	$(INSTALL) -m 644 doc/*.sql               $(DESTDIR)$(ENVBOT_DOCDIR)
+	$(INSTALL) -m 644 doc/*.txt               $(DESTDIR)$(ENVBOT_DOCDIR)
 	$(INSTALL) -m 644 doc/envbot.1            $(DESTDIR)$(MANDIR)/man1
 	$(INSTALL) -m 644 data/{faq.txt.example,quotes.txt.example.pqf} $(DESTDIR)$(ENVBOT_DATADIR)
 	$(SED) "s|^library_dir=.*|library_dir='$(ENVBOT_LIBRARYDIR)'|;s|^config_file=.*|config_file='$(ENVBOT_CONFDIR)/bot_settings.sh'|" envbot > envbot.tmp
