@@ -24,7 +24,7 @@ module_rehash_INIT() {
 	echo 'on_PRIVMSG'
 }
 
-module_load_UNLOAD() {
+module_rehash_UNLOAD() {
 	unset module_rehash_dorehash
 }
 
