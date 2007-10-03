@@ -26,7 +26,8 @@ module_factoids_INIT() {
 
 module_factoids_UNLOAD() {
 	# Ok this is a LOT. I hope I got all...
-	unset module_factoids_set module_factoids_remove
+	unset module_factoids_set module_factoids_remove module_factoids_parse_assignment
+	unset module_factoids_parse_key module_factoids_parse_value
 	unset module_factoids_set_INSERT_or_UPDATE module_factoids_send_factoid
 	unset module_factoids_get_count module_factoids_get_locked_count
 	unset module_factoids_is_locked module_factoids_lock module_factoids_unlock
@@ -204,6 +205,36 @@ module_factoids_send_factoid() {
 	fi
 }
 
+
+# Parse assignment:
+#   $1 String to parse
+# Will return using
+# $module_factoids_parse_key
+# $module_factoids_parse_value
+module_factoids_parse_assignment() {
+	local word key value
+	# Have we hit a separator yet?
+	local state=0
+	while read -rd ' ' word; do
+		case "$state" in
+			0)
+				# If state is 1 the rest is value
+				if [[ "$word" =~ ^(as|is|are|=)$ ]]; then
+					state=1
+				else
+					key="$key $word"
+				fi
+				;;
+			1)
+				value="$value $word"
+				;;
+		esac
+	# Extra space at end is intended, to make read work correctly
+	done <<< "$1 "
+	module_factoids_parse_key="$(misc_clean_spaces "$key")"
+	module_factoids_parse_value="$(misc_clean_spaces "$value")"
+}
+
 # Called on a PRIVMSG
 #
 # $1 = from who (n!u@h)
@@ -219,9 +250,12 @@ module_factoids_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "learn")"; then
-		if [[ "$parameters" =~ ^(.+)\ (as|is|are|=)\ (.*) ]]; then
-			local key="${BASH_REMATCH[1]}"
-			local value="${BASH_REMATCH[3]}"
+		if [[ "$parameters" =~ ^(.+)\ (as|is|are|=)\ (.+) ]]; then
+			# Do the actual parsing elsewhere:
+			module_factoids_parse_assignment "$parameters"
+			local key="$module_factoids_parse_key"
+			local value="$module_factoids_parse_value"
+			# unset module_factoids_parse_key module_factoids_parse_value
 			module_factoids_set "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$value" "$sender" "$channel"
 		else
 			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "learn" "key (as|is|are|=) value"
