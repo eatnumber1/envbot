@@ -6,6 +6,17 @@ done using bzr (does not work in tarballs, you need development checkout for thi
 Example (list changes compared to 0.0.1-beta1)
   bzr log -rtag:0.0.1-beta1.. --short
 
+0.0.1-beta3
+-----------
+407:       Make error messages in transports more verbose.
+402-406:   Make m_calc.sh check it's arguments on IRC better to make it secure.
+401:       Fix bug that made modules_load break if a dependency failed to load.
+398:       Made main envbot a wrapper script that sanitize the environment and then executes main bot.
+395:       Some more functions are now internal in lib/log.sh, modules should use the log level versions.
+393:       m_autojoin was slowing down rehash more than needed, fixed that.
+392:       Fixed: Could not unload rehash, module_rehash_UNLOAD returned 127!
+391:       Fix bug that caused FINALISE hooks to never run
+383:       Add bash version check (it turned out bash-3.1 and older was not supported).
 
 0.0.1-beta2
 -----------
