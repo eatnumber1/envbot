@@ -95,7 +95,7 @@ log_fatal_file()
 	Log a fatal error to a specific log file as well as
 	the main log file and STDOUT.
 	Parameters
-		$1 The extra log file (relative to the current log dir)
+		$1 The extra log file (relative to the current log directory)
 		$2 The log message to log
 
 log_error()
@@ -107,7 +107,7 @@ log_error_file()
 	Log an error to a specific log file as well as
 	the main log file and STDOUT.
 	Parameters
-		$1 The extra log file (relative to the current log dir)
+		$1 The extra log file (relative to the current log directory)
 		$2 The log message to log
 
 log_warning()
@@ -119,7 +119,7 @@ log_warning_file()
 	Log a warning to a specific log file as well as
 	the main log file and STDOUT.
 	Parameters
-		$1 The extra log file (relative to the current log dir)
+		$1 The extra log file (relative to the current log directory)
 		$2 The log message to log
 
 log_info()
@@ -134,36 +134,20 @@ log_info_stdout()
 	Parameters
 		$1 The log message to log
 
+log_info_stdout_file()
+	Log an info message to a specific log file as well as
+	the main log file and STDOUT.
+	Normally this shouldn't be used by modules.
+	It is used for things like "Connecting"
+	Parameters
+		$1 The log message to log
+
 log_info_file()
 	Log an info message to a specific log file as well as
 	the main log file and STDOUT.
 	Parameters
-		$1 The extra log file (relative to the current log dir)
+		$1 The extra log file (relative to the current log directory)
 		$2 The log message to log
-
-
-log()
-	Log to main log file.
-	Parameters
-		$* The log message to log
-
-log_file()
-	Log to to a specific log file as well as main log.
-	Parameters
-		$1 The extra log file (relative to the current log dir)
-		$2 The log message to log
-
-log_stdout()
-	Always print log message to STDOUT as well
-	Parameters
-		$* The log message to log
-
-log_stdout_file()
-	Log to to a specific log file as well as main log and STDOUT.
-	Parameters
-		$1 The extra log file (relative to the current log dir)
-		$2 The log message to log
-
 
 misc.sh
 -------

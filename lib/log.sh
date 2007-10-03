@@ -90,6 +90,16 @@ log_info_stdout() {
 
 # Log an info message to a specific log file as well as
 # the main log file and STDOUT.
+# Normally this shouldn't be used by modules.
+# It is used for things like "Connecting"
+# Parameters
+#   $1 The extra log file (relative to the current log dir)
+#   $1 The log message to log
+log_info_stdout_file() {
+	log_stdout_file "$1" "INFO:    $2"
+}
+
+# Log an info message to a specific log file as well as STDOUT.
 # Parameters
 #   $1 The extra log file (relative to the current log dir)
 #   $2 The log message to log
@@ -97,7 +107,10 @@ log_info_file() {
 	log_file "$1" "INFO:    $2"
 }
 
-
+###########################################################################
+# Internal functions to core or this file below this line!                #
+# Module authors: go away                                                 #
+###########################################################################
 
 # Log to main log file.
 # Parameters
@@ -128,11 +141,6 @@ log_stdout() {
 log_stdout_file() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $2" "1" "$1"
 }
-
-###########################################################################
-# Internal functions to core or this file below this line!                #
-# Module authors: go away                                                 #
-###########################################################################
 
 # Used internally in core
 log_raw_in() {
