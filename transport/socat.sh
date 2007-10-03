@@ -29,8 +29,14 @@ transport_check_support=''
 #   0 Yes
 #   1 No
 transport_check_support() {
-	type -p socat >/dev/null || return 1
-	type -p mkfifo >/dev/null || return 1
+	type -p socat >/dev/null || {
+		echo "ERROR: Can't find socat (needed for this transport)"
+		return 1
+	}
+	type -p mkfifo >/dev/null || {
+		echo "ERROR: Can't find mkfifo (needed for this transport)"
+		return 1
+	}
 	# Build transport_supports
 	local features="$(socat -V | grep -E 'socat version|define')"
 	# These seems to always be supported?

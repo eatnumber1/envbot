@@ -36,8 +36,14 @@ transport_supports="ipv4 nossl bind"
 #   0 yes
 #   1 no
 transport_check_support() {
-	[[ -x "$config_transport_netcat_path" ]] || return 1
-	type -p mkfifo >/dev/null || return 1
+	[[ -x "$config_transport_netcat_path" ]] ||  {
+		echo "ERROR: Can't find netcat (needed for this transport)"
+		return 1
+	}
+	type -p mkfifo >/dev/null ||  {
+		echo "ERROR: Can't find mkfifo (needed for this transport)"
+		return 1
+	}
 	return 0
 }
 
