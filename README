@@ -57,12 +57,12 @@ Transports:
 		Supports binding to a specific IP.
 Modules:
 	sqlite3
-		You need the program SQLite3. (http://www.sqlite.org/)
+		You need the program sqlite3. (http://www.sqlite.org/)
 	factoids
-		This depends on the SQLite3 module and therefore have the
+		This depends on the sqlite3 module and therefore have the
 		same dependencies as it
 	seen
-		This depends on the SQLite3 module and therefore have the
+		This depends on the sqlite3 module and therefore have the
 		same dependencies as it
 
 
