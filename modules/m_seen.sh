@@ -53,7 +53,7 @@ module_seen_after_load() {
 		return 1
 	fi
 	if ! module_sqlite3_table_exists "$config_module_seen_table"; then
-		log_error "ERROR: $config_module_seen_table does not exist in the database file."
+		log_error "$config_module_seen_table does not exist in the database file."
 		log_error "See comment in doc/seen.sql for how to create the table."
 	fi
 }

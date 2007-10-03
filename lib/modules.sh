@@ -180,7 +180,7 @@ modules_add_hooks() {
 				modules_on_raw="$modules_on_raw $module"
 				;;
 			*)
-				log_error_file modules.log "ERROR: Unknown hook $hook requested. Module may malfunction. Module will be unloaded"
+				log_error_file modules.log "Unknown hook $hook requested. Module may malfunction. Module will be unloaded"
 				return 1
 				;;
 		esac
