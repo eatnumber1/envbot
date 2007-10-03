@@ -77,10 +77,16 @@ module_calc_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "calc")"; then
-		echo "$parameters"$'\nquit' > "$module_calc_tmpfile"
-		local myresult="$(bc -q "$module_calc_tmpfile")"
-		send_msg "$channel" "$(parse_hostmask_nick "$sender"): $myresult"
-		module_calc_empty_tmpfile
+		# Sanity check on parameters
+		parameters="$(tr -d '\n\r\t' <<< "$parameters")"
+		if grep -Eq "read|while|for|break|continue|print|return|define|[e|j] *\(" <<< "$parameters"; then
+			send_msg "$channel" "Can't calculate that, it contains a potential unsafe/very slow function."
+		else
+			echo "$parameters"$'\nquit' > "$module_calc_tmpfile"
+			local myresult="$(bc -lq "$module_calc_tmpfile" | head -n 1)"
+			send_msg "$channel" "$(parse_hostmask_nick "$sender"): $myresult"
+			module_calc_empty_tmpfile
+		fi
 		return 1
 	fi
 	return 0

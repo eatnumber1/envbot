@@ -47,7 +47,7 @@ module_services_on_connect() {
 	if [[ $(cut -d' ' -f2 <<< "$line") =~ ([0-9]{3}) ]]; then
 		local numeric="${BASH_REMATCH[1]}"
 		# Check if this is a numeric we will handle.
-		case $numeric in
+		case "$numeric" in
 			"$numeric_ERR_NICKNAMEINUSE"|"$numeric_ERR_ERRONEUSNICKNAME")
 				module_services_ghost=1
 				;;

@@ -81,7 +81,7 @@ module_faq_on_PRIVMSG() {
 	if parameters="$(parse_query_is_command "$query" "faq")"; then
 		if [[ "$parameters" =~ ^(.*) ]]; then
 			query="${BASH_REMATCH[1]}"
-			if [[ "$query" =~ reload ]]; then
+			if [[ "$query" == "reload" ]]; then
 				if access_check_capab "faq_admin" "$sender" "GLOBAL"; then
 					send_msg "$channel" "Reloading FAQ items..."
 					module_faq_load

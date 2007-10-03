@@ -39,7 +39,6 @@ module_die_REHASH() {
 # $2 = to who (channel or botnick)
 # $3 = the message
 module_die_on_PRIVMSG() {
-	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local query="$3"
 	local parameters
