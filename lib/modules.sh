@@ -105,7 +105,7 @@ modules_depends_unregister() {
 modules_depends_can_unload() {
 	# This is needed to be able to use indirect refs
 	local deplistname="modules_depends_${1}"
-	# Not emtpy/only whitespaces?
+	# Not empty/only whitespaces?
 	if ! [[ ${!deplistname} =~ ^\ *$ ]]; then
 		return 1
 	fi
@@ -242,7 +242,7 @@ modules_unload() {
 # Parameters
 #   $1 Name of module to load
 # Returns status
-#   0 Loaded ok
+#   0 Loaded Ok
 #   1 Other errors
 #   2 Module already loaded
 #   3 Failed to source it

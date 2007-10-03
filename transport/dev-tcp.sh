@@ -40,13 +40,13 @@ transport_check_support() {
 
 # Try to connect
 # Parameters
-#   $1 hostname/ip
+#   $1 hostname/IP
 #   $2 port
 #   $3 If 1 use SSL. If the module does not support it, just ignore it.
 #   $4 IP to bind to if any and if supported
 #      If the module does not support it, just ignore it.
 # Return status
-#   0 if ok
+#   0 if Ok
 #   1 if connection failed
 transport_connect() {
 	exec 3<&-
@@ -61,7 +61,7 @@ transport_disconnect() {
 
 # Return a line in the variable line.
 # Return status
-#   0 If ok
+#   0 If Ok
 #   1 If connection failed
 transport_read_line() {
 	read -ru 3 -t 600 line

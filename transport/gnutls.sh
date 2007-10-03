@@ -29,9 +29,6 @@ transport_supports="ipv4 ipv6 ssl"
 #   0 yes
 #   1 no
 transport_check_support() {
-	# If anyone can tell me how to check if /dev/tcp is supported
-	# without trying to make a connection (that could fail for so
-	# many other reasons), please contact me.
 	type -p gnutls-cli >/dev/null || return 1
 	type -p mkfifo >/dev/null || return 1
 	return 0
@@ -39,13 +36,13 @@ transport_check_support() {
 
 # Try to connect
 # Parameters
-#   $1 hostname/ip
+#   $1 hostname/IP
 #   $2 port
 #   $3 If 1 use SSL. If the module does not support it, just ignore it.
 #   $4 IP to bind to if any and if supported
 #      If the module does not support it, just ignore it.
 # Return status
-#   0 if ok
+#   0 if Ok
 #   1 if connection failed
 transport_connect() {
 	transport_tmp_dir_file="$(mktemp -dt envbot.gnutls.XXXXXXXXXX)" || return 1
@@ -76,7 +73,7 @@ transport_disconnect() {
 
 # Return a line in the variable line.
 # Return status
-#   0 If ok
+#   0 If Ok
 #   1 If connection failed
 transport_read_line() {
 	read -ru 4 -t 600 line

@@ -22,7 +22,7 @@
 
 # Simple flood limiting.
 # Note that this doesn't handle this very well:
-# seconds:miliseconds message
+# seconds:milliseconds message
 # 01:999 message
 # 02:001 other message
 # Then they get too close.

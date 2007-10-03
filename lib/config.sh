@@ -21,7 +21,7 @@
 
 # Rehash config file.
 # Return status
-#   0 Sucess
+#   0 Success
 #   2 Not same config version
 #   3 Failed to source. The bot should not be in an undefined state
 #   4 Failed to source. The bot may be in an undefined state
@@ -31,7 +31,7 @@ config_rehash() {
 		log_error "REHASH: Not same config version"
 		return 2
 	fi
-	# Try sourcing in a subshell first to catch errors
+	# Try sourceing in a subshell first to catch errors
 	# without causing bot to break
 	( source "$config_file" )
 	if [[ $? -ne 0 ]]; then
