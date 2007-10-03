@@ -18,14 +18,17 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-config_file="bot_settings.sh"
-# Where to load libraries from
-library_dir="lib"
+
+###################
+#                 #
+#  Sanity checks  #
+#                 #
+###################
 
 # Check bash version. We need at least 3.2.x
 # Lets not use anything like =~ here because
 # that may not work on old bash versions.
-if [[ "$(awk -F. '{print $1$2}' <<< $BASH_VERSION)" -lt 32 ]]; then
+if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 32 ]]; then
 	echo "Sorry your bash version is too old!"
 	echo "You need at least version 3.2 of bash"
 	echo "Please install a newer version:"
@@ -34,9 +37,32 @@ if [[ "$(awk -F. '{print $1$2}' <<< $BASH_VERSION)" -lt 32 ]]; then
 	exit 1
 fi
 
-# Version
+# We should not run as root.
+if [[ $EUID -eq 0 ]]; then
+	echo "ERROR: Don't run envbot as root. Please run it under a normal user. Really."
+	exit 2
+fi
+
+######################
+#                    #
+#  Set up variables  #
+#                    #
+######################
+
+# Default config file
+config_file="bot_settings.sh"
+# Default place to load libraries from
+library_dir="lib"
+
+# Version and url
 declare -r envbot_version='0.0.1-beta2'
 declare -r envbot_homepage='http://envbot.org'
+
+##############
+#            #
+#  Sane env  #
+#            #
+##############
 
 # Set some variables to make bot work sane
 # For example tr + some LC_COLLATE = breaks in some cases.
@@ -45,29 +71,32 @@ unset LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS
 unset LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
 export LC_ALL=C
 export LANG=C
-# If you need something else, override in config...
+
+# If you need some other PATH, override in top of config...
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 # To make set -x more usable
 export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
 
-if [[ $EUID -eq 0 ]]; then
-	echo "ERROR: Don't run envbot as root. Please run it under a normal user. Really."
-	exit 2
-fi
-
 # This is needed when we run the bot with env -i as recommended.
 declare -r tmp_home="$(mktemp -dt envbot.home.XXXXXXXXXX)"
-# I don't want to end up with rm -rf $HOME...
-# Temp one until the next "stage" of trap gets loaded (at connect)
+# I don't want to end up with rm -rf $HOME in case it is something
+# else at that point, so lets use another variable.
+
+# Temp trap on ctrl-c until the next "stage" of trap gets loaded (at connect)
 trap 'rm -rvf "$tmp_home"; exit 1' TERM INT
+
 export HOME="$tmp_home"
-# Now create a temp function to quit in a way that cleans up temp stuff until we
-# are up enough to use the normal function bot_quit.
+
+# Now create a temp function to quit on problems in a way that cleans up
+# temp stuff until we have loaded enough to use the normal function bot_quit.
 envbot_quit() {
 	rm -rf "$tmp_home"
 	exit "$1"
 }
 
+# Will be set to 1 if -v or --verbose is passed
+# on command line.
 force_verbose=0
 
 # Store command line for later use
@@ -108,7 +137,8 @@ print_version() {
 	envbot_quit 0
 }
 
-if [ $# -gt 0 ]; then # there are arguments to the command
+# Parse any command line arguments.
+if [ $# -gt 0 ]; then
 	while [ $# -gt 0 ]; do
 		case "$1" in
 			'--help'|'-help'|'--usage'|'-usage'|'-h')
