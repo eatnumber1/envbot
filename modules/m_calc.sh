@@ -79,11 +79,13 @@ module_calc_on_PRIVMSG() {
 	if parameters="$(parse_query_is_command "$query" "calc")"; then
 		# Sanity check on parameters
 		parameters="$(tr -d '\n\r\t' <<< "$parameters")"
-		if grep -Eq "read|while|for|break|continue|print|return|define|[e|j] *\(" <<< "$parameters"; then
+		if grep -Eq "scale=|read|while|if|for|break|continue|print|return|define|[e|j] *\(" <<< "$parameters"; then
 			send_msg "$channel" "Can't calculate that, it contains a potential unsafe/very slow function."
+		elif [[ $parameters =~ \^[0-9]{4,} ]]; then
+			send_msg "$channel" "$(parse_hostmask_nick "$sender"): Some too large numbers."
 		else
 			echo "$parameters"$'\nquit' > "$module_calc_tmpfile"
-			local myresult="$(bc -lq "$module_calc_tmpfile" | head -n 1)"
+			local myresult="$(ulimit -Sm 1024; bc -lq "$module_calc_tmpfile" 2>&1 | head -n 1)"
 			send_msg "$channel" "$(parse_hostmask_nick "$sender"): $myresult"
 			module_calc_empty_tmpfile
 		fi
