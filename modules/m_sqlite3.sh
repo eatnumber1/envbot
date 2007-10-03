@@ -49,12 +49,12 @@ module_sqlite3_after_load() {
 		return 1
 	fi
 	if [[ -z $config_module_sqlite3_database ]]; then
-		log_error "You must set config_module_sqlite3_database in your config to use the SQLite3 module."
+		log_error "You must set config_module_sqlite3_database in your config to use the sqlite3 module."
 		return 1
 	fi
 	if ! [[ -r $config_module_sqlite3_database ]]; then
-		log_error "Database file doesn't exist or can't be read!"
-		log_error "See comment in doc/seen.sql for how to create one."
+		log_error "sqlite3 module: Database file doesn't exist or can't be read!"
+		log_error "sqlite3 module: To create one follow the comments in one (or several) of the sql files in the doc directory."
 		return 1
 	fi
 }

@@ -38,7 +38,7 @@ module_quote_load() {
 	local i=0 line
 	unset module_quote_quotes
 	if [[ -z "$config_module_quotes_file" ]]; then
-		log_error "You need to set config_module_quotes_file in your config!"
+		log_error "quotes module: You need to set config_module_quotes_file in your config!"
 		return 1
 	elif [[ -r "$config_module_quotes_file" ]]; then
 		while read -rd $'\n' line ; do
@@ -51,7 +51,7 @@ module_quote_load() {
 		log_info 'Loaded Quotes.'
 		return 0
 	else
-		log_error "Quotes failed to load: Cannot load \"$config_module_quotes_file\". File doesn't exist."
+		log_error "quotes module: Quotes failed to load: Cannot load \"$config_module_quotes_file\". File doesn't exist."
 		return 1
 	fi
 }
@@ -70,7 +70,6 @@ module_quote_after_load() {
 # $2 = to who (channel or botnick)
 # $3 = the message
 module_quote_on_PRIVMSG() {
-	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
 	# If it isn't in a channel send message back to person who send it,
@@ -81,7 +80,7 @@ module_quote_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "quote")"; then
-		local number=$RANDOM
+		local number="$RANDOM"
 		local myval="${#module_quote_quotes[*]}"
 		(( number %= $myval ))
 		send_msg "$channel" "${module_quote_quotes[$number]}"

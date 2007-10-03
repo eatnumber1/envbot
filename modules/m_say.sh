@@ -38,23 +38,23 @@ module_say_REHASH() {
 # $2 = to who (channel or botnick)
 # $3 = the message
 module_say_on_PRIVMSG() {
-	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "say")"; then
 		if [[ "$parameters" =~ ^([^ ]+)\ (.*) ]]; then
-			local channel="${BASH_REMATCH[1]}"
+			local target="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
 			local scope
-			if [[ $channel =~ ^# ]]; then
-				scope="$channel"
+			# Is it a channel?
+			if [[ $target =~ ^# ]]; then
+				scope="$target"
 			else
 				scope="MSG"
 			fi
 			if access_check_capab "say" "$sender" "$scope"; then
-				access_log_action "$sender" "made the bot say \"$message\" in/to \"$channel\""
-				send_msg "$channel" "$message"
+				access_log_action "$sender" "made the bot say \"$message\" in/to \"$target\""
+				send_msg "$target" "$message"
 			else
 				access_fail "$sender" "make the bot talk with say" "say"
 			fi
@@ -64,17 +64,18 @@ module_say_on_PRIVMSG() {
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "act")"; then
 		if [[ "$parameters" =~ ^([^ ]+)\ (.*) ]]; then
-			local channel="${BASH_REMATCH[1]}"
+			local target="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
 			local scope
-			if [[ $channel =~ ^# ]]; then
-				scope="$channel"
+			# Is it a channel?
+			if [[ $target =~ ^# ]]; then
+				scope="$target"
 			else
 				scope="MSG"
 			fi
 			if access_check_capab "say" "$sender" "$scope"; then
-				access_log_action "$sender" "made the bot act \"$message\" in/to \"$channel\""
-				send_ctcp "${channel}" "ACTION ${message}"
+				access_log_action "$sender" "made the bot act \"$message\" in/to \"$target\""
+				send_ctcp "$target" "ACTION ${message}"
 			else
 				access_fail "$sender" "make the bot act" "say"
 			fi

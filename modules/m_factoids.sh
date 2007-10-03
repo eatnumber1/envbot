@@ -53,8 +53,8 @@ module_factoids_after_load() {
 		return 1
 	fi
 	if ! module_sqlite3_table_exists "$config_module_factoids_table"; then
-		log_error "$config_module_factoids_table does not exist in the database file."
-		log_error "See comment in doc/factoids.sql for how to create the table."
+		log_error "factoids module: $config_module_factoids_table does not exist in the database file."
+		log_error "factoids module: See comment in doc/factoids.sql for how to create the table."
 	fi
 }
 

@@ -39,7 +39,6 @@ module_sendraw_REHASH() {
 # $2 = to who (channel or botnick)
 # $3 = the message
 module_sendraw_on_PRIVMSG() {
-	# Accept anywhere
 	local sender="$1"
 	local query="$3"
 	local parameters

@@ -36,7 +36,7 @@ module_autojoin_REHASH() {
 module_autojoin_join_from_config() {
 	local channel
 	for channel in "${config_module_autojoin_channels[@]}"; do
-		# No quotes on channel because second word of it may be a key
+		# No quotes around channel because second word of it may be a key
 		# and list_contains just uses the first 2 arguments so a
 		# third one will be ignored.
 		if ! list_contains "channels_current" $channel; then

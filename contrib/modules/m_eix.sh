@@ -51,6 +51,7 @@ module_eix_after_load() {
 		log_error "Couldn't find eix command line tool. The eix module depend on that tool."
 		return 1
 	fi
+	# Flood limiting.
 	unset module_eix_last_query
 	module_eix_last_query='0'
 }

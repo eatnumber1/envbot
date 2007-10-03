@@ -37,7 +37,10 @@ module_faq_REHASH() {
 module_faq_load() {
 	local i=0
 	unset module_faq_array
-	if [[ -r ${config_module_faq_file} ]]; then
+	if [[ -z "$config_module_faq_file" ]]; then
+		log_error "faq module: You need to set config_module_faq_file in your config!"
+		return 1
+	elif [[ -r "$config_module_faq_file" ]]; then
 		while read -d $'\n' line ;do
 			# Skip empty lines
 			if [[ "$line" ]]; then
@@ -48,13 +51,12 @@ module_faq_load() {
 		log_info 'Loaded FAQ items'
 		return 0
 	else
-		log_error "FAQ: Cannot load '${config_module_faq_file}'. File doesn't exist or can't be read."
+		log_error "faq module: Cannot load '${config_module_faq_file}'. File doesn't exist or can't be read."
 		return 1
 	fi
 }
 
 # Called after module has loaded.
-# Loads FAQ items
 module_faq_after_load() {
 	unset module_faq_last_query
 	module_faq_last_query='null'
@@ -99,13 +101,14 @@ module_faq_on_PRIVMSG() {
 					else
 						send_msg "$channel" "That FAQ item doesn't exist"
 					fi
+				# Check length of search to be at least 3 chars
 				elif [[ "${#query}" -ge 3 ]] ; then
 					local i=0
 					while [[ $i -lt "${#module_faq_array[*]}" ]] ; do
 						i=$((i+1))
-						# FIXME: This seems very odd, what does it do?
+						# FIXME: This code is hard to read.
 						# This module needs rewriting...
-						if echo ${module_faq_array[$i]} | /bin/grep -i -F -m 1 "$query" ; then
+						if grep -i -F -m 1 "$query" <<< "${module_faq_array[$i]}" ; then
 							send_msg "$channel" "${module_faq_array[$i]}"
 							break 1
 						fi
