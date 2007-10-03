@@ -70,6 +70,13 @@ unset LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
 export LC_ALL=C
 export LANG=C
 
+# Some of these may be overkill, but better be on
+# safe side.
+set +amu
+shopt -u sourcepath hostcomplete progcomp xpg_echo dotglob
+shopt -u nocasematch nocaseglob nullglob
+shopt -s extquote promptvars
+
 # If you need some other PATH, override in top of config...
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 

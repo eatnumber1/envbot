@@ -251,7 +251,7 @@ modules_unload() {
 #   6 after_load failed
 # If the load fails in a fatal way the bot will quit.
 modules_load() {
-	module="$1"
+	local module="$1"
 	if list_contains "modules_loaded" "$module"; then
 		log_warning_file modules.log "Module ${module} is already loaded."
 		return 2
