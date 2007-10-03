@@ -71,7 +71,7 @@ bot_quit() {
 		module_${module}_after_disconnect
 	done
 	for module in $modules_FINALISE; do
-		${module}_FINALISE
+		module_${module}_FINALISE
 	done
 	log_info_stdout "Bot quit gracefully"
 	transport_disconnect
@@ -98,7 +98,7 @@ bot_restart() {
 		module_${module}_after_disconnect
 	done
 	for module in $modules_FINALISE; do
-		${module}_FINALISE
+		module_${module}_FINALISE
 	done
 	log_info_stdout "Bot quit gracefully"
 	transport_disconnect
