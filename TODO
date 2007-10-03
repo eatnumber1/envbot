@@ -1,9 +1,3 @@
 TODO list
-(no specifc order)
-
-* Nick tracking
-* Module (un)loading on rehash.
-* Periodic events
-* Some framework (as a module) for help.
-
-Please see bug tracker at website for an up-to-date list.
+---------
+TODO list has been moved to our issue tracker at http://envbot.org/trac/query
