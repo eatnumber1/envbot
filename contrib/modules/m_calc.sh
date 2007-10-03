@@ -85,7 +85,8 @@ module_calc_on_PRIVMSG() {
 			send_msg "$channel" "$(parse_hostmask_nick "$sender"): Some too large numbers."
 		else
 			echo "$parameters"$'\nquit' > "$module_calc_tmpfile"
-			local myresult="$(ulimit -Sm 1024; bc -lq "$module_calc_tmpfile" 2>&1 | head -n 1)"
+			# Force some security guards
+			local myresult="$(ulimit -Sm 1024; ulimit -t 5; bc -lq "$module_calc_tmpfile" 2>&1 | head -n 1)"
 			send_msg "$channel" "$(parse_hostmask_nick "$sender"): $myresult"
 			module_calc_empty_tmpfile
 		fi
