@@ -113,7 +113,7 @@ print_cmd_help() {
 	echo ''
 	echo 'Options:'
 	echo '  -c, --config file       Use file instead of the default as config file.'
-	echo '      --libdir directory  Use directory instead of the default as library directory.'
+	echo '  -l, --libdir directory  Use directory instead of the default as library directory.'
 	echo '  -v, --verbose           Force verbose output even if config_log_stdout is 0.'
 	echo '  -h, --help              Display this help and exit'
 	echo '  -V, --version           Output version information and exit'
@@ -149,7 +149,7 @@ if [ $# -gt 0 ]; then
 				config_file="$2"
 				shift 2
 				;;
-			'--libdir')
+			'--libdir'|'-l')
 				library_dir="$2"
 				shift 2
 				;;

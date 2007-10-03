@@ -26,6 +26,8 @@ config_file="bot_settings.sh"
 # Default place to load libraries from
 library_dir="lib"
 
+# Later arguments on the command line will override the defaults.
+
 # env -i:      Clean environment
 # bash --norc: Don't read profile/bashrc
-exec env -i bash --norc "${library_dir}/main.sh" -c "$config_file" --libdir "$library_dir" "$@"
+exec env -i bash --norc "${library_dir}/main.sh" "--config" "$config_file" --libdir "$library_dir" "$@"
