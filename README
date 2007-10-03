@@ -11,12 +11,13 @@ Features include:
  * Loading, unloading and reloading of modules at runtime
  * Rehashing configuration at runtime
  * Advanced access control
-See TODO for other planed features
+See http://envbot.org/trac/query?status=new&status=assigned&status=reopened&type=enchantment&order=priority for other planed features
 
 
 Installing
 ----------
 See the file INSTALL.
+
 
 License
 -------
@@ -50,23 +51,23 @@ Transports:
 		You need the program openssl. (http://www.openssl.org/)
 	socat:
 		You need the program socat. (http://www.dest-unreach.org/socat/)
-		Note that while socat support ipv4, ipv6, SSL and non-SSL it doesn't
-		support both SSL and ipv6 at the same time if the version of socat
+		Note that while socat support IPv4, IPv6, SSL and non-SSL it doesn't
+		support both SSL and IPv6 at the same time if the version of socat
 		is lower than 1.5.
 		Supports binding to a specific IP.
 Modules:
 	sqlite3
-		You need the program sqlite3. (http://www.sqlite.org/)
+		You need the program SQLite3. (http://www.sqlite.org/)
 	factoids
-		This depends on the sqlite3 module and therefore have the
+		This depends on the SQLite3 module and therefore have the
 		same dependencies as it
 	seen
-		This depends on the sqlite3 module and therefore have the
+		This depends on the SQLite3 module and therefore have the
 		same dependencies as it
 
 
-Contrib modules
----------------
+Contributed modules
+-------------------
 These are extra modules in contrib/modules. They are not really
 supported by the developers. Information about dependencies and
 extra configuration options is in each contrib module.
@@ -76,6 +77,16 @@ If you want to use a contrib module the recommended way is:
   ln -s ../contrib/modules/m_modulename.sh
 That way if the contrib module is updated you will get the new
 version automatically.
+
+
+Feedback
+--------
+We (the developers) would love to get feedback on what you like/dislike with
+envbot, what features you want, and what you use it for.
+
+Please also report any bugs you find at http://envbot.org/trac/simpleticket
+(no login needed, but please enter your email so we can contact you if we
+need more details about your problem).
 
 
 Contacting developers
