@@ -163,16 +163,24 @@ module_factoids_set() {
 # $2 = sender
 # $3 = channel
 module_factoids_remove() {
-	if module_factoids_is_locked "$1"; then
-		if access_check_capab "factoid_admin" "$2" "GLOBAL"; then
-			module_factoids_DELETE "$1"
-			send_msg "$channel" "I forgot $key"
+	local key="$1"
+	local sender="$2"
+	local channel="$3"
+	local value="$(module_factoids_SELECT "$(tr '[:upper:]' '[:lower:]' <<< "$key")")"
+	if [[ "$value" ]]; then
+		if module_factoids_is_locked "$key"; then
+			if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
+				module_factoids_DELETE "$key"
+				send_msg "$channel" "I forgot $key"
+			else
+				access_fail "$sender" "remove a locked factoid" "factoid_admin"
+			fi
 		else
-			access_fail "$sender" "remove a locked factoid" "factoid_admin"
+			module_factoids_DELETE "$key"
+			send_msg "$channel" "I forgot $key"
 		fi
 	else
-		module_factoids_DELETE "$1"
-		send_msg "$channel" "I forgot $key"
+		send_msg "$channel" "I didn't have a factoid matching \"$key\""
 	fi
 }
 
