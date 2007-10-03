@@ -18,12 +18,13 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+# This is a wrapper that runs envbot in a sane setup.
+# Using a wrapper is really the simplest way to do it.
+
 # Default config file
 config_file="bot_settings.sh"
 # Default place to load libraries from
 library_dir="lib"
-
-# This file runs envbot in a sane setup, this is the simplest way to do it:
 
 # env -i:      Clean environment
 # bash --norc: Don't read profile/bashrc
