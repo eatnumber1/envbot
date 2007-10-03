@@ -94,7 +94,7 @@ log_info_stdout() {
 #   $1 The extra log file (relative to the current log dir)
 #   $2 The log message to log
 log_info_file() {
-	log "$1" "INFO:    $2"
+	log_file "$1" "INFO:    $2"
 }
 
 

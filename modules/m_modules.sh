@@ -40,13 +40,13 @@ module_modules_doload() {
 	modules_load "$target_module"
 	local status_message status=$?
 	case $status in
-		0) status_message="Load successful" ;;
+		0) status_message="Load of \"$target_module\" successful" ;;
 		2) status_message="Module \"$target_module\" is already loaded" ;;
-		3) status_message="Failed to source it" ;;
+		3) status_message="Failed to source \"$target_module\"" ;;
 		4) status_message="Module \"$target_module\" could not be found" ;;
-		5) status_message="Getting hooks from module failed" ;;
-		6) status_message="after_load failed, see log for details" ;;
-		*) status_message="Unknown error (code $status)" ;;
+		5) status_message="Getting hooks from \"$target_module\" failed" ;;
+		6) status_message="after_load failed for \"$target_module\", see log for details" ;;
+		*) status_message="Unknown error (code $status) for \"$target_module\"" ;;
 	esac
 	send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
 	return $status
@@ -65,10 +65,10 @@ module_modules_dounload() {
 	modules_unload "$target_module"
 	local status_message status=$?
 	case $status in
-		0) status_message="Unload successful" ;;
+		0) status_message="Unload of \"$target_module\" successful" ;;
 		2) status_message="Module \"$target_module\" is not loaded" ;;
 		3) status_message="Module \"$target_module\" can't be unloaded, some these module(s) depend(s) on it: $(modules_depends_list_deps "$target_module")" ;;
-		*) status_message="Unknown error (code $status)" ;;
+		*) status_message="Unknown error (code $status) for \"$target_module\"" ;;
 	esac
 	send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
 	return $status

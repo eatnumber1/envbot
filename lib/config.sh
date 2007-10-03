@@ -44,6 +44,10 @@ config_rehash() {
 		log_error "REHASH: Failed real source."
 		return 4
 	fi
+	# Lets force command line -v, it may have been overwritten by config.
+	if [[ $force_verbose -eq 1 ]]; then
+		config_log_stdout='1'
+	fi
 	local status
 	modules_load_from_config
 	for module in $modules_loaded; do

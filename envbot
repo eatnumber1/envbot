@@ -164,6 +164,8 @@ if [ $config_version -ne $config_current_version ]; then
 	envbot_quit 1
 fi
 
+# Force verbose output if -v or --verbose was on
+# command line.
 if [[ $force_verbose -eq 1 ]]; then
 	config_log_stdout='1'
 fi
