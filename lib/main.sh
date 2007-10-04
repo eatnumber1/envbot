@@ -81,7 +81,7 @@ shopt -s extquote promptvars
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 # To make set -x more usable
-export PS4=$'(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
+export PS4='(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
 
 
 # This is needed when we run the bot with env -i as recommended.
@@ -299,22 +299,20 @@ while true; do
 					break
 				fi
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+PRIVMSG[\ ]+([^:]*)(.*) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+PRIVMSG[\ ]+([^:]+)[\ ]+:(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
-			query="${query#*:}"
 			for module in $modules_on_PRIVMSG; do
 				module_${module}_on_PRIVMSG "$sender" "$target" "$query"
 				if [[ $? -ne 0 ]]; then
 					break
 				fi
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NOTICE[\ ]+([^:]*)(.*) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NOTICE[\ ]+([^:]+)[\ ]+:(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
-			query="${query#*:}"
 			for module in $modules_on_NOTICE; do
 				module_${module}_on_PRIVMSG "$sender" "$target" "$query"
 				if [[ $? -ne 0 ]]; then

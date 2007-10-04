@@ -140,7 +140,7 @@ module_seen_find() {
 
 module_seen_on_PRIVMSG() {
 	local sender="$1"
-	local channel="$(misc_clean_spaces "$2")"
+	local channel="$2"
 	local query="$3"
 	# If in channel, store
 	if [[ $2 =~ ^# ]]; then

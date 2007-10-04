@@ -67,7 +67,7 @@ module_kick_ban_on_numeric() {
 module_kick_ban_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
-	local sendon_channel="$(misc_clean_spaces "$2")"
+	local sendon_channel="$2"
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "kick")"; then
