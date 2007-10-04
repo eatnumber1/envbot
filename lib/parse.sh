@@ -84,15 +84,3 @@ parse_query_is_command() {
 		return 1
 	fi
 }
-
-# Bad name of function, it gets the argument
-# after a ":", the last multiword argument
-# Parameters
-#   $1 Line to parse
-# Deprecated function! Don't use!
-# Returns on STDOUT
-#   Everything after first : in line.
-# FIXME: Can't handle a ":" in a word before the place to split
-parse_get_colon_arg() {
-	cut -d':' -f2- <<< "$1"
-}

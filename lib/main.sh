@@ -399,9 +399,8 @@ while true; do
 				for module in $modules_on_server_ERROR; do
 						module_${module}_on_server_ERROR "$error"
 				done
-			fi
 		else
-			log_info "Something we didn't match any hook: $line"
+			log_info_file unknown_data.log "Something we didn't match any hook: $line"
 		fi
 	done
 

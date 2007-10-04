@@ -105,9 +105,8 @@ server_handle_005() {
 }
 
 server_handle_ping() {
-	if [[ "$1" =~ ^PING.* ]] ;then
-		local pingdata="$(parse_get_colon_arg "$1")"
-		send_raw "PONG :$pingdata"
+	if [[ "$1" =~ ^PING[\ ]*:(.*) ]] ;then
+		send_raw "PONG :${BASH_REMATCH[1]}"
 	fi
 }
 

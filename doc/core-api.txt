@@ -320,15 +320,6 @@ parse_query_is_command()
 	Returns on STDOUT
 		If matches: The parameters (if any)
 
-parse_get_colon_arg()
-	Deprecated function! Don't use!
-	Bad name of function, it gets the argument
-	after a ":", the last multiword argument
-	Parameters
-		$1 Line to parse
-	Returns on STDOUT
-		Everything after first : in line.
-
 
 send.sh
 -------
