@@ -326,12 +326,19 @@ while true; do
 			for module in $modules_on_TOPIC; do
 				module_${module}_on_TOPIC "$sender" "$channel" "$topic"
 			done
-		elif [[ "$line" =~ ^:([^ ]*)[\ ]+MODE[\ ]+(#[^ ]+)[\ ]+(.*) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+MODE[\ ]+(#[^ ]+)[\ ]+(.+) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			modes="${BASH_REMATCH[3]}"
 			for module in $modules_on_channel_MODE ; do
 				module_${module}_on_channel_MODE "$sender" "$channel" "$modes"
+			done
+		elif [[ "$line" =~ ^:([^ ]*)[\ ]+MODE[\ ]+([^# ]+)[\ ]+(.+) ]]; then
+			sender="${BASH_REMATCH[1]}"
+			target="${BASH_REMATCH[2]}"
+			modes="${BASH_REMATCH[3]}"
+			for module in $modules_on_user_MODE ; do
+				module_${module}_on_user_MODE "$sender" "$target" "$modes"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+NICK[\ ]+(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
@@ -355,7 +362,7 @@ while true; do
 			reason="${BASH_REMATCH[4]}"
 			# Check if it was our own nick that joined
 			channels_handle_part "$sender" "$channel" "$reason"
-			for module in $modules_on_JOIN; do
+			for module in $modules_on_PART; do
 				module_${module}_on_PART "$sender" "$channel" "$reason"
 			done
 		elif [[ "$line" =~ ^:([^ ]*)[\ ]+KICK[\ ]+(#[^ ]+)[\ ]+([^ ]+)([\ ]+:(.*))? ]]; then
@@ -393,6 +400,8 @@ while true; do
 						module_${module}_on_server_ERROR "$error"
 				done
 			fi
+		else
+			log_info "Something we didn't match any hook: $line"
 		fi
 	done
 

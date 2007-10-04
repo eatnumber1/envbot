@@ -232,6 +232,17 @@ module_modulename_on_channel_MODE
 			get the mode change.
 
 
+module_modulename_on_user_MODE
+	Called when someone changes a user mode (most likely on ourself)
+	Parameters:
+		$1 = Who did it (n!u@h).
+		$2 = What target (nick).
+		$3 = The mode change with it's parameters.
+	Return status:
+		Not checked.
+			Reason: There is no point in checking this.
+
+
 module_modulename_on_numeric
 	Called on any numeric after connect.
 	Parameters:
