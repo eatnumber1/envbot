@@ -232,7 +232,7 @@ module_modulename_on_channel_MODE
 			get the mode change.
 
 
-module_modulename_on_user_MODE
+module_modulename_on_user_MODE (new in 0.0.1-beta4)
 	Called when someone changes a user mode (most likely on ourself)
 	Parameters:
 		$1 = Who did it (n!u@h).
