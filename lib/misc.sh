@@ -126,7 +126,8 @@ time_check_interval() {
 # Returns on STDOUT
 #   New string
 misc_clean_spaces() {
-	sed 's/^ \+//;s/ \+$//;s/ \{2,\}/ /g' <<< "$1"
+	# Fastest way :)
+	echo $1
 }
 
 # Remove a value from a space separated list.
