@@ -397,8 +397,9 @@ while true; do
 				error="${BASH_REMATCH[1]}"
 				log_error "Got ERROR from server: $error"
 				for module in $modules_on_server_ERROR; do
-						module_${module}_on_server_ERROR "$error"
+					module_${module}_on_server_ERROR "$error"
 				done
+			fi
 		else
 			log_info_file unknown_data.log "Something we didn't match any hook: $line"
 		fi
