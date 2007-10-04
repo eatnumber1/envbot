@@ -229,7 +229,7 @@ module_factoids_parse_assignment() {
 				value="$value $word"
 				;;
 		esac
-	# Extra space at end is intended, to make read work correctly
+	# Extra space at end is intended, to make read work correctly.
 	done <<< "$1 "
 	module_factoids_parse_key="$(misc_clean_spaces "$key")"
 	module_factoids_parse_value="$(misc_clean_spaces "$value")"
