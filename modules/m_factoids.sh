@@ -24,6 +24,7 @@ module_factoids_INIT() {
 	echo 'after_load on_PRIVMSG'
 }
 
+
 module_factoids_UNLOAD() {
 	# Ok this is a LOT. I hope I got all...
 	unset module_factoids_set module_factoids_remove module_factoids_parse_assignment
@@ -33,6 +34,7 @@ module_factoids_UNLOAD() {
 	unset module_factoids_is_locked module_factoids_lock module_factoids_unlock
 	unset module_factoids_SELECT module_factoids_INSERT module_factoids_UPDATE module_factoids_DELETE
 }
+
 
 module_factoids_REHASH() {
 	return 0
@@ -59,6 +61,7 @@ module_factoids_after_load() {
 	fi
 }
 
+
 # Get an item from DB
 # $1 = key
 module_factoids_SELECT() {
@@ -66,6 +69,7 @@ module_factoids_SELECT() {
 	#A system that stores useful bits of information
 	module_sqlite3_exec_sql "SELECT value FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
+
 
 # Insert a new item into DB
 # $1 = key
@@ -76,6 +80,7 @@ module_factoids_INSERT() {
 		"INSERT INTO $config_module_factoids_table (name, value, who) VALUES('$(module_sqlite3_clean_string "$1")', '$(module_sqlite3_clean_string "$2")', '$(module_sqlite3_clean_string "$3")');"
 }
 
+
 # Change the item in DB
 # $1 = key
 # $2 = new value
@@ -85,20 +90,26 @@ module_factoids_UPDATE() {
 		"UPDATE $config_module_factoids_table SET value='$(module_sqlite3_clean_string "$2")', who='$(module_sqlite3_clean_string "$3")' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
+
 # Remove an item
 # $1 = key
 module_factoids_DELETE() {
 	module_sqlite3_exec_sql "DELETE FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
+
 # How many factoids are there
 module_factoids_get_count() {
 	module_sqlite3_exec_sql "SELECT COUNT(name) FROM $config_module_factoids_table;"
 }
+
+
 # How many locked factoids are there
 module_factoids_get_locked_count() {
 	module_sqlite3_exec_sql "SELECT COUNT(name) FROM $config_module_factoids_table WHERE is_locked='1';"
 }
+
+
 # Check if factoid is locked or not.
 # $1 = key
 # Return 0 = locked
@@ -112,17 +123,20 @@ module_factoids_is_locked() {
 	fi
 }
 
+
 # Lock a factoid against changes from non-owners
 # $1 = key
 module_factoids_lock() {
 	module_sqlite3_exec_sql "UPDATE $config_module_factoids_table SET is_locked='1' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
+
 # Unlock a factoid from protection against non-owners
 # $1 = key
 module_factoids_unlock() {
 	module_sqlite3_exec_sql "UPDATE $config_module_factoids_table SET is_locked='0' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
+
 
 # Wrapper, call either INSERT or UPDATE
 # $1 = key
@@ -135,6 +149,7 @@ module_factoids_set_INSERT_or_UPDATE() {
 		module_factoids_INSERT "$1" "$2" "$3"
 	fi
 }
+
 
 # Wrapper, call either INSERT or UPDATE
 # $1 = key
@@ -158,6 +173,7 @@ module_factoids_set() {
 		send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), I will remember, $key is $value"
 	fi
 }
+
 
 # Wrapper, check access
 # $1 = key
@@ -184,6 +200,7 @@ module_factoids_remove() {
 		send_msg "$channel" "I didn't have a factoid matching \"$key\""
 	fi
 }
+
 
 # Send the factoid:
 # $1 To where (channel or nick)
@@ -234,6 +251,7 @@ module_factoids_parse_assignment() {
 	module_factoids_parse_key="$(misc_clean_spaces "$key")"
 	module_factoids_parse_value="$(misc_clean_spaces "$value")"
 }
+
 
 # Called on a PRIVMSG
 #

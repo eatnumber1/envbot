@@ -42,7 +42,7 @@ module_say_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parameters="$(parse_query_is_command "$query" "say")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ (.*) ]]; then
+		if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
 			local target="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
 			local scope
@@ -63,7 +63,7 @@ module_say_on_PRIVMSG() {
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "act")"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ (.*) ]]; then
+		if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
 			local target="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
 			local scope
