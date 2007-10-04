@@ -82,7 +82,7 @@ module_eix_on_PRIVMSG() {
 				if time_check_interval "$module_eix_last_query" "$config_module_eix_rate"; then
 					module_eix_last_query="$(date -u +%s)"
 					log_info_file eix.log "$sender made the bot run eix on \"$pattern\""
-					send_msg "$channel" "$(EIX_PRINT_IUSE='false' eix -pSCxs --format "$module_eix_format_string" "$pattern" | head -n 1)"
+					send_msg "$channel" "$(ulimit -t 4; EIX_PRINT_IUSE='false' eix -pSCxs --format "$module_eix_format_string" "$pattern" | head -n 1)"
 				else
 					log_error_file eix.log "FLOOD DETECTED in eix module"
 				fi

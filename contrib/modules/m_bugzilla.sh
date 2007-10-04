@@ -95,7 +95,7 @@ module_bugzilla_on_PRIVMSG() {
 						bugs_parameters="-s CLOSED -s RESOLVED"
 					fi
 					log_info_file bugzilla.log "$sender made the bot run pybugz search on \"$pattern\""
-					local result="$(bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
+					local result="$(ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
 					local chars="$(wc -c <<< "$result")"
 					local lines="$(wc -l <<< "$result")"
 					local header footer
@@ -125,7 +125,7 @@ module_bugzilla_on_PRIVMSG() {
 				if [[ "$module_bugzilla_last_query" != "$query_time" ]] ; then
 					module_bugzilla_last_query="$query_time"
 					log_info_file bugzilla.log "$sender made the bot check with pybugz for bug \"$id\""
-					local result="$(bugz -fqb "$config_module_bugzilla_url" get -n "$id" | grep -E 'Title|Status|Resolution')"
+					local result="$(ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" get -n "$id" | grep -E 'Title|Status|Resolution')"
 					local resultread pretty_result
 					local title status resolution
 					# Read the data out of the multiline result.
