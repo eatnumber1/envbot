@@ -131,18 +131,18 @@ server_handle_nick_in_use() {
 	if [[ $on_nick -eq 3 ]]; then
 		log_error "Third nick is ALSO in use. I give up"
 		bot_quit 2
-	fi
-	if [[ $on_nick -eq 2 ]]; then
+	elif [[ $on_nick -eq 2 ]]; then
 		log_warning "Second nick is ALSO in use, trying third"
 		send_nick "$config_thirdnick"
 		server_nick_current="$config_thirdnick"
 		on_nick=3
+	else
+		log_info_stdout "First nick is in use, trying second"
+		send_nick "$config_secondnick"
+		on_nick=2
+		# FIXME: THIS IS HACKISH AND MAY BREAK
+		server_nick_current="$config_secondnick"
 	fi
-	log_info_stdout "First nick is in use, trying second"
-	send_nick "$config_secondnick"
-	on_nick=2
-	# FIXME: THIS IS HACKISH AND MAY BREAK
-	server_nick_current="$config_secondnick"
 	sleep 1
 }
 

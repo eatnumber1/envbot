@@ -71,7 +71,8 @@ modules_depends_register() {
 modules_depends_list_deps() {
 	# This is needed to be able to use indirect refs
 	local deplistname="modules_depends_${1}"
-	misc_clean_spaces "${!deplistname}"
+	# Clean out spaces, fastest way
+	echo ${!deplistname}
 }
 
 ###########################################################################

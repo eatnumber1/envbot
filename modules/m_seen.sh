@@ -48,7 +48,7 @@ module_seen_after_load() {
 		log_error "\"Seen table\" (config_module_seen_table) must be set in config."
 		return 1
 	fi
-	if ! declare -F | grep -wq 'declare -f config_module_seen_function'; then
+	if ! declare -F | grep -Fq 'declare -f config_module_seen_function'; then
 		log_error "\"Seen date function\" (config_module_seen_function) must be set in config."
 		return 1
 	fi
@@ -103,8 +103,10 @@ module_seen_set_INSERT_or_UPDATE() {
 #  $3 Timestamp
 #  $4 Query
 module_seen_store() {
-	local query="$(misc_clean_spaces "$4")"
-	module_seen_set_INSERT_or_UPDATE "$(parse_hostmask_nick "$1" | tr '[:upper:]' '[:lower:]')" "$2" "$3" "$query"
+	# Clean spaces, fastest way for this
+	local query
+	read -ra query <<< "$4"
+	module_seen_set_INSERT_or_UPDATE "$(parse_hostmask_nick "$1" | tr '[:upper:]' '[:lower:]')" "$2" "$3" "${query[*]}"
 }
 
 module_seen_find() {
