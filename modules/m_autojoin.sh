@@ -40,6 +40,7 @@ module_autojoin_join_from_config() {
 		# and list_contains just uses the first 2 arguments so a
 		# third one will be ignored.
 		if ! list_contains "channels_current" $channel; then
+			log_info "Joining $channel"
 			# No quotes here because then second argument can be a key
 			channels_join $channel
 			sleep 2

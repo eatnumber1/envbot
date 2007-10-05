@@ -144,11 +144,11 @@ log_stdout_file() {
 
 # Used internally in core
 log_raw_in() {
-	log_write "< $(date +'%Y-%m-%d %k:%M:%S') $@"
+	[[ $config_log_raw = 1 ]] && log_write "< $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 # Used internally in core
 log_raw_out() {
-	log_write "> $(date +'%Y-%m-%d %k:%M:%S') $@"
+	[[ $config_log_raw = 1 ]] && log_write "> $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 
 

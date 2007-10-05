@@ -23,7 +23,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=13
+config_version=14
 
 ####################
 # General settings #
@@ -97,6 +97,8 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 
 # Directory for logfiles
 config_log_dir="@@logdir@@"
+# (*) Should we log raw data or not?
+config_log_raw=0
 # (*) Should we always log to STDOUT as well?
 #     This is the same as --verbose.
 config_log_stdout=0

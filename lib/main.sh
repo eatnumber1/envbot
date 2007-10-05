@@ -111,7 +111,7 @@ force_verbose=0
 command_line="$@"
 
 # Current config version.
-declare -r config_current_version=13
+declare -r config_current_version=14
 
 print_cmd_help() {
 	echo 'envbot is an advanced modular IRC bot coded in bash.'
