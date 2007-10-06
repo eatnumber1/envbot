@@ -37,7 +37,7 @@ if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 32 ]]; then
 	echo "Please install a newer version:"
 	echo " * Either use your distro's packages"
 	echo " * Or see http://www.gnu.org/software/bash/"
-	exit 1
+	exit 2
 fi
 
 # We should not run as root.
@@ -204,12 +204,12 @@ fi
 # The reason is that we need to load transport before libraries:
 if [ -z "$config_version" ]; then
 	echo "ERROR: YOU MUST SET THE CORRECT config_version IN THE CONFIG"
-	envbot_quit 1
+	envbot_quit 2
 fi
 if [ $config_version -ne $config_current_version ]; then
 	echo "ERROR: YOUR config_version IS $config_version BUT THE BOT'S CONFIG VERSION IS $config_current_version."
 	echo "PLEASE UPDATE YOUR CONFIG. Check bot_settings.sh.example for current format."
-	envbot_quit 1
+	envbot_quit 2
 fi
 
 # Force verbose output if -v or --verbose was on
@@ -222,11 +222,11 @@ fi
 # loading order.
 if [ ! -d "${config_transport_dir}" ]; then
 	echo "ERROR: The transport directory ${config_transport_dir} doesn't seem to exist"
-	envbot_quit 1
+	envbot_quit 2
 fi
 if [ ! -r "${config_transport_dir}/${config_transport}.sh" ]; then
 	echo "ERROR: The transport ${config_transport} doesn't seem to exist"
-	envbot_quit 1
+	envbot_quit 2
 fi
 echo "Loading transport"
 source "${config_transport_dir}/${config_transport}.sh"
@@ -234,7 +234,7 @@ source "${config_transport_dir}/${config_transport}.sh"
 if ! transport_check_support; then
 	echo "ERROR: The transport reported it can't work on this system or with this configuration."
 	echo "Please read any other errors displayed above and consult documentation for the transport module you are using."
-	envbot_quit 1
+	envbot_quit 2
 fi
 
 if [ -z "$library_dir" ]; then
@@ -246,7 +246,7 @@ if [ ! -d "$library_dir" ]; then
 	echo "ERROR: library directory $library_dir does not exist, is not a directory or can't be read for some other reason."
 	echo "Check that it is really there and correct permissions are set."
 	echo "If you used --libdir to specify location of library directory, check that you spelled it correctly."
-	envbot_quit 1
+	envbot_quit 2
 fi
 
 echo "Loading library functions"
