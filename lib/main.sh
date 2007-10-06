@@ -125,6 +125,11 @@ print_cmd_help() {
 	echo '  -h, --help              Display this help and exit'
 	echo '  -V, --version           Output version information and exit'
 	echo ''
+	echo "Note that envbot can't handle short versions of options being written together like"
+	echo "-vv currently."
+	echo ''
+	echo 'Exit status is 0 if OK, 1 if minor problems, 2 if serious trouble.'
+	echo ''
 	echo 'Examples:'
 	echo '  envbot                  Runs envbot with default options.'
 	echo '  envbot -c bot.config    Runs envbot with the config bot.config.'

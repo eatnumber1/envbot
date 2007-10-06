@@ -98,9 +98,11 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 # Directory for logfiles
 config_log_dir="@@logdir@@"
 # (*) Should we log raw data or not?
+#     Can be 1 (log) or 0 (don't log)
 config_log_raw=0
 # (*) Should we always log to STDOUT as well?
 #     This is the same as --verbose.
+#     Can be 1 (log) or 0 (don't log)
 config_log_stdout=0
 
 
