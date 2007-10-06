@@ -6,6 +6,16 @@ done using bzr (does not work in tarballs, you need development checkout for thi
 Example (list changes compared to 0.0.1-beta1)
   bzr log -rtag:0.0.1-beta1.. --short
 
+0.0.1-beta4
+-----------
+424        Config version update: Added $config_log_raw. Defines if we should log raw lines or not (affects both STDOUT and logfiles)
+420,423    misc_clean_spaces was slow, changed to inline ways of stripping spaces.
+416        Got rid of deprecated parse_get_colon_arg function.
+415        Added some code to check for stuff that matches no hook, and found that there is no umode change hook because of this. Fixed.
+411        Made assignment of factoids work if there is more than one separator in string, yes this may be slower but it works.
+410        Fixed bug in factoids with forget command not reporting "I didn't have a factoid matching..." when none was found.
+
+
 0.0.1-beta3
 -----------
 407:       Make error messages in transports more verbose.
@@ -15,17 +25,17 @@ Example (list changes compared to 0.0.1-beta1)
 395:       Some more functions are now internal in lib/log.sh, modules should use the log level versions.
 393:       m_autojoin was slowing down rehash more than needed, fixed that.
 392:       Fixed: Could not unload rehash, module_rehash_UNLOAD returned 127!
-391:       Fix bug that caused FINALISE hooks to never run
+391:       Fixed bug that caused FINALISE hooks to never run
 383:       Add bash version check (it turned out bash-3.1 and older was not supported).
 
 0.0.1-beta2
 -----------
 379:       Actually more than one space between parameters on irc is possible, yes that sucks, and no sane server would send it, but just to be on the safe side
 377:       Added this ChangeLog.
-376:       Fix potential security problem in sql cleaning code in module_sqlite3_clean_string (I can't find a way to abuse this so I don't think the risk is very high)
-375:       Add access_log_action()
+376:       Fixed potential security problem in sql cleaning code in module_sqlite3_clean_string (I can't find a way to abuse this so I don't think the risk is very high)
+375:       Added access_log_action()
 373-375:   Introduced more advanced logging API with several levels (info, warn, error and fatal)
-371:       Optimize log_write() in lib/log.sh (something like 20 times as fast now if my testing is correct)
+371:       Optimized log_write() in lib/log.sh (something like 20 times as fast now if my testing is correct)
 
 
 0.0.1-beta1
