@@ -131,7 +131,7 @@ config_transport='dev-tcp'
 #   socat doesn't support automatic choice of this.
 #   Note that socat versions below 1.5 does not
 #   support using IPv6 and SSL at the same time.
-#config_transport_socat_use_ipv6=0
+#config_transport_socat_protocol_family=ipv4
 
 # Where are transports stored, this can be a relative path from the
 # main script of the bot, or an absolute path.
