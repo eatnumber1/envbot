@@ -51,7 +51,7 @@ transport_check_support() {
 		transport_supports="$transport_supports ssl"
 	fi
 	if [[ -z $config_transport_socat_protocol_family ]]; then
-		echo "ERROR: you need to set config_transport_socat_use_ipv6 in your config to either 0 or 1."
+		echo "ERROR: you need to set config_transport_socat_protocol_family in your config to either ipv4 or ipv6."
 		return 1
 	fi
 	# Check for older version
