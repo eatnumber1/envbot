@@ -129,6 +129,7 @@ numeric[405]=ERR_TOOMANYCHANNELS
 numeric[406]=ERR_WASNOSUCHNICK
 numeric[407]=ERR_TOOMANYTARGETS
 numeric[412]=ERR_NOTEXTTOSEND
+numeric[416]=ERR_TOOMANYMATCHES       # Not from any RFC.
 numeric[421]=ERR_UNKNOWNCOMMAND
 numeric[422]=ERR_NOMOTD
 numeric[432]=ERR_ERRONEUSNICKNAME     # Bad/forbidden nickname
@@ -165,6 +166,7 @@ numeric[495]=ERR_NOREJOINONKICK       # InspIRCd specific numeric. I made up thi
                                       # 495 <nick> <channel> :You cannot rejoin this channel yet after being kicked (+J)
 numeric[499]=ERR_CHANOWNPRIVNEEDED    # Not from any RFC. Unreal got this at least.
 
+numeric[501]=ERR_UMODEUNKNOWNFLAG     # Some send this for unknown umodes. not all.
 
 # Others. Not from any RFC but semi standard.
 numeric[600]=RPL_LOGON           # Unreal, InspIRCd and more
