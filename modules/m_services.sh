@@ -62,6 +62,8 @@ module_services_on_connect() {
 					send_raw_flood_nolog "NickServ RELEASE (password)" "${module_services_nickserv_command}RELEASE $config_firstnick $config_module_services_nickserv_passwd"
 					sleep 2
 					send_nick "$config_firstnick"
+					# HACK: This is a workaround for bug #21
+					server_nick_current="$config_firstnick"
 				fi
 				log_info_stdout "Identifying..."
 				if [[ $config_module_services_style != 'atheme' ]]; then
