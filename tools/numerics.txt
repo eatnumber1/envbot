@@ -186,6 +186,12 @@ numeric[900]=RPL_MODULES
 numeric[901]=RPL_ENDOFMODULES
 numeric[902]=RPL_COMMANDS              # 902 <nick> :<command> <module name> <minimum parameters>
 numeric[903]=RPL_ENDOFCOMMANDS         # 903 <nick> :End of COMMANDS list
+numeric[936]=ERR_CENSORED              # 936 <nick> <channel> <word> :Your message contained a censored word, and was blocked
+numeric[937]=ERR_ALREDYCENSORED        # 937 <nick> <channel> :The word %s is already on the spamfilter list
+numeric[938]=ERR_NOTCENSORED           # 938 <nick> <channel> :No such spamfilter word is set
+numeric[939]=ERR_SPAMFILTERLISTFULL    # 939 <nick> <channel> :Channel spamfilter list is full
+numeric[940]=RPL_ENDOFSPAMFILTER       # 940 <nick> <channel> :End of channel spamfilter list
+numeric[940]=RPL_SPAMFILTER            # 941 <nick> <channel> <spamfilter>
 numeric[972]=ERR_CANNOTDOCOMMAND       # Unreal uses 972 (ERR_CANNOTDOCOMMAND) for umode +q, and other failed kicks.
                                        # According to http://www.alien.net.au/irc/irc2numerics.html:
                                        #  "Works similarly to all of KineIRCd's CANNOT* numerics. This one indicates that a
