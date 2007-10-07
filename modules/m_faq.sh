@@ -105,10 +105,10 @@ module_faq_on_PRIVMSG() {
 				elif [[ "${#query}" -ge 3 ]] ; then
 					local i=0
 					while [[ $i -lt "${#module_faq_array[*]}" ]] ; do
-						i=$((i+1))
+						(( i++ ))
 						# FIXME: This code is hard to read.
 						# This module needs rewriting...
-						if grep -i -F -m 1 "$query" <<< "${module_faq_array[$i]}" ; then
+						if grep -qiFm 1 "$query" <<< "${module_faq_array[$i]}" ; then
 							send_msg "$channel" "${module_faq_array[$i]}"
 							break 1
 						fi
