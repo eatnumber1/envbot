@@ -185,7 +185,7 @@ server_connect(){
 				"$numeric_ERR_NICKNAMEINUSE"|"$numeric_ERR_ERRONEUSNICKNAME")
 					server_handle_nick_in_use
 					;;
-				"$numeric_RPL_ENDOFMOTD")
+				"$numeric_RPL_ENDOFMOTD"|"$numeric_ERR_NOMOTD")
 					sleep 1
 					log_info_stdout 'Connected'
 					server_connected=1

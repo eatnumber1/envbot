@@ -51,7 +51,7 @@ module_services_on_connect() {
 			"$numeric_ERR_NICKNAMEINUSE"|"$numeric_ERR_ERRONEUSNICKNAME")
 				module_services_ghost=1
 				;;
-			"$numeric_RPL_ENDOFMOTD")
+			"$numeric_RPL_ENDOFMOTD"|"$numeric_ERR_NOMOTD")
 				if [[ $config_module_services_style == 'atheme' ]]; then
 					send_raw_flood_nolog "NickServ IDENTIFY (password)" "${module_services_nickserv_command}IDENTIFY $config_firstnick $config_module_services_nickserv_passwd"
 				fi

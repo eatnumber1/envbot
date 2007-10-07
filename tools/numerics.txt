@@ -61,6 +61,7 @@ numeric[256]=RPL_ADMINME
 numeric[257]=RPL_ADMINLOC1
 numeric[258]=RPL_ADMINLOC2
 numeric[259]=RPL_ADMINEMAIL
+numeric[263]=RPL_TRYAGAIN
 numeric[265]=RPL_LOCALUSERS    # Not from any RFC.
 numeric[266]=RPL_GLOBALUSERS   # Not from any RFC.
 numeric[271]=RPL_SILELIST      # Not from any RFC
@@ -167,6 +168,7 @@ numeric[495]=ERR_NOREJOINONKICK       # InspIRCd specific numeric. I made up thi
 numeric[499]=ERR_CHANOWNPRIVNEEDED    # Not from any RFC. Unreal got this at least.
 
 numeric[501]=ERR_UMODEUNKNOWNFLAG     # Some send this for unknown umodes. not all.
+numeric[502]=ERR_USERSDONTMATCH       # Trying to change mode for other user.
 
 # Others. Not from any RFC but semi standard.
 numeric[600]=RPL_LOGON           # Unreal, InspIRCd and more
