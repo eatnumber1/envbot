@@ -114,7 +114,7 @@ server_handle_numerics() { # $1 = numeric, $2 = target (self), $3 = data
 	# Slight sanity check
 	if [[ "$2" != "$server_nick_current" ]]; then
 		log_warning 'Own nick desynced!'
-		log_warning "It should be $server_nick_current but is $2"
+		log_warning "It should be $server_nick_current but server says it is $2"
 		log_warning "Correcting own nick and lets hope that doesn't break anything"
 		server_nick_current="$2"
 	fi

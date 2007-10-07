@@ -345,7 +345,7 @@ while true; do
 			for module in $modules_on_user_MODE ; do
 				module_${module}_on_user_MODE "$sender" "$target" "$modes"
 			done
-		elif [[ "$line" =~ ^:([^ ]*)\ +NICK\ +(.*) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)\ +NICK\ +:?(.+) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			newnick="${BASH_REMATCH[2]}"
 			# Check if it was our own nick
