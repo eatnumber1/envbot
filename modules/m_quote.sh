@@ -35,19 +35,15 @@ module_quote_REHASH() {
 }
 
 module_quote_load() {
-	local i=0 line
+	local i=0 line oldIFS="$IFS"
 	unset module_quote_quotes
 	if [[ -z "$config_module_quotes_file" ]]; then
 		log_error "quotes module: You need to set config_module_quotes_file in your config!"
 		return 1
 	elif [[ -r "$config_module_quotes_file" ]]; then
-		while read -rd $'\n' line ; do
-			# Skip empty lines
-			if [[ "$line" ]]; then
-				module_quote_quotes[$i]="$line"
-				(( i++ ))
-			fi
-		done < "${config_module_quotes_file}"
+		IFS=$'\n'
+		module_quote_quotes=( $(<"${config_module_quotes_file}") )
+		IFS="$oldIFS"
 		log_info 'Loaded Quotes.'
 		return 0
 	else
