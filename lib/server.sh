@@ -158,13 +158,16 @@ server_connect(){
 		for module in $modules_on_connect; do
 			module_${module}_on_connect "$line"
 		done
+		if [[ "$line" =~ ^:[^\ ]+\ +${numeric_RPL_MOTD} ]]; then
+			continue
+		fi
+		log_raw_in "$line"
 		if [[ "$line" =~ ^:[^\ ]+\ +([0-9]{3})\ +([^ ]+)\ +(.*) ]]; then
 			local numeric="${BASH_REMATCH[1]}"
+			# We use this to check below for our own nick.
+			local numericnick="${BASH_REMATCH[2]}"
 			local data="${BASH_REMATCH[3]}"
 			case "$numeric" in
-				"$numeric_RPL_MOTD")
-					continue
-					;;
 				"$numeric_RPL_MOTDSTART")
 					log_info "Motd is not displayed in log";
 					;;
@@ -172,6 +175,14 @@ server_connect(){
 					if [[ $line =~ ^:([^ ]+)  ]]; then # just to get the server name, this should always be true
 						server_name="${BASH_REMATCH[1]}"
 					fi
+					;;
+				"$numeric_RPL_WELCOME")
+					# This should work
+					server_nick_current="$numericnick"
+					;;
+				# We don't care about this and don't want to show it as unhandled.
+				"$numeric_RPL_CREATED")
+					continue
 					;;
 				"$numeric_RPL_MYINFO")
 					server_004="$data"
@@ -194,12 +205,13 @@ server_connect(){
 					;;
 				*)
 					if [[ -z "${numerics[10#${numeric}]}" ]]; then
-						log_info_file unknown_data.log "Unknown numeric during connect: $numerics Data: $line"
+						log_info_file unknown_data.log "Unknown numeric during connect: $numerics Data: $data"
+					else
+						log_info_file unknown_data.log "Known but not handled numeric during connect: $numerics Data: $data"
 					fi
 					;;
 			esac
 		fi
-		log_raw_in "$line"
 		if [[ $line =~ "Looking up your hostname" ]]; then
 			log_info_stdout "logging in as $config_firstnick..."
 			send_nick "$config_firstnick"
