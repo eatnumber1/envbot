@@ -180,8 +180,11 @@ server_connect(){
 					# This should work
 					server_nick_current="$numericnick"
 					;;
-				# We don't care about this and don't want to show it as unhandled.
-				"$numeric_RPL_CREATED")
+				# We don't care about these and don't want to show it as unhandled.
+				"$numeric_RPL_CREATED"|"$numeric_RPL_LUSERCLIENT"|"$numeric_RPL_LUSEROP"|"$numeric_RPL_LUSERUNKNOWN"|"$numeric_RPL_LUSERCHANNELS"|"$numeric_RPL_LUSERME")
+					continue
+					;;
+				"$numeric_RPL_LOCALUSERS"|"$numeric_RPL_GLOBALUSERS")
 					continue
 					;;
 				"$numeric_RPL_MYINFO")
@@ -205,9 +208,9 @@ server_connect(){
 					;;
 				*)
 					if [[ -z "${numerics[10#${numeric}]}" ]]; then
-						log_info_file unknown_data.log "Unknown numeric during connect: $numerics Data: $data"
+						log_info_file unknown_data.log "Unknown numeric during connect: $numeric Data: $data"
 					else
-						log_info_file unknown_data.log "Known but not handled numeric during connect: $numerics Data: $data"
+						log_info_file unknown_data.log "Known but not handled numeric during connect: $numeric Data: $data"
 					fi
 					;;
 			esac
