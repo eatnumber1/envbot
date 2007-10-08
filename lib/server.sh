@@ -158,8 +158,9 @@ server_connect(){
 		for module in $modules_on_connect; do
 			module_${module}_on_connect "$line"
 		done
-		if [[ $(cut -d' ' -f2 <<< "$line") =~ ([0-9]{3}) ]]; then
+		if [[ "$line" =~ ^:[^\ ]+\ +([0-9]{3})\ +([^ ]+)\ +(.*) ]]; then
 			local numeric="${BASH_REMATCH[1]}"
+			local data="${BASH_REMATCH[3]}"
 			case "$numeric" in
 				"$numeric_RPL_MOTD")
 					continue
@@ -173,11 +174,11 @@ server_connect(){
 					fi
 					;;
 				"$numeric_RPL_MYINFO")
-					server_004="$(cut -d' ' -f4- <<< "$line")"
+					server_004="$data"
 					server_004=$(tr -d $'\r\n' <<< "$server_004")  # Get rid of ending newline
 					;;
 				"$numeric_RPL_ISUPPORT")
-					server_005="$server_005 $(cut -d' ' -f4- <<< "$line")"
+					server_005="$server_005 $data"
 					server_005=$(tr -d $'\r\n' <<< "$server_005") # Get rid of newlines
 					server_005="${server_005/ :are supported by this server/}" # Get rid of :are supported by this server
 					server_handle_005 "$line"
@@ -190,6 +191,11 @@ server_connect(){
 					log_info_stdout 'Connected'
 					server_connected=1
 					break
+					;;
+				*)
+					if [[ -z "${numerics[10#${numeric}]}" ]]; then
+						log_info_file unknown_data.log "Unknown numeric during connect: $numerics Data: $line"
+					fi
 					;;
 			esac
 		fi

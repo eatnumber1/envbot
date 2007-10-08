@@ -36,6 +36,7 @@
 
 numeric_RPL_WELCOME='001'
 numeric_RPL_YOURHOST='002'
+numeric_RPL_CREATED='003'
 numeric_RPL_MYINFO='004'
 numeric_RPL_ISUPPORT='005'
 numeric_RPL_MAP='006'
@@ -185,6 +186,7 @@ numeric_ERR_CANNOTCHANGECHANMODE='974'
 
 numerics[1]='RPL_WELCOME'
 numerics[2]='RPL_YOURHOST'
+numerics[3]='RPL_CREATED'
 numerics[4]='RPL_MYINFO'
 numerics[5]='RPL_ISUPPORT'
 numerics[6]='RPL_MAP'

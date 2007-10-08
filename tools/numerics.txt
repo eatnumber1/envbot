@@ -37,6 +37,7 @@
 # For some format of the parameters varies between servers.
 numeric[1]=RPL_WELCOME   # "Welcome to <network>"
 numeric[2]=RPL_YOURHOST  # "Your host is <servername>, running version <ver>"
+numeric[3]=RPL_CREATED
 numeric[4]=RPL_MYINFO    # "<servername> <version> <available user modes> <available channel modes>"
 numeric[5]=RPL_ISUPPORT  # Not in any RFC. See http://www.irc.org/tech_docs/005.html for incomplete list.
 
