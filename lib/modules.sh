@@ -159,6 +159,9 @@ modules_add_hooks() {
 			"on_user_MODE")
 				modules_on_user_MODE="$modules_on_user_MODE $module"
 				;;
+			"on_INVITE")
+				modules_on_INVITE="$modules_on_INVITE $module"
+				;;
 			"on_JOIN")
 				modules_on_JOIN="$modules_on_JOIN $module"
 				;;
@@ -192,7 +195,7 @@ modules_add_hooks() {
 }
 
 # List of all the optional hooks.
-modules_hooks="FINALISE after_load before_connect on_connect after_connect before_disconnect after_disconnect on_server_ERROR on_NOTICE on_PRIVMSG on_TOPIC on_channel_MODE on_user_MODE on_JOIN on_PART on_KICK on_QUIT on_KILL on_NICK on_numeric on_raw"
+modules_hooks="FINALISE after_load before_connect on_connect after_connect before_disconnect after_disconnect on_server_ERROR on_NOTICE on_PRIVMSG on_TOPIC on_channel_MODE on_user_MODE on_INVITE on_JOIN on_PART on_KICK on_QUIT on_KILL on_NICK on_numeric on_raw"
 
 # Unload a module
 # Parameters

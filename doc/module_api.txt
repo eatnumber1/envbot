@@ -151,6 +151,16 @@ module_modulename_on_NOTICE
 		    consult other modules about this.
 
 
+module_modulename_on_INVITE
+	Called when bot gets an INVITE
+	Parameters:
+		$1 = From who (n!u@h)
+		$2 = Target nick (probably our own nick).
+		$3 = Target channel.
+	Return code:
+		Not checked.
+
+
 module_modulename_on_NICK
 	Called when someone changes nick in a channel the bot is in
 	Parameters:

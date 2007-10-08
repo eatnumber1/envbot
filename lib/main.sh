@@ -345,6 +345,13 @@ while true; do
 			for module in $modules_on_user_MODE ; do
 				module_${module}_on_user_MODE "$sender" "$target" "$modes"
 			done
+		elif [[ "$line" =~ ^:([^ ]*)\ +INVITE\ +([^ ]+)\ +:?(.+) ]]; then
+			sender="${BASH_REMATCH[1]}"
+			target="${BASH_REMATCH[2]}"
+			channel="${BASH_REMATCH[3]}"
+			for module in $modules_on_INVITE; do
+				module_${module}_on_INVITE "$sender" "$target" "$channel"
+			done
 		elif [[ "$line" =~ ^:([^ ]*)\ +NICK\ +:?(.+) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			newnick="${BASH_REMATCH[2]}"
@@ -365,7 +372,7 @@ while true; do
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			reason="${BASH_REMATCH[4]}"
-			# Check if it was our own nick that joined
+			# Check if it was our own nick that parted
 			channels_handle_part "$sender" "$channel" "$reason"
 			for module in $modules_on_PART; do
 				module_${module}_on_PART "$sender" "$channel" "$reason"
@@ -375,7 +382,7 @@ while true; do
 			channel="${BASH_REMATCH[2]}"
 			kicked="${BASH_REMATCH[3]}"
 			reason="${BASH_REMATCH[5]}"
-			# Check if it was our own nick that joined
+			# Check if it was our own nick that got kicked
 			channels_handle_kick "$sender" "$channel" "$kicked" "$reason"
 			for module in $modules_on_KICK; do
 				module_${module}_on_KICK "$sender" "$channel" "$kicked" "$reason"
