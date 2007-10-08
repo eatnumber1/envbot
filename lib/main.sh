@@ -108,7 +108,7 @@ export HOME="$tmp_home"
 force_verbose=0
 
 # Store command line for later use
-command_line="$@"
+command_line=( "$@" )
 
 # Current config version.
 declare -r config_current_version=14
@@ -151,8 +151,8 @@ print_version() {
 }
 
 # Parse any command line arguments.
-if [ $# -gt 0 ]; then
-	while [ $# -gt 0 ]; do
+if [[ $# -gt 0 ]]; then
+	while [[ $# -gt 0 ]]; do
 		case "$1" in
 			'--help'|'-help'|'--usage'|'-usage'|'-h')
 				print_cmd_help
@@ -181,12 +181,12 @@ fi
 
 echo "Loading... Please wait"
 
-if [ -z "$config_file" ]; then
+if [[ -z "$config_file" ]]; then
 	echo "ERROR: No config file set, you probably didn't use the wrapper program to start envbot"
 	envbot_quit 1
 fi
 
-if [ ! -r "$config_file" ]; then
+if [[ ! -r "$config_file" ]]; then
 	echo "ERROR: Can't read config file ${config_file}."
 	echo "Check that it is really there and correct permissions are set."
 	echo "If you used --config to specify name of config file, check that you spelled it correctly."
@@ -202,11 +202,11 @@ fi
 
 # This is hackish, it should be in config.sh (config_validate)
 # The reason is that we need to load transport before libraries:
-if [ -z "$config_version" ]; then
+if [[ -z "$config_version" ]]; then
 	echo "ERROR: YOU MUST SET THE CORRECT config_version IN THE CONFIG"
 	envbot_quit 2
 fi
-if [ $config_version -ne $config_current_version ]; then
+if [[ $config_version -ne $config_current_version ]]; then
 	echo "ERROR: YOUR config_version IS $config_version BUT THE BOT'S CONFIG VERSION IS $config_current_version."
 	echo "PLEASE UPDATE YOUR CONFIG. Check bot_settings.sh.example for current format."
 	envbot_quit 2
@@ -220,11 +220,11 @@ fi
 
 # Must be checked here and not in validate_config because of
 # loading order.
-if [ ! -d "${config_transport_dir}" ]; then
+if [[ ! -d "${config_transport_dir}" ]]; then
 	echo "ERROR: The transport directory ${config_transport_dir} doesn't seem to exist"
 	envbot_quit 2
 fi
-if [ ! -r "${config_transport_dir}/${config_transport}.sh" ]; then
+if [[ ! -r "${config_transport_dir}/${config_transport}.sh" ]]; then
 	echo "ERROR: The transport ${config_transport} doesn't seem to exist"
 	envbot_quit 2
 fi
@@ -237,12 +237,12 @@ if ! transport_check_support; then
 	envbot_quit 2
 fi
 
-if [ -z "$library_dir" ]; then
+if [[ -z "$library_dir" ]]; then
 	echo "ERROR: No library directory set, you probably didn't use the wrapper program to start envbot"
 	envbot_quit 1
 fi
 
-if [ ! -d "$library_dir" ]; then
+if [[ ! -d "$library_dir" ]]; then
 	echo "ERROR: library directory $library_dir does not exist, is not a directory or can't be read for some other reason."
 	echo "Check that it is really there and correct permissions are set."
 	echo "If you used --libdir to specify location of library directory, check that you spelled it correctly."

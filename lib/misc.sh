@@ -63,7 +63,7 @@ bot_quit() {
 	for module in $modules_before_disconnect; do
 		module_${module}_before_disconnect
 	done
-	local reason=$1
+	local reason="$1"
 	send_quit "$reason"
 	sleep 1
 	server_connected=0
@@ -90,7 +90,7 @@ bot_restart() {
 	for module in $modules_before_disconnect; do
 		module_${module}_before_disconnect
 	done
-	local reason=$1
+	local reason="$1"
 	send_quit "$reason"
 	sleep 1
 	server_connected=0
@@ -103,7 +103,7 @@ bot_restart() {
 	log_info_stdout "Bot quit gracefully"
 	transport_disconnect
 	rm -rvf "$tmp_home"
-	exec env -i "$(type -p bash)" $0 $command_line
+	exec env -i "$(type -p bash)" $0 "${command_line[@]}"
 }
 
 
@@ -126,8 +126,10 @@ time_check_interval() {
 # Returns on STDOUT
 #   New string
 misc_clean_spaces() {
-	# Fastest way :)
-	echo $1
+	# Fastest way that is still secure
+	local array
+	read -ra array <<< "$1"
+	echo "${query[*]}"
 }
 
 # Remove a value from a space separated list.
@@ -138,7 +140,7 @@ misc_clean_spaces() {
 #   New list
 list_remove() {
 	local oldlist="${!1}"
-	local newlist=${oldlist//$2}
+	local newlist="${oldlist//$2}"
 	misc_clean_spaces "$newlist" # Get rid of the unneeded spaces.
 }
 

@@ -74,5 +74,5 @@ access_log_action() {
 #   $3 What capability they need
 access_fail() {
 	log_error_file access.log "$1 tried to \"$2\" but lacks access."
-	send_msg "$(parse_hostmask_nick $sender)" "Permission denied. You need the capability \"$3\" to do this action."
+	send_msg "$(parse_hostmask_nick "$sender")" "Permission denied. You need the capability \"$3\" to do this action."
 }

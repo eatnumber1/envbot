@@ -25,7 +25,9 @@
 # Returns on STDOUT
 #   Nick
 parse_hostmask_nick() {
-	cut -d'!' -f1 <<< "$1"
+	if [[ $1 =~ ^([^ !]+)! ]]; then
+		echo "${BASH_REMATCH[1]}"
+	fi
 }
 # Get ident from hostmask
 # Parameters
@@ -33,7 +35,9 @@ parse_hostmask_nick() {
 # Returns on STDOUT
 #   Ident
 parse_hostmask_ident() {
-	cut -d'!' -f2 <<< "$1" | cut -d'@' -f1
+	if [[ $1 =~ ^[^\ !]+!([^ @]+)@ ]]; then
+		echo "${BASH_REMATCH[1]}"
+	fi
 }
 # Get host from hostmask
 # Parameters
@@ -41,7 +45,9 @@ parse_hostmask_ident() {
 # Returns on STDOUT
 #   Host
 parse_hostmask_host() {
-	cut -d'@' -f2 <<< "$1"
+	if [[ $1 =~ ^[^\ !]+![^\ @]+@([^ ]+) ]]; then
+		echo "${BASH_REMATCH[1]}"
+	fi
 }
 
 # This is used to get data out of 005.

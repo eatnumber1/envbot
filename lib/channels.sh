@@ -62,7 +62,7 @@ channels_add() {
 # Parameters
 #   $1 The channel to remove
 channels_remove() {
-	channels_current="$(list_remove channels_current $1)"
+	channels_current="$(list_remove channels_current "$1")"
 }
 
 # Check if we parted
