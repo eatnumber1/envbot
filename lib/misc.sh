@@ -129,7 +129,7 @@ misc_clean_spaces() {
 	# Fastest way that is still secure
 	local array
 	read -ra array <<< "$1"
-	echo "${query[*]}"
+	echo "${array[*]}"
 }
 
 # Remove a value from a space separated list.
