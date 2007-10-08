@@ -122,7 +122,7 @@ module_seen_find() {
 		send_ctcp "$channel" "ACTION holds up a mirror for $sender_nick"
 		return 0
 	fi
-	local match="$(module_seen_SELECT $nick)"
+	local match="$(module_seen_SELECT "$nick")"
 	if [[ $match ]]; then
 		# So we got a match
 		# Lets use regex

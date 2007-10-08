@@ -160,7 +160,7 @@ server_connect(){
 		done
 		if [[ $(cut -d' ' -f2 <<< "$line") =~ ([0-9]{3}) ]]; then
 			local numeric="${BASH_REMATCH[1]}"
-			case $numeric in
+			case "$numeric" in
 				"$numeric_RPL_MOTD")
 					continue
 					;;
