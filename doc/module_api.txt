@@ -151,7 +151,7 @@ module_modulename_on_NOTICE
 		    consult other modules about this.
 
 
-module_modulename_on_INVITE
+module_modulename_on_INVITE (new in 0.0.1-beta5)
 	Called when bot gets an INVITE
 	Parameters:
 		$1 = From who (n!u@h)
