@@ -21,7 +21,7 @@
 # Handle CTCP
 
 module_ctcp_INIT() {
-	echo 'on_PRIVMSG'
+	echo 'after_load on_PRIVMSG'
 }
 
 module_ctcp_UNLOAD() {
@@ -32,6 +32,14 @@ module_ctcp_REHASH() {
 	return 0
 }
 
+module_ctcp_after_load() {
+	if [[ -z $config_module_ctcp_version_reply ]]; then
+		log_error "VERSION reply (config_module_ctcp_version_reply) must be set in config to use CTCP module."
+		return 1
+	fi
+}
+
+
 # Called on a PRIVMSG
 #
 # $1 = from who (n!u@h)
@@ -40,10 +48,13 @@ module_ctcp_REHASH() {
 module_ctcp_on_PRIVMSG() {
 	local sender="$1"
 	local query="$3"
-	# We can't use regex here for some reason
+	# We can't use regex here. For some unknown reason bash drops \001 from
+	# regex.
 	if [[ $query = $'\001'* ]]; then
+		# Get rid of \001 in the string.
 		local data="${query//$'\001'}"
 		local ctcp_command ctcp_parameters
+		# Split it up into command and any parameters.
 		read -r ctcp_command ctcp_parameters <<< "$data"
 		case "$ctcp_command" in
 			"VERSION")

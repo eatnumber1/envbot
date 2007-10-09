@@ -149,7 +149,7 @@ config_transport_dir="@@transportdir@@"
 #
 # The list should normally start with "modules rehash services umodes autojoin"
 # Some modules should be placed last. "factoids" is such a module.
-config_modules="modules rehash services umodes autojoin"
+config_modules="modules rehash services umodes autojoin ctcp"
 
 # Where are modules stored, this can be a relative path from the
 # main script of the bot, or an absolute path.
@@ -206,6 +206,13 @@ config_module_autojoin_channels[2]='#otherchannel channelkey'
 #
 # (*) Default umodes to set on connect. Also set these at a rehash.
 config_module_umodes_default_umodes="+isB-w"
+
+
+#####################################################################
+# CTCP module
+#
+# (*) What to reply to VERSION requests.
+config_module_ctcp_version_reply="envbot $envbot_version"
 
 
 #####################################################################
