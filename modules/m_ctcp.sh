@@ -66,7 +66,13 @@ module_ctcp_on_PRIVMSG() {
 			"PING")
 				send_nctcp "$(parse_hostmask_nick "$sender")" "PING $ctcp_parameters"
 				;;
+			*)
+				# So we didn't handle this CTCP? Return 0 then, someone else may want it.
+				return 0
+				;;
 		esac
+		# See above. We didn't fall back to not handle it and did not return
+		# so therefore we must have handled it.
 		return 1
 	fi
 	return 0
