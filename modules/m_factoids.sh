@@ -42,7 +42,6 @@ module_factoids_REHASH() {
 
 
 # Called after module has loaded.
-# Loads FAQ items
 module_factoids_after_load() {
 	modules_depends_register "factoids" "sqlite3" || {
 		# This error reporting is hackish, will fix later.
@@ -52,7 +51,7 @@ module_factoids_after_load() {
 		return 1
 	}
 	if [[ -z $config_module_factoids_table ]]; then
-		log_error "Factiods table (config_module_factoids_table) must be set in config."
+		log_error "Factiods table (config_module_factoids_table) must be set in config if you want to use factoids module."
 		return 1
 	fi
 	if ! module_sqlite3_table_exists "$config_module_factoids_table"; then
