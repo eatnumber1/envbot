@@ -58,7 +58,7 @@ module_ctcp_on_PRIVMSG() {
 		read -r ctcp_command ctcp_parameters <<< "$data"
 		case "$ctcp_command" in
 			"VERSION")
-				send_nctcp "$(parse_hostmask_nick "$sender")" "VERSION envbot $envbot_version"
+				send_nctcp "$(parse_hostmask_nick "$sender")" "VERSION $config_module_ctcp_version_reply"
 				;;
 			"TIME")
 				send_nctcp "$(parse_hostmask_nick "$sender")" "TIME $(date +'%Y-%m-%d %k:%M:%S')"
