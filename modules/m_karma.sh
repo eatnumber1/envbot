@@ -94,7 +94,7 @@ module_karma_substract() {
 	# Clean spaces and convert to lower case
 	local keyarray
 	read -ra keyarray <<< "$1"
-	local key="$(tr '[:upper:]' '[:lower:]' <<< "$keyarray[*]")"
+	local key="$(tr '[:upper:]' '[:lower:]' <<< "${keyarray[*]}")"
 	local old="$(module_karma_SELECT "$key")"
 	# -1 + any old value (yes looks backwards but works)
 	local new=-1
@@ -109,7 +109,7 @@ module_karma_add() {
 	# Clean spaces and convert to lower case
 	local keyarray
 	read -ra keyarray <<< "$1"
-	local key="$(tr '[:upper:]' '[:lower:]' <<< "$keyarray[*]")"
+	local key="$(tr '[:upper:]' '[:lower:]' <<< "${keyarray[*]}")"
 	local old="$(module_karma_SELECT "$key")"
 	# 1 + any old value
 	local new=1
@@ -124,7 +124,7 @@ module_karma_check() {
 	# Clean spaces and convert to lower case
 	local keyarray
 	read -ra keyarray <<< "$1"
-	local key="$(tr '[:upper:]' '[:lower:]' <<< "$keyarray[*]")"
+	local key="$(tr '[:upper:]' '[:lower:]' <<< "${keyarray[*]}")"
 	local value="$(module_karma_SELECT "$key")"
 	if [[ -z "$value" ]]; then
 		value=0
@@ -140,10 +140,10 @@ module_karma_check() {
 module_karma_is_nick() {
 	local keyarray
 	read -ra keyarray <<< "$1"
-	local key="$(tr '[:upper:]' '[:lower:]' <<< "$keyarray[*]")"
+	local key="$(tr '[:upper:]' '[:lower:]' <<< "${keyarray[*]}")"
 	local nickarray
 	read -ra nickarray <<< "$(parse_hostmask_nick "$2" | tr '[:upper:]' '[:lower:]')"
-	local nick="$nickarray[*]"
+	local nick="${nickarray[*]}"
 	if [[ "$key" = "$nick" ]]; then
 		return 0
 	fi
