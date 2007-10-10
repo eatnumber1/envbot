@@ -28,6 +28,7 @@ module_karma_UNLOAD() {
 	unset module_karma_SELECT
 	unset module_karma_INSERT module_karma_UPDATE module_karma_set_INSERT_or_UPDATE
 	unset module_karma_substract module_karma_add module_karma_check
+	unset module_karma_is_nick
 	return 0
 }
 
