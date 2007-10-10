@@ -148,7 +148,7 @@ config_transport_dir="@@transportdir@@"
 # Note that the order of the modules may be important
 #
 # The list should normally start with "modules rehash services umodes autojoin"
-# Some modules should be placed last. "factoids" is such a module.
+# Some modules should be placed last. "factoids" and "karma are such modules.
 config_modules="modules rehash services umodes autojoin ctcp"
 
 # Where are modules stored, this can be a relative path from the
