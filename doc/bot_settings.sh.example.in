@@ -230,6 +230,13 @@ config_module_ctcp_version_reply="envbot $envbot_version"
 
 
 #####################################################################
+# Karma module
+#
+# (*) Table name for karma data in SQLite3 databse
+#config_module_karma_table='karma'
+
+
+#####################################################################
 # Seen module
 #
 # (*) Table name for seen data in SQLite3 database
