@@ -10,5 +10,5 @@ DROP TABLE IF EXISTS karma;
 CREATE TABLE karma (
 	target     TEXT    UNIQUE NOT NULL PRIMARY KEY,
 	rating     INTEGER        NOT NULL,
-	is_locked  INTEGER        NOT NULL
+	is_locked  INTEGER        NOT NULL DEFAULT 0
 );
