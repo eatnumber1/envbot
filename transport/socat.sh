@@ -128,6 +128,9 @@ transport_connect() {
 	echo "$transport_pid" >> "${transport_tmp_dir_file}/pid"
 	exec 3>"${transport_tmp_dir_file}/out"
 	exec 4<"${transport_tmp_dir_file}/in"
+	# To be able to wait for error.
+	sleep 2
+	kill -0 "$transport_pid" >/dev/null 2>&1 || return 1
 }
 
 # Called to close connection

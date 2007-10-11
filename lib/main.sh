@@ -277,10 +277,10 @@ while true; do
 	for module in $modules_before_connect; do
 		module_${module}_before_connect
 	done
-	server_connect || {
-		log_error "Connection failed"
-		envbot_quit 1
-	}
+	while ! server_connect; do
+		log_error "Connection failed... Trying again in 20 seconds"
+		sleep 20
+	done
 	trap 'bot_quit "ctrl-C"' TERM INT
 	for module in $modules_after_connect; do
 		module_${module}_after_connect
