@@ -1,10 +1,19 @@
 ChangeLog
 =========
 This is a overview of changes users may care about. Detailed changelog can be
-done using bzr (does not work in tarballs, you need development checkout for this):
+done using bzr (does not work in tarballs, you need a development checkout for this):
   bzr log -rtag:tag.. --short
 Example (list changes compared to 0.0.1-beta1)
   bzr log -rtag:0.0.1-beta1.. --short
+
+0.0.1-beta5
+-----------
+450        Merged r451 from trunk: Fix broken misc_clean_spaces (was broken after beta4).
+443        Made parse_hostmask_*() faster and added some missing quotes.
+441        Found that an INVITE hook was missing, added it.
+430-435    Added more numerics.
+429        Workaround for bug #21 added (Own nick desync during connect with ghost).
+
 
 0.0.1-beta4
 -----------
@@ -18,24 +27,25 @@ Example (list changes compared to 0.0.1-beta1)
 
 0.0.1-beta3
 -----------
-407:       Make error messages in transports more verbose.
-402-406:   Make m_calc.sh check it's arguments on IRC better to make it secure.
-401:       Fix bug that made modules_load break if a dependency failed to load.
-398:       Made main envbot a wrapper script that sanitize the environment and then executes main bot.
-395:       Some more functions are now internal in lib/log.sh, modules should use the log level versions.
-393:       m_autojoin was slowing down rehash more than needed, fixed that.
-392:       Fixed: Could not unload rehash, module_rehash_UNLOAD returned 127!
-391:       Fixed bug that caused FINALISE hooks to never run
-383:       Add bash version check (it turned out bash-3.1 and older was not supported).
+407        Make error messages in transports more verbose.
+402-406    Make m_calc.sh check it's arguments on IRC better to make it secure.
+401        Fix bug that made modules_load break if a dependency failed to load.
+398        Made main envbot a wrapper script that sanitize the environment and then executes main bot.
+395        Some more functions are now internal in lib/log.sh, modules should use the log level versions.
+393        m_autojoin was slowing down rehash more than needed, fixed that.
+392        Fixed: Could not unload rehash, module_rehash_UNLOAD returned 127!
+391        Fixed bug that caused FINALISE hooks to never run
+383        Add bash version check (it turned out bash-3.1 and older was not supported).
+
 
 0.0.1-beta2
 -----------
-379:       Actually more than one space between parameters on irc is possible, yes that sucks, and no sane server would send it, but just to be on the safe side
-377:       Added this ChangeLog.
-376:       Fixed potential security problem in sql cleaning code in module_sqlite3_clean_string (I can't find a way to abuse this so I don't think the risk is very high)
-375:       Added access_log_action()
-373-375:   Introduced more advanced logging API with several levels (info, warn, error and fatal)
-371:       Optimized log_write() in lib/log.sh (something like 20 times as fast now if my testing is correct)
+379        Actually more than one space between parameters on IRC is possible, yes that sucks, and no sane server would send it, but just to be on the safe side
+377        Added this ChangeLog.
+376        Fixed potential security problem in SQL cleaning code in module_sqlite3_clean_string (I can't find a way to abuse this so I don't think the risk is very high)
+375        Added access_log_action()
+373-375    Introduced more advanced logging API with several levels (info, warn, error and fatal)
+371        Optimized log_write() in lib/log.sh (something like 20 times as fast now if my testing is correct)
 
 
 0.0.1-beta1
