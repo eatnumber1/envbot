@@ -278,6 +278,10 @@ modules_load_from_config
 
 # Used for periodic events later below
 periodic_lastrun="$(date -u +%s)"
+# This can be used when the code does not need exact time.
+# It will be updated each time the bot get a new line of
+# data.
+envbot_time="$(date -u +%s)"
 
 while true; do
 	# In progress of quitting? This is used to
@@ -302,10 +306,13 @@ while true; do
 		if ! transport_alive; then
 			break
 		fi
+		envbot_time="$(date -u +%s)"
 		# Time to run periodic events again?
 		# We run them every $envbot_transport_timeout second.
 		if time_check_interval "$periodic_lastrun" "$envbot_transport_timeout"; then
+			# Do not use $envbot_time here.
 			periodic_lastrun="$(date -u +%s)"
+			envbot_time="$periodic_lastrun"
 			for module in $modules_periodic; do
 				module_${module}_periodic "${periodic_lastrun}"
 			done
