@@ -280,6 +280,9 @@ modules_load_from_config
 periodic_lastrun="$(date -u +%s)"
 
 while true; do
+	# In progress of quitting? This is used to
+	# work around the issue in bug 25.
+	envbot_quitting=0
 	for module in $modules_before_connect; do
 		module_${module}_before_connect
 	done
@@ -444,7 +447,13 @@ while true; do
 			log_info_file unknown_data.log "Something that didn't match any hook: $line"
 		fi
 	done
-
+	if [[ $envbot_quitting -ne 0 ]]; then
+		# Hm, a trap got aborted it seems.
+		# Trying to handle this.
+		log_info "Quit trap got aborted: envbot_quitting=${envbot_quitting}. Recovering"
+		bot_quit
+		break
+	fi
 	log_error 'DIED FOR SOME REASON'
 	transport_disconnect
 	server_connected=0

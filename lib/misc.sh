@@ -60,27 +60,58 @@ format_colorise() {
 #   $1 Reason to quit (optional)
 #   $2 Return status (optional, if not given, then exit 0).
 bot_quit() {
-	for module in $modules_before_disconnect; do
-		module_${module}_before_disconnect
+	# Yes this function is odd but there is a reason.
+	# If this is called from a trap like Ctrl-C we must be able to
+	# resume.
+	# Keep track of in what state we are
+	while true; do
+		case "$envbot_quitting" in
+			0)
+				for module in $modules_before_disconnect; do
+					module_${module}_before_disconnect
+				done
+				(( envbot_quitting++ ))
+				;;
+			1)
+				local reason="$1"
+				send_quit "$reason"
+				sleep 1
+				(( envbot_quitting++ ))
+				;;
+			2)
+				server_connected=0
+				for module in $modules_after_disconnect; do
+					module_${module}_after_disconnect
+				done
+				(( envbot_quitting++ ))
+				;;
+			3)
+				for module in $modules_FINALISE; do
+					module_${module}_FINALISE
+				done
+				(( envbot_quitting++ ))
+				;;
+			4)
+				log_info_stdout "Bot quit gracefully"
+				transport_disconnect
+				(( envbot_quitting++ ))
+				;;
+			5)
+				rm -rvf "$tmp_home"
+				if [[ $2 ]]; then
+					exit $2
+				else
+					exit 0
+				fi
+				;;
+			*)
+				log_error "Um. bot_quit() and envbot_quitting is $envbot_quitting. This shouldn't happen."
+				log_error "Please report a bug including the last 40 lines or so of log and what you did to cause it."
+				# Quit and clean up temp files.
+				envbot_quit 2
+				;;
+		esac
 	done
-	local reason="$1"
-	send_quit "$reason"
-	sleep 1
-	server_connected=0
-	for module in $modules_after_disconnect; do
-		module_${module}_after_disconnect
-	done
-	for module in $modules_FINALISE; do
-		module_${module}_FINALISE
-	done
-	log_info_stdout "Bot quit gracefully"
-	transport_disconnect
-	rm -rvf "$tmp_home"
-	if [[ $2 ]]; then
-		exit $2
-	else
-		exit 0
-	fi
 }
 
 # Restart the bot in a graceful way. I hope.
