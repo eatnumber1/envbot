@@ -429,4 +429,4 @@ while true; do
 	# Don't reconnect right away. We might get throttled and other nasty stuff.
 	sleep 10
 done
-rm -rf tmp_home
+rm -rf "$tmp_home"
