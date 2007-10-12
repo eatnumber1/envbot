@@ -307,7 +307,7 @@ while true; do
 		if time_check_interval "$periodic_lastrun" "$envbot_transport_timeout"; then
 			periodic_lastrun="$(date -u +%s)"
 			for module in $modules_periodic; do
-				module_${module}_periodic
+				module_${module}_periodic "${periodic_lastrun}"
 			done
 		fi
 		# Did we timeout waiting for data

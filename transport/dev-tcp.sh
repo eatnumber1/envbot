@@ -59,12 +59,20 @@ transport_disconnect() {
 	exec 3<&-
 }
 
+# Return status
+#   0 If connection is still alive
+#   1 If it isn't.
+# FIXME: This is broken...
+transport_alive() {
+	return 0
+}
+
 # Return a line in the variable line.
 # Return status
 #   0 If Ok
 #   1 If connection failed
 transport_read_line() {
-	read -ru 3 -t 600 line
+	read -ru 3 -t $envbot_transport_timeout line
 	# Fail.
 	[[ $? -ne 0 ]] && return 1
 	line=${line//$'\r'/}

@@ -71,11 +71,23 @@ transport_disconnect()
 		the background on a ping time out for example).
 
 
+transport_alive()
+	Called to check if connection is still alive.
+	Return status
+		0 If connection is still alive.
+		1 If it isn't alive.
+	Notes:
+		This function should be low overhead, it gets called quite often.
+
+
+
 transport_read_line()
 	Return a line in the variable $line.
+	The function should time out after $envbot_transport_timeout seconds (to allow for
+	periodic events).
 	Return status:
 		0 = Success
-		1 = Connection has failed (timeout or whatever)
+		1 = Connection has failed or no data was received in $envbot_transport_timeout seconds.
 	Notes:
 		The transport module should remove any trailing \r and/or \n (CR and/or LF)
 		from the string before it returns it.
