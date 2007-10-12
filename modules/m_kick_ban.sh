@@ -22,17 +22,23 @@
 # Kicking (insert comment about Chuck Norris ;) and banning.
 
 module_kick_ban_INIT() {
-	echo 'on_PRIVMSG after_connect after_load on_numeric'
+	echo 'on_PRIVMSG after_load after_connect after_load on_numeric periodic'
 }
 
 module_kick_ban_UNLOAD() {
-	unset module_kick_ban_TBAN_supported
+	unset module_kick_ban_TBAN_supported module_kick_ban_timed_bans
+	unset module_kick_ban_next_unset
+	unset module_kick_ban_find_unset_time module_kick_ban_store_ban
+
 }
 
 module_kick_ban_REHASH() {
 	return 0
 }
 
+module_kick_ban_after_load() {
+	unset module_kick_ban_next_unset module_kick_ban_timed_bans
+}
 # Lets check if TBAN is supported
 # :photon.kuonet-ng.org 461 envbot TBAN :Not enough parameters.
 # :photon.kuonet-ng.org 304 envbot :SYNTAX TBAN <channel> <duration> <banmask>
@@ -57,6 +63,53 @@ module_kick_ban_on_numeric() {
 			module_kick_ban_TBAN_supported=1
 		fi
 	fi
+}
+
+module_kick_ban_periodic() {
+	# We got some ban to process
+	if [[ $module_kick_ban_next_unset ]] && (( $envbot_time >= $module_kick_ban_next_unset )); then
+		local nextban
+		local index time channel mask
+		for index in ${!module_kick_ban_timed_bans[*]}; do
+			read -r time channel mask <<< "${module_kick_ban_timed_bans[${index}]}"
+			# Should we unset?
+			if (( $envbot_time >= $time )); then
+				# TODO: Queue them?
+				send_modes "$channel" "-b $mask"
+				unset "module_kick_ban_timed_bans[${index}]"
+				continue
+			# Next ban?
+			elif [[ -z $nextban ]] || [[ $nextban -gt $time ]]; then
+				nextban="$time"
+			fi
+		done
+		# Note time for next ban (if any)
+		if [[ $nextban ]]; then
+			module_kick_ban_next_unset="$nextban"
+		else
+			unset module_kick_ban_next_unset
+		fi
+	fi
+}
+
+# $1 = Channel
+# $2 = Banmask
+# $3 = Duration
+module_kick_ban_store_ban() {
+	local targettime="$(module_kick_ban_find_unset_time "$3")"
+	module_kick_ban_timed_bans+=( "$targettime $1 $2" )
+	if [[ -z $module_kick_ban_next_unset ]] || [[ $module_kick_ban_next_unset -gt $targettime ]]; then
+		module_kick_ban_next_unset="$targettime"
+	fi
+}
+
+
+# $1 = Duration in seconds
+module_kick_ban_find_unset_time() {
+	# Add current time to duration.
+	local targettime="$1"
+	(( targettime += $envbot_time ))
+	echo "$targettime"
 }
 
 # Called on a PRIVMSG
@@ -105,9 +158,7 @@ module_kick_ban_on_PRIVMSG() {
 						send_raw "TBAN $channel $duration $nick"
 					else
 						send_modes "$channel" "+b $nick"
-						# Hackish temp fix.
-						# FIXME: THIS WILL/MAY BREAK if bot get disconnected and so on.
-						( sleep $duration && send_modes "$channel" "-b $nick" ) &
+						module_kick_ban_store_ban "$channel" "$nick" "$duration"
 					fi
 				else
 					send_modes "$channel" "+b $nick"
