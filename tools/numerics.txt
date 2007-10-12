@@ -141,6 +141,7 @@ numeric[421]=ERR_UNKNOWNCOMMAND
 numeric[422]=ERR_NOMOTD
 numeric[432]=ERR_ERRONEUSNICKNAME     # Bad/forbidden nickname
 numeric[433]=ERR_NICKNAMEINUSE        # Nick in use
+numeric[438]=ERR_NICKTOOFAST          # Not from any RFC. Used on ircu and Unreal (at least).
 numeric[441]=ERR_USERNOTINCHANNEL
 numeric[442]=ERR_NOTONCHANNEL
 numeric[443]=ERR_USERONCHANNEL
