@@ -442,6 +442,8 @@ while true; do
 				for module in $modules_on_server_ERROR; do
 					module_${module}_on_server_ERROR "$error"
 				done
+				# If we get an ERROR we can assume we are disconnected.
+				break
 			fi
 		else
 			log_info_file unknown_data.log "Something that didn't match any hook: $line"

@@ -51,19 +51,24 @@ transport_check_support() {
 transport_connect() {
 	exec 3<&-
 	exec 3<> "/dev/tcp/${1}/${2}"
+	transport_lastvalidtime="$(date -u +%s)"
 }
 
 # Called to close connection
 # No parameters, no return code check
 transport_disconnect() {
 	exec 3<&-
+	# To force code to consider this disconnected.
+	transport_lastvalidtime=0
 }
 
 # Return status
 #   0 If connection is still alive
 #   1 If it isn't.
-# FIXME: This is broken...
 transport_alive() {
+	# This is hackish.
+	local newtime="$(date -u +%s)"
+	(( $newtime - $transport_lastvalidtime > 200 )) && return 1
 	return 0
 }
 
@@ -74,7 +79,11 @@ transport_alive() {
 transport_read_line() {
 	read -ru 3 -t $envbot_transport_timeout line
 	# Fail.
-	[[ $? -ne 0 ]] && return 1
+	if [[ $? -ne 0 ]]; then
+		return 1
+	else
+		transport_lastvalidtime="$(date -u +%s)"
+	fi
 	line=${line//$'\r'/}
 }
 
