@@ -113,6 +113,10 @@ command_line=( "$@" )
 # Current config version.
 declare -r config_current_version=14
 
+# Some constants used in different places
+declare -r envbot_transport_timeout=5
+
+
 print_cmd_help() {
 	echo 'envbot is an advanced modular IRC bot coded in bash.'
 	echo ''
@@ -272,6 +276,8 @@ echo "Loading modules"
 # Load modules
 modules_load_from_config
 
+# Used for periodic events later below
+periodic_lastrun="$(date -u +%s)"
 
 while true; do
 	for module in $modules_before_connect; do
@@ -286,8 +292,27 @@ while true; do
 		module_${module}_after_connect
 	done
 
+	while true ; do
+		transport_read_line
+		transport_status="$?"
+		# Still connected?
+		if ! transport_alive; then
+			break
+		fi
+		# Time to run periodic events again?
+		# We run them every $envbot_transport_timeout second.
+		if time_check_interval "$periodic_lastrun" "$envbot_transport_timeout"; then
+			periodic_lastrun="$(date -u +%s)"
+			for module in $modules_periodic; do
+				module_${module}_periodic
+			done
+		fi
+		# Did we timeout waiting for data
+		# or did we get data?
+		if [[ $transport_status -ne 0 ]]; then
+			continue
+		fi
 
-	while transport_read_line ; do #-d $'\n'
 		log_raw_in "$line"
 		for module in $modules_on_raw; do
 			module_${module}_on_raw "$line"

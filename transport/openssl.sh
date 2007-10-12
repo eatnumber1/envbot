@@ -85,12 +85,19 @@ transport_disconnect() {
 	exec 4<&-
 }
 
+# Return status
+#   0 If connection is still alive
+#   1 If it isn't.
+transport_alive() {
+	kill -0 "$transport_pid" >/dev/null 2>&1
+}
+
 # Return a line in the variable line.
 # Return status
 #   0 If Ok
 #   1 If connection failed
 transport_read_line() {
-	read -ru 4 -t 600 line
+	read -ru 4 -t $envbot_transport_timeout line
 	# Fail.
 	[[ $? -ne 0 ]] && return 1
 	line=${line//$'\r'/}
