@@ -73,6 +73,11 @@ clean:
 cleanlogs:
 	rm -vrf logs/*
 
+apidocs:
+	mkdir -p docs
+	./tools/bashdoc/bashdoc.sh -p envbot -o docs/ lib/*.sh
+
+
 dist-dir:
 	rm -rf $(DISTDIR)
 	bzr export $(DISTDIR)

@@ -18,14 +18,19 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+#---------------------------------------------------------------------
+## Channel management.
+#---------------------------------------------------------------------
 
 # Space separated list of current channels
 channels_current=""
 
-# Join a channel
-# Parameters
-#   $1 The channel to join.
-#   $2 Is a channel key, if any.
+#---------------------------------------------------------------------
+## Join a channel
+## @Type API
+## @param The channel to join.
+## @param Is a channel key, if any.
+#---------------------------------------------------------------------
 channels_join() {
 	local channel="$1"
 	local key=""
@@ -33,10 +38,12 @@ channels_join() {
 	send_raw "JOIN ${channel}${key}"
 }
 
-# Part a channel
-# Parameters
-#   $1 The channel to part
-#   $2 Is a reason.
+#---------------------------------------------------------------------
+## Part a channel
+## @Type API
+## @param The channel to part
+## @param Is a reason.
+#---------------------------------------------------------------------
 channels_part() {
 	local channel="$1"
 	local reason=""
@@ -49,18 +56,22 @@ channels_part() {
 # Module authors: go away                                                 #
 ###########################################################################
 
-# Internal function!
-# Adds channels to the list
-# Parameters
-#   $1 The channel to add
+#---------------------------------------------------------------------
+## Internal function!
+## Adds channels to the list
+## @Type Private
+## @param The channel to add
+#---------------------------------------------------------------------
 channels_add() {
 	channels_current="$channels_current $1"
 }
 
-# Internal function!
-# Removes channels to the list
-# Parameters
-#   $1 The channel to remove
+#---------------------------------------------------------------------
+## Internal function!
+## Removes channels to the list
+## @Type Private
+## @param The channel to remove
+#---------------------------------------------------------------------
 channels_remove() {
 	channels_current="$(list_remove channels_current "$1")"
 }

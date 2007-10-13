@@ -18,12 +18,17 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+#---------------------------------------------------------------------
+## User feedback.
+#---------------------------------------------------------------------
 
-# Return a message that syntax was bad and what the correct syntax is.
-# Parameters
-#   $1 To who (nick or channel)
-#   $2 To what function
-#   $3 Syntax help
+#---------------------------------------------------------------------
+## Return a message that syntax was bad and what the correct syntax is.
+## @Type API
+## @param To who (nick or channel)
+## @param To what function
+## @param Syntax help
+#---------------------------------------------------------------------
 feedback_bad_syntax() {
 	send_msg "$1" "Syntax error. Correct syntax for $2 is $2 $3"
 }

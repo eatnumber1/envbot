@@ -18,23 +18,23 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+#---------------------------------------------------------------------
+## Modules management
+#---------------------------------------------------------------------
 
 # List of loaded modules
 modules_loaded=""
 
-# Call from after_load with a list of modules that you depend on
-# Parameters
-#   $1 What module you are calling from.
-#   $2 Space separated list of modules you depend on
-# Return codes
-#   0 Success
-#   1 Other error
-#     You should return 1 from after_load.
-#   2 One or several of the dependencies could found.
-#     You should return 1 from after_load.
-#   3 Not all of the dependencies could be loaded (modules exist but did not
-#     load correctly).
-#     You should return 1 from after_load.
+#---------------------------------------------------------------------
+## Call from after_load with a list of modules that you depend on
+## @Type API
+## @param What module you are calling from.
+## @param Space separated list of modules you depend on
+## @return 0 Success
+## @return 1 Other error. You should return 1 from after_load.
+## @return 2 One or several of the dependencies could found. You should return 1 from after_load.
+## @return 3 Not all of the dependencies could be loaded (modules exist but did not load correctly). You should return 1 from after_load.
+#---------------------------------------------------------------------
 modules_depends_register() {
 	local callermodule="$1"
 	local dep
@@ -62,12 +62,13 @@ modules_depends_register() {
 	done
 }
 
-# Semi internal!
-# List modules that depend on another module.
-# Parameters
-#   $1 Module to check
-# Returns on STDOUT
-#   List of modules that depend on this.
+#---------------------------------------------------------------------
+## Semi internal!
+## List modules that depend on another module.
+## @Type Semi-private
+## @param Module to check
+## @Stdout List of modules that depend on this.
+#---------------------------------------------------------------------
 modules_depends_list_deps() {
 	# This is needed to be able to use indirect refs
 	local deplistname="modules_depends_${1}"
@@ -81,10 +82,12 @@ modules_depends_list_deps() {
 # See doc/module_api.txt instead                                          #
 ###########################################################################
 
-# Used by unload to unregister from depends system
-# (That is: remove from list of "depended on by" of other modules)
-# Parameters
-#   $1 Module to unregister
+#---------------------------------------------------------------------
+## Used by unload to unregister from depends system
+## (That is: remove from list of "depended on by" of other modules)
+## @Type Private
+## @param Module to unregister
+#---------------------------------------------------------------------
 modules_depends_unregister() {
 	local module newval
 	for module in $modules_loaded; do
@@ -96,13 +99,13 @@ modules_depends_unregister() {
 	done
 }
 
-
-# Check if a module can be unloaded
-# Parameters
-#   $1 Name of module to check
-# Return status
-#   0 Can be unloaded
-#   1 Is needed by some other module.
+#---------------------------------------------------------------------
+## Check if a module can be unloaded
+## @Type Private
+## @param Name of module to check
+## @return Can be unloaded
+## @return Is needed by some other module.
+#---------------------------------------------------------------------
 modules_depends_can_unload() {
 	# This is needed to be able to use indirect refs
 	local deplistname="modules_depends_${1}"
@@ -200,14 +203,15 @@ modules_add_hooks() {
 # List of all the optional hooks.
 modules_hooks="FINALISE after_load before_connect on_connect after_connect before_disconnect after_disconnect periodic on_server_ERROR on_NOTICE on_PRIVMSG on_TOPIC on_channel_MODE on_user_MODE on_INVITE on_JOIN on_PART on_KICK on_QUIT on_KILL on_NICK on_numeric on_raw"
 
-# Unload a module
-# Parameters
-#   $1 Module name
-# Return status
-#   0 Unloaded
-#   2 Module not loaded
-#   3 Can't unload, some other module depends on this.
-# If the unload fails the bot will quit.
+#---------------------------------------------------------------------
+## Unload a module
+## @Type Private
+## @param Module name
+## @return 0 Unloaded
+## @return 2 Module not loaded
+## @return 3 Can't unload, some other module depends on this.
+## @Note If the unload fails for other reasons the bot will quit.
+#---------------------------------------------------------------------
 modules_unload() {
 	local module="$1"
 	local hook newval to_unset
@@ -248,18 +252,19 @@ modules_unload() {
 	return 0
 }
 
-# Load a module
-# Parameters
-#   $1 Name of module to load
-# Returns status
-#   0 Loaded Ok
-#   1 Other errors
-#   2 Module already loaded
-#   3 Failed to source it
-#   4 No such module
-#   5 Getting hooks failed
-#   6 after_load failed
-# If the load fails in a fatal way the bot will quit.
+#---------------------------------------------------------------------
+## Load a module
+## @Type Private
+## @param Name of module to load
+## @return 0 Loaded Ok
+## @return 1 Other errors
+## @return 2 Module already loaded
+## @return 3 Failed to source it
+## @return 4 No such module
+## @return 5 Getting hooks failed
+## @return 6 after_load failed
+## @Note If the load fails in a fatal way the bot will quit.
+#---------------------------------------------------------------------
 modules_load() {
 	local module="$1"
 	if list_contains "modules_loaded" "$module"; then
@@ -300,7 +305,10 @@ modules_load() {
 	fi
 }
 
-# Load modules from the config
+#---------------------------------------------------------------------
+## Load modules from the config
+## @Type Private
+#---------------------------------------------------------------------
 modules_load_from_config() {
 	for module in $config_modules; do
 		if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
