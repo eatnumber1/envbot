@@ -149,6 +149,20 @@ log_info_file()
 		$1 The extra log file (relative to the current log directory)
 		$2 The log message to log
 
+
+main.sh
+-------
+
+$envbot_transport_timeout
+	Transport modules will wait $envbot_transport_timeout seconds
+	before returning control to main loop (to allow periodic events).
+
+$envbot_time
+	Timestamp at beginning of current main loop. If you don't
+	need exact date this is faster to use than $(date -u +%s)
+	because subshells are slow.
+
+
 misc.sh
 -------
 

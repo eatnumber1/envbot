@@ -113,6 +113,10 @@ command_line=( "$@" )
 # Current config version.
 declare -r config_current_version=14
 
+# Some constants used in different places
+declare -r envbot_transport_timeout=5
+
+
 print_cmd_help() {
 	echo 'envbot is an advanced modular IRC bot coded in bash.'
 	echo ''
@@ -272,8 +276,17 @@ echo "Loading modules"
 # Load modules
 modules_load_from_config
 
+# Used for periodic events later below
+periodic_lastrun="$(date -u +%s)"
+# This can be used when the code does not need exact time.
+# It will be updated each time the bot get a new line of
+# data.
+envbot_time="$(date -u +%s)"
 
 while true; do
+	# In progress of quitting? This is used to
+	# work around the issue in bug 25.
+	envbot_quitting=0
 	for module in $modules_before_connect; do
 		module_${module}_before_connect
 	done
@@ -286,8 +299,30 @@ while true; do
 		module_${module}_after_connect
 	done
 
+	while true ; do
+		transport_read_line
+		transport_status="$?"
+		# Still connected?
+		if ! transport_alive; then
+			break
+		fi
+		envbot_time="$(date -u +%s)"
+		# Time to run periodic events again?
+		# We run them every $envbot_transport_timeout second.
+		if time_check_interval "$periodic_lastrun" "$envbot_transport_timeout"; then
+			# Do not use $envbot_time here.
+			periodic_lastrun="$(date -u +%s)"
+			envbot_time="$periodic_lastrun"
+			for module in $modules_periodic; do
+				module_${module}_periodic "${periodic_lastrun}"
+			done
+		fi
+		# Did we timeout waiting for data
+		# or did we get data?
+		if [[ $transport_status -ne 0 ]]; then
+			continue
+		fi
 
-	while transport_read_line ; do #-d $'\n'
 		log_raw_in "$line"
 		for module in $modules_on_raw; do
 			module_${module}_on_raw "$line"
@@ -414,12 +449,20 @@ while true; do
 				for module in $modules_on_server_ERROR; do
 					module_${module}_on_server_ERROR "$error"
 				done
+				# If we get an ERROR we can assume we are disconnected.
+				break
 			fi
 		else
 			log_info_file unknown_data.log "Something that didn't match any hook: $line"
 		fi
 	done
-
+	if [[ $envbot_quitting -ne 0 ]]; then
+		# Hm, a trap got aborted it seems.
+		# Trying to handle this.
+		log_info "Quit trap got aborted: envbot_quitting=${envbot_quitting}. Recovering"
+		bot_quit
+		break
+	fi
 	log_error 'DIED FOR SOME REASON'
 	transport_disconnect
 	server_connected=0

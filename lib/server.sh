@@ -155,7 +155,19 @@ server_connect(){
 	trap 'transport_disconnect; rm -rvf "$tmp_home"; exit 1' TERM INT
 	log_info_stdout "Connecting to \"${config_server}:${config_server_port}\"..."
 	transport_connect "$config_server" "$config_server_port" "$config_server_ssl" "$config_server_bind" || return 1
-	while transport_read_line; do
+	while true; do
+		transport_read_line
+		local transport_status="$?"
+		# Still connected?
+		if ! transport_alive; then
+			break
+		fi
+		# Did we timeout waiting for data
+		# or did we get data?
+		# We don't care about periodic events here.
+		if [[ $transport_status -ne 0 ]]; then
+			continue
+		fi
 		# Check with modules first, needed so we don't skip them.
 		for module in $modules_on_connect; do
 			module_${module}_on_connect "$line"
