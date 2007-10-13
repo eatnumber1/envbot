@@ -57,12 +57,17 @@ function args()
 				shift 2
 				;;
 			-o)
-				OUT_DIR=$2
+				OUT_DIR="$2"
+				mkdir -p "$OUT_DIR"
 				let retVal+=2
 				shift 2
 				;;
 			--help|-h)
 				usage
+				exit 0
+				;;
+			--version|-V)
+				version
 				exit 0
 				;;
 			--exclusive|-e)
@@ -71,7 +76,7 @@ function args()
 				let retVal+=2
 				shift 2
 				;;
-			-q|--quiet)
+			--quiet|-q)
 				let QUIET+=1
 				let retVal+=1
 				shift 1
@@ -85,7 +90,7 @@ function args()
 				exit 0
 				;;
 			*)
-				[ -e $1 ] && return $retVal
+				[[ -e $1 ]] && return $retVal
 				echo "$1 doesn't exist."
 				usage
 				exit 1
@@ -95,22 +100,43 @@ function args()
 }
 
 #-------------------------
+##	Version for this script
+##	@Stdout	Version information
+#-------------------------
+function version()
+{
+	echo "bashdoc $VERSION - Generate HTML documentation from bash scripts"
+	echo ''
+	echo 'Copyright (C) 2003 Paul Mahon'
+	echo 'This is free software; see the source for copying conditions.  There is NO'
+	echo 'warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.'
+	echo ''
+	echo 'Written by Paul Mahon'
+}
+
+#-------------------------
 ##	Usage for this script
 ##	@Stdout	Usage information
 #-------------------------
 function usage()
 {
 cat <<- EOF
-Usage: $(basename $0) [-p project] [-o directory] [--] script [ script ...]
-	'-p project'     Name of the project
-	'-o directory'   Specifies the directory you want the
-	                 resulting html to go into
-	'-e tag'         Only output if the block has this tag
-	'-q'             Quiet the output
-	'--'             No more arguments, only scripts
-	'script'         The script you want documented
+bashdoc generates HTML documentation from bash scripts.
 
-	Example: bashdoc.sh -p smgl -o docs/ /home/user/p4/sgl/devel/sorcery/var/lib/sorcery/modules/lib{misc,codex} bash2doc.sh
+Usage: $(basename $0) [-p project] [-o directory] [--] script [script ...]
+
+Options:
+  -p project           Name of the project
+  -o directory         Specifies the directory you want the resulting html to go into
+  -e, --exclusive tag  Only output if the block has this tag
+  -q, --quiet          Quiet the output
+  -h, --help           Display this help and exit
+  -V, --version           Output version information and exit
+  --                   No more arguments, only scripts
+  script               The script you want documented
+
+Examples:
+  bashdoc.sh -p bashdoc -o docs/ bashdoc.sh   Generate documentation for this program.
 EOF
 }
 
@@ -188,7 +214,7 @@ function parse_comments()
 		retDesc=()
 		desc=""
 		block=$( get_comment_block )
-		[ $? -gt 0 ] && break
+		[[ $? -gt 0 ]] && break
 
 		if [[ $skipRead ]] ; then
 			skipRead=""
@@ -245,7 +271,7 @@ function parse_comments()
 #---------------------
 function output_parsed_block()
 {
-	echo -e "<hr>"
+	echo -e "<hr />"
 	if [[ $funcName ]] ; then
 		echo "<!-- Block for $funcName -->"
 		echo "<dl>"
@@ -265,7 +291,7 @@ function output_parsed_block()
 		for i in ${!tag_*} ; do
 			echo "	<dt><h3>${i#tag_}</h3></dt>"
 			echo "	<dd>${!i}</dd>"
-			eval "unset $i"
+			unset $i
 		done
 		[[ $desc ]] && echo "	<dt><h3>Description</h3></dt><dd>$desc</dd>"
 		echo "</dl>"
@@ -305,13 +331,15 @@ function parse_block()
 		if [[ ${LINE:0:1} == '@' ]] ; then
 			split_tag split $LINE
 			case ${split} in
-				@param) 	#paramNames[${#paramNames[*]}]=${split[1]}
+				@param)
+					#paramNames[${#paramNames[*]}]=${split[1]}
 					paramDesc=( "${paramDesc[@]}" "${split[1]}" )
 					;;
 				@return)
 					retDesc=( "${retDesc[@]}" "${split[1]}" )
 					;;
-				@*) tag=${split[0]#@}
+				@*)
+					tag=${split[0]#@}
 					local i="tag_${tag}"
 					if [[ ${!i} ]] ; then
 						eval "tag_${tag}=\"\${tag_${tag}}"$'\n'"${split[1]}\""
@@ -319,7 +347,8 @@ function parse_block()
 						eval "tag_${tag}=\"${split[1]}\""
 					fi
 					;;
-				*)	echo "We shouldn't get here... it was a tag, but not a tag?" >&2
+				*)
+					echo "We shouldn't get here... it was a tag, but not a tag?" >&2
 					;;
 			esac
 		else
