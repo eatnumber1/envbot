@@ -21,7 +21,7 @@
 # Identify to NickServ
 
 module_services_INIT() {
-	echo 'on_connect after_load'
+	echo 'on_connect after_load after_disconnect'
 }
 
 module_services_UNLOAD() {
@@ -73,4 +73,10 @@ module_services_on_connect() {
 				;;
 		esac
 	fi
+}
+
+
+module_services_after_disconnect() {
+	# Reset state.
+	module_services_ghost=0
 }

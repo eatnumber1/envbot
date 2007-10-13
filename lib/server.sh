@@ -149,6 +149,8 @@ server_handle_nick_in_use() {
 server_connect(){
 	server_connected=0
 	on_nick=1
+	# Clear current channels:
+	channels_current=""
 	# HACK: Clean up if we are aborted, replaced after connect with one that sends QUIT
 	trap 'transport_disconnect; rm -rvf "$tmp_home"; exit 1' TERM INT
 	log_info_stdout "Connecting to \"${config_server}:${config_server_port}\"..."
