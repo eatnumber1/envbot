@@ -197,10 +197,10 @@ Options:
   script                  The script you want documented
 
 Examples:
-  $(basename $0) -p bashdoc -o docs/ bashdoc.sh              Generate documentation for this program.
-  $(basename $0) -p appname -o docs/ -e Type=API someapp.sh  Generate documentation for someapp.sh,
-                                                             exclude items that do not include the tag
-                                                             @Type API
+  bashdoc.sh -p bashdoc -o docs/ bashdoc.sh              Generate documentation for this program.
+  bashdoc.sh -p appname -o docs/ -e Type=API someapp.sh  Generate documentation for someapp.sh,
+                                                         exclude items that do not include the tag
+                                                         @Type API
 EOF
 }
 
