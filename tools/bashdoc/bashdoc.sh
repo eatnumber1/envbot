@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #--------------------------
 ##	@Synopsis	Reads specialy formated shell scripts and creates docs
 ##	@Copyright	Copyright 2003, Paul Mahon
