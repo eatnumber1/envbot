@@ -388,12 +388,13 @@ function parse_block()
 					;;
 				@*)
 					tag=${split[0]#@}
+					local value="$(sed 's/\\/\\\\/g;s/\$/\\$/;s/"/\\"/g' <<< "${split[1]}")"
 					local i="tag_${tag}"
 					if [[ ${!i} ]] ; then
 						local varname="tag_${tag}"
-						eval "tag_${tag}=\"\${!varname}"$'\n'"${split[1]}\""
+						eval "tag_${tag}=\"\${!varname}"$'\n'"${value}\""
 					else
-						eval "tag_${tag}=\"${split[1]}\""
+						eval "tag_${tag}=\"${value}\""
 					fi
 					;;
 				*)
@@ -525,8 +526,10 @@ while [[ $# -gt 0 ]] ; do
 	FUNC_FILE="${OUT_FILE%.html}.funcs"
 	VAR_FILE="${OUT_FILE%.html}.vars"
 	SCRIPT_DESC="${OUT_FILE%.html}.desc"
+	# Store real name (reuse in script list)
 	REAL_NAME_FILE="${OUT_FILE%.html}.name"
 	echo -n "${FILE#/}" > "$REAL_NAME_FILE"
+
 	FUNC_LIST=""
 	VAR_LIST=""
 
