@@ -226,6 +226,9 @@ function parse_comments()
 	local skipRead
 	local outBlock=""
 	local lastOutBlock=""
+	# 1 = function
+	# 2 = variable
+	itemtype=
 	while true ; do
 		paramNames=()
 		paramDesc=()
@@ -242,11 +245,17 @@ function parse_comments()
 			funcName=""
 			read funcLine
 		fi
+		# Is it a function?
 		if [[ ${funcLine%%[[:blank:]]*} == function ]] || [[ ${funcLine} =~ \(\)\ \{$ ]]; then
 			funcName=$( echo ${funcLine#function} )
 			funcName=$( echo ${funcName%%()*} )
+			itemtype=1
+		# Is it a (global) variable?
+		elif [[ ${funcLine} =~ ^(declare -r +)?([^ ]+)=.+$ ]]; then
+			varName="${BASH_REMATCH[@]: -1}"
+			itemtype=2
 		fi
-		if [[ $funcName ]] || [[ $FIRST_BLOCK ]] ; then
+		if [[ $funcName ]] || [[ $varName ]] || [[ $FIRST_BLOCK ]] ; then
 			# Only bother with this block if it is a function block or
 			#  the first script block
 
@@ -274,10 +283,12 @@ function parse_comments()
 			fi
 
 			FUNC_LIST="$FUNC_LIST $funcName"
+			VAR_LIST="$VAR_LIST $varName"
+			unset funcName varName
 			echo "$outBlock"
 
 		else
-			[[ $QUIET -lt 2 ]] && echo "Ignoring non-first non-function comment block" >&2
+			[[ $QUIET -lt 2 ]] && echo "Ignoring non-first non-function/variable comment block" >&2
 			[[ $QUIET -lt 1 ]] && echo "$block" >&2
 		fi
 	done
@@ -290,10 +301,10 @@ function parse_comments()
 #---------------------
 function output_parsed_block()
 {
-	echo -e "<hr />"
-	if [[ $funcName ]] ; then
+	echo "<hr />"
+	if [[ $itemtype -eq 1 ]] && [[ $funcName ]]; then
 		echo "<!-- Block for $funcName -->"
-		echo "	<h2 id=\"$funcName\">function <strong>$funcName</strong>()</h2>"
+		echo "	<h2 id=\"$funcName\" class=\"function\">function <strong>$funcName</strong>()</h2>"
 		echo "	<h3>Parameters:</h3>"
 		echo "	<ul class=\"paramerters\">"
 		if [[ ${#paramDesc[*]} -gt 0 ]] ; then
@@ -315,14 +326,27 @@ function output_parsed_block()
 
 		for i in ${!tag_*} ; do
 			# Convert _ in tags to space. Looks better.
-			echo "	<h3 class=\"othertag ${i/tag_/tag-}\">$(sed 's/_/ /g' <<< "${i#tag_}")</h3>"
+			echo "	<h3 class=\"othertag funcothertag ${i/tag_/tag-}\">$(sed 's/_/ /g' <<< "${i#tag_}")</h3>"
 			# This may be fun, allow special formatting by tag.
-			echo "	<p class=\"othertag ${i/tag_/tag-}\">"
+			echo "	<p class=\"othertag funcothertag ${i/tag_/tag-}\">"
 			echo "	${!i}"
 			echo "	</p>"
 			unset $i
 		done
-		[[ $desc ]] && echo "<h3>Description</h3><p class=\"description\">$desc</p>"
+		[[ $desc ]] && echo "<h3>Description</h3><p class=\"description funcdescription\">$desc</p>"
+	elif [[ $itemtype -eq 2 ]]; then
+		echo "<!-- Block for $varName -->"
+		echo "	<h2 id=\"$varName\" class=\"variable\">variable <strong>$varName</strong></h2>"
+		for i in ${!tag_*} ; do
+			# Convert _ in tags to space. Looks better.
+			echo "	<h3 class=\"othertag varothertag ${i/tag_/tag-}\">$(sed 's/_/ /g' <<< "${i#tag_}")</h3>"
+			# This may be fun, allow special formatting by tag.
+			echo "	<p class=\"othertag varothertag ${i/tag_/tag-}\">"
+			echo "	${!i}"
+			echo "	</p>"
+			unset $i
+		done
+		[[ $desc ]] && echo "<h3>Description</h3><p class=\"description vardescription\">$desc</p>"
 	else
 		echo '<!-- Header for whole script -->'
 		echo "<h1>$FILE</h1>"
@@ -330,8 +354,8 @@ function output_parsed_block()
 		echo "$desc" >> $SCRIPT_DESC
 
 		for i in ${!tag_*} ; do
-			echo "	<h3>${i#tag_}</h3>"
-			echo "	<p class=\"othertag\">${!i}</p>"
+			echo "	<h3 class=\"fileothertag ${i/tag_/tag-}\">${i#tag_}</h3>"
+			echo "	<p class=\"fileothertag ${i/tag_/tag-}\">${!i}</p>"
 			unset $i
 		done
 	fi
@@ -449,7 +473,7 @@ h1, h2, h3, h4 {
  letter-spacing: -0.018em;
 }
 h1 { font-size: 19px; margin: .15em 1em 0 0 }
-h2 { font-size: 16px }
+h2 { font-size: 16px; font-weight: normal; }
 h3 { font-size: 14px }
 hr { border: none;  border-top: 1px solid #ccb; margin: 2em 0 }
 address { font-style: normal }
@@ -498,8 +522,10 @@ while [[ $# -gt 0 ]] ; do
 	OUT_FILE=${FILE#/}									#Remove leading /
 	OUT_FILE="$OUT_DIR/${OUT_FILE//\//.}.html"
 	FUNC_FILE="${OUT_FILE%.html}.funcs"
+	VAR_FILE="${OUT_FILE%.html}.vars"
 	SCRIPT_DESC="${OUT_FILE%.html}.desc"
 	FUNC_LIST=""
+	VAR_LIST=""
 
 	#Start this src's html file
 	script_header "$FILE"
@@ -508,6 +534,7 @@ while [[ $# -gt 0 ]] ; do
 	{
 		parse_comments < $FILE
 		echo "$FUNC_LIST" > $FUNC_FILE
+		echo "$VAR_LIST" > $VAR_FILE
 	# Convert references like <@function file,functioname> into links
 	} | sed -e 's!<@[[:blank:]]*function \([^,>]*\)[[:blank:]]*>!<a href="#\1">\1</a>!g' \
 	        -e 's!<@[[:blank:]]*function \([^,>]*\),[[:blank:]]*\([^>]*\)[[:blank:]]*>!<a href="\1#\2">\1</a>!g' >> $OUT_FILE
@@ -534,10 +561,18 @@ cat <<- EOF > function_list.html
 		<ul class="nav">
 EOF
 
+echo "<strong>Functions</strong>" >> function_list.html
 # Merge function lists of all sources, sort by function name
 for i in *.funcs ; do
 	for f in $( cat $i ) ; do
-		echo "$f <li class=\"nav\"><a href=\"${i%.funcs}.html#$f\" target=\"main\">$f</a></li>"
+		echo "$f <li class=\"nav nav-function\"><tt>[f]</tt> <a href=\"${i%.funcs}.html#$f\" target=\"main\">$f</a></li>"
+	done
+done | sort | cut -d' ' -f2- >> function_list.html
+
+echo "<strong>Variables</strong>" >> function_list.html
+for i in *.vars ; do
+	for v in $( cat $i ) ; do
+		echo "$v <li class=\"nav nav-variable\"><tt>[v]</tt> <a href=\"${i%.vars}.html#$v\" target=\"main\">$v</a></li>"
 	done
 done | sort | cut -d' ' -f2- >> function_list.html
 
@@ -590,7 +625,7 @@ cat <<- EOF > index.html
 		$HEADERS
 		<title>BashDoc - $PROJECT</title>
 	</head>
-	<frameset cols="20%,*">
+	<frameset cols="25%,*">
 		<frame src="function_list.html" name="function_list" />
 		<frame src="script_list.html" name="main" />
 	</frameset>
