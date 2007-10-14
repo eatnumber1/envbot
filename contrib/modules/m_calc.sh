@@ -26,38 +26,10 @@ module_calc_INIT() {
 }
 
 module_calc_UNLOAD() {
-	module_calc_remove_tmpfile
-	unset module_calc_tmpfile
-	unset module_calc_create_tmpfile module_calc_remove_tmpfile module_calc_empty_tmpfile
-}
-
-module_calc_REHASH() {
-	module_calc_remove_tmpfile
-	module_calc_create_tmpfile
-}
-
-module_calc_FINALISE() {
-	module_calc_remove_tmpfile
 	return 0
 }
 
-module_calc_create_tmpfile() {
-	unset module_calc_tmpfile
-	module_calc_tmpfile="$(mktemp -t envbot.calc.XXXXXXXXXX)" || return 1
-}
-
-module_calc_empty_tmpfile() {
-	> "$module_calc_tmpfile"
-}
-
-module_calc_remove_tmpfile() {
-	if [[ -e "$module_calc_tmpfile" ]]; then
-		rm -f "$module_calc_tmpfile"
-	fi
-}
-
 module_calc_after_load() {
-	module_calc_create_tmpfile
 	return 0
 }
 
@@ -84,11 +56,9 @@ module_calc_on_PRIVMSG() {
 		elif [[ $parameters =~ \^[0-9]{4,} ]]; then
 			send_msg "$channel" "$(parse_hostmask_nick "$sender"): Some too large numbers."
 		else
-			echo "$parameters"$'\nquit' > "$module_calc_tmpfile"
 			# Force some security guards
-			local myresult="$(ulimit -t 4; bc -lq "$module_calc_tmpfile" 2>&1 | head -n 1)"
+			local myresult="$(ulimit -t 4; echo "$parameters" | bc -l 2>&1 | head -n 1)"
 			send_msg "$channel" "$(parse_hostmask_nick "$sender"): $myresult"
-			module_calc_empty_tmpfile
 		fi
 		return 1
 	fi
