@@ -63,8 +63,12 @@ module_factoids_after_load() {
 }
 
 
-# Get an item from DB
-# $1 = key
+#---------------------------------------------------------------------
+## Get an item from DB
+## @Type Private
+## @param Key
+## @Stdout The result of the database query.
+#---------------------------------------------------------------------
 module_factoids_SELECT() {
 	#$ sqlite3 -list data/factoids.sqlite "SELECT value from factoids WHERE name='factoids';"
 	#A system that stores useful bits of information
@@ -72,49 +76,69 @@ module_factoids_SELECT() {
 }
 
 
-# Insert a new item into DB
-# $1 = key
-# $2 = value
-# $3 = hostmask of person who added it
+#---------------------------------------------------------------------
+## Insert a new item into DB
+## @Type Private
+## @param key
+## @param value
+## @param hostmask of person who added it
+#---------------------------------------------------------------------
 module_factoids_INSERT() {
 	module_sqlite3_exec_sql \
 		"INSERT INTO $config_module_factoids_table (name, value, who) VALUES('$(module_sqlite3_clean_string "$1")', '$(module_sqlite3_clean_string "$2")', '$(module_sqlite3_clean_string "$3")');"
 }
 
 
-# Change the item in DB
-# $1 = key
-# $2 = new value
-# $3 = hostmask of person who changed it
+#---------------------------------------------------------------------
+## Change the item in DB
+## @Type Private
+## @param key
+## @param new value
+## @param hostmask of person who changed it
+#---------------------------------------------------------------------
 module_factoids_UPDATE() {
 	module_sqlite3_exec_sql \
 		"UPDATE $config_module_factoids_table SET value='$(module_sqlite3_clean_string "$2")', who='$(module_sqlite3_clean_string "$3")' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 
-# Remove an item
-# $1 = key
+#---------------------------------------------------------------------
+## Remove an item
+## @Type Private
+## @param key
+#---------------------------------------------------------------------
 module_factoids_DELETE() {
 	module_sqlite3_exec_sql "DELETE FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 
-# How many factoids are there
+#---------------------------------------------------------------------
+## How many factoids are there
+## @Type Private
+## @Stdout Count of factoids.
+#---------------------------------------------------------------------
 module_factoids_get_count() {
 	module_sqlite3_exec_sql "SELECT COUNT(name) FROM $config_module_factoids_table;"
 }
 
 
-# How many locked factoids are there
+#---------------------------------------------------------------------
+## How many locked factoids are there
+## @Type Private
+## @Stdout Count of locked factoids.
+#---------------------------------------------------------------------
 module_factoids_get_locked_count() {
 	module_sqlite3_exec_sql "SELECT COUNT(name) FROM $config_module_factoids_table WHERE is_locked='1';"
 }
 
 
-# Check if factoid is locked or not.
-# $1 = key
-# Return 0 = locked
-#        1 = not locked
+#---------------------------------------------------------------------
+## Check if factoid is locked or not.
+## @Type Private
+## @param key
+## @return 0 locked
+## @return 1 not locked
+#---------------------------------------------------------------------
 module_factoids_is_locked() {
 	local lock="$(module_sqlite3_exec_sql "SELECT is_locked FROM $config_module_factoids_table WHERE name='$(module_sqlite3_clean_string "$1")';")"
 	if [[ $lock == "1" ]]; then
@@ -125,24 +149,33 @@ module_factoids_is_locked() {
 }
 
 
-# Lock a factoid against changes from non-owners
-# $1 = key
+#---------------------------------------------------------------------
+## Lock a factoid against changes from non-owners
+## @Type Private
+## @param key
+#---------------------------------------------------------------------
 module_factoids_lock() {
 	module_sqlite3_exec_sql "UPDATE $config_module_factoids_table SET is_locked='1' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 
-# Unlock a factoid from protection against non-owners
-# $1 = key
+#---------------------------------------------------------------------
+## Unlock a factoid from protection against non-owners
+## @Type Private
+## @param key
+#---------------------------------------------------------------------
 module_factoids_unlock() {
 	module_sqlite3_exec_sql "UPDATE $config_module_factoids_table SET is_locked='0' WHERE name='$(module_sqlite3_clean_string "$1")';"
 }
 
 
-# Wrapper, call either INSERT or UPDATE
-# $1 = key
-# $2 = value
-# $3 = hostmask of person set it
+#---------------------------------------------------------------------
+## Wrapper, call either INSERT or UPDATE
+## @Type Private
+## @param key
+## @param value
+## @param hostmask of person set it
+#---------------------------------------------------------------------
 module_factoids_set_INSERT_or_UPDATE() {
 	if [[ $(module_factoids_SELECT "$1") ]]; then
 		module_factoids_UPDATE "$1" "$2" "$3"
@@ -152,11 +185,14 @@ module_factoids_set_INSERT_or_UPDATE() {
 }
 
 
-# Wrapper, call either INSERT or UPDATE
-# $1 = key
-# $2 = value
-# $3 = sender
-# $4 = channel
+#---------------------------------------------------------------------
+## Wrapper, call either INSERT or UPDATE
+## @Type Private
+## @param key
+## @param value
+## @param sender
+## @param channel
+#---------------------------------------------------------------------
 module_factoids_set() {
 	local key="$1"
 	local value="$2"
@@ -176,10 +212,13 @@ module_factoids_set() {
 }
 
 
-# Wrapper, check access
-# $1 = key
-# $2 = sender
-# $3 = channel
+#---------------------------------------------------------------------
+## Wrapper, check access
+## @Type Private
+## @param key
+## @param sender
+## @param channel
+#---------------------------------------------------------------------
 module_factoids_remove() {
 	local key="$1"
 	local sender="$2"
@@ -203,9 +242,12 @@ module_factoids_remove() {
 }
 
 
-# Send the factoid:
-# $1 To where (channel or nick)
-# $2 What factoid.
+#---------------------------------------------------------------------
+## Send the factoid:
+## @Type Private
+## @param To where (channel or nick)
+## @param What factoid.
+#---------------------------------------------------------------------
 module_factoids_send_factoid() {
 	local channel="$1"
 	local key="$2"
@@ -224,11 +266,13 @@ module_factoids_send_factoid() {
 }
 
 
-# Parse assignment:
-#   $1 String to parse
-# Will return using
-# $module_factoids_parse_key
-# $module_factoids_parse_value
+#---------------------------------------------------------------------
+## Parse assignment:
+## @Type Private
+## @param String to parse
+## @Note Will return using Global variables
+## @Globals $module_factoids_parse_key $module_factoids_parse_value
+#---------------------------------------------------------------------
 module_factoids_parse_assignment() {
 	local word key value
 	# Have we hit a separator yet?

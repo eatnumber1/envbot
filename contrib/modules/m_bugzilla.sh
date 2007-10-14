@@ -96,6 +96,7 @@ module_bugzilla_on_PRIVMSG() {
 					fi
 					log_info_file bugzilla.log "$sender made the bot run pybugz search on \"$pattern\""
 					local result="$(ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
+					# Some odd formatting chars are always returned, so we can't check for empty string.
 					local chars="$(wc -c <<< "$result")"
 					local lines="$(wc -l <<< "$result")"
 					local header footer

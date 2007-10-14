@@ -60,37 +60,50 @@ module_seen_after_load() {
 	fi
 }
 
-# Get the data about nick
-# $1 The nick
+#---------------------------------------------------------------------
+## Get the data about nick
+## @Type Private
+## @param The nick
+## @Stdout The result of the database query.
+#---------------------------------------------------------------------
 module_seen_SELECT() {
 	module_sqlite3_exec_sql "SELECT timestamp, channel, message FROM $config_module_seen_table WHERE nick='$(module_sqlite3_clean_string "$1")';"
 }
 
-# Insert a new item into DB
-# $1 = nick
-# $2 = channel
-# $3 = timestamp
-# $4 = query
+#---------------------------------------------------------------------
+## Insert a new item into DB
+## @Type Private
+## @param Nick
+## @param Channel
+## @param Timestamp
+## @param Query
+#---------------------------------------------------------------------
 module_seen_INSERT() {
 	module_sqlite3_exec_sql \
 		"INSERT INTO $config_module_seen_table (nick, channel, timestamp, message) VALUES('$(module_sqlite3_clean_string "$1")', '$(module_sqlite3_clean_string "$2")', '$(module_sqlite3_clean_string "$3")', '$(module_sqlite3_clean_string "$4")');"
 }
 
-# Change the item in DB
-# $1 = nick
-# $2 = channel
-# $3 = timestamp
-# $4 = message
+#---------------------------------------------------------------------
+## Change the item in DB
+## @Type Private
+## @param Nick
+## @param Channel
+## @param Timestamp
+## @param Message
+#---------------------------------------------------------------------
 module_seen_UPDATE() {
 	module_sqlite3_exec_sql \
 		"UPDATE $config_module_seen_table SET channel='$(module_sqlite3_clean_string "$2")', timestamp='$(module_sqlite3_clean_string "$3")', message='$(module_sqlite3_clean_string "$4")' WHERE nick='$(module_sqlite3_clean_string "$1")';"
 }
 
-# Wrapper, call either INSERT or UPDATE
-# $1 = nick
-# $2 = channel
-# $3 = timestamp
-# $4 = message
+#---------------------------------------------------------------------
+## Wrapper, call either INSERT or UPDATE
+## @Type Private
+## @param Nick
+## @param Channel
+## @param Timestamp
+## @param Message
+#---------------------------------------------------------------------
 module_seen_set_INSERT_or_UPDATE() {
 	if [[ $(module_seen_SELECT "$1") ]]; then
 		module_seen_UPDATE "$1" "$2" "$3" "$4"
@@ -99,11 +112,14 @@ module_seen_set_INSERT_or_UPDATE() {
 	fi
 }
 
-# Store a line
-#  $1 Sender
-#  $2 Channel
-#  $3 Timestamp
-#  $4 Query
+#---------------------------------------------------------------------
+## Store a line
+## @Type Private
+## @param Sender
+## @param Channel
+## @param Timestamp
+## @param uery
+#---------------------------------------------------------------------
 module_seen_store() {
 	# Clean spaces, fastest way for this
 	local query
@@ -111,6 +127,13 @@ module_seen_store() {
 	module_seen_set_INSERT_or_UPDATE "$(parse_hostmask_nick "$1" | tr '[:upper:]' '[:lower:]')" "$2" "$3" "${query[*]}"
 }
 
+#---------------------------------------------------------------------
+## Look up a nick
+## @Type Private
+## @param Sender
+## @param Channel
+## @param Nick to look up
+#---------------------------------------------------------------------
 module_seen_find() {
 	local sender="$1"
 	local channel="$2"

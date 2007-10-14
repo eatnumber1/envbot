@@ -56,33 +56,46 @@ module_karma_after_load() {
 	fi
 }
 
-# Get an item from DB
-# $1 = key
+#---------------------------------------------------------------------
+## Get an item from DB
+## @Type Private
+## @param key
+## @Stdout The result of the database query.
+#---------------------------------------------------------------------
 module_karma_SELECT() {
 	module_sqlite3_exec_sql "SELECT rating FROM $config_module_karma_table WHERE target='$(module_sqlite3_clean_string "$1")';"
 }
 
 
-# Insert a new item into DB
-# $1 = key
-# $2 = karma
+#---------------------------------------------------------------------
+## Insert a new item into DB
+## @Type Private
+## @param key
+## @param karma
+#---------------------------------------------------------------------
 module_karma_INSERT() {
 	module_sqlite3_exec_sql \
 		"INSERT INTO $config_module_karma_table (target, rating) VALUES('$(module_sqlite3_clean_string "$1")', '$(module_sqlite3_clean_string "$2")');"
 }
 
 
-# Change the item in DB
-# $1 = key
-# $2 = karma
+#---------------------------------------------------------------------
+## Change the item in DB
+## @Type Private
+## @param key
+## @param karma
+#---------------------------------------------------------------------
 module_karma_UPDATE() {
 	module_sqlite3_exec_sql \
 		"UPDATE $config_module_karma_table SET rating='$(module_sqlite3_clean_string "$2")' WHERE target='$(module_sqlite3_clean_string "$1")';"
 }
 
-# Wrapper, call either INSERT or UPDATE
-# $1 = key
-# $2 = karma
+#---------------------------------------------------------------------
+## Wrapper, call either INSERT or UPDATE
+## @Type Private
+## @param key
+## @param karma
+#---------------------------------------------------------------------
 module_karma_set_INSERT_or_UPDATE() {
 	if [[ $(module_karma_SELECT "$1") ]]; then
 		module_karma_UPDATE "$1" "$2"
@@ -91,7 +104,11 @@ module_karma_set_INSERT_or_UPDATE() {
 	fi
 }
 
-# $1 key to remove from.
+#---------------------------------------------------------------------
+## Remove 1 from key
+## @Type Private
+## @param key to remove from.
+#---------------------------------------------------------------------
 module_karma_substract() {
 	# Clean spaces and convert to lower case
 	local keyarray
@@ -106,7 +123,11 @@ module_karma_substract() {
 	module_karma_set_INSERT_or_UPDATE "$key" "$new"
 }
 
-# $1 key to add to.
+#---------------------------------------------------------------------
+## Add 1 from key
+## @Type Private
+## @param key to add to.
+#---------------------------------------------------------------------
 module_karma_add() {
 	# Clean spaces and convert to lower case
 	local keyarray
@@ -121,7 +142,11 @@ module_karma_add() {
 	module_karma_set_INSERT_or_UPDATE "$key" "$new"
 }
 
-# $1 key to return karma for (on STDOUT)
+#---------------------------------------------------------------------
+## Return karma value for key
+## @Type Private
+## @param key to return karma for (on STDOUT)
+#---------------------------------------------------------------------
 module_karma_check() {
 	# Clean spaces and convert to lower case
 	local keyarray
@@ -134,11 +159,14 @@ module_karma_check() {
 	echo "$value"
 }
 
-# $1 key
-# $2 sender
-# Returns
-# 0 If nick and key are same
-# 1 Otherwise
+#---------------------------------------------------------------------
+## Check if the key is the nick of sender.
+## @Type Private
+## @param key
+## @param sender
+## @return 0 If nick and key are same
+## @return 1 Otherwise
+#---------------------------------------------------------------------
 module_karma_is_nick() {
 	local keyarray
 	read -ra keyarray <<< "$1"

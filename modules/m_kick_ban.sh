@@ -20,7 +20,7 @@
 #                                                                         #
 ###########################################################################
 #---------------------------------------------------------------------
-## Kicking (insert comment about Chuck Norris ;) and banning.
+## Kicking and banning.
 #---------------------------------------------------------------------
 
 module_kick_ban_INIT() {
@@ -94,9 +94,13 @@ module_kick_ban_periodic() {
 	fi
 }
 
-# $1 = Channel
-# $2 = Banmask
-# $3 = Duration
+#---------------------------------------------------------------------
+## Store a ban
+## @Type Private
+## @param Channel
+## @param Banmask
+## @param Duration
+#---------------------------------------------------------------------
 module_kick_ban_store_ban() {
 	local targettime="$(module_kick_ban_find_unset_time "$3")"
 	module_kick_ban_timed_bans+=( "$targettime $1 $2" )
@@ -104,9 +108,11 @@ module_kick_ban_store_ban() {
 		module_kick_ban_next_unset="$targettime"
 	fi
 }
-
-
-# $1 = Duration in seconds
+#---------------------------------------------------------------------
+## Calculate unset-time
+## @Type Private
+## @param Duration in seconds
+#---------------------------------------------------------------------
 module_kick_ban_find_unset_time() {
 	# Add current time to duration.
 	local targettime="$1"

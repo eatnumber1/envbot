@@ -35,6 +35,10 @@ module_autojoin_REHASH() {
 	return 0
 }
 
+#---------------------------------------------------------------------
+## Autojoin channels from config.
+## @Type Private
+#---------------------------------------------------------------------
 module_autojoin_join_from_config() {
 	local channel
 	for channel in "${config_module_autojoin_channels[@]}"; do

@@ -36,6 +36,10 @@ module_quote_REHASH() {
 	module_quote_load
 }
 
+#---------------------------------------------------------------------
+## Load quotes from file
+## @Type Private
+#---------------------------------------------------------------------
 module_quote_load() {
 	local i=0 line oldIFS="$IFS"
 	unset module_quote_quotes

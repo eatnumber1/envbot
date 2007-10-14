@@ -34,8 +34,11 @@ module_modules_REHASH() {
 	return 0
 }
 
-# $1 = Module to load
-# $2 = Sender
+#---------------------------------------------------------------------
+## Load a module
+## @param Module to load
+## @param Sender
+#---------------------------------------------------------------------
 module_modules_doload() {
 	local target_module="$1"
 	local sender="$2"
@@ -54,8 +57,11 @@ module_modules_doload() {
 	return $status
 }
 
-# $1 = Module to unload
-# $2 = Sender
+#---------------------------------------------------------------------
+## Unload a module
+## @param Module to unload
+## @param Sender
+#---------------------------------------------------------------------
 module_modules_dounload() {
 	local target_module="$1"
 	local sender="$2"
