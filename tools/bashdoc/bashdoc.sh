@@ -299,7 +299,7 @@ function parse_comments()
 			read funcLine
 		fi
 		# Is it a function?
-		if [[ ${funcLine%%[[:blank:]]*} == function ]] || [[ ${funcLine} =~ \(\)\ +\{$ ]]; then
+		if [[ ${funcLine%%[[:blank:]]*} == function ]] || [[ ${funcLine} =~ \(\)\ *\{$ ]]; then
 			funcName=$( echo ${funcLine#function} )
 			funcName=$( echo ${funcName%%()*} )
 			itemtype=1
