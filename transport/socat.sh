@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# A transport module using socat
+#---------------------------------------------------------------------
+## A transport module using socat
+#---------------------------------------------------------------------
 
 # A list of features supported
 # This is set in transport_check_support

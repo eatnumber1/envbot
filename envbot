@@ -18,8 +18,10 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# This is a wrapper that runs envbot in a sane setup.
-# Using a wrapper is really the simplest way to do it.
+#---------------------------------------------------------------------
+## This is a wrapper that runs envbot in a sane setup.<br />
+## Using a wrapper is really the simplest way to do it.
+#---------------------------------------------------------------------
 
 # Default config file
 config_file="bot_settings.sh"

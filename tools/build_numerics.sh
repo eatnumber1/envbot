@@ -18,9 +18,11 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Generate list of numerics from the numerics.txt
-# Output to STDOUT.
-# Run this in main dir.
+#---------------------------------------------------------------------
+## Generate list of numerics from the numerics.txt<br />
+## Output to STDOUT.<br />
+## Run this in main dir.
+#---------------------------------------------------------------------
 
 cat << EOF
 #!/bin/bash
