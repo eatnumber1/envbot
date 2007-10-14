@@ -501,7 +501,6 @@ h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
  background: inherit;
  color: inherit;
 }
-.nav h2, .nav hr { display: none }
 .nav ul { font-size: 11px; list-style: none; margin: 0; padding: 0; text-align: left }
 .nav li {
  display: block;
@@ -511,6 +510,9 @@ h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
 }
 
 /* Own stuff */
+.nav-header {
+ font-weight: bold;
+}
 .right { text-align: right }
 .tag-Deprecated { color: #e00; }
 EOF
@@ -567,7 +569,7 @@ cat <<- EOF > function_list.html
 		<ul class="nav">
 EOF
 
-echo "<strong>Functions</strong>" >> function_list.html
+echo "<li class=\"nav nav-header\">Functions</li>" >> function_list.html
 # Merge function lists of all sources, sort by function name
 for i in *.funcs ; do
 	for f in $( cat $i ) ; do
@@ -575,7 +577,7 @@ for i in *.funcs ; do
 	done
 done | sort | cut -d' ' -f2- >> function_list.html
 
-echo "<strong>Variables</strong>" >> function_list.html
+echo "<li class=\"nav nav-header\">Variables</li>" >> function_list.html
 for i in *.vars ; do
 	for v in $( cat $i ) ; do
 		echo "$v <li class=\"nav nav-variable\"><tt>[v]</tt> <a href=\"${i%.vars}.html#$v\" target=\"main\">$v</a></li>"
