@@ -75,8 +75,7 @@ cleanlogs:
 
 apidocs:
 	mkdir -p docs
-	./tools/bashdoc/bashdoc.sh -p envbot -o docs/ lib/*.sh
-
+	./tools/bashdoc/bashdoc.sh -p "envbot Core API" -o docs/core lib/*.sh
 
 dist-dir:
 	rm -rf $(DISTDIR)
@@ -109,4 +108,4 @@ install: all
 	$(INSTALL) -m 644 bot_settings.tmp $(DESTDIR)$(ENVBOT_CONFDIR)/bot_settings.sh.example
 	$(RM) bot_settings.tmp
 
-.PHONY: all numerics clean cleanlogs dist-dir
+.PHONY: all apidocs numerics clean cleanlogs dist-dir

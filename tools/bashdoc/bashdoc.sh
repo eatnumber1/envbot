@@ -511,6 +511,7 @@ h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
 
 /* Own stuff */
 .right { text-align: right }
+.tag-Deprecated { color: #e00; }
 EOF
 
 while [[ $# -gt 0 ]] ; do
@@ -524,6 +525,8 @@ while [[ $# -gt 0 ]] ; do
 	FUNC_FILE="${OUT_FILE%.html}.funcs"
 	VAR_FILE="${OUT_FILE%.html}.vars"
 	SCRIPT_DESC="${OUT_FILE%.html}.desc"
+	REAL_NAME_FILE="${OUT_FILE%.html}.name"
+	echo -n "${FILE#/}" > "$REAL_NAME_FILE"
 	FUNC_LIST=""
 	VAR_LIST=""
 
@@ -600,11 +603,11 @@ cat <<- EOF > script_list.html
 EOF
 
 # List all the sources + descriptions, sort by script dir/name
-for i in *.funcs ; do
-	name=${i%.funcs}
-	echo "${name}"
-done | sort | while read LINE ; do
-	echo "<dt><a href=\"${LINE}.html\">$LINE</a></dt>"
+for i in *.name ; do
+	name=${i%.name}
+	echo "${name} $(cat "$i")"
+done | sort | while read LINE realname; do
+	echo "<dt><a href=\"${LINE}.html\">$realname</a></dt>"
 	echo "<dd>"
 	cat ${LINE}.desc 2>/dev/null || { [[ $QUIET -lt 2 ]] && echo "$LINE has no description." >&2; }
 	echo "</dd>"
@@ -632,6 +635,7 @@ cat <<- EOF > index.html
 </html>
 EOF
 
-# Remove the temporary .desc files, leave the .func files, someone may want them later.
+# Remove the temporary .desc and .name files, leave the .func and .vars files, someone may want them later.
 rm *.desc
+rm *.name
 popd >/dev/null

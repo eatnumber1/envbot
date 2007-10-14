@@ -29,7 +29,9 @@
 #---------------------------------------------------------------------
 ## Auto-generated list of numerics from tools/numerics.txt<br />
 ## This file contains a list of numerics that we currently use.
-## It is therefore incomplete.
+## It is therefore incomplete.<br />
+## Because the list of variables in this file is so long, please see
+## it's source for more details.
 #---------------------------------------------------------------------
 
 ##########################

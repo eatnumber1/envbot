@@ -189,6 +189,8 @@ time_check_interval() {
 #---------------------------------------------------------------------
 ## Strip leading/trailing spaces.
 ## @Type API
+## @Deprecated Using this function is slow, it is better to do this
+## @Deprecated inline using same way as is used here. (array that is)
 ## @param String to strip
 ## @Stdout New string
 #---------------------------------------------------------------------
