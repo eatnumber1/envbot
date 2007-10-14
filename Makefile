@@ -82,12 +82,12 @@ cleanlogs:
 	$(RM) -vrf logs/*
 
 apidocs-private:
-	./tools/bashdoc/bashdoc.sh -p "envbot Core API (private functions)" -o doc/api/private-core lib/*.sh
-	./tools/bashdoc/bashdoc.sh -p "envbot module-provided API (private functions)" -o doc/api/private-modules modules/*.sh
+	./tools/bashdoc/bashdoc.sh -p "envbot Core API (private functions) for "$(ENVBOT_VERSION) -o doc/api/private-core lib/*.sh
+	./tools/bashdoc/bashdoc.sh -p "envbot module-provided API (private functions) for "$(ENVBOT_VERSION) -o doc/api/private-modules modules/*.sh
 
 apidocs-public:
-	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot Core API" -o doc/api/public-core lib/*.sh
-	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot module-provided API" -o doc/api/public-modules modules/*.sh
+	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot Core API for "$(ENVBOT_VERSION) -o doc/api/public-core lib/*.sh
+	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot module-provided API for "$(ENVBOT_VERSION) -o doc/api/public-modules modules/*.sh
 
 apidocs: apidocs-public
 
