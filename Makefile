@@ -21,12 +21,14 @@
 # Also some other tasks
 
 # Useful targets:
-#   all:      Builds numerics file and generates example config
-#   man:      Generates man page using help2man
-#   install:  Installs to a DESTDIR (don't confuse with DISTDIR),
-#             See variables below.
-#   dist-dir: Generates a clean checkout of current version, ready to be
-#             tared up. Can only be done in a bzr branch/checkout
+#   all:          Builds numerics file and generates example config
+#   man:          Generates man page using help2man
+#   apidocs:      Generates API docs from code for public functions
+#   apidocs-all:  Generates API docs from code for public and internal functions.
+#   install:      Installs to a DESTDIR (don't confuse with DISTDIR),
+#                 See variables below.
+#   dist-dir:     Generates a clean checkout of current version, ready to be
+#                 tared up. Can only be done in a bzr branch/checkout
 
 ENVBOT_VERSION = 0.0.1-trunk+bzr
 
@@ -108,7 +110,7 @@ dist-dir:
 	rm -rf $(DISTDIR)
 	bzr export $(DISTDIR)
 
-install: all
+install: cleandocs all apidocs-public
 	@echo "#########################################################################"
 	@echo "#                                                                       #"
 	@echo "# Installing... Note that running from source directory is recommended! #"
@@ -119,13 +121,18 @@ install: all
 	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DATADIR)    $(DESTDIR)$(ENVBOT_TRANSPORTDIR)
 	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LIBRARYDIR) $(DESTDIR)$(ENVBOT_MODULESDIR)
 	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DOCDIR)     $(DESTDIR)$(MANDIR)/man1
-	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LOGDIR)
+	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LOGDIR)     $(DESTDIR)$(ENVBOT_DOCDIR)/api
+	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DOCDIR)/api/core $(DESTDIR)$(ENVBOT_DOCDIR)/api/modules
 	$(INSTALL) -m 644 lib/*.sh                $(DESTDIR)$(ENVBOT_LIBRARYDIR)
 	$(INSTALL) -m 644 modules/*.sh            $(DESTDIR)$(ENVBOT_MODULESDIR)
 	$(INSTALL) -m 644 transport/*.sh          $(DESTDIR)$(ENVBOT_TRANSPORTDIR)
 	$(INSTALL) -m 644 README AUTHORS GPL3.txt $(DESTDIR)$(ENVBOT_DOCDIR)
 	$(INSTALL) -m 644 doc/*.sql               $(DESTDIR)$(ENVBOT_DOCDIR)
 	$(INSTALL) -m 644 doc/*.txt               $(DESTDIR)$(ENVBOT_DOCDIR)
+	$(INSTALL) -m 644 doc/api/public-core/*.html     $(DESTDIR)$(ENVBOT_DOCDIR)/api/core/
+	$(INSTALL) -m 644 doc/api/public-core/*.css      $(DESTDIR)$(ENVBOT_DOCDIR)/api/core/
+	$(INSTALL) -m 644 doc/api/public-modules/*.html  $(DESTDIR)$(ENVBOT_DOCDIR)/api/modules/
+	$(INSTALL) -m 644 doc/api/public-modules/*.css   $(DESTDIR)$(ENVBOT_DOCDIR)/api/modules/
 	$(INSTALL) -m 644 doc/envbot.1            $(DESTDIR)$(MANDIR)/man1
 	$(INSTALL) -m 644 data/{faq.txt.example,quotes.txt.example.pqf} $(DESTDIR)$(ENVBOT_DATADIR)
 	$(SED) "s|^library_dir=.*|library_dir='$(ENVBOT_LIBRARYDIR)'|;s|^config_file=.*|config_file='$(ENVBOT_CONFDIR)/bot_settings.sh'|" envbot > envbot.tmp
