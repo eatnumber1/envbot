@@ -65,7 +65,7 @@ numerics:
 
 # Used by developers to update man page.
 man:
-	help2man -NS envbot -n 'An advanced modular IRC bot in bash' "/bin/bash envbot" > doc/envbot.1
+	help2man -NS envbot -n 'An advanced modular IRC bot in bash' "/usr/bin/env bash envbot" > doc/envbot.1
 
 clean:
 	rm -vf *~ */*~ */*/*~ bot_settings.sh.example

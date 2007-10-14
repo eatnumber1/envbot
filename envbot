@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+'#!/usr/bin/env bash
 ###########################################################################
 #                                                                         #
 #  envbot - an IRC bot in bash                                            #
@@ -28,8 +28,11 @@ config_file="bot_settings.sh"
 #   for main.sh, but main.sh will for library scripts.
 library_dir="lib"
 
+# This work-around is needed on FreeBSD
+bash="$(type -p bash)"
+
 # Later arguments on the command line will override the defaults.
 
 # env -i:      Clean environment
 # bash --norc: Don't read profile/bashrc
-exec env -i bash --norc "${library_dir}/main.sh" --config "$config_file" --libdir "$library_dir" "$@"
+exec env -i "$bash" --norc "${library_dir}/main.sh" --config "$config_file" --libdir "$library_dir" "$@"
