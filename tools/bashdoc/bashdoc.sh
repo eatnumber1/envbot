@@ -309,14 +309,14 @@ function parse_comments()
 				FIRST_BLOCK=""
 			fi
 
-			if [[ $itemtype = 2 ]]; then
-				funcName="$varName"
-			fi
 			if [[ $EXCLUSIVE ]] ; then
 				# If this is first block, include it anyway.
 				if [[ $funcName ]] || [[ $varName ]]; then
 					local i="tag_${EXCLUSIVE}"
 					if [[ ${!i} != $EXCLUSIVE_VAL ]] ; then
+						if [[ $itemtype = 2 ]]; then
+							funcName="$varName"
+						fi
 						print_debug "$funcName block ignored, no $EXCLUSIVE=$EXCLUSIVE_VAL tag."
 						# Code duplication but hard to avoid
 						for i in ${!tag_*} ; do
@@ -331,8 +331,11 @@ function parse_comments()
 				unset $i
 			done
 
-			FUNC_LIST="$FUNC_LIST $funcName"
-			VAR_LIST="$VAR_LIST $varName"
+			if [[ $funcName ]]; then
+				FUNC_LIST="$FUNC_LIST $funcName"
+			elif [[ $varName ]]; then
+				VAR_LIST="$VAR_LIST $varName"
+			fi
 			unset funcName varName
 			echo "$outBlock"
 
