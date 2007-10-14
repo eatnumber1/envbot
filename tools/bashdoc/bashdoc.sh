@@ -117,21 +117,26 @@ function args()
 				let retVal+=2
 				shift 2
 				;;
-			--help|-h)
+			-c|--nocss)
+				NOCSS="1"
+				let retVal+=2
+				shift 1
+				;;
+			-h|--help)
 				usage
 				exit 0
 				;;
-			--version|-V)
+			-V|--version)
 				version
 				exit 0
 				;;
-			--exclusive|-e)
+			-e|--exclusive)
 				EXCLUSIVE="${2%%=*}"
 				EXCLUSIVE_VAL="${2#*=}"
 				let retVal+=2
 				shift 2
 				;;
-			--quiet|-q)
+			-q|--quiet)
 				let QUIET+=1
 				let retVal+=1
 				shift 1
@@ -501,6 +506,7 @@ EOF
 
 # Initialise project variables
 OUT_DIR=$( dirname $0 )
+NOCSS=0
 args "$@"
 shift $?
 [[ $OUT_DIR ]] || OUT_DIR="."
@@ -511,67 +517,71 @@ mkdir -p "$OUT_DIR" || {
 	exit 1
 }
 
-print_info "Writing CSS"
-# Copy stylesheet to output directory.
-cat <<- EOF >> "${OUT_DIR}/style.css"
-/* Based on Trac CSS */
-body {
- background: #fff;
- color: #000;
- margin: 10px;
- padding: 0;
-}
-body, th, td {
- font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
-}
-h1, h2, h3, h4 {
- font-family: arial,verdana,'Bitstream Vera Sans',helvetica,sans-serif;
- font-weight: bold;
- letter-spacing: -0.018em;
-}
-h1 { font-size: 19px; margin: .15em 1em 0 0 }
-h2 { font-size: 16px; font-weight: normal; }
-h3 { font-size: 14px }
-hr { border: none;  border-top: 1px solid #ccb; margin: 2em 0 }
-address { font-style: normal }
-img { border: none }
-tt { white-space: pre }
-:link, :visited {
- text-decoration: none;
- color: #b00;
- border-bottom: 1px dotted #bbb;
-}
-:link:hover, :visited:hover {
- background-color: #eee;
- color: #555;
-}
-h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
-h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
- color: inherit;
-}
-
-/* Partly own stuff: */
-.nav body {
- margin: 0;
- padding: 0;
- background: inherit;
- color: inherit;
-}
-.nav ul { font-size: 11px; list-style: none; margin: 0; padding: 0; text-align: left }
-.nav li {
- display: block;
- padding: 0;
- margin: 0;
- white-space: nowrap;
-}
-
-/* Own stuff */
-.nav-header {
- font-weight: bold;
-}
-.right { text-align: right }
-.tag-Deprecated { color: #e00; }
-EOF
+if [[ $NOCSS = 0 ]]; then
+	print_info "Writing CSS"
+	# Copy stylesheet to output directory.
+	cat <<- EOF >> "${OUT_DIR}/style.css"
+	/* Based on Trac CSS */
+	body {
+	background: #fff;
+	color: #000;
+	margin: 10px;
+	padding: 0;
+	}
+	body, th, td {
+	font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+	}
+	h1, h2, h3, h4 {
+	font-family: arial,verdana,'Bitstream Vera Sans',helvetica,sans-serif;
+	font-weight: bold;
+	letter-spacing: -0.018em;
+	}
+	h1 { font-size: 19px; margin: .15em 1em 0 0 }
+	h2 { font-size: 16px; font-weight: normal; }
+	h3 { font-size: 14px }
+	hr { border: none;  border-top: 1px solid #ccb; margin: 2em 0 }
+	address { font-style: normal }
+	img { border: none }
+	tt { white-space: pre }
+	:link, :visited {
+	text-decoration: none;
+	color: #b00;
+	border-bottom: 1px dotted #bbb;
+	}
+	:link:hover, :visited:hover {
+	background-color: #eee;
+	color: #555;
+	}
+	h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
+	h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
+	color: inherit;
+	}
+	
+	/* Partly own stuff: */
+	.nav body {
+	margin: 0;
+	padding: 0;
+	background: inherit;
+	color: inherit;
+	}
+	.nav ul { font-size: 11px; list-style: none; margin: 0; padding: 0; text-align: left }
+	.nav li {
+	display: block;
+	padding: 0;
+	margin: 0;
+	white-space: nowrap;
+	}
+	
+	/* Own stuff */
+	.nav-header {
+	font-weight: bold;
+	}
+	.right { text-align: right }
+	.tag-Deprecated { color: #e00; }
+	EOF
+else
+	print_warn "Not writing a stylesheet. You will need to add your own by hand afterwards."
+fi
 
 while [[ $# -gt 0 ]] ; do
 
