@@ -310,7 +310,10 @@ echo "Loading modules"
 # Load modules
 modules_load_from_config
 
-# Used for periodic events later below
+#---------------------------------------------------------------------
+## Used for periodic events later below
+## @Type Private
+#---------------------------------------------------------------------
 periodic_lastrun="$(date -u +%s)"
 #---------------------------------------------------------------------
 ## This can be used when the code does not need exact time.

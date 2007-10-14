@@ -113,12 +113,15 @@ server_connected=0
 # Module authors: go away                                                 #
 ###########################################################################
 
-# Get some common data out of 005, the whole will also be saved to
-# $server_005 for any module to use via parse_005().
-# This function is for cases that needs special action, like NAMESX
-# and UHNAMES.
-# This should be called directly after receiving a part of the 005!
-# $1 = That part.
+#---------------------------------------------------------------------
+## Get some common data out of 005, the whole will also be saved to
+## $server_005 for any module to use via parse_005().
+## This function is for cases that needs special action, like NAMESX
+## and UHNAMES.
+## This should be called directly after receiving a part of the 005!
+## @Type Private
+## @param The last part of the 005.
+#---------------------------------------------------------------------
 server_handle_005() {
 	# Example from freenode:
 	# :heinlein.freenode.net 005 envbot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
@@ -173,7 +176,14 @@ server_handle_ping() {
 	fi
 }
 
-server_handle_numerics() { # $1 = numeric, $2 = target (self), $3 = data
+#---------------------------------------------------------------------
+## Handle numerics from server.
+## @Type Private
+## @param Numeric
+## @param Target (self)
+## @param Data
+#---------------------------------------------------------------------
+server_handle_numerics() {
 	# Slight sanity check
 	if [[ "$2" != "$server_nick_current" ]]; then
 		log_warning 'Own nick desynced!'
@@ -209,7 +219,7 @@ server_handle_nick_in_use() {
 	sleep 1
 }
 
-server_connect(){
+server_connect() {
 	server_connected=0
 	on_nick=1
 	# Clear current channels:

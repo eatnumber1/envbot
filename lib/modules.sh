@@ -119,6 +119,14 @@ modules_depends_can_unload() {
 	return 0
 }
 
+#---------------------------------------------------------------------
+## Add hooks for a module
+## @Type Private
+## @param Module name
+## @return 0 Success
+## @return 1 module_modulename_INIT returned non-zero
+## @return 2 Module wanted to register an unknown hook.
+#---------------------------------------------------------------------
 modules_add_hooks() {
 	local module="$1"
 	local hooks="$(module_${module}_INIT)"
@@ -197,7 +205,7 @@ modules_add_hooks() {
 				;;
 			*)
 				log_error_file modules.log "Unknown hook $hook requested. Module may malfunction. Module will be unloaded"
-				return 1
+				return 2
 				;;
 		esac
 	done

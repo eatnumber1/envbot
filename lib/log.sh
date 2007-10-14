@@ -135,50 +135,69 @@ log_info_file() {
 # Module authors: go away                                                 #
 ###########################################################################
 
-# Log to main log file.
-# Parameters
-#   $* The log message to log
+#---------------------------------------------------------------------
+## Log to main log file.
+## @Type Private
+## @param The log message to log
+#---------------------------------------------------------------------
 log() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 
-# Log to to a specific log file as well as main log.
-# Parameters
-#   $1 The extra log file (relative to the current log dir)
-#   $2 The log message to log
+#---------------------------------------------------------------------
+## Log to to a specific log file as well as main log.
+## @Type Private
+## @param The extra log file (relative to the current log dir)
+## @param The log message to log
+#---------------------------------------------------------------------
 log_file() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $2" "0" "$1"
 }
 
-# Always print log message to STDOUT as well
-# Parameters
-#   $* The log message to log
+#---------------------------------------------------------------------
+## Always print log message to STDOUT as well
+## @Type Private
+## @param The log message to log
+#---------------------------------------------------------------------
 log_stdout() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@" "1"
 }
 
-# Log to to a specific log file as well as main log and STDOUT.
-# Parameters
-#   $1 The extra log file (relative to the current log dir)
-#   $2 The log message to log
+#---------------------------------------------------------------------
+## Log to to a specific log file as well as main log and STDOUT.
+## @Type Private
+## @param The extra log file (relative to the current log dir)
+## @param The log message to log
+#---------------------------------------------------------------------
 log_stdout_file() {
 	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $2" "1" "$1"
 }
 
-# Used internally in core
+#---------------------------------------------------------------------
+## Used internally in core to log raw line
+## @Type Private
+## @param Line to log
+#---------------------------------------------------------------------
 log_raw_in() {
 	[[ $config_log_raw = 1 ]] && log_write "< $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
-# Used internally in core
+#---------------------------------------------------------------------
+## Used internally in core to log raw line
+## @Type Private
+## @param Line to log
+#---------------------------------------------------------------------
 log_raw_out() {
 	[[ $config_log_raw = 1 ]] && log_write "> $(date +'%Y-%m-%d %k:%M:%S') $@"
 }
 
 
-# Internal function to this file.
-#  $1 = message to log
-#  $2 = if 1 always log to STDOUT as well
-#  $3 = may be optional extra log file
+#---------------------------------------------------------------------
+## Internal function to this file.
+## @Type Private
+## @param Message to log
+## @param If 1 always log to STDOUT as well
+## @param may be optional extra log file
+#---------------------------------------------------------------------
 log_write() {
 	echo "$1" >> "$log_file"
 	[[ $3 ]] && echo "$1" >> "$log_dir/$3"
@@ -188,7 +207,10 @@ log_write() {
 	fi
 }
 
-# Create log file.
+#---------------------------------------------------------------------
+## Create log file.
+## @Type Private
+#---------------------------------------------------------------------
 log_init() {
 	# This creates log dir for this run:
 	log_dir="${config_log_dir}/$(date -u +%s)"

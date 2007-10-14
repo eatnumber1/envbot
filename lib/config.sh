@@ -78,6 +78,10 @@ config_rehash() {
 # Internal functions to core or this file below this line!                #
 # Module authors: go away                                                 #
 ###########################################################################
+#---------------------------------------------------------------------
+## Validate config file
+## @Type Private
+#---------------------------------------------------------------------
 config_validate() {
 	if [[ -z "$config_firstnick" ]]; then
 		echo "ERROR: YOU MUST SET A config_firstnick IN THE CONFIG"

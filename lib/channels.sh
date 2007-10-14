@@ -79,7 +79,13 @@ channels_remove() {
 	channels_current="$(list_remove channels_current "$1")"
 }
 
-# Check if we parted
+#---------------------------------------------------------------------
+## Check if we parted, called from main loop
+## @Type Private
+## @param n!u@h mask
+## @param Channel parted.
+## @param Reason (ignored).
+#---------------------------------------------------------------------
 channels_handle_part() {
 	local whoparted="$(parse_hostmask_nick "$1")"
 	if [[ $whoparted == $server_nick_current ]]; then
@@ -87,7 +93,14 @@ channels_handle_part() {
 	fi
 }
 
-# Check if we got kicked
+#---------------------------------------------------------------------
+## Check if we got kicked, called from main loop
+## @Type Private
+## @param n!u@h mask of kicker
+## @param Channel kicked from.
+## @param n!u@h mask of kicked user
+## @param Reason (ignored).
+#---------------------------------------------------------------------
 channels_handle_kick() {
 	local whogotkicked="$3"
 	if [[ $whogotkicked == $server_nick_current ]]; then
@@ -95,7 +108,12 @@ channels_handle_kick() {
 	fi
 }
 
-# Check if we joined
+#---------------------------------------------------------------------
+## Check if we joined, called from main loop
+## @Type Private
+## @param n!u@h mask
+## @param Channel joined.
+#---------------------------------------------------------------------
 channels_handle_join() {
 	local whojoined="$(parse_hostmask_nick "$1")"
 	if [[ $whojoined == $server_nick_current ]]; then
