@@ -211,7 +211,10 @@ modules_add_hooks() {
 	done
 }
 
-# List of all the optional hooks.
+#---------------------------------------------------------------------
+## List of all the optional hooks.
+## @Type Private
+#---------------------------------------------------------------------
 modules_hooks="FINALISE after_load before_connect on_connect after_connect before_disconnect after_disconnect periodic on_server_ERROR on_NOTICE on_PRIVMSG on_TOPIC on_channel_MODE on_user_MODE on_INVITE on_JOIN on_PART on_KICK on_QUIT on_KILL on_NICK on_numeric on_raw"
 
 #---------------------------------------------------------------------
