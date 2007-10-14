@@ -103,8 +103,11 @@ declare -r tmp_home="$(mktemp -dt envbot.home.XXXXXXXXXX)"
 # Temp trap on ctrl-c until the next "stage" of trap gets loaded (at connect)
 trap 'rm -rvf "$tmp_home"; exit 1' TERM INT
 
-# Now create a temp function to quit on problems in a way that cleans up
-# temp stuff until we have loaded enough to use the normal function bot_quit.
+#---------------------------------------------------------------------
+## Now create a temp function to quit on problems in a way that cleans up
+## temp stuff until we have loaded enough to use the normal function bot_quit.
+## @param Return status of bot
+#---------------------------------------------------------------------
 envbot_quit() {
 	rm -rf "$tmp_home"
 	exit "$1"
