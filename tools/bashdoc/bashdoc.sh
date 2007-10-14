@@ -155,7 +155,10 @@ Options:
   script                  The script you want documented
 
 Examples:
-  bashdoc.sh -p bashdoc -o docs/ bashdoc.sh   Generate documentation for this program.
+  $(basename $0) -p bashdoc -o docs/ bashdoc.sh              Generate documentation for this program.
+  $(basename $0) -p appname -o docs/ -e Type=API someapp.sh  Generate documentation for someapp.sh,
+                                                             exclude items that do not include the tag
+                                                             @Type API
 EOF
 }
 
@@ -228,13 +231,14 @@ function parse_comments()
 	local lastOutBlock=""
 	# 1 = function
 	# 2 = variable
-	itemtype=
+	itemtype=0
 	while true ; do
 		paramNames=()
 		paramDesc=()
 		split=()
 		retDesc=()
 		desc=""
+		itemtype=0
 		block=$( get_comment_block )
 		[[ $? -gt 0 ]] && break
 
@@ -263,24 +267,32 @@ function parse_comments()
 			parse_block
 			lastOutBlock="$outBlock"
 			outBlock=$(output_parsed_block)
-			for i in ${!tag_*} ; do
-				unset $i
-			done
 
-			if [[ $FIRST_BLOCK ]] && [[ ! $funcName ]] ; then
+			if [[ $FIRST_BLOCK ]] && [[ ! $funcName ]] && [[ ! $varName ]]; then
 				FIRST_BLOCK=""
 			fi
 
+			if [[ $itemtype = 2 ]]; then
+				funcName="$varName"
+			fi
 			if [[ $EXCLUSIVE ]] ; then
-				local i="tag_${EXCLUSIVE}"
-				if [[ ${!i} != $EXCLUSIVE_VAL ]] ; then
-					echo "$funcName block ignored, no $EXCLUSIVE=$EXCLUSIVE_VAL tag." >&2
-					for i in ${!tag_*} ; do
-						unset $i
-					done
-					continue
+				# If this is first block, include it anyway.
+				if [[ $funcName ]] || [[ $varName ]]; then
+					local i="tag_${EXCLUSIVE}"
+					if [[ ${!i} != $EXCLUSIVE_VAL ]] ; then
+						echo "$funcName block ignored, no $EXCLUSIVE=$EXCLUSIVE_VAL tag." >&2
+						# Code duplication but hard to avoid
+						for i in ${!tag_*} ; do
+							unset $i
+						done
+						continue
+					fi
 				fi
 			fi
+
+			for i in ${!tag_*} ; do
+				unset $i
+			done
 
 			FUNC_LIST="$FUNC_LIST $funcName"
 			VAR_LIST="$VAR_LIST $varName"

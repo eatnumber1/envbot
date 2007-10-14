@@ -113,12 +113,17 @@ envbot_quit() {
 # And finally lets export this as $HOME
 export HOME="$tmp_home"
 
-
-# Will be set to 1 if -v or --verbose is passed
-# on command line.
+#---------------------------------------------------------------------
+## Will be set to 1 if -v or --verbose is passed
+## on command line.
+## @Type Private
+#---------------------------------------------------------------------
 force_verbose=0
 
-# Store command line for later use
+#---------------------------------------------------------------------
+## Store command line for later use
+## @Type Private
+#---------------------------------------------------------------------
 command_line=( "$@" )
 
 #---------------------------------------------------------------------
@@ -138,7 +143,10 @@ declare -r config_current_version=14
 #---------------------------------------------------------------------
 declare -r envbot_transport_timeout=5
 
-
+#---------------------------------------------------------------------
+## Print help message
+## @Type Private
+#---------------------------------------------------------------------
 print_cmd_help() {
 	echo 'envbot is an advanced modular IRC bot coded in bash.'
 	echo ''
@@ -164,6 +172,10 @@ print_cmd_help() {
 	envbot_quit 0
 }
 
+#---------------------------------------------------------------------
+## Print version message
+## @Type Private
+#---------------------------------------------------------------------
 print_version() {
 	echo "envbot $envbot_version - An advanced modular IRC bot in bash."
 	echo ''

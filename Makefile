@@ -75,7 +75,7 @@ cleanlogs:
 
 apidocs:
 	mkdir -p docs
-	./tools/bashdoc/bashdoc.sh -p "envbot Core API" -o docs/core lib/*.sh
+	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot Core API" -o docs/core lib/*.sh
 
 dist-dir:
 	rm -rf $(DISTDIR)
