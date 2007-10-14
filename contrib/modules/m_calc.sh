@@ -22,14 +22,14 @@
 # Calculate with bc
 
 module_calc_INIT() {
-	echo 'on_PRIVMSG after_load FINALISE'
+	echo 'on_PRIVMSG'
 }
 
 module_calc_UNLOAD() {
 	return 0
 }
 
-module_calc_after_load() {
+module_calc_REHASH() {
 	return 0
 }
 
