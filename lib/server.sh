@@ -170,6 +170,11 @@ server_handle_005() {
 	fi
 }
 
+#---------------------------------------------------------------------
+## Respond to PING from server.
+## @Type Private
+## @param Raw line
+#---------------------------------------------------------------------
 server_handle_ping() {
 	if [[ "$1" =~ ^PING\ *:(.*) ]] ;then
 		send_raw "PONG :${BASH_REMATCH[1]}"
@@ -193,6 +198,12 @@ server_handle_numerics() {
 	fi
 }
 
+#---------------------------------------------------------------------
+## Handle NICK messages from server
+## @Type Private
+## @param Sender
+## @param New nick
+#---------------------------------------------------------------------
 server_handle_nick() {
 	local oldnick="$(parse_hostmask_nick "$1")"
 	if [[ $oldnick == $server_nick_current ]]; then
@@ -200,6 +211,10 @@ server_handle_nick() {
 	fi
 }
 
+#---------------------------------------------------------------------
+## Handle nick in use.
+## @Type Private
+#---------------------------------------------------------------------
 server_handle_nick_in_use() {
 	if [[ $on_nick -eq 3 ]]; then
 		log_error "Third nick is ALSO in use. I give up"
@@ -219,6 +234,10 @@ server_handle_nick_in_use() {
 	sleep 1
 }
 
+#---------------------------------------------------------------------
+## Connect to IRC server.
+## @Type Private
+#---------------------------------------------------------------------
 server_connect() {
 	server_connected=0
 	on_nick=1
