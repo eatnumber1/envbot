@@ -110,17 +110,17 @@ function args()
 		case $1 in
 			-p|--project)
 				PROJECT="$2"
-				let retVal+=2
+				(( retVal+=2 ))
 				shift 2
 				;;
 			-o|--output)
 				OUT_DIR="$2"
-				let retVal+=2
+				(( retVal+=2 ))
 				shift 2
 				;;
 			-c|--nocss)
 				NOCSS="1"
-				let retVal+=2
+				(( retVal+=2 ))
 				shift 1
 				;;
 			-h|--help)
@@ -134,16 +134,16 @@ function args()
 			-e|--exclusive)
 				EXCLUSIVE="${2%%=*}"
 				EXCLUSIVE_VAL="${2#*=}"
-				let retVal+=2
+				(( retVal+=2 ))
 				shift 2
 				;;
 			-q|--quiet)
-				let QUIET+=1
-				let retVal+=1
+				(( QUIET+=1 ))
+				(( retVal+=1 ))
 				shift 1
 				;;
 			--)
-				let retVal++
+				(( retVal++ ))
 				return $retVal
 				;;
 			-*)
@@ -227,16 +227,19 @@ function get_comment_block()
 	local inComment commentBlock lastLine=""
 	commentBlock=""
 	while read LINE ; do
-		let srcLine++
+		(( srcLine++ ))
 		if [[ ${LINE:0:4} == '#---' ]] ; then
 			if [[ $inComment ]] ; then
 				out_comment_block="$commentBlock"
+				# I'm not sure why this is needed but it fixes incorrect line number
+				(( srcLine++ ))
 				return 0
 			else
 				inComment=yes
 			fi
 		elif [[ ${LINE:0:2} != '##' ]] && [[ $inComment ]] ; then
 				[[ $QUIET -lt 1 ]] && print_warn "Line $srcLine of $FILE isn't a doc comment! Ignoring."
+				[[ $QUIET -lt 1 ]] && print_warn "Line in question is: $LINE"
 		elif [[ $inComment ]] ; then
 			commentBlock="$commentBlock"$'\n'${LINE####}
 		fi
@@ -296,7 +299,7 @@ function parse_comments()
 			read funcLine
 		fi
 		# Is it a function?
-		if [[ ${funcLine%%[[:blank:]]*} == function ]] || [[ ${funcLine} =~ \(\)\ \{$ ]]; then
+		if [[ ${funcLine%%[[:blank:]]*} == function ]] || [[ ${funcLine} =~ \(\)\ +\{$ ]]; then
 			funcName=$( echo ${funcLine#function} )
 			funcName=$( echo ${funcName%%()*} )
 			itemtype=1
