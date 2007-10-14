@@ -592,6 +592,11 @@ while [[ $# -gt 0 ]] ; do
 
 	#Initialise vars for this src
 	FILE=$1
+	[[ ! -f $FILE ]] || [[ ! -r $FILE ]] &&  {
+		print_error "$FILE is not a file or is not readable, skipping."
+		shift
+		continue
+	}
 	print_info "Parsing $FILE"
 	shift
 	OUT_FILE=${FILE#/}									#Remove leading /
