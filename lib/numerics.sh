@@ -26,9 +26,11 @@
 # This file was generated with tools/build_numerics.sh                    #
 #                                                                         #
 ###########################################################################
-
-# This file contains a list of numerics that we currently use.
-# It is therefore incomplete.
+#---------------------------------------------------------------------
+## Auto-generated list of numerics from tools/numerics.txt<br />
+## This file contains a list of numerics that we currently use.
+## It is therefore incomplete.
+#---------------------------------------------------------------------
 
 ##########################
 # Name -> number mapping #

@@ -18,8 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-
-# This is the main file, it should be called with a wrapper (envbot)
+#---------------------------------------------------------------------
+## This is the main file, it should be called with a wrapper (envbot)
+#---------------------------------------------------------------------
 
 
 ###################
@@ -53,7 +54,17 @@ fi
 ######################
 
 # Version and url
+#---------------------------------------------------------------------
+## Version of envbot.
+## @Type API
+## @Read_only Yes
+#---------------------------------------------------------------------
 declare -r envbot_version='0.0.1-trunk+bzr'
+#---------------------------------------------------------------------
+## Homepage of envbot.
+## @Type API
+## @Read_only Yes
+#---------------------------------------------------------------------
 declare -r envbot_homepage='http://envbot.org'
 
 ##############
@@ -110,10 +121,21 @@ force_verbose=0
 # Store command line for later use
 command_line=( "$@" )
 
-# Current config version.
+#---------------------------------------------------------------------
+## Current config version.
+## @Type API
+## @Read_only Yes
+#---------------------------------------------------------------------
 declare -r config_current_version=14
 
 # Some constants used in different places
+
+#---------------------------------------------------------------------
+## Transport modules will wait $envbot_transport_timeout seconds
+## before returning control to main loop (to allow periodic events).
+## @Type API
+## @Read_only Yes
+#---------------------------------------------------------------------
 declare -r envbot_transport_timeout=5
 
 
@@ -278,9 +300,12 @@ modules_load_from_config
 
 # Used for periodic events later below
 periodic_lastrun="$(date -u +%s)"
-# This can be used when the code does not need exact time.
-# It will be updated each time the bot get a new line of
-# data.
+#---------------------------------------------------------------------
+## This can be used when the code does not need exact time.
+## It will be updated each time the bot get a new line of
+## data.
+## @Type API
+#---------------------------------------------------------------------
 envbot_time="$(date -u +%s)"
 
 while true; do

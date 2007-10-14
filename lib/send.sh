@@ -22,13 +22,16 @@
 ## Functions for sending data to server
 #---------------------------------------------------------------------
 
-# Simple flood limiting.
-# Note that this doesn't handle this very well:
-# seconds:milliseconds message
-# 01:999 message
-# 02:001 other message
-# Then they get too close.
-# I think this won't flood us off though.
+#---------------------------------------------------------------------
+## Simple flood limiting.
+## Note that this doesn't handle this very well:<br />
+## seconds:milliseconds message<br />
+## 01:999 message<br />
+## 02:001 other message<br />
+## Then they get too close.<br />
+## I think this won't flood us off though.<br />
+## @Type Private
+#---------------------------------------------------------------------
 send_last=0
 
 #---------------------------------------------------------------------

@@ -23,29 +23,89 @@
 #---------------------------------------------------------------------
 
 # Server info variables
+#---------------------------------------------------------------------
+## Name of server (example: server1.example.net)
+## @Type API
+#---------------------------------------------------------------------
 server_name=""
+#---------------------------------------------------------------------
+## The 004 received from the server.
+## @Type API
+#---------------------------------------------------------------------
 server_004=""
-# See http://www.irc.org/tech_docs/005.html for an incomplete list.
+#---------------------------------------------------------------------
+## The 005 received from the server. Use parse_005 to get data out of this.
+## @Type API
+## @Note See http://www.irc.org/tech_docs/005.html for an incomplete list of 005 values.
+#---------------------------------------------------------------------
 server_005=""
 # NAMES output with UHNAMES and NAMESX
 #  :photon.kuonet-ng.org 353 envbot = #bots :@%+AnMaster!AnMaster@staff.kuonet-ng.org @ChanServ!ChanServ@services.kuonet-ng.org bashbot!rfc3092@1F1794B2:769091B3
 # NAMES output with NAMESX only:
 #  :hurricane.KuoNET.org 353 envbot = #test :bashbot ~@Brain ~@EmErgE &@AnMaster/kng
+#---------------------------------------------------------------------
+## 1 if UHNAMES enabled, otherwise 0
+## @Type API
+#---------------------------------------------------------------------
 server_UHNAMES=0
+#---------------------------------------------------------------------
+## 1 if NAMESX enabled, otherwise 0
+## @Type API
+#---------------------------------------------------------------------
 server_NAMESX=0
 # These are passed in a slightly odd way in 005 so we do them here.
+#---------------------------------------------------------------------
+## The mode char (if any) for ban excepts (normally +e)
+## @Type API
+#---------------------------------------------------------------------
 server_EXCEPTS=""
+#---------------------------------------------------------------------
+## The mode char (if any) for invite excepts (normally +I)
+## @Type API
+#---------------------------------------------------------------------
 server_INVEX=""
 
 # In case we don't get a 005, make some sane defaults.
+#---------------------------------------------------------------------
+## List channel modes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_CHMODES_LISTMODES="b"
+#---------------------------------------------------------------------
+## "Always parameters" channel modes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_CHMODES_ALWAYSPARAM="k"
+#---------------------------------------------------------------------
+## "Parameter on set" channel modes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_CHMODES_PARAMONSET="l"
+#---------------------------------------------------------------------
+## Simple channel modes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_CHMODES_SIMPLE="imnpst"
+#---------------------------------------------------------------------
+## Prefix channel modes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_PREFIX_modes="ov"
+#---------------------------------------------------------------------
+## Channel prefixes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_PREFIX_prefixes="@+"
 
+#---------------------------------------------------------------------
+## What is our current nick?
+## @Type API
+#---------------------------------------------------------------------
 server_nick_current=""
+#---------------------------------------------------------------------
+## 1 if we are connected, otherwise 0
+## @Type API
+#---------------------------------------------------------------------
 server_connected=0
 
 ###########################################################################
