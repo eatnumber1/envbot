@@ -307,6 +307,15 @@ function parse_comments()
 }
 
 #---------------------
+##	Convert _ to space in strings
+##	@param	String to convert
+##	@Stdout	Converted string
+#---------------------
+function convert_underscore_to_space() {
+	sed 's/_/ /g' <<< "${1}"
+}
+
+#---------------------
 ##	Outputs the parsed information in a nice pretty format.
 ##	@Stdout	formated documentation
 ##	@Globals	paramDesc, retDesc, desc, block, split
@@ -338,7 +347,7 @@ function output_parsed_block()
 
 		for i in ${!tag_*} ; do
 			# Convert _ in tags to space. Looks better.
-			echo "	<h3 class=\"othertag funcothertag ${i/tag_/tag-}\">$(sed 's/_/ /g' <<< "${i#tag_}")</h3>"
+			echo "	<h3 class=\"othertag funcothertag ${i/tag_/tag-}\">$(convert_underscore_to_space "${i#tag_}")</h3>"
 			# This may be fun, allow special formatting by tag.
 			echo "	<p class=\"othertag funcothertag ${i/tag_/tag-}\">"
 			echo "	${!i}"
@@ -351,7 +360,7 @@ function output_parsed_block()
 		echo "	<h2 id=\"$varName\" class=\"variable\">variable <strong>$varName</strong></h2>"
 		for i in ${!tag_*} ; do
 			# Convert _ in tags to space. Looks better.
-			echo "	<h3 class=\"othertag varothertag ${i/tag_/tag-}\">$(sed 's/_/ /g' <<< "${i#tag_}")</h3>"
+			echo "	<h3 class=\"othertag varothertag ${i/tag_/tag-}\">$(convert_underscore_to_space "${i#tag_}")</h3>"
 			# This may be fun, allow special formatting by tag.
 			echo "	<p class=\"othertag varothertag ${i/tag_/tag-}\">"
 			echo "	${!i}"
