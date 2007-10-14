@@ -35,4 +35,4 @@ bash="$(type -p bash)"
 
 # env -i:      Clean environment
 # bash --norc: Don't read profile/bashrc
-exec env -i $bash --norc "${library_dir}/main.sh" --config "$config_file" --libdir "$library_dir" "$@"
+exec env -i "$bash" --norc "${library_dir}/main.sh" --config "$config_file" --libdir "$library_dir" "$@"
