@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Simple FAQ module
+#---------------------------------------------------------------------
+## Simple FAQ module
+#---------------------------------------------------------------------
 
 module_faq_INIT() {
 	echo 'after_load on_PRIVMSG'

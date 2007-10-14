@@ -18,17 +18,18 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Check eix and return output from it.
-# eix is a tool to search Gentoo packages
-# From eix eix:
-#   Description:         Small utility for searching ebuilds with indexing for fast results
-# This module therefore depends on:
-#   Gentoo
-#   eix.
-# You need to specify flood limiting in config.
-# (how often in seconds)
-#config_module_eix_rate='5'
-
+#---------------------------------------------------------------------
+## Check eix and return output from it.
+## @eix eix is a tool to search Gentoo packages<br />
+## @eix From eix eix:<br />
+## @eix <tt>  Description:         Small utility for searching ebuilds with indexing for fast results</tt>
+## @Dependencies This module therefore depends on:<br />
+## @Dependencies   Gentoo<br />
+## @Dependencies   eix<br />
+## @Config_variables You need to specify flood limiting in config.<br />
+## @Config_variables (how often in seconds)<br />
+## @Config_variables <tt>config_module_eix_rate='5'</tt><br />
+#---------------------------------------------------------------------
 
 module_eix_INIT() {
 	echo 'on_PRIVMSG after_load'
@@ -56,7 +57,10 @@ module_eix_after_load() {
 	module_eix_last_query='0'
 }
 
-# eix format string:
+#---------------------------------------------------------------------
+## eix format string.
+## @Type Private
+#---------------------------------------------------------------------
 module_eix_format_string="<category>/${format_bold}<name>${format_bold} \(<availableversionsshort>\) \(${format_bold}<homepage>${format_bold}\): <description>"
 
 # Called on a PRIVMSG

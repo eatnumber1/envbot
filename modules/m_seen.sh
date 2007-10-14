@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Simple seen module using SQLite3
+#---------------------------------------------------------------------
+## Simple seen module using SQLite3
+#---------------------------------------------------------------------
 
 module_seen_INIT() {
 	echo 'after_load on_PRIVMSG'

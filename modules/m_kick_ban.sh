@@ -19,7 +19,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Kicking (insert comment about Chuck Norris ;) and banning.
+#---------------------------------------------------------------------
+## Kicking (insert comment about Chuck Norris ;) and banning.
+#---------------------------------------------------------------------
 
 module_kick_ban_INIT() {
 	echo 'on_PRIVMSG after_load after_connect after_load on_numeric periodic'

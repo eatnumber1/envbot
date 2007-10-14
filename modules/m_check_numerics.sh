@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# For debugging, report any unknown numerics.
+#---------------------------------------------------------------------
+## For debugging, report any unknown numerics.
+#---------------------------------------------------------------------
 
 module_check_numerics_INIT() {
 	echo 'on_numeric'

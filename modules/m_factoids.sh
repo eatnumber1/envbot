@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Simple factoids module using SQLite3
+#---------------------------------------------------------------------
+## Simple factoids module using SQLite3
+#---------------------------------------------------------------------
 
 module_factoids_INIT() {
 	echo 'after_load on_PRIVMSG'

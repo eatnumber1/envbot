@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# This module does autojoin after connect.
+#---------------------------------------------------------------------
+## This module does autojoin after connect.
+#---------------------------------------------------------------------
 
 module_autojoin_INIT() {
 	echo 'after_connect'

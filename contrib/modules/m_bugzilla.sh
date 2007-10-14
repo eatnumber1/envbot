@@ -18,20 +18,20 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Check bugs using the program bugz and return output from it.
-# bugz is a tool to search Gentoo bug reports (or other bugzillas)
-# From eix pybugz:
-#   Description:         Command line interface to (Gentoo) Bugzilla
-# This module therefore depends on:
-#   pybugz
-
-# To set bugzilla to use something like this in config:
-#config_module_bugzilla_url='https://bugs.gentoo.org/'
-# Must end in trailing slash!
-# You also need to specify flood limiting
-# (how often in seconds)
-#config_module_bugzilla_rate='10'
-
+#---------------------------------------------------------------------
+## Check bugs using the program bugz and return output from it.
+## @pybugz bugz is a tool to search Gentoo bug reports (or other bugzillas)<br />
+## @pybugz From eix pybugz:<br />
+## @pybugz  Description:         Command line interface to (Gentoo) Bugzilla
+## @Dependencies This module therefore depends on:<br />
+## @Dependencies   pybugz
+## @Config_variables To set bugzilla to use something like this in config:<br />
+## @Config_variables <tt>config_module_bugzilla_url='https://bugs.gentoo.org/'</tt><br />
+## @Config_variables Must end in trailing slash!<br />
+## @Config_variables You also need to specify flood limiting<br />
+## @Config_variables (how often in seconds)<br />
+## @Config_variables <tt>config_module_bugzilla_rate='10'</tt>
+#---------------------------------------------------------------------
 
 module_bugzilla_INIT() {
 	echo 'on_PRIVMSG after_load'

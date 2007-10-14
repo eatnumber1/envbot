@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Identify to NickServ
+#---------------------------------------------------------------------
+## Identify to NickServ
+#---------------------------------------------------------------------
 
 module_services_INIT() {
 	echo 'on_connect after_load after_disconnect'

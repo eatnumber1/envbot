@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Set umodes when connecting
+#---------------------------------------------------------------------
+## Set umodes when connecting
+#---------------------------------------------------------------------
 
 module_umodes_INIT() {
 	echo 'after_connect'

@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Allow owners to make to bot say something
+#---------------------------------------------------------------------
+## Allow owners to make to bot say something
+#---------------------------------------------------------------------
 
 module_say_INIT() {
 	echo 'on_PRIVMSG'

@@ -77,6 +77,8 @@ apidocs:
 	mkdir -p docs
 	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot Core API" -o docs/public-core lib/*.sh
 	./tools/bashdoc/bashdoc.sh -p "envbot Core API (private functions)" -o docs/private-core lib/*.sh
+	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot module-provided API" -o docs/public-modules modules/*.sh
+	./tools/bashdoc/bashdoc.sh -p "envbot module-provided API (private functions)" -o docs/private-modules modules/*.sh
 
 dist-dir:
 	rm -rf $(DISTDIR)
