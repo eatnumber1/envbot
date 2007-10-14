@@ -68,17 +68,41 @@ man:
 	help2man -NS envbot -n 'An advanced modular IRC bot in bash' "/usr/bin/env bash envbot" > doc/envbot.1
 
 clean:
-	rm -vf *~ */*~ */*/*~ bot_settings.sh.example
+	$(RM) -vf *~ */*~ */*/*~ bot_settings.sh.example
+
+cleandocs:
+	$(RM) -rf doc/api/private-core
+	$(RM) -rf doc/api/public-core
+	$(RM) -rf doc/api/private-modules
+	$(RM) -rf doc/api/public-modules
 
 cleanlogs:
-	rm -vrf logs/*
+	$(RM) -vrf logs/*
 
-apidocs:
-	mkdir -p docs
-	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot Core API" -o docs/public-core lib/*.sh
-	./tools/bashdoc/bashdoc.sh -p "envbot Core API (private functions)" -o docs/private-core lib/*.sh
-	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot module-provided API" -o docs/public-modules modules/*.sh
-	./tools/bashdoc/bashdoc.sh -p "envbot module-provided API (private functions)" -o docs/private-modules modules/*.sh
+apidocs-private:
+	./tools/bashdoc/bashdoc.sh -p "envbot Core API (private functions)" -o doc/api/private-core lib/*.sh
+	./tools/bashdoc/bashdoc.sh -p "envbot module-provided API (private functions)" -o doc/api/private-modules modules/*.sh
+
+apidocs-public:
+	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot Core API" -o doc/api/public-core lib/*.sh
+	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot module-provided API" -o doc/api/public-modules modules/*.sh
+
+apidocs: apidocs-public
+
+apidocs-all: apidocs-private apidocs-public
+
+checkvars:
+	@if [ "$(ENV_USERNAME)" = "" ]; then \
+		echo "Please call this script with the ENV_USERNAME environment variable set"; \
+		exit 1; \
+	fi
+	@if [ "$(ENV_PATH)" = "" ]; then \
+		echo "Please call this script with the ENV_PATH environment variable set"; \
+		exit 1; \
+	fi
+
+apidocs-upload: checkvars
+	rsync -hhzcrv --progress --delete --stats -e ssh doc/api/ $(ENV_USERNAME)@envbot.org:$(ENV_PATH)/
 
 dist-dir:
 	rm -rf $(DISTDIR)
@@ -111,4 +135,4 @@ install: all
 	$(INSTALL) -m 644 bot_settings.tmp $(DESTDIR)$(ENVBOT_CONFDIR)/bot_settings.sh.example
 	$(RM) bot_settings.tmp
 
-.PHONY: all apidocs numerics clean cleanlogs dist-dir
+.PHONY: all apidocs apidocs-private apidocs-public checkvars apidocs-upload numerics clean cleanlogs cleandocs dist-dir
