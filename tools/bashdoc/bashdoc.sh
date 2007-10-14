@@ -18,9 +18,10 @@
 ##	in any bashdoc comment. It will be transformed into a link to that function.
 ##	Note, this will only work for functions that are defined in the same script.
 ##	<p><pre>
-##	Usage:	[-p project] [-o directory] [-e tag] [--] script [ script ...]
+##	Usage:	[OPTIONS] [--] script [ script ...]
 ##	-p, --project project   Name of the project
 ##	-o, --output directory  Specifies the directory you want the resulting html to go into
+##	-c, --nocss             Do not write default CSS file.
 ##	-e, --exclusive tag     Only output if the block has this tag
 ##	-q, --quiet             Quiet the output
 ##	-h, --help              Display this help and exit
@@ -184,11 +185,12 @@ function usage()
 cat <<- EOF
 bashdoc generates HTML documentation from bash scripts.
 
-Usage: $(basename $0) [-p project] [-o directory] [--] script [script ...]
+Usage: $(basename $0) [OPTIONS] [--] script [script ...]
 
 Options:
   -p, --project project   Name of the project
   -o, --output directory  Specifies the directory you want the resulting html to go into
+  -c, --nocss             Do not write default CSS file.
   -e, --exclusive tag     Only output if the block has this tag
   -q, --quiet             Quiet the output
   -h, --help              Display this help and exit
@@ -218,7 +220,7 @@ EOF
 ##	@return 2 Expected end of file, no more blocks
 ##	@Stdin	Reads a chunk
 ##	@Stdout	Block with starting '##' removed
-##	@Globals	paramDesc, retDesc, desc, block, split
+##	@Globals	paramDesc, retDesc, desc, block, split, out_comment_block
 #--------------------------
 function get_comment_block()
 {
@@ -228,7 +230,7 @@ function get_comment_block()
 		let srcLine++
 		if [[ ${LINE:0:4} == '#---' ]] ; then
 			if [[ $inComment ]] ; then
-				echo "$commentBlock"
+				out_comment_block="$commentBlock"
 				return 0
 			else
 				inComment=yes
@@ -239,7 +241,6 @@ function get_comment_block()
 			commentBlock="$commentBlock"$'\n'${LINE####}
 		fi
 	done
-
 	#If we make it out here, we hit the end of the file
 	if [[ $commentBlock ]] ; then
 		#If there is a comment block started, then it never ended
@@ -257,7 +258,7 @@ function get_comment_block()
 ##	function name. Mostly uses <@function parse_block> and
 ##	<@function output_parsed_block> to do the read work.
 ##	@Stdin	Reads line after comment block
-##	@Globals	paramDesc, retDesc, desc, block, split
+##	@Globals	paramDesc, retDesc, desc, block, split, out_comment_block
 #-----------------------
 function parse_comments()
 {
@@ -271,6 +272,7 @@ function parse_comments()
 	local skipRead
 	local outBlock=""
 	local lastOutBlock=""
+	srcLine=0
 	# 1 = function
 	# 2 = variable
 	itemtype=0
@@ -281,8 +283,10 @@ function parse_comments()
 		retDesc=()
 		desc=""
 		itemtype=0
-		block=$( get_comment_block )
+		unset out_comment_block
+		get_comment_block
 		[[ $? -gt 0 ]] && break
+		block="$out_comment_block"
 
 		if [[ $skipRead ]] ; then
 			skipRead=""
@@ -297,7 +301,7 @@ function parse_comments()
 			funcName=$( echo ${funcName%%()*} )
 			itemtype=1
 		# Is it a (global) variable?
-		elif [[ ${funcLine} =~ ^(declare -r +)?([^ ]+)=.+$ ]]; then
+		elif [[ ${funcLine} =~ ^(declare -r +)?([^# ]+)=.+$ ]]; then
 			varName="${BASH_REMATCH[@]: -1}"
 			itemtype=2
 		fi
@@ -638,14 +642,14 @@ echo "<li class=\"nav nav-header\">Functions</li>" >> function_list.html
 # Merge function lists of all sources, sort by function name
 for i in *.funcs ; do
 	for f in $( cat $i ) ; do
-		echo "$f <li class=\"nav nav-function\"><tt>[f]</tt> <a href=\"${i%.funcs}.html#$f\" target=\"main\">$f</a></li>"
+		echo "$f <li class=\"nav nav-function\"><a href=\"${i%.funcs}.html#$f\" target=\"main\">$f</a></li>"
 	done
 done | sort | cut -d' ' -f2- >> function_list.html
 
 echo "<li class=\"nav nav-header\">Variables</li>" >> function_list.html
 for i in *.vars ; do
 	for v in $( cat $i ) ; do
-		echo "$v <li class=\"nav nav-variable\"><tt>[v]</tt> <a href=\"${i%.vars}.html#$v\" target=\"main\">$v</a></li>"
+		echo "$v <li class=\"nav nav-variable\"><a href=\"${i%.vars}.html#$v\" target=\"main\">$v</a></li>"
 	done
 done | sort | cut -d' ' -f2- >> function_list.html
 
