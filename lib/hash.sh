@@ -29,11 +29,16 @@
 ## @param Name of variable to return result in.
 #---------------------------------------------------------------------
 hash_hexify() {
+	# Res will contain full output string, hex current char.
 	local hex i res=
 	for ((i=0;i<${#1};i++)); do
+		# The ' is not documented in bash
+		# See http://www.opengroup.org/onlinepubs/009695399/utilities/printf.html
 		printf -v hex '%x' "'${1:i:1}"
+		# Add to string
 		res+=$hex
 	done
+	# Print to variable.
 	printf -v "$2" '%s' "$res"
 }
 
@@ -44,8 +49,11 @@ hash_hexify() {
 ## @param Name of variable to return result in.
 #---------------------------------------------------------------------
 hash_unhexify() {
+	# Res will contain full output string, unhex current char.
 	local unhex i=0 res=
 	for ((i=0;i<${#1};i+=2)); do
+		# Convert back from hex. 2 chars at a time
+		# FIXME: This will break if output would be multibyte chars.
 		printf -v unhex \\"x${1:i:2}"
 		res+=$unhex
 	done
@@ -89,8 +97,31 @@ hash_name_getindex() {
 #---------------------------------------------------------------------
 hash_set() {
 	local varname
+	# Get variable name
 	hash_name_create "$1" "$2" 'varname'
+	# Set it using the prinf to variable
 	printf -v "$varname" '%s' "$3"
+}
+
+#---------------------------------------------------------------------
+## Append a value to the end of an entry in a hash array
+## @Type API
+## @param Table name
+## @param Index
+## @param Value to append
+## @param Separator (optional, defaults to space)
+#---------------------------------------------------------------------
+hash_append() {
+	local varname
+	# Get variable name
+	hash_name_create "$1" "$2" 'varname'
+	# Append to end, or if empty just set.
+	if [[ "${!varname}" ]]; then
+		local sep=${4:-" "}
+		printf -v "$varname" '%s' "${!varname}${sep}${3}"
+	else
+		printf -v "$varname" '%s' "$3"
+	fi
 }
 
 #---------------------------------------------------------------------
@@ -102,6 +133,7 @@ hash_set() {
 #---------------------------------------------------------------------
 hash_unset() {
 	local varname
+	# Get variable name
 	hash_name_create "$1" "$2" 'varname'
 	unset "${varname}"
 }
@@ -116,7 +148,9 @@ hash_unset() {
 #---------------------------------------------------------------------
 hash_get() {
 	local varname
+	# Get variable name
 	hash_name_create "$1" "$2" 'varname'
+	# Now print out to variable using indirect ref to get the value.
 	printf -v "$3" '%s' "${!varname}"
 }
 
