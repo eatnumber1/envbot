@@ -18,8 +18,10 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# THIS IS FOR DEBUGGING ONLY!!!! Don't use it in other cases
-# Allow owners to make the bot eval any code
+#---------------------------------------------------------------------
+## Allow owners to make the bot eval any code<br />
+## THIS IS FOR DEBUGGING ONLY!!!! Don't use it in other cases
+#---------------------------------------------------------------------
 
 module_eval_INIT() {
 	echo 'on_PRIVMSG'

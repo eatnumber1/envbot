@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Debug module, dump all variables to console.
+#---------------------------------------------------------------------
+## Debug module, dump all variables to console.
+#---------------------------------------------------------------------
 
 module_dumpvars_INIT() {
 	echo 'on_PRIVMSG'

@@ -18,8 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-
-# This is the main file, it should be called with a wrapper (envbot)
+#---------------------------------------------------------------------
+## This is the main file, it should be called with a wrapper (envbot)
+#---------------------------------------------------------------------
 
 
 ###################
@@ -53,7 +54,17 @@ fi
 ######################
 
 # Version and url
+#---------------------------------------------------------------------
+## Version of envbot.
+## @Type API
+## @Read_only Yes
+#---------------------------------------------------------------------
 declare -r envbot_version='0.0.1-trunk+bzr'
+#---------------------------------------------------------------------
+## Homepage of envbot.
+## @Type API
+## @Read_only Yes
+#---------------------------------------------------------------------
 declare -r envbot_homepage='http://envbot.org'
 
 ##############
@@ -92,8 +103,11 @@ declare -r tmp_home="$(mktemp -dt envbot.home.XXXXXXXXXX)"
 # Temp trap on ctrl-c until the next "stage" of trap gets loaded (at connect)
 trap 'rm -rvf "$tmp_home"; exit 1' TERM INT
 
-# Now create a temp function to quit on problems in a way that cleans up
-# temp stuff until we have loaded enough to use the normal function bot_quit.
+#---------------------------------------------------------------------
+## Now create a temp function to quit on problems in a way that cleans up
+## temp stuff until we have loaded enough to use the normal function bot_quit.
+## @param Return status of bot
+#---------------------------------------------------------------------
 envbot_quit() {
 	rm -rf "$tmp_home"
 	exit "$1"
@@ -102,21 +116,40 @@ envbot_quit() {
 # And finally lets export this as $HOME
 export HOME="$tmp_home"
 
-
-# Will be set to 1 if -v or --verbose is passed
-# on command line.
+#---------------------------------------------------------------------
+## Will be set to 1 if -v or --verbose is passed
+## on command line.
+## @Type Private
+#---------------------------------------------------------------------
 force_verbose=0
 
-# Store command line for later use
+#---------------------------------------------------------------------
+## Store command line for later use
+## @Type Private
+#---------------------------------------------------------------------
 command_line=( "$@" )
 
-# Current config version.
+#---------------------------------------------------------------------
+## Current config version.
+## @Type API
+## @Read_only Yes
+#---------------------------------------------------------------------
 declare -r config_current_version=14
 
 # Some constants used in different places
+
+#---------------------------------------------------------------------
+## Transport modules will wait $envbot_transport_timeout seconds
+## before returning control to main loop (to allow periodic events).
+## @Type API
+## @Read_only Yes
+#---------------------------------------------------------------------
 declare -r envbot_transport_timeout=5
 
-
+#---------------------------------------------------------------------
+## Print help message
+## @Type Private
+#---------------------------------------------------------------------
 print_cmd_help() {
 	echo 'envbot is an advanced modular IRC bot coded in bash.'
 	echo ''
@@ -142,6 +175,10 @@ print_cmd_help() {
 	envbot_quit 0
 }
 
+#---------------------------------------------------------------------
+## Print version message
+## @Type Private
+#---------------------------------------------------------------------
 print_version() {
 	echo "envbot $envbot_version - An advanced modular IRC bot in bash."
 	echo ''
@@ -276,11 +313,17 @@ echo "Loading modules"
 # Load modules
 modules_load_from_config
 
-# Used for periodic events later below
+#---------------------------------------------------------------------
+## Used for periodic events later below
+## @Type Private
+#---------------------------------------------------------------------
 periodic_lastrun="$(date -u +%s)"
-# This can be used when the code does not need exact time.
-# It will be updated each time the bot get a new line of
-# data.
+#---------------------------------------------------------------------
+## This can be used when the code does not need exact time.
+## It will be updated each time the bot get a new line of
+## data.
+## @Type API
+#---------------------------------------------------------------------
 envbot_time="$(date -u +%s)"
 
 while true; do

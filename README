@@ -21,10 +21,13 @@ See the file INSTALL.
 
 License
 -------
-envbot is licensed under GPL version 3, with the exception of data/quotes.txt.example.pqf:
-The source (games-misc/fortune-mod-pqf/fortune-mod-pqf-6.0.ebuild from Gentoo portage)
-says it is under GPL-2.
-
+envbot is licensed under GPL version 3, with the exceptions of:
+	data/quotes.txt.example.pqf:
+		The source (games-misc/fortune-mod-pqf/fortune-mod-pqf-6.0.ebuild from Gentoo portage)
+		says it is under GPL-2.
+	tools/bashdoc/bashdoc.sh
+		GPL-2. bashdoc is a heavily updated and modified version of bashdoc from
+		the sourcemage project.
 
 Dependencies
 ------------

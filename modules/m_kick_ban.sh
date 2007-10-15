@@ -19,7 +19,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Kicking (insert comment about Chuck Norris ;) and banning.
+#---------------------------------------------------------------------
+## Kicking and banning.
+#---------------------------------------------------------------------
 
 module_kick_ban_INIT() {
 	echo 'on_PRIVMSG after_load after_connect after_load on_numeric periodic'
@@ -76,6 +78,7 @@ module_kick_ban_periodic() {
 			if (( $envbot_time >= $time )); then
 				# TODO: Queue them?
 				send_modes "$channel" "-b $mask"
+				# Remove ban from list.
 				unset "module_kick_ban_timed_bans[${index}]"
 				continue
 			# Next ban?
@@ -92,9 +95,13 @@ module_kick_ban_periodic() {
 	fi
 }
 
-# $1 = Channel
-# $2 = Banmask
-# $3 = Duration
+#---------------------------------------------------------------------
+## Store a ban
+## @Type Private
+## @param Channel
+## @param Banmask
+## @param Duration
+#---------------------------------------------------------------------
 module_kick_ban_store_ban() {
 	local targettime="$(module_kick_ban_find_unset_time "$3")"
 	module_kick_ban_timed_bans+=( "$targettime $1 $2" )
@@ -103,8 +110,12 @@ module_kick_ban_store_ban() {
 	fi
 }
 
-
-# $1 = Duration in seconds
+#---------------------------------------------------------------------
+## Calculate unset-time
+## @Type Private
+## @param Duration in seconds
+## @Stdout The timestamp when the ban should be unset
+#---------------------------------------------------------------------
 module_kick_ban_find_unset_time() {
 	# Add current time to duration.
 	local targettime="$1"

@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Set umodes when connecting
+#---------------------------------------------------------------------
+## Set umodes when connecting
+#---------------------------------------------------------------------
 
 module_umodes_INIT() {
 	echo 'after_connect'
@@ -33,6 +35,10 @@ module_umodes_REHASH() {
 	return 0
 }
 
+#---------------------------------------------------------------------
+## Set the umodes
+## @Type Private
+#---------------------------------------------------------------------
 module_umodes_set_modes() {
 	if [[ $config_module_umodes_default_umodes ]]; then
 		log_info "Setting umodes: $config_module_umodes_default_umodes"

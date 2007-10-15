@@ -19,8 +19,10 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# This module allows other modules to access a SQLite3 database in a
-# "simple" way.
+#---------------------------------------------------------------------
+## This module allows other modules to access a SQLite3 database in a
+## "simple" way.
+#---------------------------------------------------------------------
 ###########################################
 # WARNING WARNING WARNING WARNING WARNING #
 #                                         #
@@ -60,28 +62,33 @@ module_sqlite3_after_load() {
 	fi
 }
 
-# Make string safe for SQL.
-# Parameters:
-#   $1 String to clean
-# FIXME: We just discard double quotes at the moment.
+#---------------------------------------------------------------------
+## Make string safe for SQL.
+## @Type API
+## @param String to clean
+## @FIXME We just discard double quotes at the moment.
+#---------------------------------------------------------------------
 module_sqlite3_clean_string() {
 	# \055 = -, yes hackish workaround.
 	tr -Cd 'A-Za-z0-9\055 ,;.:_<>*|~^!"#%&/()=?+\@${}[]+ÅÄÖåäö'\' <<< "$1" | sed 's/\\/\\\\/g'";s/'/''/g"
 }
 
-# Run the query against the data base.
-# Parameters:
-#   $1 Query to run
+#---------------------------------------------------------------------
+## Run the query against the data base.
+## @Type API
+## @param Query to run
+#---------------------------------------------------------------------
 module_sqlite3_exec_sql() {
 	sqlite3 -list "$config_module_sqlite3_database" "$1"
 }
 
-# Check if a table exists in the database file.
-# Parameters
-#   $1 The table name to check for
-# Return status
-#   0 If table exists
-#   1 If table doesn't exist.
+#---------------------------------------------------------------------
+## Check if a table exists in the database file.
+## @Type API
+## @param The table name to check for
+## @return 0 If table exists
+## @return 1 If table doesn't exist.
+#---------------------------------------------------------------------
 module_sqlite3_table_exists() {
 	sqlite3 -list "$config_module_sqlite3_database" ".tables" | grep -qw "$1"
 }

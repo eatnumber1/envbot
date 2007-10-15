@@ -18,62 +18,78 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Example module meant to help people who want to make modules for envbot
+#---------------------------------------------------------------------
+## Example module meant to help people who want to make modules for envbot
+#---------------------------------------------------------------------
 
-# This is called to get a list of hooks that the module provides.
-# Use the hook after_load to do other things
+#---------------------------------------------------------------------
+## This is called to get a list of hooks that the module provides.
+## Use the hook after_load to do other things
+## @Type   Module hook
+## @Stdout A list of hooks.
+#---------------------------------------------------------------------
 module_helloworld_INIT() {
 	# echo to STDOUT the hooks we have.
 	echo 'after_load on_PRIVMSG'
 }
 
-# Here we do anything needed to unload the module.
-# Return status:
-#   0 = Unloaded correctly
-#   1 = Failed to unload. On this the bot will quit.
-# Notes:
-#   This function is NOT called when the bot is exiting. To check for that
-#   use the FINALISE hook!
+#---------------------------------------------------------------------
+## Here we do anything needed to unload the module.
+## @Type   Module hook
+## @return 0 Unloaded correctly
+## @return 1 Failed to unload. On this the bot will quit.
+## @Note   This function is NOT called when the bot is exiting. To check for that
+## @Note   use the FINALISE hook!
+#---------------------------------------------------------------------
 module_helloworld_UNLOAD() {
 	# Here we unset any functions and variables that we have defined
 	# except the hook functions.
 	unset module_helloworld_variable module_helloworld_function
 }
 
-# Here do anything needed at rehash
-# Return status:
-#   0 = Rehashed correctly
-#   1 = Non fatal error for the bot itself. The bot will call UNLOAD on the module.
-#   2 = Fatal error of some kind. On this the bot will quit.
+#---------------------------------------------------------------------
+## Here do anything needed at rehash
+## @Type   Module hook
+## @return 0 Rehashed correctly
+## @return 1 Non fatal error for the bot itself. The bot will call UNLOAD on the module.
+## @return 2 Fatal error of some kind. On this the bot will quit.
+#---------------------------------------------------------------------
 module_helloworld_REHASH() {
 	# We don't have anything to do here.
 	return 0
 }
 
-# Called after all the hooks are added for the module.
-# Return status:
-#   0 = Unloaded correctly
-#   1 = Failed. On this the bot will call unload on the module.
+#---------------------------------------------------------------------
+## Called after all the hooks are added for the module.
+## @Type   Module hook
+## @return 0 Unloaded correctly
+## @return 1 Failed. On this the bot will call unload on the module.
+#---------------------------------------------------------------------
 module_helloworld_after_load() {
 	# Set a global variable, this can't be done in INIT.
 	# Remember to unset all global variables on UNLOAD!
 	module_helloworld_variable="world!"
 }
 
-# This logs "hello world" as an informative level log item
-# when called
-# Note that this is a custom function used by
-# some other part of the script
+#---------------------------------------------------------------------
+## This logs "hello world" as an informative level log item
+## when called
+## @Type Private
+## @Note Note that this is a custom function used by
+## @Note some other part of the script
+#---------------------------------------------------------------------
 module_helloworld_function() {
 	# Lets use the variable defined above!
 	log_info "Hello $module_helloworld_variable"
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
+#---------------------------------------------------------------------
+## Called on a PRIVMSG
+## @Type   Module hook
+## @param From who (n!u@h)
+## @param To who (channel or botnick)
+## @param The message
+#---------------------------------------------------------------------
 module_helloworld_on_PRIVMSG() {
 	local sender="$1"
 	local target

@@ -18,50 +18,56 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+#---------------------------------------------------------------------
+## Data parsing
+#---------------------------------------------------------------------
 
-# Get nick from hostmask
-# Parameters
-#   $1 n!u@h mask
-# Returns on STDOUT
-#   Nick
+#---------------------------------------------------------------------
+## Get nick from hostmask
+## @Type API
+## @param n!u@h mask
+## @Stdout Nick
+#---------------------------------------------------------------------
 parse_hostmask_nick() {
 	if [[ $1 =~ ^([^ !]+)! ]]; then
 		echo "${BASH_REMATCH[1]}"
 	fi
 }
-# Get ident from hostmask
-# Parameters
-#   $1 n!u@h mask
-# Returns on STDOUT
-#   Ident
+
+#---------------------------------------------------------------------
+## Get ident from hostmask
+## @Type API
+## @param n!u@h mask
+## @Stdout Ident
+#---------------------------------------------------------------------
 parse_hostmask_ident() {
 	if [[ $1 =~ ^[^\ !]+!([^ @]+)@ ]]; then
 		echo "${BASH_REMATCH[1]}"
 	fi
 }
-# Get host from hostmask
-# Parameters
-#   $1 n!u@h mask
-# Returns on STDOUT
-#   Host
+
+#---------------------------------------------------------------------
+## Get host from hostmask
+## @Type API
+## @param n!u@h mask
+## @Stdout Host
+#---------------------------------------------------------------------
 parse_hostmask_host() {
 	if [[ $1 =~ ^[^\ !]+![^\ @]+@([^ ]+) ]]; then
 		echo "${BASH_REMATCH[1]}"
 	fi
 }
 
-# This is used to get data out of 005.
-# Parameters
-#   $1 Name of data to get
-# Return status
-#   0 If found
-#   1 If not found
-# Returns on STDOUT
-#   The variable data in question, if any
-# Note
-#   That if the variable doesn't have any data,
-#   but still exist it will return nothing on STDOUT
-#   but 0 as error code
+#---------------------------------------------------------------------
+## This is used to get data out of 005.
+## @Type API
+## @param Name of data to get
+## @return 0 If found otherwise 1
+## @Stdout The variable data in question, if any
+## @Note That if the variable doesn't have any data,
+## @Note but still exist it will return nothing on STDOUT
+## @Note but 0 as error code
+#---------------------------------------------------------------------
 parse_005() {
 	if [[ $server_005 =~ ${1}(=([^ ]+))? ]]; then
 		if [[ ${BASH_REMATCH[2]} ]]; then
@@ -72,16 +78,15 @@ parse_005() {
 	return 1
 }
 
-# Check if a query matches a command. If it matches extract the
-# parameters.
-# Parameters
-#   $1 The query to check, this should be the part after the : in PRIVMSG.
-#   $2 What command to look for.
-# Return status
-#   0 Matches
-#   1 Doesn't match
-# Returns on STDOUT
-#   If matches: The parameters (if any)
+#---------------------------------------------------------------------
+## Check if a query matches a command. If it matches extract the
+## parameters.
+## @Type API
+## @param The query to check, this should be the part after the : in PRIVMSG.
+## @param What command to look for.
+## @return 0 if matches otherwise 1
+## @Stdout If matches: The parameters (if any)
+#---------------------------------------------------------------------
 parse_query_is_command() {
 	if [[ "$1" =~ ^${config_listenregex}${2}(\ (.*)|$) ]]; then
 		echo "${BASH_REMATCH[@]: -1}"

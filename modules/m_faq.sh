@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Simple FAQ module
+#---------------------------------------------------------------------
+## Simple FAQ module
+#---------------------------------------------------------------------
 
 module_faq_INIT() {
 	echo 'after_load on_PRIVMSG'
@@ -33,7 +35,10 @@ module_faq_REHASH() {
 	module_faq_load
 }
 
-# Load or reload FAQ items
+#---------------------------------------------------------------------
+## Load or reload FAQ items
+## @Type Private
+#---------------------------------------------------------------------
 module_faq_load() {
 	local i=0
 	unset module_faq_array

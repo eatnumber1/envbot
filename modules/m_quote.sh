@@ -19,7 +19,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Quotes module
+#---------------------------------------------------------------------
+## Quotes module
+#---------------------------------------------------------------------
 
 module_quote_INIT() {
 	echo 'after_load on_PRIVMSG'
@@ -34,6 +36,10 @@ module_quote_REHASH() {
 	module_quote_load
 }
 
+#---------------------------------------------------------------------
+## Load quotes from file
+## @Type Private
+#---------------------------------------------------------------------
 module_quote_load() {
 	local i=0 line oldIFS="$IFS"
 	unset module_quote_quotes

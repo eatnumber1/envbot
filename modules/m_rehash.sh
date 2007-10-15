@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# Rehashing
+#---------------------------------------------------------------------
+## Rehashing
+#---------------------------------------------------------------------
 
 module_rehash_INIT() {
 	echo 'on_PRIVMSG'
@@ -32,7 +34,11 @@ module_rehash_REHASH() {
 	return 0
 }
 
-# $1 = sender
+#---------------------------------------------------------------------
+## Rehash config
+## @Type Private
+## @param Sender
+#---------------------------------------------------------------------
 module_rehash_dorehash() {
 	local sender="$1"
 	config_rehash

@@ -18,31 +18,94 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+#---------------------------------------------------------------------
+## Server connection.
+#---------------------------------------------------------------------
 
 # Server info variables
+#---------------------------------------------------------------------
+## Name of server (example: server1.example.net)
+## @Type API
+#---------------------------------------------------------------------
 server_name=""
+#---------------------------------------------------------------------
+## The 004 received from the server.
+## @Type API
+#---------------------------------------------------------------------
 server_004=""
-# See http://www.irc.org/tech_docs/005.html for an incomplete list.
+#---------------------------------------------------------------------
+## The 005 received from the server. Use parse_005 to get data out of this.
+## @Type API
+## @Note See http://www.irc.org/tech_docs/005.html for an incomplete list of 005 values.
+#---------------------------------------------------------------------
 server_005=""
 # NAMES output with UHNAMES and NAMESX
 #  :photon.kuonet-ng.org 353 envbot = #bots :@%+AnMaster!AnMaster@staff.kuonet-ng.org @ChanServ!ChanServ@services.kuonet-ng.org bashbot!rfc3092@1F1794B2:769091B3
 # NAMES output with NAMESX only:
 #  :hurricane.KuoNET.org 353 envbot = #test :bashbot ~@Brain ~@EmErgE &@AnMaster/kng
+#---------------------------------------------------------------------
+## 1 if UHNAMES enabled, otherwise 0
+## @Type API
+#---------------------------------------------------------------------
 server_UHNAMES=0
+#---------------------------------------------------------------------
+## 1 if NAMESX enabled, otherwise 0
+## @Type API
+#---------------------------------------------------------------------
 server_NAMESX=0
 # These are passed in a slightly odd way in 005 so we do them here.
+#---------------------------------------------------------------------
+## The mode char (if any) for ban excepts (normally +e)
+## @Type API
+#---------------------------------------------------------------------
 server_EXCEPTS=""
+#---------------------------------------------------------------------
+## The mode char (if any) for invite excepts (normally +I)
+## @Type API
+#---------------------------------------------------------------------
 server_INVEX=""
 
 # In case we don't get a 005, make some sane defaults.
+#---------------------------------------------------------------------
+## List channel modes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_CHMODES_LISTMODES="b"
+#---------------------------------------------------------------------
+## "Always parameters" channel modes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_CHMODES_ALWAYSPARAM="k"
+#---------------------------------------------------------------------
+## "Parameter on set" channel modes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_CHMODES_PARAMONSET="l"
+#---------------------------------------------------------------------
+## Simple channel modes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_CHMODES_SIMPLE="imnpst"
+#---------------------------------------------------------------------
+## Prefix channel modes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_PREFIX_modes="ov"
+#---------------------------------------------------------------------
+## Channel prefixes supported by server.
+## @Type API
+#---------------------------------------------------------------------
 server_PREFIX_prefixes="@+"
 
+#---------------------------------------------------------------------
+## What is our current nick?
+## @Type API
+#---------------------------------------------------------------------
 server_nick_current=""
+#---------------------------------------------------------------------
+## 1 if we are connected, otherwise 0
+## @Type API
+#---------------------------------------------------------------------
 server_connected=0
 
 ###########################################################################
@@ -50,12 +113,15 @@ server_connected=0
 # Module authors: go away                                                 #
 ###########################################################################
 
-# Get some common data out of 005, the whole will also be saved to
-# $server_005 for any module to use via parse_005().
-# This function is for cases that needs special action, like NAMESX
-# and UHNAMES.
-# This should be called directly after receiving a part of the 005!
-# $1 = That part.
+#---------------------------------------------------------------------
+## Get some common data out of 005, the whole will also be saved to
+## $server_005 for any module to use via parse_005().
+## This function is for cases that needs special action, like NAMESX
+## and UHNAMES.
+## This should be called directly after receiving a part of the 005!
+## @Type Private
+## @param The last part of the 005.
+#---------------------------------------------------------------------
 server_handle_005() {
 	# Example from freenode:
 	# :heinlein.freenode.net 005 envbot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
@@ -104,13 +170,25 @@ server_handle_005() {
 	fi
 }
 
+#---------------------------------------------------------------------
+## Respond to PING from server.
+## @Type Private
+## @param Raw line
+#---------------------------------------------------------------------
 server_handle_ping() {
 	if [[ "$1" =~ ^PING\ *:(.*) ]] ;then
 		send_raw "PONG :${BASH_REMATCH[1]}"
 	fi
 }
 
-server_handle_numerics() { # $1 = numeric, $2 = target (self), $3 = data
+#---------------------------------------------------------------------
+## Handle numerics from server.
+## @Type Private
+## @param Numeric
+## @param Target (self)
+## @param Data
+#---------------------------------------------------------------------
+server_handle_numerics() {
 	# Slight sanity check
 	if [[ "$2" != "$server_nick_current" ]]; then
 		log_warning 'Own nick desynced!'
@@ -120,6 +198,12 @@ server_handle_numerics() { # $1 = numeric, $2 = target (self), $3 = data
 	fi
 }
 
+#---------------------------------------------------------------------
+## Handle NICK messages from server
+## @Type Private
+## @param Sender
+## @param New nick
+#---------------------------------------------------------------------
 server_handle_nick() {
 	local oldnick="$(parse_hostmask_nick "$1")"
 	if [[ $oldnick == $server_nick_current ]]; then
@@ -127,6 +211,10 @@ server_handle_nick() {
 	fi
 }
 
+#---------------------------------------------------------------------
+## Handle nick in use.
+## @Type Private
+#---------------------------------------------------------------------
 server_handle_nick_in_use() {
 	if [[ $on_nick -eq 3 ]]; then
 		log_error "Third nick is ALSO in use. I give up"
@@ -146,7 +234,11 @@ server_handle_nick_in_use() {
 	sleep 1
 }
 
-server_connect(){
+#---------------------------------------------------------------------
+## Connect to IRC server.
+## @Type Private
+#---------------------------------------------------------------------
+server_connect() {
 	server_connected=0
 	on_nick=1
 	# Clear current channels:

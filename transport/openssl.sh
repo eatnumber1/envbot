@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# A transport module using openssl s_client
+#---------------------------------------------------------------------
+## A transport module using openssl s_client
+#---------------------------------------------------------------------
 
 # A list of features supported
 # These are used: ipv4, ipv6, ssl, nossl, bind

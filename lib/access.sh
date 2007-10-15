@@ -18,13 +18,17 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+#---------------------------------------------------------------------
+## Access control library.
+#---------------------------------------------------------------------
 
-# Check for owner access.
-# Parameters
-#   $1 n!u@h mask
-# Return status
-#   0 Access granted.
-#   1 Access denied.
+
+#---------------------------------------------------------------------
+## Check for owner access.
+## @Type API
+## @param n!u@h mask
+## @return 0 if access was granted, otherwise 1.
+#---------------------------------------------------------------------
 access_check_owner() {
 	local index
 	for index in ${!config_access_mask[*]}; do
@@ -35,15 +39,14 @@ access_check_owner() {
 	return 1
 }
 
-
-# Check for access in scope.
-# Parameters
-#   $1 Capability to check for.
-#   $2 n!u@h mask
-#   $3 What scope
-# Return status
-#   0 Access granted.
-#   1 Access denied.
+#---------------------------------------------------------------------
+## Check for access in scope.
+## @Type API
+## @param Capability to check for.
+## @param n!u@h mask
+## @param What scope
+## @return 0 if access was granted, otherwise 1.
+#---------------------------------------------------------------------
 access_check_capab() {
 	local index
 	for index in ${!config_access_mask[*]}; do
@@ -58,20 +61,23 @@ access_check_capab() {
 	return 1
 }
 
-# Used to log actions like "did a rehash"
-# if access was granted.
-# Parameters:
-#   $1 n!u@h mask
-#   $2 What happened.
+#---------------------------------------------------------------------
+## Used to log actions like "did a rehash" if access was granted.
+## @Type API
+## @param n!u@h mask
+## @param What happened.
+#---------------------------------------------------------------------
 access_log_action() {
 	log_info_file owner.log "$1 performed the restricted action: $2"
 }
 
-# Return error, and log it
-# Parameters
-#   $1 n!u@h
-#   $2 What they tried to do
-#   $3 What capability they need
+#---------------------------------------------------------------------
+## Return error message about failed access to someone, and log it
+## @Type API
+## @param n!u@h mask
+## @param What they tried to do
+## @param What capability they need
+#---------------------------------------------------------------------
 access_fail() {
 	log_error_file access.log "$1 tried to \"$2\" but lacks access."
 	send_msg "$(parse_hostmask_nick "$sender")" "Permission denied. You need the capability \"$3\" to do this action."

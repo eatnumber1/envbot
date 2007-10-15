@@ -18,8 +18,10 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# THIS IS FOR DEBUGGING MAINLY.
-# Allow owners to make bot send any line.
+#---------------------------------------------------------------------
+## Allow owners to make bot send any line.
+## THIS IS FOR DEBUGGING MAINLY.
+#---------------------------------------------------------------------
 
 module_sendraw_INIT() {
 	echo 'on_PRIVMSG'

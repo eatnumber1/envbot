@@ -21,12 +21,14 @@
 # Also some other tasks
 
 # Useful targets:
-#   all:      Builds numerics file and generates example config
-#   man:      Generates man page using help2man
-#   install:  Installs to a DESTDIR (don't confuse with DISTDIR),
-#             See variables below.
-#   dist-dir: Generates a clean checkout of current version, ready to be
-#             tared up. Can only be done in a bzr branch/checkout
+#   all:          Builds numerics file and generates example config
+#   man:          Generates man page using help2man
+#   apidocs:      Generates API docs from code for public functions
+#   apidocs-all:  Generates API docs from code for public and internal functions.
+#   install:      Installs to a DESTDIR (don't confuse with DISTDIR),
+#                 See variables below.
+#   dist-dir:     Generates a clean checkout of current version, ready to be
+#                 tared up. Can only be done in a bzr branch/checkout
 
 ENVBOT_VERSION = 0.0.1-trunk+bzr
 
@@ -68,16 +70,47 @@ man:
 	help2man -NS envbot -n 'An advanced modular IRC bot in bash' "/usr/bin/env bash envbot" > doc/envbot.1
 
 clean:
-	rm -vf *~ */*~ */*/*~ bot_settings.sh.example
+	$(RM) -vf *~ */*~ */*/*~ bot_settings.sh.example
+
+cleandocs:
+	$(RM) -rf doc/api/private-core
+	$(RM) -rf doc/api/public-core
+	$(RM) -rf doc/api/private-modules
+	$(RM) -rf doc/api/public-modules
 
 cleanlogs:
-	rm -vrf logs/*
+	$(RM) -vrf logs/*
+
+apidocs-private:
+	./tools/bashdoc/bashdoc.sh -p "envbot Core API (private functions) for "$(ENVBOT_VERSION) -o doc/api/private-core lib/*.sh
+	./tools/bashdoc/bashdoc.sh -p "envbot module-provided API (private functions) for "$(ENVBOT_VERSION) -o doc/api/private-modules modules/*.sh
+
+apidocs-public:
+	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot Core API for "$(ENVBOT_VERSION) -o doc/api/public-core lib/*.sh
+	./tools/bashdoc/bashdoc.sh -e "Type=API" -p "envbot module-provided API for "$(ENVBOT_VERSION) -o doc/api/public-modules modules/*.sh
+
+apidocs: apidocs-public
+
+apidocs-all: apidocs-private apidocs-public
+
+checkvars:
+	@if [ "$(ENV_USERNAME)" = "" ]; then \
+		echo "Please call this script with the ENV_USERNAME environment variable set"; \
+		exit 1; \
+	fi
+	@if [ "$(ENV_PATH)" = "" ]; then \
+		echo "Please call this script with the ENV_PATH environment variable set"; \
+		exit 1; \
+	fi
+
+apidocs-upload: checkvars
+	rsync -hhzcrv --progress --delete --stats -e ssh doc/api/ $(ENV_USERNAME)@envbot.org:$(ENV_PATH)/
 
 dist-dir:
 	rm -rf $(DISTDIR)
 	bzr export $(DISTDIR)
 
-install: all
+install: cleandocs all apidocs-public
 	@echo "#########################################################################"
 	@echo "#                                                                       #"
 	@echo "# Installing... Note that running from source directory is recommended! #"
@@ -88,13 +121,18 @@ install: all
 	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DATADIR)    $(DESTDIR)$(ENVBOT_TRANSPORTDIR)
 	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LIBRARYDIR) $(DESTDIR)$(ENVBOT_MODULESDIR)
 	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DOCDIR)     $(DESTDIR)$(MANDIR)/man1
-	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LOGDIR)
+	$(INSTALL) -d $(DESTDIR)$(ENVBOT_LOGDIR)     $(DESTDIR)$(ENVBOT_DOCDIR)/api
+	$(INSTALL) -d $(DESTDIR)$(ENVBOT_DOCDIR)/api/core $(DESTDIR)$(ENVBOT_DOCDIR)/api/modules
 	$(INSTALL) -m 644 lib/*.sh                $(DESTDIR)$(ENVBOT_LIBRARYDIR)
 	$(INSTALL) -m 644 modules/*.sh            $(DESTDIR)$(ENVBOT_MODULESDIR)
 	$(INSTALL) -m 644 transport/*.sh          $(DESTDIR)$(ENVBOT_TRANSPORTDIR)
 	$(INSTALL) -m 644 README AUTHORS GPL3.txt $(DESTDIR)$(ENVBOT_DOCDIR)
 	$(INSTALL) -m 644 doc/*.sql               $(DESTDIR)$(ENVBOT_DOCDIR)
 	$(INSTALL) -m 644 doc/*.txt               $(DESTDIR)$(ENVBOT_DOCDIR)
+	$(INSTALL) -m 644 doc/api/public-core/*.html     $(DESTDIR)$(ENVBOT_DOCDIR)/api/core/
+	$(INSTALL) -m 644 doc/api/public-core/*.css      $(DESTDIR)$(ENVBOT_DOCDIR)/api/core/
+	$(INSTALL) -m 644 doc/api/public-modules/*.html  $(DESTDIR)$(ENVBOT_DOCDIR)/api/modules/
+	$(INSTALL) -m 644 doc/api/public-modules/*.css   $(DESTDIR)$(ENVBOT_DOCDIR)/api/modules/
 	$(INSTALL) -m 644 doc/envbot.1            $(DESTDIR)$(MANDIR)/man1
 	$(INSTALL) -m 644 data/{faq.txt.example,quotes.txt.example.pqf} $(DESTDIR)$(ENVBOT_DATADIR)
 	$(SED) "s|^library_dir=.*|library_dir='$(ENVBOT_LIBRARYDIR)'|;s|^config_file=.*|config_file='$(ENVBOT_CONFDIR)/bot_settings.sh'|" envbot > envbot.tmp
@@ -104,4 +142,4 @@ install: all
 	$(INSTALL) -m 644 bot_settings.tmp $(DESTDIR)$(ENVBOT_CONFDIR)/bot_settings.sh.example
 	$(RM) bot_settings.tmp
 
-.PHONY: all numerics clean cleanlogs dist-dir
+.PHONY: all apidocs apidocs-private apidocs-public checkvars apidocs-upload numerics clean cleanlogs cleandocs dist-dir

@@ -18,7 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-# This module does autojoin after connect.
+#---------------------------------------------------------------------
+## This module does autojoin after connect.
+#---------------------------------------------------------------------
 
 module_autojoin_INIT() {
 	echo 'after_connect'
@@ -33,6 +35,10 @@ module_autojoin_REHASH() {
 	return 0
 }
 
+#---------------------------------------------------------------------
+## Autojoin channels from config.
+## @Type Private
+#---------------------------------------------------------------------
 module_autojoin_join_from_config() {
 	local channel
 	for channel in "${config_module_autojoin_channels[@]}"; do
