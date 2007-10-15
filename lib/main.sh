@@ -292,7 +292,7 @@ fi
 
 echo "Loading library functions"
 # Load library functions.
-libraries="log send feedback numerics channels parse \
+libraries="hash log send feedback numerics channels parse \
            access misc config modules server"
 for library in $libraries; do
 	source "${library_dir}/${library}.sh"
