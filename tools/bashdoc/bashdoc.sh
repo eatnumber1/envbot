@@ -454,13 +454,12 @@ function parse_block()
 					;;
 				@*)
 					tag=${split[0]#@}
-					local value="$(sed 's/\\/\\\\/g;s/\$/\\$/;s/"/\\"/g' <<< "${split[1]}")"
 					local i="tag_${tag}"
 					if [[ ${!i} ]] ; then
 						local varname="tag_${tag}"
-						eval "tag_${tag}=\"\${!varname}"$'\n'"${value}\""
+						eval "tag_${tag}=\"\${!varname}"$'\n'"\${split[1]}\""
 					else
-						eval "tag_${tag}=\"${value}\""
+						eval "tag_${tag}=\"\${split[1]}\""
 					fi
 					;;
 				*)
@@ -486,8 +485,8 @@ function split_tag()
 	local out="${1}"			;	shift
 	local tag=$( echo ${1} )	;	shift
 #	local key=$( echo ${1} )	;	shift
-	local value=$( echo $* | sed 's/\\/\\\\/g;s/\$/\\$/;s/"/\\"/g' )
-	eval "$out=( \"$tag\" \"${value}\" )"
+	local value=$( echo $* )
+	eval "$out=( \"\$tag\" \"\${value}\" )"
 }
 
 #--------------------
