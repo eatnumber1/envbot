@@ -35,6 +35,10 @@ module_umodes_REHASH() {
 	return 0
 }
 
+#---------------------------------------------------------------------
+## Set the umodes
+## @Type Private
+#---------------------------------------------------------------------
 module_umodes_set_modes() {
 	if [[ $config_module_umodes_default_umodes ]]; then
 		log_info "Setting umodes: $config_module_umodes_default_umodes"

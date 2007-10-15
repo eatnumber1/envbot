@@ -78,6 +78,7 @@ module_kick_ban_periodic() {
 			if (( $envbot_time >= $time )); then
 				# TODO: Queue them?
 				send_modes "$channel" "-b $mask"
+				# Remove ban from list.
 				unset "module_kick_ban_timed_bans[${index}]"
 				continue
 			# Next ban?
@@ -108,10 +109,12 @@ module_kick_ban_store_ban() {
 		module_kick_ban_next_unset="$targettime"
 	fi
 }
+
 #---------------------------------------------------------------------
 ## Calculate unset-time
 ## @Type Private
 ## @param Duration in seconds
+## @Stdout The timestamp when the ban should be unset
 #---------------------------------------------------------------------
 module_kick_ban_find_unset_time() {
 	# Add current time to duration.

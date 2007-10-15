@@ -152,7 +152,7 @@ send_raw_flood_nolog() {
 ## This is semi-internal only
 ## This may flood ourself off. Use send_raw instead in most cases.
 ## Same syntax as send_raw
-## @Type API
+## @Type Semi-private
 #---------------------------------------------------------------------
 send_raw_flood() {
 	log_raw_out "$@"

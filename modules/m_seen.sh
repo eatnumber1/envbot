@@ -128,7 +128,7 @@ module_seen_store() {
 }
 
 #---------------------------------------------------------------------
-## Look up a nick
+## Look up a nick and send info to a channel/nick
 ## @Type Private
 ## @param Sender
 ## @param Channel
