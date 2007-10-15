@@ -58,7 +58,7 @@ modules_depends_register() {
 			log_warning_file modules.log "Dependency ${callermodule} already listed as depending on ${dep}!?"
 		fi
 		# HACK: If you find a better way than eval, please tell me!
-		eval "modules_depends_${dep}=\"\$modules_depends_${dep} $callermodule\""
+		eval "modules_depends_${dep}=\"\$modules_depends_${dep} \$callermodule\""
 	done
 }
 
@@ -91,7 +91,7 @@ modules_depends_unregister() {
 		if list_contains "modules_depends_${module}" "$1"; then
 			newval="$(list_remove "modules_depends_${module}" "$1")"
 			# HACK: If you find a better way than eval, please tell me!
-			eval "modules_depends_${module}=\"$newval\""
+			eval "modules_depends_${module}=\"\$newval\""
 		fi
 	done
 }
@@ -227,7 +227,7 @@ modules_unload() {
 		fi
 		newval="$(list_remove "modules_${hook}" "$module")"
 		# I can't think of a better way :(
-		eval "modules_$hook=\"$newval\""
+		eval "modules_$hook=\"\$newval\""
 	done
 	module_${module}_UNLOAD || {
 		log_fatal_file modules.log "Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"
