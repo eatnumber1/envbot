@@ -99,7 +99,7 @@ hash_set() {
 	local varname
 	# Get variable name
 	hash_name_create "$1" "$2" 'varname'
-	# Set it using the prinf to variable
+	# Set it using the printf to variable
 	printf -v "$varname" '%s' "$3"
 }
 
@@ -178,7 +178,9 @@ hash_exists() {
 ## @return 2 Table not found
 #---------------------------------------------------------------------
 hash_reset() {
+	# Get all variables with a prefix
 	eval "local vars=\"\${!hsh_${1}_*}\""
+	# If any variable, unset them.
 	if [[ $vars ]]; then
 		unset ${vars} || return 1
 	else
@@ -196,13 +198,17 @@ hash_reset() {
 ## @return 2 Table not found
 #---------------------------------------------------------------------
 hash_get_indices() {
+	# Get all variables with a prefix
 	eval "local vars=\"\${!hsh_${1}_*}\""
+	# If any variable loop through and get the "normal" index.
 	if [[ $vars ]]; then
 		local var unhexname returnlist
+		# Extract index.
 		for var in $vars; do
 			hash_name_getindex "$var" 'unhexname'
 			returnlist+=" $unhexname"
 		done
+		# Return them in variable.
 		printf -v "$2" '%s' "${returnlist}"
 		return 0
 	else
