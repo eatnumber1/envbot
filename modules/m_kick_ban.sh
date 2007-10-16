@@ -29,8 +29,7 @@ module_kick_ban_INIT() {
 
 module_kick_ban_UNLOAD() {
 	unset module_kick_ban_TBAN_supported module_kick_ban_timed_bans
-	unset module_kick_ban_next_unset
-	unset module_kick_ban_find_unset_time module_kick_ban_store_ban
+	unset module_kick_ban_next_unset module_kick_ban_store_ban
 
 }
 
@@ -103,24 +102,14 @@ module_kick_ban_periodic() {
 ## @param Duration
 #---------------------------------------------------------------------
 module_kick_ban_store_ban() {
-	local targettime="$(module_kick_ban_find_unset_time "$3")"
+	# Calculate unset-time
+	local targettime="$3"
+	(( targettime += $envbot_time ))
+
 	module_kick_ban_timed_bans+=( "$targettime $1 $2" )
 	if [[ -z $module_kick_ban_next_unset ]] || [[ $module_kick_ban_next_unset -gt $targettime ]]; then
 		module_kick_ban_next_unset="$targettime"
 	fi
-}
-
-#---------------------------------------------------------------------
-## Calculate unset-time
-## @Type Private
-## @param Duration in seconds
-## @Stdout The timestamp when the ban should be unset
-#---------------------------------------------------------------------
-module_kick_ban_find_unset_time() {
-	# Add current time to duration.
-	local targettime="$1"
-	(( targettime += $envbot_time ))
-	echo "$targettime"
 }
 
 # Called on a PRIVMSG

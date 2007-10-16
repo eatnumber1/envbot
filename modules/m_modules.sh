@@ -125,9 +125,9 @@ module_modules_on_PRIVMSG() {
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
 				access_log_action "$sender" "reloaded the module $target_module"
-				module_modules_dounload "$target_module" "$sender"
+				module_modules_dounload "$target_module" "$sendernick"
 				if [[ $? = 0 ]]; then
-					module_modules_doload "$target_module" "$sender"
+					module_modules_doload "$target_module" "$sendernick"
 				else
 					send_msg "$sendernick" "Reload of $target_module failed because it could not be unloaded."
 				fi
