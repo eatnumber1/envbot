@@ -46,7 +46,8 @@ module_services_after_load() {
 # Called for each line on connect
 module_services_on_connect() {
 	local line="$1"
-	if [[ $(cut -d' ' -f2 <<< "$line") =~ ([0-9]{3}) ]]; then
+	if [[ "$line" =~ ^:[^\ ]+\ +([0-9]{3})\ +([^ ]+)\ +(.*) ]]; then
+		local numeric="${BASH_REMATCH[1]}"
 		local numeric="${BASH_REMATCH[1]}"
 		# Check if this is a numeric we will handle.
 		case "$numeric" in
