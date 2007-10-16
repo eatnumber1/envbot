@@ -296,7 +296,7 @@ server_connect() {
 					server_004=$(tr -d $'\r\n' <<< "$server_004")  # Get rid of ending newline
 					;;
 				"$numeric_RPL_ISUPPORT")
-					server_005="$server_005 $data"
+					server_005+=" $data"
 					server_005=$(tr -d $'\r\n' <<< "$server_005") # Get rid of newlines
 					server_005="${server_005/ :are supported by this server/}" # Get rid of :are supported by this server
 					server_handle_005 "$line"

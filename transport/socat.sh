@@ -44,13 +44,13 @@ transport_check_support() {
 	# These seems to always be supported?
 	transport_supports="nossl bind"
 	if grep -q WITH_IP4 <<< "$features"; then
-		transport_supports="$transport_supports ipv4"
+		transport_supports+=" ipv4"
 	fi
 	if grep -q WITH_IP6 <<< "$features"; then
-		transport_supports="$transport_supports ipv6"
+		transport_supports+=" ipv6"
 	fi
 	if grep -q WITH_OPENSSL <<< "$features"; then
-		transport_supports="$transport_supports ssl"
+		transport_supports+=" ssl"
 	fi
 	if [[ -z $config_transport_socat_protocol_family ]]; then
 		echo "ERROR: you need to set config_transport_socat_protocol_family in your config to either ipv4 or ipv6."

@@ -146,7 +146,7 @@ module_modules_on_PRIVMSG() {
 		fi
 		local modlist
 		for target_module in $modules_loaded; do
-			modlist="$modlist $target_module"
+			modlist+=" $target_module"
 		done
 		send_msg "$target" "Modules currently loaded:$modlist"
 		return 1

@@ -286,11 +286,11 @@ module_factoids_parse_assignment() {
 				if [[ "$word" =~ ^(as|is|are|=)$ ]]; then
 					state=1
 				else
-					key="$key $word"
+					key+=" $word"
 				fi
 				;;
 			1)
-				value="$value $word"
+				value+=" $word"
 				;;
 		esac
 	# Extra space at end is intended, to make read work correctly.
