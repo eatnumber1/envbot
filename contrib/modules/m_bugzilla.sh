@@ -98,11 +98,10 @@ module_bugzilla_on_PRIVMSG() {
 					fi
 					log_info_file bugzilla.log "$sender made the bot run pybugz search on \"$pattern\""
 					local result="$(ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
-					# Some odd formatting chars are always returned, so we can't check for empty string.
-					local chars="$(wc -c <<< "$result")"
 					local lines="$(wc -l <<< "$result")"
 					local header footer
-					if [[ $chars -le 10 ]]; then
+					# Some odd formatting chars are always returned (in some versions of pybugz), so we can't check for empty string.
+					if [[ ${#result} -le 10 ]]; then
 						header="No bugs matching \"$pattern\" found"
 					elif [[ $lines -gt 1 ]]; then
 						header="First bug matching \"$pattern\": "

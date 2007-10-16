@@ -41,7 +41,6 @@ module_ctcp_after_load() {
 	fi
 }
 
-
 # Called on a PRIVMSG
 #
 # $1 = from who (n!u@h)
