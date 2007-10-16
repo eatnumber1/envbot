@@ -173,8 +173,10 @@ module_karma_is_nick() {
 	local keyarray
 	read -ra keyarray <<< "$1"
 	local key="$(tr '[:upper:]' '[:lower:]' <<< "${keyarray[*]}")"
+	local sendernick
+	parse_hostmask_nick "$2" 'sendernick'
 	local nickarray
-	read -ra nickarray <<< "$(parse_hostmask_nick_stdout "$2" | tr '[:upper:]' '[:lower:]')"
+	read -ra nickarray <<< "$(tr '[:upper:]' '[:lower:]' <<< "$sendernick")"
 	local nick="${nickarray[*]}"
 	if [[ "$key" = "$nick" ]]; then
 		return 0

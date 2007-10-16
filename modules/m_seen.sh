@@ -124,7 +124,9 @@ module_seen_store() {
 	# Clean spaces, fastest way for this
 	local query
 	read -ra query <<< "$4"
-	module_seen_set_INSERT_or_UPDATE "$(parse_hostmask_nick_stdout "$1" | tr '[:upper:]' '[:lower:]')" "$2" "$3" "${query[*]}"
+	local sendernick
+	parse_hostmask_nick "$1" 'sendernick'
+	module_seen_set_INSERT_or_UPDATE "$(echo -n "$sendernick" | tr '[:upper:]' '[:lower:]')" "$2" "$3" "${query[*]}"
 }
 
 #---------------------------------------------------------------------
