@@ -56,7 +56,9 @@ module_assign_mode_on_PRIVMSG() {
 				access_fail "$sender" "make the bot op somebody" "op"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "op" "#channel nick"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "op" "#channel nick"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "deop")"; then
@@ -69,7 +71,9 @@ module_assign_mode_on_PRIVMSG() {
 				access_fail "$sender" "make the bot deop somebody" "op"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "deop" "#channel nick"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "deop" "#channel nick"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "halfop")"; then
@@ -82,7 +86,9 @@ module_assign_mode_on_PRIVMSG() {
 				access_fail "$sender" "make the bot halfop somebody" "halfop"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "halfop" "#channel nick"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "halfop" "#channel nick"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "dehalfop")"; then
@@ -95,7 +101,9 @@ module_assign_mode_on_PRIVMSG() {
 				access_fail "$sender" "make the bot dehalfop somebody" "halfop"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "dehalfop" "#channel nick"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "dehalfop" "#channel nick"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "voice")"; then
@@ -108,7 +116,9 @@ module_assign_mode_on_PRIVMSG() {
 				access_fail "$sender" "make the bot give voice to somebody" "voice"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "voice" "#channel nick"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "voice" "#channel nick"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "devoice")"; then
@@ -121,7 +131,9 @@ module_assign_mode_on_PRIVMSG() {
 				access_fail "$sender" "make the bot take voice from somebody" "voice"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "devoice" "#channel nick"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "devoice" "#channel nick"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "protect")"; then
@@ -134,7 +146,9 @@ module_assign_mode_on_PRIVMSG() {
 				access_fail "$sender" "make the bot protect somebody" "protect"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "protect" "#channel nick"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "protect" "#channel nick"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "deprotect")"; then
@@ -147,7 +161,9 @@ module_assign_mode_on_PRIVMSG() {
 				access_fail "$sender" "make the bot deprotect somebody" "protect"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "deprotect" "#channel nick"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "deprotect" "#channel nick"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "topic")"; then
@@ -160,7 +176,9 @@ module_assign_mode_on_PRIVMSG() {
 				access_fail "$sender" "make the bot protect somebody" "topic"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "topic" "#channel topic"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "topic" "#channel topic"
 		fi
 		return 1
 	fi

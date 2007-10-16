@@ -61,7 +61,9 @@ module_say_on_PRIVMSG() {
 				access_fail "$sender" "make the bot talk with say" "say"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "say" "target message # Where target is a nick or channel"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "say" "target message # Where target is a nick or channel"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "act")"; then
@@ -82,7 +84,9 @@ module_say_on_PRIVMSG() {
 				access_fail "$sender" "make the bot act" "say"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "act" "target message # Where target is a nick or channel"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "act" "target message # Where target is a nick or channel"
 		fi
 		return 1
 	fi

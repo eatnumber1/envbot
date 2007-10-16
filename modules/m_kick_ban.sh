@@ -143,7 +143,9 @@ module_kick_ban_on_PRIVMSG() {
 				if [[ $sendon_channel =~ ^# ]]; then
 					channel="$sendon_channel"
 				else
-					feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "kick" "#channel nick reason # Channel must be send when the message is not sent in a channel"
+					local sendernick
+					parse_hostmask_nick "$sender" 'sendernick'
+					feedback_bad_syntax "$sendernick" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
 				fi
 			fi
 			if access_check_capab "kick" "$sender" "$channel"; then
@@ -153,7 +155,9 @@ module_kick_ban_on_PRIVMSG() {
 				access_fail "$sender" "make the bot kick somebody" "kick"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "ban")"; then
@@ -179,7 +183,9 @@ module_kick_ban_on_PRIVMSG() {
 				access_fail "$sender" "make the bot ban somebody" "ban"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "ban" "#channel nick [duration]"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "ban" "#channel nick [duration]"
 		fi
 		return 1
 	fi

@@ -194,14 +194,15 @@ module_karma_on_PRIVMSG() {
 	# otherwise send in channel
 	if [[ $2 =~ ^# ]]; then
 		sendon_channel="$2"
-		if [[ "$query" =~ ^(.+)\+\+$ ]]; then
+		# An item must begin with an alphanumeric char.
+		if [[ "$query" =~ ^([a-zA-Z0-9].*)\+\+$ ]]; then
 			local key="${BASH_REMATCH[1]}"
 			if module_karma_is_nick "$key" "$sender"; then
 				send_msg "$sendon_channel" "You can't change karma of yourself."
 			else
 				module_karma_add "$key"
 			fi
-		elif [[ "$query" =~ ^(.+)--$ ]]; then
+		elif [[ "$query" =~ ^([a-zA-Z0-9].*)--$ ]]; then
 			local key="${BASH_REMATCH[1]}"
 			if module_karma_is_nick "$key" "$sender"; then
 				send_msg "$sendon_channel" "You can't change karma of yourself."
@@ -210,9 +211,9 @@ module_karma_on_PRIVMSG() {
 			fi
 		fi
 	else
-		sendon_channel="$(parse_hostmask_nick_stdout "$sender")"
+		parse_hostmask_nick "$sender" 'sendon_channel'
 		# Karma is only possible in channels
-		if [[ "$query" =~ (--|\+\+)$ ]]; then
+		if [[ "$query" =~ ^[a-zA-Z0-9].*(--|\+\+)$ ]]; then
 			send_msg "$sendon_channel" "You can only change karma in channels."
 			return 1
 		fi
@@ -224,7 +225,9 @@ module_karma_on_PRIVMSG() {
 			local value="$(module_karma_check "$key")"
 			send_msg "$sendon_channel" "Karma for $key is $value"
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "karma" "item"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "karma" "item"
 		fi
 		return 1
 	fi

@@ -60,7 +60,9 @@ module_join_on_PRIVMSG() {
 				access_fail "$sender" "make the bot part channel" "join"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "part" "#channel [reason]"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "part" "#channel [reason]"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "join")"; then
@@ -78,7 +80,9 @@ module_join_on_PRIVMSG() {
 				access_fail "$sender" "make the join channel" "join"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "join" "#channel [key]"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "join" "#channel [key]"
 		fi
 		return 1
 	fi

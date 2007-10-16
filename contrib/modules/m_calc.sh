@@ -43,10 +43,12 @@ module_calc_REHASH() {
 module_calc_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
+	local sendernick=
+	parse_hostmask_nick "$sender" 'sendernick'
 	# If it isn't in a channel send message back to person who send it,
 	# otherwise send in channel
 	if ! [[ $2 =~ ^# ]]; then
-		channel="$(parse_hostmask_nick_stdout "$sender")"
+		channel="$sendernick"
 	fi
 	local query="$3"
 	local parameters
@@ -54,13 +56,13 @@ module_calc_on_PRIVMSG() {
 		# Sanity check on parameters
 		parameters="$(tr -d '\n\r\t' <<< "$parameters")"
 		if grep -Eq "scale=|read|while|if|for|break|continue|print|return|define|[e|j] *\(" <<< "$parameters"; then
-			send_msg "$channel" "Can't calculate that, it contains a potential unsafe/very slow function."
+			send_msg "$channel" "${sendernick}: Can't calculate that, it contains a potential unsafe/very slow function."
 		elif [[ $parameters =~ \^[0-9]{4,} ]]; then
-			send_msg "$channel" "$(parse_hostmask_nick_stdout "$sender"): Some too large numbers."
+			send_msg "$channel" "${sendernick}: Some too large numbers."
 		else
 			# Force some security guards
 			local myresult="$(ulimit -t 4; echo "$parameters" | bc -l 2>&1 | head -n 1)"
-			send_msg "$channel" "$(parse_hostmask_nick_stdout "$sender"): $myresult"
+			send_msg "$channel" "${sendernick}: $myresult"
 		fi
 		return 1
 	fi

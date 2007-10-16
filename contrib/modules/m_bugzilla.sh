@@ -74,10 +74,12 @@ module_bugzilla_on_PRIVMSG() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
+	local sendernick=
+	parse_hostmask_nick "$sender" 'sendernick'
 	# If it isn't in a channel send message back to person who send it,
 	# otherwise send in channel
 	if ! [[ $2 =~ ^# ]]; then
-		channel="$(parse_hostmask_nick_stdout "$sender")"
+		channel="$sendernick"
 	fi
 	local query="$3"
 	local parameters
@@ -116,15 +118,16 @@ module_bugzilla_on_PRIVMSG() {
 					log_error_file bugzilla.log "FLOOD DETECTED in bugzilla module"
 				fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "bugs search" "pattern"
+			feedback_bad_syntax "$sendernick" "bugs search" "pattern"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "bug")"; then
+		# Extract bug ID
 		if [[ "$parameters" =~ ^([0-9]+) ]]; then
 			local id="${BASH_REMATCH[1]}"
-				local query_time="$(date +%H%M)$sender"
-				if [[ "$module_bugzilla_last_query" != "$query_time" ]] ; then
-					module_bugzilla_last_query="$query_time"
+				# Simple flood limiting
+				if time_check_interval "$module_bugzilla_last_query" "$config_module_bugzilla_rate"; then
+					module_bugzilla_last_query="$(date -u +%s)"
 					log_info_file bugzilla.log "$sender made the bot check with pybugz for bug \"$id\""
 					local result="$(ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" get -n "$id" | grep -E 'Title|Status|Resolution')"
 					local resultread pretty_result
@@ -157,7 +160,7 @@ module_bugzilla_on_PRIVMSG() {
 					log_error_file bugzilla.log "FLOOD DETECTED in bugzilla module"
 				fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "bug" "id"
+			feedback_bad_syntax "$sendernick" "bug" "id"
 		fi
 		return 1
 	fi

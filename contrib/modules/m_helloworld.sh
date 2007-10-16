@@ -99,7 +99,7 @@ module_helloworld_on_PRIVMSG() {
 		target="$2"
 	else
 		# parse_hostmask_nick_stdout gets the nick from a hostmask.
-		target="$(parse_hostmask_nick_stdout "$sender")"
+		parse_hostmask_nick "$sender" 'target'
 	fi
 	local query="$3"
 	local parameters
@@ -118,7 +118,9 @@ module_helloworld_on_PRIVMSG() {
 		else
 			# So the regex for matching parameters didn't work, lets provide
 			# the user with some feedback!
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "hello world" "message # Where message is one word!"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "hello world" "message # Where message is one word!"
 		fi
 		# Return 1 because we handled this PRIVMSG.
 		return 1
@@ -145,7 +147,9 @@ module_helloworld_on_PRIVMSG() {
 				# Such important events for security as a "hi channel" should
 				# really get logged even if it fails! ;)
 				access_log_action "$sender" "made the hi channel \"$message\" in/to \"$target_channel\""
-				send_msg "${target_channel}" "Hi $target_channel! $(parse_hostmask_nick_stdout "$sender") wants you to know ${message}"
+				local sendernick
+				parse_hostmask_nick "$sender" 'sendernick'
+				send_msg "${target_channel}" "Hi $target_channel! $sendernick wants you to know ${message}"
 				# As an example also call our function.
 				module_helloworld_function
 			else
@@ -156,7 +160,9 @@ module_helloworld_on_PRIVMSG() {
 			fi
 		else
 			# As above, provide feedback about bad syntax.
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "hi" "target message # Where target is a nick or channel"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "hi" "target message # Where target is a nick or channel"
 		fi
 		# Again: return 1 because we handled this PRIVMSG.
 		return 1
