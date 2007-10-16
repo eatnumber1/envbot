@@ -189,16 +189,17 @@ time_check_interval() {
 #---------------------------------------------------------------------
 ## Strip leading/trailing spaces.
 ## @Type API
-## @Deprecated Using this function is slow, it is better to do this
-## @Deprecated inline using same way as is used here. (array that is)
+## @Note Before this function was deprecated, but it has been recoded
+## @Note in a much faster way. This version is not compatible with old
+## @Note version.
 ## @param String to strip
-## @Stdout New string
+## @param Variable to return in
 #---------------------------------------------------------------------
 misc_clean_spaces() {
 	# Fastest way that is still secure
 	local array
 	read -ra array <<< "$1"
-	echo "${array[*]}"
+	printf -v "$2" '%s' "${array[*]}"
 }
 
 #---------------------------------------------------------------------
@@ -206,12 +207,12 @@ misc_clean_spaces() {
 ## @Type API
 ## @param List to remove from.
 ## @param Value to remove.
-## @Stdout New list
+## @param Variable to return new list in.
 #---------------------------------------------------------------------
 list_remove() {
 	local oldlist="${!1}"
 	local newlist="${oldlist//$2}"
-	misc_clean_spaces "$newlist" # Get rid of the unneeded spaces.
+	misc_clean_spaces "$newlist" "$3" # Get rid of the unneeded spaces.
 }
 
 #---------------------------------------------------------------------

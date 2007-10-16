@@ -76,7 +76,7 @@ channels_add() {
 ## @param The channel to remove
 #---------------------------------------------------------------------
 channels_remove() {
-	channels_current="$(list_remove channels_current "$1")"
+	list_remove channels_current "$1" channels_current
 }
 
 #---------------------------------------------------------------------

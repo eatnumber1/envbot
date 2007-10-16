@@ -60,8 +60,9 @@ modules_depends_register() {
 		if list_contains "modules_depends_${dep}" "$callermodule"; then
 			log_warning_file modules.log "Dependency ${callermodule} already listed as depending on ${dep}!?"
 		fi
-		# HACK: If you find a better way than eval, please tell me!
-		eval "modules_depends_${dep}=\"\$modules_depends_${dep} \$callermodule\""
+		# Use printf not eval here.
+		local listname="modules_depends_${dep}"
+		printf -v "modules_depends_${dep}" '%s' "${!listname} $callermodule"
 	done
 }
 
@@ -95,9 +96,7 @@ modules_depends_unregister() {
 	local module newval
 	for module in $modules_loaded; do
 		if list_contains "modules_depends_${module}" "$1"; then
-			newval="$(list_remove "modules_depends_${module}" "$1")"
-			# HACK: If you find a better way than eval, please tell me!
-			eval "modules_depends_${module}=\"\$newval\""
+			list_remove "modules_depends_${module}" "$1" "modules_depends_${module}"
 		fi
 	done
 }
@@ -243,9 +242,7 @@ modules_unload() {
 		if list_contains "modules_${hook}" "$module"; then
 			to_unset="$to_unset module_${module}_${hook}"
 		fi
-		newval="$(list_remove "modules_${hook}" "$module")"
-		# I can't think of a better way :(
-		eval "modules_$hook=\"\$newval\""
+		list_remove "modules_${hook}" "$module" "modules_${hook}"
 	done
 	module_${module}_UNLOAD || {
 		log_fatal_file modules.log "Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"
@@ -262,7 +259,7 @@ modules_unload() {
 		}
 	done
 	modules_depends_unregister "$module"
-	modules_loaded="$(list_remove "modules_loaded" "$module")"
+	list_remove "modules_loaded" "$module" "modules_loaded"
 	return 0
 }
 
