@@ -52,11 +52,11 @@ parse_hostmask_nick_stdout() {
 ## Get ident from hostmask
 ## @Type API
 ## @param n!u@h mask
-## @Stdout Ident
+## @param Variable to return result in
 #---------------------------------------------------------------------
 parse_hostmask_ident() {
 	if [[ $1 =~ ^[^\ !]+!([^ @]+)@ ]]; then
-		echo "${BASH_REMATCH[1]}"
+		printf -v "$2" '%s' "${BASH_REMATCH[1]}"
 	fi
 }
 
@@ -64,11 +64,11 @@ parse_hostmask_ident() {
 ## Get host from hostmask
 ## @Type API
 ## @param n!u@h mask
-## @Stdout Host
+## @param Variable to return result in
 #---------------------------------------------------------------------
 parse_hostmask_host() {
 	if [[ $1 =~ ^[^\ !]+![^\ @]+@([^ ]+) ]]; then
-		echo "${BASH_REMATCH[1]}"
+		printf -v "$2" '%s' "${BASH_REMATCH[1]}"
 	fi
 }
 
@@ -76,8 +76,8 @@ parse_hostmask_host() {
 ## This is used to get data out of 005.
 ## @Type API
 ## @param Name of data to get
+## @param Variable to return result (if any result) in
 ## @return 0 If found otherwise 1
-## @Stdout The variable data in question, if any
 ## @Note That if the variable doesn't have any data,
 ## @Note but still exist it will return nothing on STDOUT
 ## @Note but 0 as error code
@@ -85,7 +85,7 @@ parse_hostmask_host() {
 parse_005() {
 	if [[ $server_005 =~ ${1}(=([^ ]+))? ]]; then
 		if [[ ${BASH_REMATCH[2]} ]]; then
-			echo -n "${BASH_REMATCH[2]}"
+			printf -v "$2" '%s' "${BASH_REMATCH[2]}"
 		fi
 		return 0
 	fi
