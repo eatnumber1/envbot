@@ -87,7 +87,8 @@ channels_remove() {
 ## @param Reason (ignored).
 #---------------------------------------------------------------------
 channels_handle_part() {
-	local whoparted="$(parse_hostmask_nick_stdout "$1")"
+	local whoparted=
+	parse_hostmask_nick "$1" 'whoparted'
 	if [[ $whoparted == $server_nick_current ]]; then
 		channels_remove "$2"
 	fi
@@ -98,7 +99,7 @@ channels_handle_part() {
 ## @Type Private
 ## @param n!u@h mask of kicker
 ## @param Channel kicked from.
-## @param n!u@h mask of kicked user
+## @param Nick of kicked user
 ## @param Reason (ignored).
 #---------------------------------------------------------------------
 channels_handle_kick() {
@@ -115,7 +116,8 @@ channels_handle_kick() {
 ## @param Channel joined.
 #---------------------------------------------------------------------
 channels_handle_join() {
-	local whojoined="$(parse_hostmask_nick_stdout "$1")"
+	local whojoined=
+	parse_hostmask_nick "$1" 'whojoined'
 	if [[ $whojoined == $server_nick_current ]]; then
 		channels_add "$2"
 	fi

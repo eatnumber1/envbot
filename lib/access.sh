@@ -80,5 +80,7 @@ access_log_action() {
 #---------------------------------------------------------------------
 access_fail() {
 	log_error_file access.log "$1 tried to \"$2\" but lacks access."
-	send_msg "$(parse_hostmask_nick_stdout "$sender")" "Permission denied. You need the capability \"$3\" to do this action."
+	local nick=
+	parse_hostmask_nick "$sender" 'nick'
+	send_msg "$nick" "Permission denied. You need the capability \"$3\" to do this action."
 }
