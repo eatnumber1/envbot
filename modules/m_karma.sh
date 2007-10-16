@@ -31,6 +31,7 @@ module_karma_UNLOAD() {
 	unset module_karma_INSERT module_karma_UPDATE module_karma_set_INSERT_or_UPDATE
 	unset module_karma_substract module_karma_add module_karma_check
 	unset module_karma_is_nick
+	unset module_karma_check_return
 	return 0
 }
 
@@ -144,19 +145,20 @@ module_karma_add() {
 
 #---------------------------------------------------------------------
 ## Return karma value for key
+## The result is returned in $module_karma_check_return
 ## @Type Private
-## @param key to return karma for (on STDOUT)
+## @param key to return karma for
+## @Globals $module_karma_check_return
 #---------------------------------------------------------------------
 module_karma_check() {
 	# Clean spaces and convert to lower case
 	local keyarray
 	read -ra keyarray <<< "$1"
 	local key="$(tr '[:upper:]' '[:lower:]' <<< "${keyarray[*]}")"
-	local value="$(module_karma_SELECT "$key")"
-	if [[ -z "$value" ]]; then
-		value=0
+	module_karma_check_return="$(module_karma_SELECT "$key")"
+	if [[ -z "$module_karma_check_return" ]]; then
+		module_karma_check_return=0
 	fi
-	echo "$value"
 }
 
 #---------------------------------------------------------------------
@@ -223,8 +225,8 @@ module_karma_on_PRIVMSG() {
 	if parse_query_is_command 'parameters' "$query" "karma"; then
 		if [[ $parameters =~ ^(.+)$ ]]; then
 			local key="${BASH_REMATCH[1]}"
-			local value="$(module_karma_check "$key")"
-			send_msg "$sendon_channel" "Karma for $key is $value"
+			module_karma_check "$key"
+			send_msg "$sendon_channel" "Karma for $key is $module_karma_check_return"
 		else
 			local sendernick
 			parse_hostmask_nick "$sender" 'sendernick'
