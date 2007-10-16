@@ -46,7 +46,7 @@ module_assign_mode_on_PRIVMSG() {
 	local sendon_channel="$2"
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command "$query" "op")"; then
+	if parameters="$(parse_query_is_command_stdout "$query" "op")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
@@ -61,7 +61,7 @@ module_assign_mode_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "op" "#channel nick"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "deop")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "deop")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
@@ -76,7 +76,7 @@ module_assign_mode_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "deop" "#channel nick"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "halfop")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "halfop")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
@@ -91,7 +91,7 @@ module_assign_mode_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "halfop" "#channel nick"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "dehalfop")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "dehalfop")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
@@ -106,7 +106,7 @@ module_assign_mode_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "dehalfop" "#channel nick"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "voice")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "voice")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
@@ -121,7 +121,7 @@ module_assign_mode_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "voice" "#channel nick"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "devoice")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "devoice")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
@@ -136,7 +136,7 @@ module_assign_mode_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "devoice" "#channel nick"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "protect")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "protect")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
@@ -151,7 +151,7 @@ module_assign_mode_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "protect" "#channel nick"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "deprotect")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "deprotect")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"
@@ -166,7 +166,7 @@ module_assign_mode_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "deprotect" "#channel nick"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "topic")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "topic")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ (.+) ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"

@@ -98,10 +98,33 @@ parse_005() {
 ## @Type API
 ## @param The query to check, this should be the part after the : in PRIVMSG.
 ## @param What command to look for.
-## @return 0 if matches otherwise 1
-## @Stdout If matches: The parameters (if any)
+## @param Variable to return result (if any result) in
+## @return 0 If the query matches
+## @return 1 If the query doesn't match
 #---------------------------------------------------------------------
 parse_query_is_command() {
+	if [[ "$1" =~ ^${config_listenregex}${2}(\ (.*)|$) ]]; then
+		printf -v "$3" '%s' "${BASH_REMATCH[@]: -1}"
+		return 0
+	else
+		return 1
+	fi
+}
+
+
+
+#---------------------------------------------------------------------
+## Check if a query matches a command. If it matches extract the
+## parameters.
+## @Type API
+## @Deprecated This is deprecated, please use <@function parse_hostmask_nick> instead.
+## @param The query to check, this should be the part after the : in PRIVMSG.
+## @param What command to look for.
+## @return 0 If the query matches
+## @return 1 If the query doesn't match
+## @Stdout If matches: The parameters (if any)
+#---------------------------------------------------------------------
+parse_query_is_command_stdout() {
 	if [[ "$1" =~ ^${config_listenregex}${2}(\ (.*)|$) ]]; then
 		echo "${BASH_REMATCH[@]: -1}"
 		return 0

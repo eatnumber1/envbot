@@ -79,7 +79,7 @@ module_eix_on_PRIVMSG() {
 	fi
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command "$query" "eix")"; then
+	if parameters="$(parse_query_is_command_stdout "$query" "eix")"; then
 		if [[ "$parameters" =~ ^(.+) ]]; then
 			local pattern="${BASH_REMATCH[1]}"
 				# Simple flood limiting

@@ -43,7 +43,7 @@ module_say_on_PRIVMSG() {
 	local sender="$1"
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command "$query" "say")"; then
+	if parameters="$(parse_query_is_command_stdout "$query" "say")"; then
 		if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
 			local target="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"
@@ -66,7 +66,7 @@ module_say_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "say" "target message # Where target is a nick or channel"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "act")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "act")"; then
 		if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
 			local target="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[2]}"

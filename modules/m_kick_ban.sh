@@ -134,7 +134,7 @@ module_kick_ban_on_PRIVMSG() {
 	local sendon_channel="$2"
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command "$query" "kick")"; then
+	if parameters="$(parse_query_is_command_stdout "$query" "kick")"; then
 		if [[ "$parameters" =~ ^((#[^ ]+)\ )?([^ ]+)\ (.+) ]]; then
 			local channel="${BASH_REMATCH[2]}"
 			local nick="${BASH_REMATCH[@]: -2}"
@@ -160,7 +160,7 @@ module_kick_ban_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "ban")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "ban")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+)(\ ([0-9]+))? ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local nick="${BASH_REMATCH[2]}"

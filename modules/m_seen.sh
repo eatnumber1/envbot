@@ -179,7 +179,7 @@ module_seen_on_PRIVMSG() {
 	fi
 	# Lets store messages
 	local parameters
-	if parameters="$(parse_query_is_command "$query" "seen")"; then
+	if parameters="$(parse_query_is_command_stdout "$query" "seen")"; then
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			local nick="${BASH_REMATCH[1]}"
 			module_seen_find "$sender" "$channel" "$nick"

@@ -219,7 +219,7 @@ module_karma_on_PRIVMSG() {
 		fi
 	fi
 
-	if parameters="$(parse_query_is_command "$query" "karma")"; then
+	if parameters="$(parse_query_is_command_stdout "$query" "karma")"; then
 		if [[ $parameters =~ ^(.+)$ ]]; then
 			local key="${BASH_REMATCH[1]}"
 			local value="$(module_karma_check "$key")"

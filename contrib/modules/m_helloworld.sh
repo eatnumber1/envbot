@@ -103,10 +103,10 @@ module_helloworld_on_PRIVMSG() {
 	fi
 	local query="$3"
 	local parameters
-	# parse_query_is_command returns 0 if it matches, otherwise 1
+	# parse_query_is_command_stdout returns 0 if it matches, otherwise 1
 	# On STDOUT it returns any parameters, so lets capture that
 	# This also shows another feature: multiword commands
-	if parameters="$(parse_query_is_command "$query" "hello world")"; then
+	if parameters="$(parse_query_is_command_stdout "$query" "hello world")"; then
 		# Check if the syntax for the parameters is correct!
 		# Lets check for one parameter without spaces
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
@@ -124,7 +124,7 @@ module_helloworld_on_PRIVMSG() {
 		fi
 		# Return 1 because we handled this PRIVMSG.
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "hi")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "hi")"; then
 		# Two parameters, one is single word, the other matches to
 		# end of line.
 		if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then

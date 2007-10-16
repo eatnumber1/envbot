@@ -46,7 +46,7 @@ module_join_on_PRIVMSG() {
 	local sender="$1"
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command "$query" "part")"; then
+	if parameters="$(parse_query_is_command_stdout "$query" "part")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)(\ (.+))? ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local message="${BASH_REMATCH[3]}"
@@ -65,7 +65,7 @@ module_join_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "part" "#channel [reason]"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command "$query" "join")"; then
+	elif parameters="$(parse_query_is_command_stdout "$query" "join")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)(\ .+)? ]]; then
 			local channel="${BASH_REMATCH[1]}"
 			local key="${BASH_REMATCH[2]}"
