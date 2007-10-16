@@ -43,6 +43,7 @@ parse_hostmask_nick() {
 ## @Stdout Nick
 #---------------------------------------------------------------------
 parse_hostmask_nick_stdout() {
+	log_warning "parse_hostmask_nick_stdout is deprecated, please don't use it"
 	if [[ $1 =~ ^([^ !]+)! ]]; then
 		echo "${BASH_REMATCH[1]}"
 	fi
@@ -125,6 +126,7 @@ parse_query_is_command() {
 ## @Stdout If matches: The parameters (if any)
 #---------------------------------------------------------------------
 parse_query_is_command_stdout() {
+	log_warning "parse_query_is_command_stdout is deprecated, please don't use it"
 	if [[ "$1" =~ ^${config_listenregex}${2}(\ (.*)|$) ]]; then
 		echo "${BASH_REMATCH[@]: -1}"
 		return 0
