@@ -81,7 +81,7 @@ module_quote_on_PRIVMSG() {
 	fi
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command_stdout "$query" "quote")"; then
+	if parse_query_is_command 'parameters' "$query" "quote"; then
 		local number="$RANDOM"
 		(( number %= ${#module_quote_quotes[*]} ))
 		send_msg "$channel" "${module_quote_quotes[$number]}"

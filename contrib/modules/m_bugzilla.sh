@@ -83,7 +83,7 @@ module_bugzilla_on_PRIVMSG() {
 	fi
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command_stdout "$query" "bugs search")"; then
+	if parse_query_is_command 'parameters' "$query" "bugs search"; then
 		if [[ "$parameters" =~ ^(-(all|closed)\ )?(.+) ]]; then
 			local mode="${BASH_REMATCH[2]}"
 			local pattern="${BASH_REMATCH[@]: -1}"
@@ -121,7 +121,7 @@ module_bugzilla_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "bugs search" "pattern"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command_stdout "$query" "bug")"; then
+	elif parse_query_is_command 'parameters' "$query" "bug"; then
 		# Extract bug ID
 		if [[ "$parameters" =~ ^([0-9]+) ]]; then
 			local id="${BASH_REMATCH[1]}"

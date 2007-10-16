@@ -42,8 +42,9 @@ module_dumpvars_REHASH() {
 module_dumpvars_on_PRIVMSG() {
 	local sender="$1"
 	local query="$3"
-	# We don't care about parameters.
-	if parse_query_is_command_stdout "$query" "dumpvars" > /dev/null; then
+	# We don't really care about parameters.
+	local parameters
+	if parse_query_is_command 'parameters' "$query" "dumpvars"; then
 		if access_check_owner "$sender"; then
 			# This is hackish, we only display
 			# lines unique to "file" 1.

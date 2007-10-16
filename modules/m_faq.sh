@@ -83,7 +83,7 @@ module_faq_on_PRIVMSG() {
 	fi
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command_stdout "$query" "faq")"; then
+	if parse_query_is_command 'parameters' "$query" "faq"; then
 		if [[ "$parameters" =~ ^(.+) ]]; then
 			query="${BASH_REMATCH[1]}"
 			if [[ "$query" == "reload" ]]; then

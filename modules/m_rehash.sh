@@ -66,7 +66,7 @@ module_rehash_on_PRIVMSG() {
 	local query="$3"
 	local target_module
 	local parameters
-	if parameters="$(parse_query_is_command_stdout "$query" "rehash")"; then
+	if parse_query_is_command 'parameters' "$query" "rehash"; then
 		if access_check_owner "$sender"; then
 			access_log_action "$sender" "did a rehash"
 			module_rehash_dorehash "$sender"

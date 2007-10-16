@@ -52,7 +52,7 @@ module_calc_on_PRIVMSG() {
 	fi
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command_stdout "$query" "calc")"; then
+	if parse_query_is_command 'parameters' "$query" "calc"; then
 		# Sanity check on parameters
 		parameters="$(tr -d '\n\r\t' <<< "$parameters")"
 		if grep -Eq "scale=|read|while|if|for|break|continue|print|return|define|[e|j] *\(" <<< "$parameters"; then

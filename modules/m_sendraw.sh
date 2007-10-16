@@ -44,7 +44,7 @@ module_sendraw_on_PRIVMSG() {
 	local sender="$1"
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command_stdout "$query" "raw")"; then
+	if parse_query_is_command 'parameters' "$query" "raw"; then
 		if access_check_capab "sendraw" "$sender" "GLOBAL"; then
 			access_log_action "$sender" "make the bot send a raw line: $parameters"
 			send_raw "$parameters"

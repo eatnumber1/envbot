@@ -317,7 +317,7 @@ module_factoids_on_PRIVMSG() {
 	fi
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command_stdout "$query" "learn")"; then
+	if parse_query_is_command 'parameters' "$query" "learn"; then
 		if [[ "$parameters" =~ ^(.+)\ (as|is|are|=)\ (.+) ]]; then
 			# Do the actual parsing elsewhere:
 			module_factoids_parse_assignment "$parameters"
@@ -329,7 +329,7 @@ module_factoids_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "learn" "key (as|is|are|=) value"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command_stdout "$query" "forget")"; then
+	elif parse_query_is_command 'parameters' "$query" "forget"; then
 		if [[ "$parameters" =~ ^(.+) ]]; then
 			local key="${BASH_REMATCH[1]}"
 			module_factoids_remove "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$sender" "$channel"
@@ -337,7 +337,7 @@ module_factoids_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "forget" "key"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command_stdout "$query" "lock factoid")"; then
+	elif parse_query_is_command 'parameters' "$query" "lock factoid"; then
 		if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
 			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
@@ -350,7 +350,7 @@ module_factoids_on_PRIVMSG() {
 			access_fail "$sender" "lock a factoid" "factoid_admin"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command_stdout "$query" "unlock factoid")"; then
+	elif parse_query_is_command 'parameters' "$query" "unlock factoid"; then
 		if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
 			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
@@ -363,7 +363,7 @@ module_factoids_on_PRIVMSG() {
 			access_fail "$sender" "lock a factoid" "factoid_admin"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command_stdout "$query" "whatis")"; then
+	elif parse_query_is_command 'parameters' "$query" "whatis"; then
 		if [[ "$parameters" =~ ^(.+) ]]; then
 			local key="${BASH_REMATCH[1]}"
 			module_factoids_send_factoid "$channel" "$key"
@@ -371,7 +371,7 @@ module_factoids_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "whatis" "key"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command_stdout "$query" "factoid stats")"; then
+	elif parse_query_is_command 'parameters' "$query" "factoid stats"; then
 		local count="$(module_factoids_get_count)"
 		local lockedcount="$(module_factoids_get_locked_count)"
 		if [[ "$count" ]]; then

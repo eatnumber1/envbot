@@ -94,7 +94,7 @@ module_modules_on_PRIVMSG() {
 	parse_hostmask_nick "$sender" 'sendernick'
 	local query="$3"
 	local parameters
-	if parameters="$(parse_query_is_command_stdout "$query" "modload")"; then
+	if parse_query_is_command 'parameters' "$query" "modload"; then
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
@@ -107,7 +107,7 @@ module_modules_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "modload" "modulename"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command_stdout "$query" "modunload")"; then
+	elif parse_query_is_command 'parameters' "$query" "modunload"; then
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
@@ -120,7 +120,7 @@ module_modules_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "modunload" "modulename"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command_stdout "$query" "modreload")"; then
+	elif parse_query_is_command 'parameters' "$query" "modreload"; then
 		if [[ "$parameters" =~ ^([^ ]+) ]]; then
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
@@ -138,7 +138,7 @@ module_modules_on_PRIVMSG() {
 			feedback_bad_syntax "$sendernick" "modunload" "modulename"
 		fi
 		return 1
-	elif parameters="$(parse_query_is_command_stdout "$query" "modlist")"; then
+	elif parse_query_is_command 'parameters' "$query" "modlist"; then
 		if [[ $2 =~ ^# ]]; then
 			local target="$2"
 		else
