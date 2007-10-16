@@ -79,7 +79,7 @@ module_faq_on_PRIVMSG() {
 	# If it isn't in a channel send message back to person who send it,
 	# otherwise send in channel
 	if ! [[ $2 =~ ^# ]]; then
-		channel="$(parse_hostmask_nick "$sender")"
+		channel="$(parse_hostmask_nick_stdout "$sender")"
 	fi
 	local query="$3"
 	local parameters

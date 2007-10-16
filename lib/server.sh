@@ -205,7 +205,7 @@ server_handle_numerics() {
 ## @param New nick
 #---------------------------------------------------------------------
 server_handle_nick() {
-	local oldnick="$(parse_hostmask_nick "$1")"
+	local oldnick="$(parse_hostmask_nick_stdout "$1")"
 	if [[ $oldnick == $server_nick_current ]]; then
 		server_nick_current="$2"
 	fi

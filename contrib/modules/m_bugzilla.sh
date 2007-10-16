@@ -77,7 +77,7 @@ module_bugzilla_on_PRIVMSG() {
 	# If it isn't in a channel send message back to person who send it,
 	# otherwise send in channel
 	if ! [[ $2 =~ ^# ]]; then
-		channel="$(parse_hostmask_nick "$sender")"
+		channel="$(parse_hostmask_nick_stdout "$sender")"
 	fi
 	local query="$3"
 	local parameters
@@ -116,7 +116,7 @@ module_bugzilla_on_PRIVMSG() {
 					log_error_file bugzilla.log "FLOOD DETECTED in bugzilla module"
 				fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "bugs search" "pattern"
+			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "bugs search" "pattern"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "bug")"; then
@@ -157,7 +157,7 @@ module_bugzilla_on_PRIVMSG() {
 					log_error_file bugzilla.log "FLOOD DETECTED in bugzilla module"
 				fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "bug" "id"
+			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "bug" "id"
 		fi
 		return 1
 	fi

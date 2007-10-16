@@ -172,7 +172,7 @@ module_karma_is_nick() {
 	read -ra keyarray <<< "$1"
 	local key="$(tr '[:upper:]' '[:lower:]' <<< "${keyarray[*]}")"
 	local nickarray
-	read -ra nickarray <<< "$(parse_hostmask_nick "$2" | tr '[:upper:]' '[:lower:]')"
+	read -ra nickarray <<< "$(parse_hostmask_nick_stdout "$2" | tr '[:upper:]' '[:lower:]')"
 	local nick="${nickarray[*]}"
 	if [[ "$key" = "$nick" ]]; then
 		return 0
@@ -210,7 +210,7 @@ module_karma_on_PRIVMSG() {
 			fi
 		fi
 	else
-		sendon_channel="$(parse_hostmask_nick "$sender")"
+		sendon_channel="$(parse_hostmask_nick_stdout "$sender")"
 		# Karma is only possible in channels
 		if [[ "$query" =~ (--|\+\+)$ ]]; then
 			send_msg "$sendon_channel" "You can only change karma in channels."
@@ -224,7 +224,7 @@ module_karma_on_PRIVMSG() {
 			local value="$(module_karma_check "$key")"
 			send_msg "$sendon_channel" "Karma for $key is $value"
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "karma" "item"
+			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "karma" "item"
 		fi
 		return 1
 	fi

@@ -26,9 +26,23 @@
 ## Get nick from hostmask
 ## @Type API
 ## @param n!u@h mask
-## @Stdout Nick
+## @param Variable to return result in
 #---------------------------------------------------------------------
 parse_hostmask_nick() {
+	if [[ $1 =~ ^([^ !]+)! ]]; then
+		printf -v "$2" '%s' "${BASH_REMATCH[1]}"
+	fi
+}
+
+
+#---------------------------------------------------------------------
+## Get nick from hostmask
+## @Type API
+## @Deprecated This is deprecated, please use <@function parse_hostmask_nick> instead.
+## @param n!u@h mask
+## @Stdout Nick
+#---------------------------------------------------------------------
+parse_hostmask_nick_stdout() {
 	if [[ $1 =~ ^([^ !]+)! ]]; then
 		echo "${BASH_REMATCH[1]}"
 	fi

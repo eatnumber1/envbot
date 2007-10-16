@@ -50,7 +50,7 @@ module_rehash_dorehash() {
 		4) status_message="Failed to source it and the bot may be in an undefined state" ;;
 		*) status_message="Unknown error (code $status)" ;;
 	esac
-	send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
+	send_msg "$(parse_hostmask_nick_stdout "$sender")" "$status_message"
 }
 
 # Called on a PRIVMSG

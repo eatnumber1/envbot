@@ -201,13 +201,13 @@ module_factoids_set() {
 	if module_factoids_is_locked "$key"; then
 		if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
 			module_factoids_set_INSERT_or_UPDATE "$key" "$value" "$sender"
-			send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), I will remember, $key is $value"
+			send_msg "$channel" "Ok $(parse_hostmask_nick_stdout "$sender"), I will remember, $key is $value"
 		else
 			access_fail "$sender" "change a locked factoid" "factoid_admin"
 		fi
 	else
 		module_factoids_set_INSERT_or_UPDATE "$key" "$value" "$sender"
-		send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), I will remember, $key is $value"
+		send_msg "$channel" "Ok $(parse_hostmask_nick_stdout "$sender"), I will remember, $key is $value"
 	fi
 }
 
@@ -309,7 +309,7 @@ module_factoids_on_PRIVMSG() {
 	local sender="$1"
 	local channel="$2"
 	if ! [[ $2 =~ ^# ]]; then
-		channel="$(parse_hostmask_nick "$sender")"
+		channel="$(parse_hostmask_nick_stdout "$sender")"
 	fi
 	local query="$3"
 	local parameters
@@ -322,7 +322,7 @@ module_factoids_on_PRIVMSG() {
 			unset module_factoids_parse_key module_factoids_parse_value
 			module_factoids_set "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$value" "$sender" "$channel"
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "learn" "key (as|is|are|=) value"
+			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "learn" "key (as|is|are|=) value"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "forget")"; then
@@ -330,7 +330,7 @@ module_factoids_on_PRIVMSG() {
 			local key="${BASH_REMATCH[1]}"
 			module_factoids_remove "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$sender" "$channel"
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "forget" "key"
+			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "forget" "key"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "lock factoid")"; then
@@ -338,9 +338,9 @@ module_factoids_on_PRIVMSG() {
 			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
 				module_factoids_lock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
-				send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), the factoid \"$key\" is now protected from changes"
+				send_msg "$channel" "Ok $(parse_hostmask_nick_stdout "$sender"), the factoid \"$key\" is now protected from changes"
 			else
-				feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "lock" "key"
+				feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "lock" "key"
 			fi
 		else
 			access_fail "$sender" "lock a factoid" "factoid_admin"
@@ -351,9 +351,9 @@ module_factoids_on_PRIVMSG() {
 			if [[ "$parameters" =~ ^(.+) ]]; then
 				local key="${BASH_REMATCH[1]}"
 				module_factoids_unlock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
-				send_msg "$channel" "Ok $(parse_hostmask_nick "$sender"), the factoid \"$key\" is no longer protected from changes"
+				send_msg "$channel" "Ok $(parse_hostmask_nick_stdout "$sender"), the factoid \"$key\" is no longer protected from changes"
 			else
-				feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "lock" "key"
+				feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "lock" "key"
 			fi
 		else
 			access_fail "$sender" "lock a factoid" "factoid_admin"
@@ -364,7 +364,7 @@ module_factoids_on_PRIVMSG() {
 			local key="${BASH_REMATCH[1]}"
 			module_factoids_send_factoid "$channel" "$key"
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "whatis" "key"
+			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "whatis" "key"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "factoid stats")"; then

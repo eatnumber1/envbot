@@ -53,7 +53,7 @@ module_modules_doload() {
 		6) status_message="after_load failed for \"$target_module\", see log for details" ;;
 		*) status_message="Unknown error (code $status) for \"$target_module\"" ;;
 	esac
-	send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
+	send_msg "$(parse_hostmask_nick_stdout "$sender")" "$status_message"
 	return $status
 }
 
@@ -66,7 +66,7 @@ module_modules_dounload() {
 	local target_module="$1"
 	local sender="$2"
 	if [[ $target_module == modules ]]; then
-		send_msg "$(parse_hostmask_nick "$sender")" \
+		send_msg "$(parse_hostmask_nick_stdout "$sender")" \
 			"You can't unload/reload the modules module using itself. (The hackish way would be to use the eval module for this.)"
 		return 1
 	fi
@@ -78,7 +78,7 @@ module_modules_dounload() {
 		3) status_message="Module \"$target_module\" can't be unloaded, some these module(s) depend(s) on it: $(modules_depends_list_deps "$target_module")" ;;
 		*) status_message="Unknown error (code $status) for \"$target_module\"" ;;
 	esac
-	send_msg "$(parse_hostmask_nick "$sender")" "$status_message"
+	send_msg "$(parse_hostmask_nick_stdout "$sender")" "$status_message"
 	return $status
 }
 
@@ -102,7 +102,7 @@ module_modules_on_PRIVMSG() {
 				access_fail "$sender" "load a module" "owner"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "modload" "modulename"
+			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "modload" "modulename"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "modunload")"; then
@@ -115,7 +115,7 @@ module_modules_on_PRIVMSG() {
 				access_fail "$sender" "unload a module" "owner"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "modunload" "modulename"
+			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "modunload" "modulename"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "modreload")"; then
@@ -127,20 +127,20 @@ module_modules_on_PRIVMSG() {
 				if [[ $? = 0 ]]; then
 					module_modules_doload "$target_module" "$sender"
 				else
-					send_msg "$(parse_hostmask_nick "$sender")" "Reload of $target_module failed because it could not be unloaded."
+					send_msg "$(parse_hostmask_nick_stdout "$sender")" "Reload of $target_module failed because it could not be unloaded."
 				fi
 			else
 				access_fail "$sender" "reload a module" "owner"
 			fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "modunload" "modulename"
+			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "modunload" "modulename"
 		fi
 		return 1
 	elif parameters="$(parse_query_is_command "$query" "modlist")"; then
 		if [[ $2 =~ ^# ]]; then
 			local target="$2"
 		else
-			local target="$(parse_hostmask_nick "$sender")"
+			local target="$(parse_hostmask_nick_stdout "$sender")"
 		fi
 		local modlist
 		for target_module in $modules_loaded; do

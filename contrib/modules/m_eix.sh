@@ -75,7 +75,7 @@ module_eix_on_PRIVMSG() {
 	# If it isn't in a channel send message back to person who send it,
 	# otherwise send in channel
 	if ! [[ $2 =~ ^# ]]; then
-		channel="$(parse_hostmask_nick "$sender")"
+		channel="$(parse_hostmask_nick_stdout "$sender")"
 	fi
 	local query="$3"
 	local parameters
@@ -91,7 +91,7 @@ module_eix_on_PRIVMSG() {
 					log_error_file eix.log "FLOOD DETECTED in eix module"
 				fi
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick "$sender")" "eix" "pattern"
+			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "eix" "pattern"
 		fi
 		return 1
 	fi

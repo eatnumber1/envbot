@@ -60,13 +60,13 @@ module_ctcp_on_PRIVMSG() {
 		read -r ctcp_command ctcp_parameters <<< "$data"
 		case "$ctcp_command" in
 			"VERSION")
-				send_nctcp "$(parse_hostmask_nick "$sender")" "VERSION $config_module_ctcp_version_reply"
+				send_nctcp "$(parse_hostmask_nick_stdout "$sender")" "VERSION $config_module_ctcp_version_reply"
 				;;
 			"TIME")
-				send_nctcp "$(parse_hostmask_nick "$sender")" "TIME $(date +'%Y-%m-%d %k:%M:%S')"
+				send_nctcp "$(parse_hostmask_nick_stdout "$sender")" "TIME $(date +'%Y-%m-%d %k:%M:%S')"
 				;;
 			"PING")
-				send_nctcp "$(parse_hostmask_nick "$sender")" "PING $ctcp_parameters"
+				send_nctcp "$(parse_hostmask_nick_stdout "$sender")" "PING $ctcp_parameters"
 				;;
 			*)
 				# So we didn't handle this CTCP? Return 0 then, someone else may want it.
