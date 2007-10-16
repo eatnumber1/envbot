@@ -112,18 +112,18 @@ transport_connect() {
 		addrargs="TCP4"
 	fi
 	# Add in hostname and port.
-	addrargs="${addrargs}:${1}:${2}"
+	addrargs+=":${1}:${2}"
 	# Should we bind an IP? Then lets do that.
 	if [[ $4 ]]; then
-		addrargs="${addrargs},bind=$4"
+		addrargs+=",bind=$4"
 	fi
 	# If version 1.5 or later add in extra args
 	if [[ $transport_socat_is_14 -eq 0 ]]; then
-		addrargs="${addrargs}${socatnewargs}"
+		addrargs+="${socatnewargs}"
 	fi
 	# If we use SSL check if we should verify.
 	if [[ $3 -eq 1 ]] && [[ $config_server_ssl_accept_invalid -eq 1 ]]; then
-		addrargs="${addrargs},verify=0"
+		addrargs+=",verify=0"
 	fi
 	socat STDIO "$addrargs" < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
 	transport_pid="$!"

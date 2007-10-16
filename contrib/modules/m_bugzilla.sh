@@ -148,10 +148,10 @@ module_bugzilla_on_PRIVMSG() {
 						pretty_result="${format_bold}Bug $id${format_bold} (${format_bold}Status${format_bold} $status"
 						# The resolution may not exist, add it if it does.
 						if [[ $resolution ]]; then
-							pretty_result="${pretty_result}, ${format_bold}Resolution${format_bold} $resolution"
+							pretty_result+=", ${format_bold}Resolution${format_bold} $resolution"
 						fi
 						# And add the title in. Does not depend on if resolution exist.
-						pretty_result="${pretty_result}): $title (${config_module_bugzilla_url}${id})"
+						pretty_result+="): $title (${config_module_bugzilla_url}${id})"
 					else
 						pretty_result="Bug $id not found"
 					fi

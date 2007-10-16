@@ -134,73 +134,73 @@ modules_add_hooks() {
 	for hook in $hooks; do
 		case $hook in
 			"FINALISE")
-				modules_FINALISE="$modules_FINALISE $module"
+				modules_FINALISE+=" $module"
 				;;
 			"after_load")
-				modules_after_load="$modules_after_load $module"
+				modules_after_load+=" $module"
 				;;
 			"before_connect")
-				modules_before_connect="$modules_before_connect $module"
+				modules_before_connect+=" $module"
 				;;
 			"on_connect")
-				modules_on_connect="$modules_on_connect $module"
+				modules_on_connect+=" $module"
 				;;
 			"after_connect")
-				modules_after_connect="$modules_after_connect $module"
+				modules_after_connect+=" $module"
 				;;
 			"before_disconnect")
-				modules_before_disconnect="$modules_before_disconnect $module"
+				modules_before_disconnect+=" $module"
 				;;
 			"after_disconnect")
-				modules_after_disconnect="$modules_after_disconnect $module"
+				modules_after_disconnect+=" $module"
 				;;
 			"periodic")
-				modules_periodic="$modules_periodic $module"
+				modules_periodic+=" $module"
 				;;
 			"on_server_ERROR")
-				modules_on_server_ERROR="$modules_on_server_ERROR $module"
+				modules_on_server_ERROR+=" $module"
 				;;
 			"on_NOTICE")
-				modules_on_NOTICE="$modules_on_NOTICE $module"
+				modules_on_NOTICE+=" $module"
 				;;
 			"on_PRIVMSG")
-				modules_on_PRIVMSG="$modules_on_PRIVMSG $module"
+				modules_on_PRIVMSG+=" $module"
 				;;
 			"on_TOPIC")
-				modules_on_TOPIC="$modules_on_TOPIC $module"
+				modules_on_TOPIC+=" $module"
 				;;
 			"on_channel_MODE")
-				modules_on_channel_MODE="$modules_on_channel_MODE $module"
+				modules_on_channel_MODE+=" $module"
 				;;
 			"on_user_MODE")
-				modules_on_user_MODE="$modules_on_user_MODE $module"
+				modules_on_user_MODE+=" $module"
 				;;
 			"on_INVITE")
-				modules_on_INVITE="$modules_on_INVITE $module"
+				modules_on_INVITE+=" $module"
 				;;
 			"on_JOIN")
-				modules_on_JOIN="$modules_on_JOIN $module"
+				modules_on_JOIN+=" $module"
 				;;
 			"on_PART")
-				modules_on_PART="$modules_on_PART $module"
+				modules_on_PART+=" $module"
 				;;
 			"on_KICK")
-				modules_on_KICK="$modules_on_KICK $module"
+				modules_on_KICK+=" $module"
 				;;
 			"on_QUIT")
-				modules_on_QUIT="$modules_on_QUIT $module"
+				modules_on_QUIT+=" $module"
 				;;
 			"on_KILL")
-				modules_on_KILL="$modules_on_KILL $module"
+				modules_on_KILL+=" $module"
 				;;
 			"on_NICK")
-				modules_on_NICK="$modules_on_NICK $module"
+				modules_on_NICK+=" $module"
 				;;
 			"on_numeric")
-				modules_on_numeric="$modules_on_numeric $module"
+				modules_on_numeric+=" $module"
 				;;
 			"on_raw")
-				modules_on_raw="$modules_on_raw $module"
+				modules_on_raw+=" $module"
 				;;
 			*)
 				log_error_file modules.log "Unknown hook $hook requested. Module may malfunction. Module will be unloaded"
@@ -240,7 +240,7 @@ modules_unload() {
 	for hook in $modules_hooks; do
 		# List so we can unset.
 		if list_contains "modules_${hook}" "$module"; then
-			to_unset="$to_unset module_${module}_${hook}"
+			to_unset+=" module_${module}_${hook}"
 		fi
 		list_remove "modules_${hook}" "$module" "modules_${hook}"
 	done
@@ -285,7 +285,7 @@ modules_load() {
 	if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
 		source "${config_modules_dir}/m_${module}.sh"
 		if [[ $? -eq 0 ]]; then
-			modules_loaded="$modules_loaded $module"
+			modules_loaded+=" $module"
 			modules_add_hooks "$module" || \
 				{
 					log_error_file modules.log "Hooks failed for $module"
