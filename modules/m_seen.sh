@@ -118,7 +118,7 @@ module_seen_set_INSERT_or_UPDATE() {
 ## @param Sender
 ## @param Channel
 ## @param Timestamp
-## @param uery
+## @param Query
 #---------------------------------------------------------------------
 module_seen_store() {
 	# Clean spaces, fastest way for this
@@ -138,7 +138,8 @@ module_seen_find() {
 	local sender="$1"
 	local channel="$2"
 	local nick="$(tr '[:upper:]' '[:lower:]' <<< "$3")"
-	local sender_nick="$(parse_hostmask_nick_stdout "$sender")"
+	local sender_nick=
+	parse_hostmask_nick "$sender" 'sender_nick'
 	# Classical ones. We just HAVE to do them.
 	if [[ "$nick" == "$(tr '[:upper:]' '[:lower:]' <<< "$server_nick_current")" ]]; then
 		send_msg "$channel" "$sender_nick, you found me!"
@@ -174,7 +175,7 @@ module_seen_on_PRIVMSG() {
 		module_seen_store "$sender" "$channel" "$(date -u +%s)" "$query"
 	# If not in channel respond to any commands in /msg
 	else
-		channel="$(parse_hostmask_nick_stdout "$sender")"
+		parse_hostmask_nick "$sender" 'channel'
 	fi
 	# Lets store messages
 	local parameters
@@ -183,7 +184,9 @@ module_seen_on_PRIVMSG() {
 			local nick="${BASH_REMATCH[1]}"
 			module_seen_find "$sender" "$channel" "$nick"
 		else
-			feedback_bad_syntax "$(parse_hostmask_nick_stdout "$sender")" "seen" "nick"
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			feedback_bad_syntax "$sendernick" "seen" "nick"
 		fi
 		return 1
 	fi

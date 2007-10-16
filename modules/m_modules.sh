@@ -37,11 +37,11 @@ module_modules_REHASH() {
 #---------------------------------------------------------------------
 ## Load a module
 ## @param Module to load
-## @param Sender
+## @param Sender nick
 #---------------------------------------------------------------------
 module_modules_doload() {
 	local target_module="$1"
-	local sender="$2"
+	local sendernick="$2"
 	modules_load "$target_module"
 	local status_message status=$?
 	case $status in
@@ -53,8 +53,6 @@ module_modules_doload() {
 		6) status_message="after_load failed for \"$target_module\", see log for details" ;;
 		*) status_message="Unknown error (code $status) for \"$target_module\"" ;;
 	esac
-	local sendernick
-	parse_hostmask_nick "$sender" 'sendernick'
 	send_msg "$sendernick" "$status_message"
 	return $status
 }
@@ -62,13 +60,11 @@ module_modules_doload() {
 #---------------------------------------------------------------------
 ## Unload a module
 ## @param Module to unload
-## @param Sender
+## @param Sender nick
 #---------------------------------------------------------------------
 module_modules_dounload() {
 	local target_module="$1"
-	local sender="$2"
-	local sendernick
-	parse_hostmask_nick "$sender" 'sendernick'
+	local sendernick="$2"
 	if [[ $target_module == modules ]]; then
 		send_msg "$sendernick" \
 			"You can't unload/reload the modules module using itself. (The hackish way would be to use the eval module for this.)"
@@ -103,7 +99,7 @@ module_modules_on_PRIVMSG() {
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
 				access_log_action "$sender" "loaded the module $target_module"
-				module_modules_doload "$target_module" "$sender"
+				module_modules_doload "$target_module" "$sendernick"
 			else
 				access_fail "$sender" "load a module" "owner"
 			fi
@@ -116,7 +112,7 @@ module_modules_on_PRIVMSG() {
 			local target_module="${BASH_REMATCH[1]}"
 			if access_check_owner "$sender"; then
 				access_log_action "$sender" "unloaded the module $target_module"
-				module_modules_dounload "$target_module" "$sender"
+				module_modules_dounload "$target_module" "$sendernick"
 			else
 				access_fail "$sender" "unload a module" "owner"
 			fi

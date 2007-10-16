@@ -98,7 +98,7 @@ module_helloworld_on_PRIVMSG() {
 	if [[ $2 =~ ^# ]]; then
 		target="$2"
 	else
-		# parse_hostmask_nick_stdout gets the nick from a hostmask.
+		# parse_hostmask_nick gets the nick from a hostmask.
 		parse_hostmask_nick "$sender" 'target'
 	fi
 	local query="$3"
