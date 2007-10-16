@@ -121,7 +121,7 @@ modules_add_hooks() {
 	for hook in $hooks; do
 		case $hook in
 			"FINALISE")
-				modules_FINALISE="$modules_before_connect $module"
+				modules_FINALISE="$modules_FINALISE $module"
 				;;
 			"after_load")
 				modules_after_load="$modules_after_load $module"
