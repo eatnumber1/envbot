@@ -95,6 +95,11 @@ module_nicktracking_get_channel_nicks() {
 	fi
 }
 
+#####################
+# Private functions #
+#####################
+
+
 #---------------------------------------------------------------------
 ## Check if a nick should be removed
 ## @Type Private
@@ -146,10 +151,12 @@ module_nicktracking_parse_names() {
 					parse_hostmask_nick "$nick" 'realnick'
 					hash_set 'module_nicktracking_nicks' "$realnick" "$nick"
 					# Add to nick list of channel
-					hash_append 'module_nicktracking_channels_nicks' "$channel" "$realnick"
+					hash_contains 'module_nicktracking_channels_nicks' "$channel" "$realnick" || \
+						hash_append 'module_nicktracking_channels_nicks' "$channel" "$realnick"
 				else
 					# Add to nick list of channel
-					hash_append 'module_nicktracking_channels_nicks' "$channel" "$nick"
+					hash_contains 'module_nicktracking_channels_nicks' "$channel" "$nick" || \
+						hash_append 'module_nicktracking_channels_nicks' "$channel" "$nick"
 				fi
 			else
 				log_error_file unknown_data.log "module_nicktracking_parse_names: Uh uh, regex for inner loop is bad, couldn't parse: $nick"
@@ -163,6 +170,25 @@ module_nicktracking_parse_names() {
 	return 0
 }
 
+#---------------------------------------------------------------------
+## Parse RPL_WHOREPLY data.
+## @Type Private
+## @param WHO data
+#---------------------------------------------------------------------
+module_nicktracking_parse_who() {
+# #envbot ChanServ services.kuonet-ng.org                                        services.kuonet-ng.org ChanServ H*@ :0 Channel Services
+# #envbot rfc3092  envbot.the.modular.irc.bot.in.bash.that.supports.ipv6.and.ssl photon.kuonet-ng.org   envbot   H%  :0 ietf.org/rfc/rfc3092
+# #envbot kon      cloaked-2211A67C.dclient.hispeed.ch                           sc.janus               kon      H   :0 -
+	local whodata
+	read -ra whodata <<< "$1"
+	local channel="${whodata[0]}"
+	local ident="${whodata[1]}"
+	local host="${whodata[2]}"
+	local nick="${whodata[4]}"
+	hash_set 'module_nicktracking_nicks' "$nick" "${nick}!${ident}@${host}"
+	hash_contains 'module_nicktracking_channels_nicks' "$channel" "$nick" || \
+		hash_append 'module_nicktracking_channels_nicks' "$channel" "$nick"
+}
 
 ##########################
 # Message handling hooks #
@@ -173,6 +199,9 @@ module_nicktracking_on_numeric() {
 		"$numeric_RPL_NAMREPLY")
 			# TODO: Parse NAMES
 			module_nicktracking_parse_names "$2"
+			;;
+		"$numeric_RPL_WHOREPLY")
+			module_nicktracking_parse_who "$2"
 			;;
 	esac
 }
