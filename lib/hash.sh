@@ -125,6 +125,30 @@ hash_append() {
 }
 
 #---------------------------------------------------------------------
+## Opposite of <@function hash_append>, removes a value from a list
+## in a hash entry
+## @Type API
+## @param Table name
+## @param Index
+## @param Value to remove
+## @param Separator (optional, defaults to space)
+#---------------------------------------------------------------------
+hash_substract() {
+	local varname
+	# Get variable name
+	hash_name_create "$1" "$2" 'varname'
+	# If not empty try to remvoe value
+	if [[ "${!varname}" ]]; then
+		local sep=${4:-" "}
+		local oldlist="${!varname}"
+		local newlist="${oldlist//$2}"
+		# Remove any double $sep caused by this.
+		local newlist="${newlist//$sep$sep/$sep}"
+		printf -v "$varname" '%s' "$newlist"
+	fi
+}
+
+#---------------------------------------------------------------------
 ## Removes an entry (if it exists) from a hash array
 ## @Note If the entry does not exist, nothing will happen
 ## @Type API
@@ -152,6 +176,50 @@ hash_get() {
 	hash_name_create "$1" "$2" 'varname'
 	# Now print out to variable using indirect ref to get the value.
 	printf -v "$3" '%s' "${!varname}"
+}
+
+#---------------------------------------------------------------------
+## Check if a space separated hash entry contains a specific value.
+## @Type API
+## @param Table name
+## @param Index
+## @param Value to check for
+## @return 0 Found
+## @return 1 Not found (or hash doesn't exist).
+#---------------------------------------------------------------------
+hash_contains() {
+	local varname
+	# Get variable name
+	hash_name_create "$1" "$2" 'varname'
+	# Append to end, or if empty just set.
+	if [[ "${!varname}" =~ (^| )${3}( |$) ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+#---------------------------------------------------------------------
+## Check if a any space separated entry in a hash array contains
+## a specific value.
+## @Type API
+## @param Table name
+## @param Value to check for
+## @return 0 Found
+## @return 1 Not found (or hash doesn't exist).
+#---------------------------------------------------------------------
+hash_search() {
+	# Get variable names
+	eval "local vars=\"\${!hsh_${1}_*}\""
+	# Append to end, or if empty just set.
+	if [[ $vars ]]; then
+		local var
+		# Extract index.
+		for var in $vars; do
+			[[ "${!varname}" =~ (^| )${3}( |$) ]] && return 0
+		done
+	fi
+	return 1
 }
 
 #---------------------------------------------------------------------
