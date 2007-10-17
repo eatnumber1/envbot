@@ -19,7 +19,7 @@
 #                                                                         #
 ###########################################################################
 #---------------------------------------------------------------------
-## Provides nick <-> channel tracking API for other modules.
+## Provides nick tracking API for other modules.
 #---------------------------------------------------------------------
 
 module_nicktracking_INIT() {
@@ -30,8 +30,12 @@ module_nicktracking_UNLOAD() {
 	unset module_nicktracking_channels
 	hash_reset module_nicktracking_channels_nicks
 	hash_reset module_nicktracking_nicks
+	# Private functions
 	unset module_nicktracking_clear_nick module_nicktracking_clear_chan
 	unset module_nicktracking_parse_names
+	# API functions
+	unset module_nicktracking_get_hostmask_by_nick
+	unset module_nicktracking_get_channel_nicks
 	return 0
 }
 
@@ -62,6 +66,34 @@ module_nicktracking_before_connect() {
 	return 0
 }
 
+#---------------------------------------------------------------------
+## Return hostmask of a nick
+## @Type API
+## @param Nick to find hostmask for
+## @param Variable to return hostmask in
+## @Note If no nick is found (or data about the nick
+## @Note is missing currently), the return variable will be empty.
+#---------------------------------------------------------------------
+module_nicktracking_get_hostmask_by_nick() {
+	hash_get 'module_nicktracking_nicks' "$1" "$2"
+}
+
+#---------------------------------------------------------------------
+## Return list of nicks on a channel
+## @Type API
+## @param Channel to check
+## @param Variable to return space separated list in
+## @return 0 Channel data exists.
+## @return 1 We don't track this channel.
+#---------------------------------------------------------------------
+module_nicktracking_get_channel_nicks() {
+	if list_contains 'module_nicktracking_channels' "$1"; then
+		hash_get 'module_nicktracking_channels_nicks' "$1" "$2"
+		return 0
+	else
+		return 1
+	fi
+}
 
 #---------------------------------------------------------------------
 ## Check if a nick should be removed
@@ -130,6 +162,11 @@ module_nicktracking_parse_names() {
 	fi
 	return 0
 }
+
+
+##########################
+# Message handling hooks #
+##########################
 
 module_nicktracking_on_numeric() {
 	case $1 in
