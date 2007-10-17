@@ -150,11 +150,11 @@ module_nicktracking_parse_names() {
 				if [[ $server_UHNAMES -eq 1 ]]; then
 					parse_hostmask_nick "$nick" 'realnick'
 					hash_set 'module_nicktracking_nicks' "$realnick" "$nick"
-					# Add to nick list of channel
+					# Add to nick list of channel if not in list
 					hash_contains 'module_nicktracking_channels_nicks' "$channel" "$realnick" || \
 						hash_append 'module_nicktracking_channels_nicks' "$channel" "$realnick"
 				else
-					# Add to nick list of channel
+					# Add to nick list of channel if not in list
 					hash_contains 'module_nicktracking_channels_nicks' "$channel" "$nick" || \
 						hash_append 'module_nicktracking_channels_nicks' "$channel" "$nick"
 				fi
@@ -176,16 +176,16 @@ module_nicktracking_parse_names() {
 ## @param WHO data
 #---------------------------------------------------------------------
 module_nicktracking_parse_who() {
-# #envbot ChanServ services.kuonet-ng.org                                        services.kuonet-ng.org ChanServ H*@ :0 Channel Services
-# #envbot rfc3092  envbot.the.modular.irc.bot.in.bash.that.supports.ipv6.and.ssl photon.kuonet-ng.org   envbot   H%  :0 ietf.org/rfc/rfc3092
-# #envbot kon      cloaked-2211A67C.dclient.hispeed.ch                           sc.janus               kon      H   :0 -
+	# Read the who data into an array then extract the data from the array.
 	local whodata
 	read -ra whodata <<< "$1"
 	local channel="${whodata[0]}"
 	local ident="${whodata[1]}"
 	local host="${whodata[2]}"
 	local nick="${whodata[4]}"
+	# Set the hash tables
 	hash_set 'module_nicktracking_nicks' "$nick" "${nick}!${ident}@${host}"
+	# We don't want to add twice
 	hash_contains 'module_nicktracking_channels_nicks' "$channel" "$nick" || \
 		hash_append 'module_nicktracking_channels_nicks' "$channel" "$nick"
 }
