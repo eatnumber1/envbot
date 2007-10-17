@@ -33,6 +33,8 @@ module_nicktracking_UNLOAD() {
 	# Private functions
 	unset module_nicktracking_clear_nick module_nicktracking_clear_chan
 	unset module_nicktracking_parse_names
+	unset module_nicktracking_add_channel_nick
+	unset module_nicktracking_remove_channel_nick
 	# API functions
 	unset module_nicktracking_get_hostmask_by_nick
 	unset module_nicktracking_get_channel_nicks
@@ -43,28 +45,10 @@ module_nicktracking_REHASH() {
 	return 0
 }
 
-module_nicktracking_after_load() {
-	# Handle case of loading while bot is running
-	if [[ $server_connected -eq 1 ]]; then
-		module_nicktracking_channels="$channels_current"
-		local channel
-		for channel in $module_nicktracking_channels; do
-			send_raw "NAMES $channel"
-			# We have to send a WHO #channel if servers doesn't support UHNAMES.
-			if [[ $server_UHNAMES -eq 0 ]]; then
-				send_raw "WHO $2"
-			fi
-		done
-	fi
-}
 
-module_nicktracking_before_connect() {
-	# Reset state.
-	unset module_nicktracking_channels
-	hash_reset module_nicktracking_channels_nicks
-	hash_reset module_nicktracking_nicks
-	return 0
-}
+#################
+# API functions #
+#################
 
 #---------------------------------------------------------------------
 ## Return hostmask of a nick
@@ -75,7 +59,7 @@ module_nicktracking_before_connect() {
 ## @Note is missing currently), the return variable will be empty.
 #---------------------------------------------------------------------
 module_nicktracking_get_hostmask_by_nick() {
-	hash_get 'module_nicktracking_nicks' "$1" "$2"
+	hash_get 'module_nicktracking_nicks' "$(tr '[:upper:]' '[:lower:]' <<< "$1")" "$2"
 }
 
 #---------------------------------------------------------------------
@@ -95,10 +79,10 @@ module_nicktracking_get_channel_nicks() {
 	fi
 }
 
+
 #####################
 # Private functions #
 #####################
-
 
 #---------------------------------------------------------------------
 ## Check if a nick should be removed
@@ -149,14 +133,16 @@ module_nicktracking_parse_names() {
 				# If yes lets take care of hostmask.
 				if [[ $server_UHNAMES -eq 1 ]]; then
 					parse_hostmask_nick "$nick" 'realnick'
+					realnick="$(tr '[:upper:]' '[:lower:]' <<< "$realnick")"
 					hash_set 'module_nicktracking_nicks' "$realnick" "$nick"
 					# Add to nick list of channel if not in list
 					hash_contains 'module_nicktracking_channels_nicks' "$channel" "$realnick" || \
 						hash_append 'module_nicktracking_channels_nicks' "$channel" "$realnick"
 				else
+					realnick="$(tr '[:upper:]' '[:lower:]' <<< "$nick")"
 					# Add to nick list of channel if not in list
-					hash_contains 'module_nicktracking_channels_nicks' "$channel" "$nick" || \
-						hash_append 'module_nicktracking_channels_nicks' "$channel" "$nick"
+					hash_contains 'module_nicktracking_channels_nicks' "$channel" "$realnick" || \
+						hash_append 'module_nicktracking_channels_nicks' "$channel" "$realnick"
 				fi
 			else
 				log_error_file unknown_data.log "module_nicktracking_parse_names: Uh uh, regex for inner loop is bad, couldn't parse: $nick"
@@ -183,12 +169,68 @@ module_nicktracking_parse_who() {
 	local ident="${whodata[1]}"
 	local host="${whodata[2]}"
 	local nick="${whodata[4]}"
+	local lowernick="$(tr '[:upper:]' '[:lower:]' <<< "$nick")"
 	# Set the hash tables
-	hash_set 'module_nicktracking_nicks' "$nick" "${nick}!${ident}@${host}"
+	hash_set 'module_nicktracking_nicks' "$lowernick" "${nick}!${ident}@${host}"
 	# We don't want to add twice
-	hash_contains 'module_nicktracking_channels_nicks' "$channel" "$nick" || \
-		hash_append 'module_nicktracking_channels_nicks' "$channel" "$nick"
+	hash_contains 'module_nicktracking_channels_nicks' "$channel" "$lowernick" || \
+		hash_append 'module_nicktracking_channels_nicks' "$channel" "$lowernick"
 }
+
+
+#---------------------------------------------------------------------
+## Add a nick to a channel
+## @Type Private
+## @param Channel
+## @param Hostmask
+## @param Nick
+#---------------------------------------------------------------------
+module_nicktracking_add_channel_nick() {
+	local nick="$(tr '[:upper:]' '[:lower:]' <<< "$3")"
+	hash_append 'module_nicktracking_channels_nicks' "$1" "$nick"
+	hash_set 'module_nicktracking_nicks' "$nick" "$2"
+}
+
+#---------------------------------------------------------------------
+## Remove a nick from a channel
+## @Type Private
+## @param Channel
+## @param Nick
+#---------------------------------------------------------------------
+module_nicktracking_remove_channel_nick() {
+	local nick="$(tr '[:upper:]' '[:lower:]' <<< "$2")"
+	hash_substract 'module_nicktracking_channels_nicks' "$1" "$nick"
+	module_nicktracking_clear_nick "$nick"
+}
+
+
+#########
+# Hooks #
+#########
+
+module_nicktracking_after_load() {
+	# Handle case of loading while bot is running
+	if [[ $server_connected -eq 1 ]]; then
+		module_nicktracking_channels="$channels_current"
+		local channel
+		for channel in $module_nicktracking_channels; do
+			send_raw "NAMES $channel"
+			# We have to send a WHO #channel if servers doesn't support UHNAMES.
+			if [[ $server_UHNAMES -eq 0 ]]; then
+				send_raw "WHO $2"
+			fi
+		done
+	fi
+}
+
+module_nicktracking_before_connect() {
+	# Reset state.
+	unset module_nicktracking_channels
+	hash_reset module_nicktracking_channels_nicks
+	hash_reset module_nicktracking_nicks
+	return 0
+}
+
 
 ##########################
 # Message handling hooks #
@@ -209,14 +251,16 @@ module_nicktracking_on_numeric() {
 module_nicktracking_on_NICK() {
 	local oldnick oldident oldhost oldentry
 	parse_hostmask "$1" 'oldnick' 'oldident' 'oldhost'
+	local oldlowercase="$(tr '[:upper:]' '[:lower:]' <<< "$oldnick")"
+	local newlowercase="$(tr '[:upper:]' '[:lower:]' <<< "$2")"
 	# Remove old and add new.
-	hash_get 'module_nicktracking_nicks' "$oldnick" 'oldentry'
-	hash_unset 'module_nicktracking_nicks' "$oldnick"
-	hash_set 'module_nicktracking_nicks' "$2" "${2}!${oldident}@${oldhost}"
+	hash_get 'module_nicktracking_nicks' "$oldlowercase" 'oldentry'
+	hash_unset 'module_nicktracking_nicks' "$oldlowercase"
+	hash_set 'module_nicktracking_nicks' "$newlowercase" "${2}!${oldident}@${oldhost}"
 	local channel
 	# Loop through the channels
 	for channel in $module_nicktracking_channels; do
-		hash_replace 'module_nicktracking_channels_nicks' "$channel" "$oldnick" "$2"
+		hash_replace 'module_nicktracking_channels_nicks' "$channel" "$oldnick" "$newlowercase"
 	done
 	return 0
 }
@@ -224,13 +268,13 @@ module_nicktracking_on_NICK() {
 module_nicktracking_on_QUIT() {
 	local whoquit=
 	parse_hostmask_nick "$1" 'whoquit'
-	hash_unset 'module_nicktracking_nicks' "$whoquit"
+	local nick="$(tr '[:upper:]' '[:lower:]' <<< "$whoquit")"
+	hash_unset 'module_nicktracking_nicks' "$nick"
 	local channel
 	# Remove from channel
 	for channel in $module_nicktracking_channels; do
-		hash_substract 'module_nicktracking_channels_nicks' "$channel" "$whoquit"
+		hash_substract 'module_nicktracking_channels_nicks' "$channel" "$nick"
 	done
-	return 0
 }
 
 module_nicktracking_on_KICK() {
@@ -238,10 +282,8 @@ module_nicktracking_on_KICK() {
 	if [[ $whogotkicked == $server_nick_current ]]; then
 		module_nicktracking_clear_chan "$2"
 	else
-		hash_substract 'module_nicktracking_channels_nicks' "$2" "$whogotkicked"
+		module_nicktracking_remove_channel_nick "$2" "$whogotkicked"
 	fi
-	# If not on a channel any more, remove knowledge about nick.
-	module_nicktracking_clear_nick "$whogotkicked"
 }
 
 module_nicktracking_on_PART() {
@@ -251,11 +293,8 @@ module_nicktracking_on_PART() {
 	if [[ $whoparted == $server_nick_current ]]; then
 		module_nicktracking_clear_chan "$2"
 	else
-		hash_substract 'module_nicktracking_channels_nicks' "$2" "$whoparted"
+		module_nicktracking_remove_channel_nick "$2" "$whoparted"
 	fi
-	# If not on a channel any more, remove knowledge about nick.
-	module_nicktracking_clear_nick "$whoparted"
-	return 0
 }
 
 module_nicktracking_on_JOIN() {
@@ -269,8 +308,6 @@ module_nicktracking_on_JOIN() {
 			send_raw "WHO $2"
 		fi
 	else
-		hash_append 'module_nicktracking_channels_nicks' "$2" "$whojoined"
+		module_nicktracking_add_channel_nick "$2" "$1" "$whojoined"
 	fi
-	hash_set 'module_nicktracking_nicks' "$whojoined" "$1"
-	return 0
 }
