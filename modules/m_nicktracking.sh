@@ -31,6 +31,7 @@ module_nicktracking_UNLOAD() {
 	hash_reset module_nicktracking_channels_nicks
 	hash_reset module_nicktracking_nicks
 	unset module_nicktracking_clear_nick module_nicktracking_clear_chan
+	unset module_nicktracking_parse_names
 	return 0
 }
 
@@ -39,7 +40,14 @@ module_nicktracking_REHASH() {
 }
 
 module_nicktracking_after_load() {
-	return 0
+	# Handle case of loading while bot is running
+	if [[ $server_connected -eq 1 ]]; then
+		module_nicktracking_channels="$channels_current"
+		local channel
+		for channel in $module_nicktracking_channels; do
+			send_raw "NAMES $channel"
+		done
+	fi
 }
 
 module_nicktracking_before_connect() {
@@ -109,13 +117,13 @@ module_nicktracking_parse_names() {
 					hash_append 'module_nicktracking_channels_nicks' "$channel" "$nick"
 				fi
 			else
-				log_error "module_nicktracking_parse_names: Uh uh, regex for inner loop is bad, couldn't parse: $nick"
-				log_error "module_nicktracking_parse_names: Please report a bug with the above message"
+				log_error_file unknown_data.log "module_nicktracking_parse_names: Uh uh, regex for inner loop is bad, couldn't parse: $nick"
+				log_error_file unknown_data.log "module_nicktracking_parse_names: Please report a bug with the above message"
 			fi
 		done
 	else
-		log_error "module_nicktracking_parse_names: Uh uh, regex is bad, couldn't parse: $1"
-		log_error "module_nicktracking_parse_names: Please report a bug with the above message"
+		log_error_file unknown_data.log "module_nicktracking_parse_names: Uh uh, outer regex is bad, couldn't parse: $1"
+		log_error_file unknown_data.log "module_nicktracking_parse_names: Please report a bug with the above message"
 	fi
 	return 0
 }
@@ -131,6 +139,17 @@ module_nicktracking_on_numeric() {
 }
 
 module_nicktracking_on_NICK() {
+	local oldnick oldident oldhost oldentry
+	parse_hostmask "$1" 'oldnick' 'oldident' 'oldhost'
+	# Remove old and add new.
+	hash_get 'module_nicktracking_nicks' "$oldnick" 'oldentry'
+	hash_unset 'module_nicktracking_nicks' "$oldnick"
+	hash_set 'module_nicktracking_nicks' "$2" "${2}!${oldident}@${oldhost}"
+	local channel
+	# Loop through the channels
+	for channel in $module_nicktracking_channels; do
+		hash_replace 'module_nicktracking_channels_nicks' "$channel" "$oldnick" "$2"
+	done
 	return 0
 }
 
@@ -164,7 +183,7 @@ module_nicktracking_on_PART() {
 	if [[ $whoparted == $server_nick_current ]]; then
 		module_nicktracking_clear_chan "$2"
 	else
-		hash_substract 'module_nicktracking_channels_nicks' "$2" "$whojoined"
+		hash_substract 'module_nicktracking_channels_nicks' "$2" "$whoparted"
 	fi
 	# If not on a channel any more, remove knowledge about nick.
 	module_nicktracking_clear_nick "$whoparted"

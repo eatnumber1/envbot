@@ -23,6 +23,26 @@
 #---------------------------------------------------------------------
 
 #---------------------------------------------------------------------
+## Get parts of hostmask.
+## @Note In most cases you should use one of
+## @Note <@function parse_hostmask_nick>, <@function parse_hostmask_ident>
+## @Note or <@function parse_hostmask_host>. Only use this function
+## @Note if you want all parts.
+## @Type API
+## @param n!u@h mask
+## @param Variable to return nick in
+## @param Variable to return ident in
+## @param Variable to return host in
+#---------------------------------------------------------------------
+parse_hostmask() {
+	if [[ $1 =~ ^([^ !]+)!([^ @]+)@([^ ]+) ]]; then
+		printf -v "$2" '%s' "${BASH_REMATCH[1]}"
+		printf -v "$3" '%s' "${BASH_REMATCH[2]}"
+		printf -v "$4" '%s' "${BASH_REMATCH[3]}"
+	fi
+}
+
+#---------------------------------------------------------------------
 ## Get nick from hostmask
 ## @Type API
 ## @param n!u@h mask

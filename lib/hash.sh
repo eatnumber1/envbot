@@ -140,11 +140,35 @@ hash_substract() {
 	# If not empty try to remvoe value
 	if [[ "${!varname}" ]]; then
 		local sep=${4:-" "}
-		local oldlist="${!varname}"
-		local newlist="${oldlist//$2}"
+		# FIXME: substrings of the entries in the list may match :/
+		local list="${!varname}"
+		list="${list//$3}"
 		# Remove any double $sep caused by this.
-		local newlist="${newlist//$sep$sep/$sep}"
-		printf -v "$varname" '%s' "$newlist"
+		list="${list//$sep$sep/$sep}"
+		printf -v "$varname" '%s' "$list"
+	fi
+}
+
+#---------------------------------------------------------------------
+## Replace a value in list style hash entry.
+## @Type API
+## @param Table name
+## @param Index
+## @param Value to replace
+## @param Value to replace with
+## @param Separator (optional, defaults to space)
+#---------------------------------------------------------------------
+hash_replace() {
+	local varname
+	# Get variable name
+	hash_name_create "$1" "$2" 'varname'
+	# Append to end, or if empty just set.
+	local sep=${5:-" "}
+	if [[ "${!varname}" =~ (^|$sep)${3}($sep|$) ]]; then
+		# FIXME: substrings of the entries in the list may match :/
+		local list="${!varname}"
+		list="${list//$3/$4}"
+		printf -v "$varname" '%s' "$list"
 	fi
 }
 
@@ -216,7 +240,7 @@ hash_search() {
 		local var
 		# Extract index.
 		for var in $vars; do
-			[[ "${!varname}" =~ (^| )${3}( |$) ]] && return 0
+			[[ "${!varname}" =~ (^| )${2}( |$) ]] && return 0
 		done
 	fi
 	return 1
