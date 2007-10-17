@@ -46,6 +46,10 @@ module_nicktracking_after_load() {
 		local channel
 		for channel in $module_nicktracking_channels; do
 			send_raw "NAMES $channel"
+			# We have to send a WHO #channel if servers doesn't support UHNAMES.
+			if [[ $server_UHNAMES -eq 0 ]]; then
+				send_raw "WHO $2"
+			fi
 		done
 	fi
 }
@@ -95,8 +99,7 @@ module_nicktracking_clear_chan() {
 ## @param NAMES data
 #---------------------------------------------------------------------
 module_nicktracking_parse_names() {
-	# = #envbot :@ChanServ!ChanServ@services.kuonet-ng.org @AnMaster!AnMaster@staff.kuonet-ng.org kon!kon@cloaked-2211A67C.dclient.hispeed.ch envbot!rfc3092@envbot.the.modular.irc.bot.in.bash.that.supports.ipv6.and.ssl @EmErgE!EmErgE@newyork.fbi.gov Coder!coder@B1FF9A2D.818E2F8B.896994A5.IP
-	if [[ $1 =~ ^=\ +(#[^ ]+)\ +:(.+) ]]; then
+	if [[ $1 =~ ^[=*@]?\ *(#[^ ]+)\ +:(.+) ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local nicks="${BASH_REMATCH[2]}"
 		local entry nick realnick
@@ -127,7 +130,6 @@ module_nicktracking_parse_names() {
 	fi
 	return 0
 }
-
 
 module_nicktracking_on_numeric() {
 	case $1 in
@@ -196,6 +198,10 @@ module_nicktracking_on_JOIN() {
 	if [[ $whojoined == $server_nick_current ]]; then
 		module_nicktracking_channels+=" $2"
 		hash_set 'module_nicktracking_channels_nicks' "$2" "$server_nick_current"
+		# We have to send a WHO #channel if servers doesn't support UHNAMES.
+		if [[ $server_UHNAMES -eq 0 ]]; then
+			send_raw "WHO $2"
+		fi
 	else
 		hash_append 'module_nicktracking_channels_nicks' "$2" "$whojoined"
 	fi
