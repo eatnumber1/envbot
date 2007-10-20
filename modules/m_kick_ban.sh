@@ -138,7 +138,7 @@ module_kick_ban_on_PRIVMSG() {
 				fi
 			fi
 			if access_check_capab "kick" "$sender" "$channel"; then
-				send_raw "KICK $channel $nick $kickmessage"
+				send_raw "KICK $channel $nick :$kickmessage"
 				access_log_action "$sender" "kicked $nick from $channel with kick message: $kickmessage"
 			else
 				access_fail "$sender" "make the bot kick somebody" "kick"
