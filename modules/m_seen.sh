@@ -25,6 +25,7 @@
 module_seen_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load on_PRIVMSG'
+	commands_register "$1" 'seen' || return 1
 }
 
 module_seen_UNLOAD() {
@@ -180,17 +181,22 @@ module_seen_on_PRIVMSG() {
 	else
 		parse_hostmask_nick "$sender" 'channel'
 	fi
-	# Lets store messages
-	local parameters
-	if parse_query_is_command 'parameters' "$query" 'seen'; then
-		if [[ "$parameters" =~ ^([^ ]+) ]]; then
-			local nick="${BASH_REMATCH[1]}"
-			module_seen_find "$sender" "$channel" "$nick"
-		else
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "seen" "nick"
-		fi
-		return 1
+}
+
+module_seen_handler_seen() {
+	local sender="$1"
+	local channel="$2"
+	if ! [[ $2 =~ ^# ]]; then
+		parse_hostmask_nick "$sender" 'channel'
+	fi
+	# Lets look up messages
+	local parameters="$3"
+	if [[ "$parameters" =~ ^([^ ]+) ]]; then
+		local nick="${BASH_REMATCH[1]}"
+		module_seen_find "$sender" "$channel" "$nick"
+	else
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "seen" "nick"
 	fi
 }
