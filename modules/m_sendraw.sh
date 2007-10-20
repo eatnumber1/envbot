@@ -25,7 +25,8 @@
 
 module_sendraw_INIT() {
 	modinit_API='2'
-	modinit_HOOKS='on_PRIVMSG'
+	modinit_HOOKS=''
+	commands_register "$1" 'raw'
 }
 
 module_sendraw_UNLOAD() {
@@ -36,23 +37,13 @@ module_sendraw_REHASH() {
 	return 0
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_sendraw_on_PRIVMSG() {
+module_sendraw_handler_raw() {
 	local sender="$1"
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "raw"; then
-		if access_check_capab "sendraw" "$sender" "GLOBAL"; then
-			access_log_action "$sender" "make the bot send a raw line: $parameters"
-			send_raw "$parameters"
-		else
-			access_fail "$sender" "send a raw line" "sendraw"
-		fi
-		return 1
+	local parameters="$3"
+	if access_check_capab "sendraw" "$sender" "GLOBAL"; then
+		access_log_action "$sender" "make the bot send a raw line: $parameters"
+		send_raw "$parameters"
+	else
+		access_fail "$sender" "send a raw line" "sendraw"
 	fi
-	return 0
 }
