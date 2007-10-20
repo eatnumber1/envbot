@@ -47,12 +47,12 @@ module_join_on_PRIVMSG() {
 	if parameters="$(parse_query_is_command "$query" "part")"; then
 		if [[ "$parameters" =~ ^(#[^ ]+)(\ (.+))? ]]; then
 			local channel="${BASH_REMATCH[1]}"
-			local message="${BASH_REMATCH[3]}"
+			local reason="${BASH_REMATCH[3]}"
 			if access_check_capab "join" "$sender" "$channel"; then
 				if [[ -z "$reason" ]]; then
 					channels_part "$channel"
 				else
-					channels_part "$channel" "$message"
+					channels_part "$channel" "$reason"
 				fi
 			else
 				access_fail "$sender" "make the bot part channel" "join"
