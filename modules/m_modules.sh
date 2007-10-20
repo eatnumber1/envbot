@@ -25,10 +25,10 @@
 module_modules_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" "modload"   "modload"
-	commands_register "$1" "modunload" "modunload"
-	commands_register "$1" "modreload" "modreload"
-	commands_register "$1" "modlist"   "modlist"
+	commands_register "$1" 'modload'   'modload'
+	commands_register "$1" 'modunload' 'modunload'
+	commands_register "$1" 'modreload' 'modreload'
+	commands_register "$1" 'modlist'   'modlist'
 }
 
 module_modules_UNLOAD() {
@@ -87,11 +87,6 @@ module_modules_dounload() {
 	return $status
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
 module_modules_handler_modload() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
@@ -110,6 +105,7 @@ module_modules_handler_modload() {
 		feedback_bad_syntax "$sendernick" "modload" "modulename"
 	fi
 }
+
 module_modules_handler_modunload() {
 	local sender="$1"
 	local sendernick
