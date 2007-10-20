@@ -66,11 +66,6 @@ module_eix_after_load() {
 #---------------------------------------------------------------------
 module_eix_format_string="<category>/${format_bold}<name>${format_bold} \(<availableversionsshort>\) \(${format_bold}<homepage>${format_bold}\): <description>"
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
 module_eix_handler_eix() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"

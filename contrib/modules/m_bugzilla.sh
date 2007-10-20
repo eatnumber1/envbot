@@ -68,11 +68,6 @@ module_bugzilla_after_load() {
 	module_bugzilla_last_query='0'
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
 module_bugzilla_handler_bugs_search() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
