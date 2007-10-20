@@ -25,6 +25,7 @@
 module_karma_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load on_PRIVMSG'
+	commands_register "$1" 'karma' || return 1
 }
 
 module_karma_UNLOAD() {
@@ -223,19 +224,26 @@ module_karma_on_PRIVMSG() {
 			return 1
 		fi
 	fi
-
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "karma"; then
-		if [[ $parameters =~ ^(.+)$ ]]; then
-			local key="${BASH_REMATCH[1]}"
-			module_karma_check "$key"
-			send_msg "$sendon_channel" "Karma for $key is $module_karma_check_return"
-		else
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "karma" "item"
-		fi
-		return 1
-	fi
 	return 0
+}
+
+module_karma_handler_karma() {
+	local sender="$1"
+	local query="$3"
+	local sendon_channel
+	if [[ $2 =~ ^# ]]; then
+		sendon_channel="$2"
+	else
+		parse_hostmask_nick "$sender" 'sendon_channel'
+	fi
+	local parameters="$3"
+	if [[ $parameters =~ ^(.+)$ ]]; then
+		local key="${BASH_REMATCH[1]}"
+		module_karma_check "$key"
+		send_msg "$sendon_channel" "Karma for $key is $module_karma_check_return"
+	else
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "karma" "item"
+	fi
 }
