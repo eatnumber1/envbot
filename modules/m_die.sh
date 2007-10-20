@@ -26,8 +26,8 @@
 module_die_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" 'die' 'die'
-	commands_register "$1" 'restart' 'restart'
+	commands_register "$1" 'die'
+	commands_register "$1" 'restart'
 }
 
 module_die_UNLOAD() {

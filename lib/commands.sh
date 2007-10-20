@@ -48,7 +48,7 @@ commands_function_commands=
 ## @Type API
 ## @param Module name
 ## @param Function name (Part after module_modulename_handler_)
-## @param Command name (on irc, may contain spaces)
+## @param Command name (on irc, may contain spaces) (optional, defaults to same as function name, that is $2)
 ## @return 0 If successful
 ## @return 1 If failed for other reason
 ## @return 2 If invalid command name
@@ -60,6 +60,10 @@ commands_register() {
 	local module="$1"
 	local function_name="$2"
 	local command_name="$3"
+	# Command name is optional
+	if [[ -z $command_name ]]; then
+		command_name="$function_name"
+	fi
 	if ! [[ $command_name =~ ^[a-zA-Z0-9] ]]; then
 		log_error "commands_register_command: Module \"$module\" gave invalid command name \"$command_name\". First char of command must be alphanumeric."
 		return 2
