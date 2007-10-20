@@ -141,23 +141,27 @@ commands_unregister() {
 #---------------------------------------------------------------------
 commands_call_command() {
 	# Check if it is a command.
-	if [[ "$3" =~ ^${config_listenregex}^([a-zA-Z0-9][^ ]*)( [^ ]+)?( .*)? ]]; then
-		local firstword="${BASH_REMATCH[1]}"
-		local secondword="${BASH_REMATCH[1]}"
-		local parameters="${BASH_REMATCH[1]}"
-		local command=
-		# Check for one word commands.
-		if hash_exists 'commands_list' "$fistword"; then
-			hash_get 'commands_list' "$fistword" 'command'
-			parameters="${secondword}${parameters}"
-		# Maybe two words then?
-		elif hash_exists 'commands_list' "${fistword}${secondword}"; then
-			hash_get 'commands_list' "${fistword}${secondword}" 'command'
-		else
-			return 2
+	if [[ "$3" =~ ^${config_listenregex}([a-zA-Z0-9].*) ]]; then
+		local data="${BASH_REMATCH[@]: -1}"
+		if [[ $data =~ ^([a-zA-Z0-9][^ ]*)( [^ ]+)?( .*)? ]]; then
+			local firstword="${BASH_REMATCH[1]}"
+			local secondword="${BASH_REMATCH[2]}"
+			local parameters="${BASH_REMATCH[3]}"
+			local command=
+			# Check for one word commands.
+			if hash_exists 'commands_list' "$firstword"; then
+				hash_get 'commands_list' "$firstword" 'command'
+				parameters="${secondword}${parameters}"
+			# Maybe two words then?
+			elif hash_exists 'commands_list' "${firstword}${secondword}"; then
+				hash_get 'commands_list' "${firstword}${secondword}" 'command'
+			else
+				return 2
+			fi
+			"$command" "$1" "$2" "$parameters"
+			return 1
 		fi
-		echo "DEBUG: command=$command - $"
-		return 1
+		return 2
 	else
 		return 0
 	fi

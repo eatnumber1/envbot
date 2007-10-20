@@ -389,6 +389,10 @@ while true; do
 			sender="${BASH_REMATCH[1]}"
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
+			commands_call_command "$sender" "$target" "$query"
+			# Was handled
+			[[ $? -eq 1 ]] && continue
+
 			for module in $modules_on_PRIVMSG; do
 				module_${module}_on_PRIVMSG "$sender" "$target" "$query"
 				if [[ $? -ne 0 ]]; then
