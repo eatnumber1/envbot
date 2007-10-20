@@ -28,7 +28,10 @@
 #---------------------------------------------------------------------
 modules_loaded=""
 
-modules_current_API=2
+#---------------------------------------------------------------------
+## Current module API version.
+#---------------------------------------------------------------------
+declare -r modules_current_API=2
 
 
 #---------------------------------------------------------------------
@@ -133,8 +136,9 @@ modules_add_hooks() {
 	local module="$1"
 	local modinit_HOOKS
 	local modinit_API
-	module_${module}_INIT
-	[[ $? -ne 0 ]] && { log_error_file modules.log "Failed to get hooks for $module"; return 1; }
+	module_${module}_INIT "$module"
+	[[ $? -ne 0 ]] && { log_error_file modules.log "Failed to get initialize module \"$module\""; return 1; }
+	# Check if it didn't set any modinit_API, in that case it is a API 1 module.
 	if [[ -z $modinit_API ]]; then
 		log_warning "Please upgrade \"$module\" to new module API $modules_current_API. This old API is deprecated."
 		modinit_HOOKS="$(module_${module}_INIT)"
@@ -257,6 +261,10 @@ modules_unload() {
 		fi
 		list_remove "modules_${hook}" "$module" "modules_${hook}"
 	done
+	commands_unregister "$module" || {
+		log_fatal_file modules.log "Could not unregister commands for ${module}"
+		bot_quit "Fatal error in module unload, please see log"
+	}
 	module_${module}_UNLOAD || {
 		log_fatal_file modules.log "Could not unload ${module}, module_${module}_UNLOAD returned ${?}!"
 		bot_quit "Fatal error in module unload, please see log"
