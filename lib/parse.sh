@@ -27,7 +27,7 @@
 ## @Note In most cases you should use one of
 ## @Note <@function parse_hostmask_nick>, <@function parse_hostmask_ident>
 ## @Note or <@function parse_hostmask_host>. Only use this function
-## @Note if you want all parts.
+## @Note if you want all several parts.
 ## @Type API
 ## @param n!u@h mask
 ## @param Variable to return nick in
@@ -117,6 +117,7 @@ parse_005() {
 ## Check if a query matches a command. If it matches extract the
 ## parameters.
 ## @Type API
+## @Deprecated This is deprecated, please use commands_register system instead.
 ## @param Variable to return result (if any result) in
 ## @param The query to check, this should be the part after the : in PRIVMSG.
 ## @param What command to look for.
@@ -133,13 +134,11 @@ parse_query_is_command() {
 	fi
 }
 
-
-
 #---------------------------------------------------------------------
 ## Check if a query matches a command. If it matches extract the
 ## parameters.
 ## @Type API
-## @Deprecated This is deprecated, please use <@function parse_hostmask_nick> instead.
+## @Deprecated This is deprecated, please use commands_register system instead.
 ## @param The query to check, this should be the part after the : in PRIVMSG.
 ## @param What command to look for.
 ## @return 0 If the query matches
