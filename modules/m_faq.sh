@@ -24,7 +24,8 @@
 
 module_faq_INIT() {
 	modinit_API='2'
-	modinit_HOOKS='after_load on_PRIVMSG'
+	modinit_HOOKS='after_load'
+	commands_register "$1" 'faq' || return 1
 }
 
 module_faq_UNLOAD() {
@@ -74,7 +75,7 @@ module_faq_after_load() {
 # $1 = from who (n!u@h)
 # $2 = to who (channel or botnick)
 # $3 = the message
-module_faq_on_PRIVMSG() {
+module_faq_handler_faq() {
 	local sender="$1"
 	local channel="$2"
 	# If it isn't in a channel send message back to person who send it,
@@ -82,49 +83,45 @@ module_faq_on_PRIVMSG() {
 	if ! [[ $2 =~ ^# ]]; then
 		parse_hostmask_nick "$sender" 'channel'
 	fi
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "faq"; then
-		if [[ "$parameters" =~ ^(.+) ]]; then
-			query="${BASH_REMATCH[1]}"
-			if [[ "$query" == "reload" ]]; then
-				if access_check_capab "faq_admin" "$sender" "GLOBAL"; then
-					send_msg "$channel" "Reloading FAQ items..."
-					module_faq_load
-					send_msg "$channel" "Done."
-				else
-					access_fail "$sender" "reload faq items" "faq_admin"
-				fi
-				return 1
-			fi
-			local query_time="$(date +%H%M)$line"
-			if [[ "$module_faq_last_query" != "$query_time" ]] ; then # Must be atleast 1 min old or different query...
-				module_faq_last_query="$query_time"
-				if [[ "$query" =~ ^\ *([0-9]+)\ *$ ]]; then
-					local index="${BASH_REMATCH[1]}"
-					if [[ "${module_faq_array[$index]}" ]]; then
-						send_msg "$channel" "${module_faq_array[$index]}"
-					else
-						send_msg "$channel" "That FAQ item doesn't exist"
-					fi
-				# Check length of search to be at least 3 chars
-				elif [[ "${#query}" -ge 3 ]] ; then
-					local i=0
-					while [[ $i -lt "${#module_faq_array[*]}" ]] ; do
-						(( i++ ))
-						# FIXME: This code is hard to read.
-						# This module needs rewriting...
-						if grep -qiFm 1 "$query" <<< "${module_faq_array[$i]}" ; then
-							send_msg "$channel" "${module_faq_array[$i]}"
-							break 1
-						fi
-					done
-				fi
+	local parameters="$3"
+	if [[ "$parameters" =~ ^(.+) ]]; then
+		query="${BASH_REMATCH[1]}"
+		if [[ "$query" == "reload" ]]; then
+			if access_check_capab "faq_admin" "$sender" "GLOBAL"; then
+				send_msg "$channel" "Reloading FAQ items..."
+				module_faq_load
+				send_msg "$channel" "Done."
 			else
-				log_error "FLOOD DETECTED in FAQ module"
+				access_fail "$sender" "reload faq items" "faq_admin"
 			fi
 			return 1
 		fi
+		local query_time="$(date +%H%M)$line"
+		if [[ "$module_faq_last_query" != "$query_time" ]] ; then # Must be atleast 1 min old or different query...
+			module_faq_last_query="$query_time"
+			if [[ "$query" =~ ^\ *([0-9]+)\ *$ ]]; then
+				local index="${BASH_REMATCH[1]}"
+				if [[ "${module_faq_array[$index]}" ]]; then
+					send_msg "$channel" "${module_faq_array[$index]}"
+				else
+					send_msg "$channel" "That FAQ item doesn't exist"
+				fi
+			# Check length of search to be at least 3 chars
+			elif [[ "${#query}" -ge 3 ]] ; then
+				local i=0
+				while [[ $i -lt "${#module_faq_array[*]}" ]] ; do
+					(( i++ ))
+					# FIXME: This code is hard to read.
+					# This module needs rewriting...
+					if grep -qiFm 1 "$query" <<< "${module_faq_array[$i]}" ; then
+						send_msg "$channel" "${module_faq_array[$i]}"
+						break 1
+					fi
+				done
+			fi
+		else
+			log_error "FLOOD DETECTED in FAQ module"
+		fi
+		return 1
 	fi
-	return 0
 }
