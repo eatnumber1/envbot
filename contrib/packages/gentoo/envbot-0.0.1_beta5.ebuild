@@ -2,8 +2,7 @@
 # Distributed under the terms of the GNU General Public License v3
 # $Header$
 
-MY_P=${PN}-0.0.1_b5
-MY_S=${PN}-0.0.1-beta5
+MY_P=${P/_beta/_b}
 
 DESCRIPTION="An advanced modular IRC bot coded in bash"
 HOMEPAGE="http://envbot.org"
@@ -24,7 +23,7 @@ RDEPEND="${DEPEND}
 	bugzilla? ( >=www-client/pybugz-0.7.1 )
 	sqlite3? ( >=dev-db/sqlite-3 )"
 
-S=${WORKDIR}/${MY_S}
+S=${WORKDIR}/${P/_/-}
 
 src_compile() {
 	# Copy and remove modules as needed according to useflags
@@ -32,6 +31,7 @@ src_compile() {
 		cp contrib/modules/m_{eval,helloworld}.sh modules || die "Copying contrib modules failed"
 	}
 	use bc && { cp contrib/modules/m_calc.sh modules || die "Copying bc module failed"; }
+	use eix && { cp contrib/modules/m_eix.sh modules || die "Copying eix module failed"; }
 	use bugzilla && { cp contrib/modules/m_bugzilla.sh modules || die "Copying bugzilla module failed"; }
 	use sqlite3 || { rm modules/m_{sqlite3,factoids,seen}.sh || die "Removing sqlite3 dependant modules failed"; }
 	# Remove transports if support isn't installed
