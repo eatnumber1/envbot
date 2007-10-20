@@ -26,8 +26,8 @@
 module_join_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" 'join' 'join'
-	commands_register "$1" 'part' 'part'
+	commands_register "$1" 'join'
+	commands_register "$1" 'part'
 }
 
 module_join_UNLOAD() {

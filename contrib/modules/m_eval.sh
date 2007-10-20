@@ -26,7 +26,7 @@
 module_eval_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" "eval" "eval"
+	commands_register "$1" 'eval'
 }
 
 module_eval_UNLOAD() {
@@ -48,3 +48,4 @@ module_eval_handler_eval() {
 		access_fail "$sender" "eval a command" "owner"
 	fi
 }
+
