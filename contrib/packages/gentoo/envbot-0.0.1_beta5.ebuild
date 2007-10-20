@@ -15,7 +15,7 @@ IUSE="bc bugzilla eix gnutls netcat socat ssl sqlite3 contrib"
 
 DEPEND=">=app-shells/bash-3.2"
 RDEPEND="${DEPEND}
-	ssl? ( dev-libs/openssl )
+	openssl? ( dev-libs/openssl )
 	gnutls? ( net-libs/gnutls )
 	netcat? ( || ( net-analyzer/gnu-netcat net-analyzer/netcat net-analyzer/netcat6 ) )
 	eix? ( >=app-portage/eix-0.9.10 )
@@ -37,7 +37,7 @@ src_compile() {
 	# Remove transports if support isn't installed
 	use netcat || { rm transport/netcat.sh || die "Removing netcat dependant transport failed"; }
 	use gnutls || { rm transport/gnutls.sh || die "Removing gnutls dependant transport failed"; }
-	use ssl || { rm transport/openssl.sh || die "Removing openssl dependant transport failed"; }
+	use openssl || { rm transport/openssl.sh || die "Removing openssl dependant transport failed"; }
 	use socat || { rm transport/socat.sh || die "Removing socat dependant transport failed"; }
 	emake || die "make failed"
 }
