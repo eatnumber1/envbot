@@ -224,5 +224,6 @@ list_remove() {
 ## @return 1 If not found.
 #---------------------------------------------------------------------
 list_contains() {
+	# FIXME: Make this faster
 	grep -wq "$2" <<< "${!1}"
 }
