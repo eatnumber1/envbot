@@ -31,7 +31,18 @@
 module_helloworld_INIT() {
 	modinit_API='2'
 	# Set modinit_HOOKS to the hooks we have.
-	modinit_HOOKS='after_load on_PRIVMSG'
+	modinit_HOOKS='after_load'
+	# Register commands, each command handler will have a name like:
+	# module_modulename_handler_function
+	# Example: module_helloworld_handler_hi
+	# If command name and function name are the same you can skip
+	# command name.
+	commands_register "$1" 'hi' || return 1
+	# Here the function name and command name can't be the same,
+	# as the command name got space in it. Note that a command can
+	# be at most two words.
+	commands_register "$1" 'hello_world' 'hello world' || return 1
+
 }
 
 #---------------------------------------------------------------------
@@ -85,13 +96,13 @@ module_helloworld_function() {
 }
 
 #---------------------------------------------------------------------
-## Called on a PRIVMSG
-## @Type   Module hook
+## Called on the command "hello world"
+## @Type  Function handler
 ## @param From who (n!u@h)
 ## @param To who (channel or botnick)
-## @param The message
+## @param The parameters to the command
 #---------------------------------------------------------------------
-module_helloworld_on_PRIVMSG() {
+module_helloworld_handler_hello_world() {
 	local sender="$1"
 	local target
 	# If it isn't in a channel send message back to person who send it,
@@ -102,75 +113,73 @@ module_helloworld_on_PRIVMSG() {
 		# parse_hostmask_nick gets the nick from a hostmask.
 		parse_hostmask_nick "$sender" 'target'
 	fi
-	local query="$3"
-	local parameters
-	# parse_query_is_command returns 0 if it matches, otherwise 1
-	# In the variable with the name given in the first parameter it
-	# returns any arguments to the command.
-	# This also shows another feature: multiword commands
-	if parse_query_is_command 'parameters' "$query" "hello world"; then
-		# Check if the syntax for the parameters is correct!
-		# Lets check for one parameter without spaces
-		if [[ "$parameters" =~ ^([^ ]+) ]]; then
-			# Store the bit in the first group of the regex into
-			# the variable message
-			local message="${BASH_REMATCH[1]}"
-			# Send a hello world message:
-			send_msg "$target" "Hello world! I had the parameter $message"
-		else
-			# So the regex for matching parameters didn't work, lets provide
-			# the user with some feedback!
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "hello world" "message # Where message is one word!"
-		fi
-		# Return 1 because we handled this PRIVMSG.
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "hi"; then
-		# Two parameters, one is single word, the other matches to
-		# end of line.
-		if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
-			# Store the groups in some variables.
-			local target_channel="${BASH_REMATCH[1]}"
-			local message="${BASH_REMATCH[2]}"
-			# This is used for the access check below.
-			# Check if target is a channel or nick.
-			local scope
-			if [[ $target_channel =~ ^# ]]; then
-				scope="$target_channel"
-			else
-				scope="MSG"
-			fi
-			# Lets check for access.
-			# First variable is capability to check for
-			# Second variable is the hostmask of the sender of the message
-			# Third variable is the scope, that we set above.
-			if access_check_capab "hi" "$sender" "$scope"; then
-				# Such important events for security as a "hi channel" should
-				# really get logged even if it fails! ;)
-				access_log_action "$sender" "made the hi channel \"$message\" in/to \"$target_channel\""
-				local sendernick
-				parse_hostmask_nick "$sender" 'sendernick'
-				send_msg "${target_channel}" "Hi $target_channel! $sendernick wants you to know ${message}"
-				# As an example also call our function.
-				module_helloworld_function
-			else
-				# Lets tell the sender they lack access!
-				# access_fail will send a PRIVMSG to the sender saying permission denied
-				# and also log the failed attempt.
-				access_fail "$sender" "make the bot hi" "hi"
-			fi
-		else
-			# As above, provide feedback about bad syntax.
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "hi" "target message # Where target is a nick or channel"
-		fi
-		# Again: return 1 because we handled this PRIVMSG.
-		return 1
+	local parameters="$3"
+
+	# Check if the syntax for the parameters is correct!
+	# Lets check for one parameter without spaces
+	if [[ "$parameters" =~ ^([^ ]+) ]]; then
+		# Store the bit in the first group of the regex into
+		# the variable message
+		local message="${BASH_REMATCH[1]}"
+		# Send a hello world message:
+		send_msg "$target" "Hello world! I had the parameter $message"
+	else
+		# So the regex for matching parameters didn't work, lets provide
+		# the user with some feedback!
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "hello world" "message # Where message is one word!"
 	fi
-	# We will only get here if we didn't handle the PRIVMSG
-	# But at this point it is more than likely that we got
-	# something other than 0 in $?, so return 0 here.
-	return 0
+}
+
+#---------------------------------------------------------------------
+## Called on the command "hi"
+## @Type  Function handler
+## @param From who (n!u@h)
+## @param To who (channel or botnick)
+## @param The parameters to the command
+#---------------------------------------------------------------------
+module_helloworld_handler_hi() {
+	local sender="$1"
+
+	local parameters="$3"
+	# Two parameters, one is single word, the other matches to
+	# end of line.
+	if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
+		# Store the groups in some variables.
+		local target_channel="${BASH_REMATCH[1]}"
+		local message="${BASH_REMATCH[2]}"
+		# This is used for the access check below.
+		# Check if target is a channel or nick.
+		local scope
+		if [[ $target_channel =~ ^# ]]; then
+			scope="$target_channel"
+		else
+			scope="MSG"
+		fi
+		# Lets check for access.
+		# First variable is capability to check for
+		# Second variable is the hostmask of the sender of the message
+		# Third variable is the scope, that we set above.
+		if access_check_capab "hi" "$sender" "$scope"; then
+			# Such important events for security as a "hi" should
+			# really get logged even if it fails! ;)
+			access_log_action "$sender" "made the hi channel \"$message\" in/to \"$target_channel\""
+			local sendernick
+			parse_hostmask_nick "$sender" 'sendernick'
+			send_msg "${target_channel}" "Hi $target_channel! $sendernick wants you to know ${message}"
+			# As an example also call our function.
+			module_helloworld_function
+		else
+			# Lets tell the sender they lack access!
+			# access_fail will send a PRIVMSG to the sender saying permission denied
+			# and also log the failed attempt.
+			access_fail "$sender" "make the bot hi" "hi"
+		fi
+	else
+		# As above, provide feedback about bad syntax.
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "hi" "target message # Where target is a nick or channel"
+	fi
 }
