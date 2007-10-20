@@ -158,7 +158,7 @@ commands_call_command() {
 			else
 				return 2
 			fi
-			"$command" "$1" "$2" "$parameters"
+			"$command" "$1" "$2" "${parameters# }"
 			return 1
 		fi
 		return 2
