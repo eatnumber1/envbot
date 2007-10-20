@@ -24,7 +24,8 @@
 
 module_rehash_INIT() {
 	modinit_API='2'
-	modinit_HOOKS='on_PRIVMSG'
+	modinit_HOOKS=''
+	commands_register "$1" 'rehash' 'rehash'
 }
 
 module_rehash_UNLOAD() {
@@ -56,25 +57,12 @@ module_rehash_dorehash() {
 	send_msg "$sendernick" "$status_message"
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_rehash_on_PRIVMSG() {
-	# Accept this anywhere, unless someone can give a good reason not to.
+module_rehash_handler_rehash() {
 	local sender="$1"
-	local query="$3"
-	local target_module
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "rehash"; then
-		if access_check_owner "$sender"; then
-			access_log_action "$sender" "did a rehash"
-			module_rehash_dorehash "$sender"
-		else
-			access_fail "$sender" "load a module" "owner"
-		fi
-		return 1
+	if access_check_owner "$sender"; then
+		access_log_action "$sender" "did a rehash"
+		module_rehash_dorehash "$sender"
+	else
+		access_fail "$sender" "load a module" "owner"
 	fi
-	return 0
 }

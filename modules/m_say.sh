@@ -24,7 +24,10 @@
 
 module_say_INIT() {
 	modinit_API='2'
-	modinit_HOOKS='on_PRIVMSG'
+	modinit_HOOKS=''
+	commands_register "$1" 'say' 'say'
+	commands_register "$1" 'act' 'act'
+
 }
 
 module_say_UNLOAD() {
@@ -35,61 +38,54 @@ module_say_REHASH() {
 	return 0
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_say_on_PRIVMSG() {
+module_say_handler_say() {
 	local sender="$1"
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "say"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
-			local target="${BASH_REMATCH[1]}"
-			local message="${BASH_REMATCH[2]}"
-			local scope
-			# Is it a channel?
-			if [[ $target =~ ^# ]]; then
-				scope="$target"
-			else
-				scope="MSG"
-			fi
-			if access_check_capab "say" "$sender" "$scope"; then
-				access_log_action "$sender" "made the bot say \"$message\" in/to \"$target\""
-				send_msg "$target" "$message"
-			else
-				access_fail "$sender" "make the bot talk with say" "say"
-			fi
+	local parameters="$3"
+	if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
+		local target="${BASH_REMATCH[1]}"
+		local message="${BASH_REMATCH[2]}"
+		local scope
+		# Is it a channel?
+		if [[ $target =~ ^# ]]; then
+			scope="$target"
 		else
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "say" "target message # Where target is a nick or channel"
+			scope="MSG"
 		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "act"; then
-		if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
-			local target="${BASH_REMATCH[1]}"
-			local message="${BASH_REMATCH[2]}"
-			local scope
-			# Is it a channel?
-			if [[ $target =~ ^# ]]; then
-				scope="$target"
-			else
-				scope="MSG"
-			fi
-			if access_check_capab "say" "$sender" "$scope"; then
-				access_log_action "$sender" "made the bot act \"$message\" in/to \"$target\""
-				send_ctcp "$target" "ACTION ${message}"
-			else
-				access_fail "$sender" "make the bot act" "say"
-			fi
+		if access_check_capab "say" "$sender" "$scope"; then
+			access_log_action "$sender" "made the bot say \"$message\" in/to \"$target\""
+			send_msg "$target" "$message"
 		else
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "act" "target message # Where target is a nick or channel"
+			access_fail "$sender" "make the bot talk with say" "say"
 		fi
-		return 1
+	else
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "say" "target message # Where target is a nick or channel"
 	fi
-	return 0
+}
+
+module_say_handler_act() {
+	local sender="$1"
+	local parameters="$3"
+	if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
+		local target="${BASH_REMATCH[1]}"
+		local message="${BASH_REMATCH[2]}"
+		local scope
+		# Is it a channel?
+		if [[ $target =~ ^# ]]; then
+			scope="$target"
+		else
+			scope="MSG"
+		fi
+		if access_check_capab "say" "$sender" "$scope"; then
+			access_log_action "$sender" "made the bot act \"$message\" in/to \"$target\""
+			send_ctcp "$target" "ACTION ${message}"
+		else
+			access_fail "$sender" "make the bot act" "say"
+		fi
+	else
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "act" "target message # Where target is a nick or channel"
+	fi
 }

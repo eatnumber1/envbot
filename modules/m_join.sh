@@ -38,7 +38,6 @@ module_join_REHASH() {
 	return 0
 }
 
-
 module_join_handler_part() {
 	local sender="$1"
 	local parameters="$3"
