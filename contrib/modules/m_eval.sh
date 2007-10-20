@@ -48,4 +48,3 @@ module_eval_handler_eval() {
 		access_fail "$sender" "eval a command" "owner"
 	fi
 }
-
