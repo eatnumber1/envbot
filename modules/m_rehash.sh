@@ -23,7 +23,8 @@
 #---------------------------------------------------------------------
 
 module_rehash_INIT() {
-	echo 'on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS='on_PRIVMSG'
 }
 
 module_rehash_UNLOAD() {

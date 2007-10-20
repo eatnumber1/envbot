@@ -23,7 +23,8 @@
 #---------------------------------------------------------------------
 
 module_nicktracking_INIT() {
-	echo 'after_load before_connect on_numeric on_NICK on_QUIT on_KICK on_PART on_JOIN'
+	modinit_API='2'
+	modinit_HOOKS='after_load before_connect on_numeric on_NICK on_QUIT on_KICK on_PART on_JOIN'
 }
 
 module_nicktracking_UNLOAD() {

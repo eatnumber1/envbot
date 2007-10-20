@@ -24,7 +24,8 @@
 #---------------------------------------------------------------------
 
 module_join_INIT() {
-	echo 'on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS='on_PRIVMSG'
 }
 
 module_join_UNLOAD() {

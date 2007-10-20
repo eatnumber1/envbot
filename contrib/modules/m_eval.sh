@@ -24,7 +24,8 @@
 #---------------------------------------------------------------------
 
 module_eval_INIT() {
-	echo 'on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS='on_PRIVMSG'
 }
 
 module_eval_UNLOAD() {

@@ -24,7 +24,8 @@
 #---------------------------------------------------------------------
 
 module_quote_INIT() {
-	echo 'after_load on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS='after_load on_PRIVMSG'
 }
 
 module_quote_UNLOAD() {

@@ -23,7 +23,8 @@
 #---------------------------------------------------------------------
 
 module_dumpvars_INIT() {
-	echo 'on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS='on_PRIVMSG'
 }
 
 module_dumpvars_UNLOAD() {

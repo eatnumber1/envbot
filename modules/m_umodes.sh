@@ -23,7 +23,8 @@
 #---------------------------------------------------------------------
 
 module_umodes_INIT() {
-	echo 'after_connect'
+	modinit_API='2'
+	modinit_HOOKS='after_connect'
 }
 
 module_umodes_UNLOAD() {

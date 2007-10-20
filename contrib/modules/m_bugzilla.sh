@@ -34,7 +34,8 @@
 #---------------------------------------------------------------------
 
 module_bugzilla_INIT() {
-	echo 'on_PRIVMSG after_load'
+	modinit_API='2'
+	modinit_HOOKS='on_PRIVMSG after_load'
 }
 
 module_bugzilla_UNLOAD() {

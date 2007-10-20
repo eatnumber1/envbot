@@ -28,6 +28,9 @@
 #---------------------------------------------------------------------
 modules_loaded=""
 
+modules_current_API=2
+
+
 #---------------------------------------------------------------------
 ## Call from after_load with a list of modules that you depend on
 ## @Type API
@@ -128,10 +131,20 @@ modules_depends_can_unload() {
 #---------------------------------------------------------------------
 modules_add_hooks() {
 	local module="$1"
-	local hooks="$(module_${module}_INIT)"
+	local modinit_HOOKS
+	local modinit_API
+	module_${module}_INIT
 	[[ $? -ne 0 ]] && { log_error_file modules.log "Failed to get hooks for $module"; return 1; }
+	if [[ -z $modinit_API ]]; then
+		log_warning "Please upgrade \"$module\" to new module API $modules_current_API. This old API is deprecated."
+		modinit_HOOKS="$(module_${module}_INIT)"
+	elif [[ $modinit_API -ne $modules_current_API ]]; then
+		log_error "Current module API version is $modules_current_API, but the API version of \"$module\" is $module_API."
+		return 1
+	fi
+
 	local hook
-	for hook in $hooks; do
+	for hook in $modinit_HOOKS; do
 		case $hook in
 			"FINALISE")
 				modules_FINALISE+=" $module"

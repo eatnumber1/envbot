@@ -24,7 +24,8 @@
 #---------------------------------------------------------------------
 
 module_kick_ban_INIT() {
-	echo 'on_PRIVMSG after_load after_connect after_load on_numeric periodic'
+	modinit_API='2'
+	modinit_HOOKS='on_PRIVMSG after_load after_connect after_load on_numeric periodic'
 }
 
 module_kick_ban_UNLOAD() {

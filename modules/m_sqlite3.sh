@@ -32,7 +32,8 @@
 # WARNING WARNING WARNING WARNING WARNING #
 ###########################################
 module_sqlite3_INIT() {
-	echo 'after_load'
+	modinit_API='2'
+	modinit_HOOKS='after_load'
 }
 
 module_sqlite3_UNLOAD() {

@@ -1,0 +1,356 @@
+Module API
+==========
+
+This file contains info needed to write a module (module API 1).
+
+DON'T USE THIS FOR NEW MODULES! USE API 2 instead!
+
+
+File name
+---------
+
+The module should follow this pattern:
+m_modulename.sh
+Example:
+m_faq.sh
+
+Variables
+---------
+All bash variables in the module that are global MUST follow the format
+module_modulename_variablename to prevent overwriting other modules, or
+global bot variables. FAQ module may use: module_faq_last_query for example
+as a variable.
+
+Variables that are local to the function (using the local directive) may have
+other names. Don't forget variables created in for loops and such
+(for foo in bar bash; do echo $foo; done the $foo variable is global here,
+ do local foo on the line before it)
+
+
+Functions and hooks
+-------------------
+Hooks are functions with special names, as listed below in the section "The hooks".
+
+Each function or hook should start with the module_ followed by the module name.
+So if the module is faq.sh the modules should start with module_faq_ like module_faq_INIT.
+
+All bash functions in the module MUST follow the format
+module_modulename_functionname to prevent overwriting other modules, or
+global bot functions.
+
+If not mentioned otherwise the hook is optional.
+Functions marked with TODO may change, get renamed or removed and may not work
+even in current code.
+
+
+The hooks
+---------
+module_modulename_INIT (REQUIRED)
+	Called directly after loading the module.
+	Parameters:
+		None
+	Return status:
+		If return status isn't 0 the module is considered as failed to load.
+	Return on STDOUT:
+		On STDOUT should be returned a space separated list of the optional functions
+		that the module implements. FAQ would return "before_connect on_PRIVMSG"
+
+
+module_modulename_UNLOAD (REQUIRED)
+	Called to make the module unload itself.
+	In this function it should clean up after itself and undefine all
+	it's functions and variables except the hook functions.
+	The unload function and other hook functions will be undefined
+	after unload finished.
+	The module may or may not get reloaded after this.
+	Parameters:
+		None
+	Return status:
+		0 = Unloaded correctly
+		1 = Failed to unload. On this the bot will quit.
+	Notes:
+		This function is NOT called when the bot is exiting. To check for that
+		use the FINALISE hook!
+
+
+module_modulename_REHASH (REQUIRED)
+	Called to make the module reparse any config options.
+	Parameters:
+		None
+	Return status:
+		0 = Rehashed correctly
+		1 = Non fatal error for the bot itself. The bot will call UNLOAD on the module.
+		2 = Fatal error of some kind. On this the bot will quit.
+
+
+module_modulename_FINALISE
+	Called directly before the bot quits. The bot has already closed
+	the connection to the IRC server at this point. This is for saving
+	stuff.
+	Parameters:
+		None
+	Return status:
+		Not checked.
+
+
+module_modulename_after_load
+	Called after all the hooks are added for the module.
+	Parameters:
+		None
+	Return status:
+		0 = Unloaded correctly
+		1 = Failed. On this the bot will call unload on the module.
+	Notes:
+		This is useful for stuff that needs to echo log messages
+		as that can't be done in modulename_INIT.
+
+
+module_modulename_before_connect
+	Called before the bot connected.
+	Parameters:
+		None
+	Return status:
+		Not checked.
+
+
+module_modulename_on_connect
+	Called for each line that the bot
+	receives from the server during connecting.
+	Parameters:
+		$1 = Raw line.
+	Return status:
+		Not checked.
+
+
+module_modulename_after_connect
+	Called after the bot connected.
+	Parameters:
+		None
+	Return status:
+		Not checked.
+
+
+module_modulename_periodic
+	Called regularly for periodic events.
+	Parameters:
+		$1 = Timestamp when calling of hook started. This is to prevent
+		     functions from having to do a slow call to date themself.
+	Return code:
+		Not checked.
+	Notes:
+		This function should be low overhead, it gets called quite often.
+		Lower limit of time (during normal operation) between running hook:
+			$envbot_transport_timeout seconds
+		Upper limit of time (during normal operation) between running hook:
+			2 * $envbot_transport_timeout seconds
+		If there is some slow hook or code elsewhere this may result in that
+		this hook does not get called within the bounds given above.
+
+
+module_modulename_on_PRIVMSG
+	Called when bot gets a PRIVMSG
+	Parameters:
+		$1 = From who (n!u@h)
+		$2 = To who (channel or botnick)
+		$3 = The message
+	Return code:
+		0 = pass it on to next module
+		1 = I have taken care of this, and don't
+		    consult other modules about this.
+
+
+module_modulename_on_NOTICE
+	Called when bot gets a NOTICE
+	Parameters:
+		$1 = From who (n!u@h)
+		$2 = To who (channel or botnick)
+		$3 = The message
+	Return code:
+		0 = pass it on to next module
+		1 = I have taken care of this, and don't
+		    consult other modules about this.
+
+
+module_modulename_on_INVITE (new in 0.0.1-beta5)
+	Called when bot gets an INVITE
+	Parameters:
+		$1 = From who (n!u@h)
+		$2 = Target nick (probably our own nick).
+		$3 = Target channel.
+	Return code:
+		Not checked.
+
+
+module_modulename_on_NICK
+	Called when someone changes nick in a channel the bot is in
+	Parameters:
+		$1 = From who (n!u@h)
+		$2 = New nick
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the nick change.
+
+
+module_modulename_on_JOIN
+	Called when someone joins a channel the bot is in
+	Parameters:
+		$1 = Who did it (n!u@h)
+		$2 = What channel
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the join.
+
+
+module_modulename_on_PART
+	Called when someone parts a channel the bot is in
+	Parameters:
+		$1 = Who did it (n!u@h)
+		$2 = What channel
+		$3 = A reason if one exists.
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the part.
+
+
+module_modulename_on_KICK
+	Called when someone parts a channel the bot is in
+	Parameters:
+		$1 = Who did it (n!u@h).
+		$2 = What channel.
+		$3 = Who got kicked.
+		$4 = A reason if one exists.
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the kick.
+
+
+module_modulename_on_QUIT
+	Called when someone quits
+	Parameters:
+		$1 = Who did it (n!u@h).
+		$2 = A reason if one exists.
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the quit.
+
+
+module_modulename_on_TOPIC
+	Called when a topic is set or on channel join
+	Parameters:
+		$1 = Who did it (n!u@h).
+		$2 = What channel.
+		$3 = New topic.
+	Return status:
+		Not checked.
+			Reason: We don't want to get desynced modules.
+
+
+module_modulename_on_channel_MODE
+	Called when someone changes a mode in the channel
+	Parameters:
+		$1 = Who did it (n!u@h).
+		$2 = On what channel.
+		$3 = The mode change with it's parameters.
+	Return status:
+		Not checked.
+			Reason: A module with a list of users could get desynced if it didn't
+			get the mode change.
+
+
+module_modulename_on_user_MODE (new in 0.0.1-beta4)
+	Called when someone changes a user mode (most likely on ourself)
+	Parameters:
+		$1 = Who did it (n!u@h).
+		$2 = What target (nick).
+		$3 = The mode change with it's parameters.
+	Return status:
+		Not checked.
+			Reason: There is no point in checking this.
+
+
+module_modulename_on_numeric
+	Called on any numeric after connect.
+	Parameters:
+		$1 = The numeric.
+		$2 = It's data.
+	Return status:
+		0 = pass it on to next module
+		1 = I have taken care of this, and don't
+		    consult other modules about this.
+	Notes:
+		In most cases you DON'T want to return 1 for this. If you do be very very careful.
+
+
+module_modulename_on_server_ERROR
+	# ERROR :Closing link (rfc3092@1.2.3.4) [Killed (AnMaster (testing a kill on inspircd))]
+	# ERROR :Closing Link: [1.2.3.4] (Throttled: Reconnecting too fast) -Email staff@example.com for more information.
+	# ERROR :Closing Link: envbot[host.name.se] Brain ([hurricane.KuoNET.org] Local kill by Brain (testing kill on unrealircd))
+	# ERROR :Closing Link: envbot[host.name.se] hurricane.KuoNET.org (Killed (Brain (testing kill on unrealircd, remote one)))
+	Called when the bot get an ERROR from the server.
+	Parameters:
+		$1 = The ERROR message.
+	Return status:
+		Not checked.
+			Reason: There isn't much point in swallowing this.
+
+
+module_modulename_on_KILL
+	Called when the bot get a KILL message from the server.
+	Parameters:
+		$1 = The sender of the kill.
+		$2 = The target of the kill.
+		$3 = The KILL path.
+		$4 = The reason.
+	Return status:
+		Not checked.
+			Reason: Risk for desync of modules.
+
+
+module_modulename_before_disconnect
+	Called when the bot is about to disconnect from server.
+	The bot may or may not reconnect after this depending on what caused this.
+	the disconnect.
+	Parameters:
+		None
+	Return status:
+		Not checked.
+	Notes:
+		This won't be called if the disconnect wasn't planned, like
+		a ping timeout, getting killed, and so on.
+
+
+module_modulename_after_disconnect
+	Called when the bot gets disconnected from server.
+	The bot may or may not reconnect after this depending on what caused
+	the disconnect.
+	Parameters:
+		None
+	Return status:
+		Not checked.
+			Reason: A module may need clean up, don't let it desync.
+
+
+module_modulename_on_RAW
+	Called when the bot gets *ANY* line from the server after the initial connect.
+	With this a module can hook onto something not supported by a more specific hook.
+	The downsides:
+	* Potentially speed as it has to be called for any message.
+	* You have to parse more on your own.
+	* You can desync other modules! Imagine a module that keep a list of
+	  users in the channel. If you swallow a message about a join, part,
+	  quit, nickchange, or other ones it may get desynced!
+	* Even worse, you can desync the bot itself if you swallow NICK, JOIN
+	  PART, KICK or possibly others. Or make it ping out by swallowing PING.
+	Parameters:
+		$1 = The raw line
+	Return status:
+		0 = pass it on to next module
+		1 = I have taken care of this, and don't
+		    consult other modules about this.
+		    For raw this means no normal hooks
+		    will be called on the line either.

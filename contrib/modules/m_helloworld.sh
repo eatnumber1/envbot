@@ -29,8 +29,9 @@
 ## @Stdout A list of hooks.
 #---------------------------------------------------------------------
 module_helloworld_INIT() {
-	# echo to STDOUT the hooks we have.
-	echo 'after_load on_PRIVMSG'
+	modinit_API='2'
+	# Set modinit_HOOKS to the hooks we have.
+	modinit_HOOKS='after_load on_PRIVMSG'
 }
 
 #---------------------------------------------------------------------
