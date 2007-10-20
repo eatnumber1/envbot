@@ -26,7 +26,7 @@
 module_eval_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" 'eval'
+	commands_register "$1" 'eval' || return 1
 }
 
 module_eval_UNLOAD() {

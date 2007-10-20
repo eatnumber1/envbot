@@ -26,7 +26,7 @@
 module_sendraw_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" 'raw'
+	commands_register "$1" 'raw' || return 1
 }
 
 module_sendraw_UNLOAD() {

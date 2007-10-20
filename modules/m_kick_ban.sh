@@ -26,8 +26,8 @@
 module_kick_ban_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load after_connect after_load on_numeric periodic'
-	commands_register "$1" 'kick'
-	commands_register "$1" 'ban'
+	commands_register "$1" 'kick' || return 1
+	commands_register "$1" 'ban' || return 1
 }
 
 module_kick_ban_UNLOAD() {
