@@ -124,19 +124,23 @@ module_kick_ban_on_PRIVMSG() {
 	local query="$3"
 	local parameters
 	if parse_query_is_command 'parameters' "$query" "kick"; then
-		if [[ "$parameters" =~ ^((#[^ ]+)\ )?([^ ]+)\ (.+) ]]; then
+		if [[ $parameters =~ ^((#[^ ]+)\ )(.*) ]]; then
 			local channel="${BASH_REMATCH[2]}"
-			local nick="${BASH_REMATCH[@]: -2}"
-			local kickmessage="${BASH_REMATCH[@]: -1}"
+			parameters="${BASH_REMATCH[3]}"
+		else
 			if ! [[ $channel =~ ^# ]]; then
 				if [[ $sendon_channel =~ ^# ]]; then
-					channel="$sendon_channel"
+					local channel="$sendon_channel"
 				else
 					local sendernick
 					parse_hostmask_nick "$sender" 'sendernick'
 					feedback_bad_syntax "$sendernick" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
 				fi
 			fi
+		fi
+		if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
+			local nick="${BASH_REMATCH[1]}"
+			local kickmessage="${BASH_REMATCH[2]}"
 			if access_check_capab "kick" "$sender" "$channel"; then
 				send_raw "KICK $channel $nick :$kickmessage"
 				access_log_action "$sender" "kicked $nick from $channel with kick message: $kickmessage"
