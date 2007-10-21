@@ -77,5 +77,4 @@ module_quote_handler_quote() {
 	local number="$RANDOM"
 	(( number %= ${#module_quote_quotes[*]} ))
 	send_msg "$channel" "${module_quote_quotes[$number]}"
-
 }

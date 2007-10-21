@@ -39,8 +39,8 @@ module_sendraw_REHASH() {
 
 module_sendraw_handler_raw() {
 	local sender="$1"
-	local parameters="$3"
 	if access_check_capab "sendraw" "$sender" "GLOBAL"; then
+		local parameters="$3"
 		access_log_action "$sender" "make the bot send a raw line: $parameters"
 		send_raw "$parameters"
 	else

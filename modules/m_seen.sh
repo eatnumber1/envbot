@@ -175,7 +175,7 @@ module_seen_on_PRIVMSG() {
 	local channel="$2"
 	local query="$3"
 	# If in channel, store
-	if [[ $2 =~ ^# ]]; then
+	if [[ $channel =~ ^# ]]; then
 		module_seen_store "$sender" "$channel" "$(date -u +%s)" "$query"
 	# If not in channel respond to any commands in /msg
 	else

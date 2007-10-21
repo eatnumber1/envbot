@@ -25,7 +25,7 @@
 module_rehash_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" 'rehash' 'rehash'
+	commands_register "$1" 'rehash' || return 1
 }
 
 module_rehash_UNLOAD() {

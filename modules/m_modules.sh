@@ -156,9 +156,7 @@ module_modules_handler_modlist() {
 	else
 		parse_hostmask_nick "$sender" 'target'
 	fi
-	local modlist
-	for target_module in $modules_loaded; do
-		modlist+=" $target_module"
-	done
-	send_msg "$target" "Modules currently loaded:$modlist"
+	local modlist="${modules_loaded## }"
+	modlist="${modlist%% }"
+	send_msg "$target" "Modules currently loaded: ${modlist//  / }"
 }

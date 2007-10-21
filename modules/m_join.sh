@@ -26,8 +26,8 @@
 module_join_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" 'join'
-	commands_register "$1" 'part'
+	commands_register "$1" 'join' || return 1
+	commands_register "$1" 'part' || return 1
 }
 
 module_join_UNLOAD() {
@@ -63,11 +63,11 @@ module_join_handler_part() {
 module_join_handler_join() {
 	local sender="$1"
 	local parameters="$3"
-	if [[ "$parameters" =~ ^(#[^ ]+)(\ .+)? ]]; then
+	if [[ "$parameters" =~ ^(#[^ ]+)(\ [^ ]+)? ]]; then
 		local channel="${BASH_REMATCH[1]}"
 		local key="${BASH_REMATCH[2]}"
 		if access_check_capab "join" "$sender" "$channel"; then
-			key="${key/# /}"
+			key="${key## }"
 			if [[ -z "$key" ]]; then
 				channels_join "${channel}"
 			else
