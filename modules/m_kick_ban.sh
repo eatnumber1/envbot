@@ -136,10 +136,10 @@ module_kick_ban_handler_kick() {
 			fi
 		fi
 	fi
+
 	if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
 		local nick="${BASH_REMATCH[1]}"
 		local kickmessage="${BASH_REMATCH[2]}"
-
 		if access_check_capab "kick" "$sender" "$channel"; then
 			send_raw "KICK $channel $nick :$kickmessage"
 			access_log_action "$sender" "kicked $nick from $channel with kick message: $kickmessage"
