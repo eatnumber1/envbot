@@ -26,8 +26,8 @@
 module_die_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" 'die'
-	commands_register "$1" 'restart'
+	commands_register "$1" 'die' || return 1
+	commands_register "$1" 'restart' || return 1
 }
 
 module_die_UNLOAD() {
@@ -40,8 +40,8 @@ module_die_REHASH() {
 
 module_die_handler_die() {
 	local sender="$1"
-	local parameters="$3"
 	if access_check_owner "$sender"; then
+		local parameters="$3"
 		access_log_action "$sender" "made the bot die with reason: $parameters"
 		bot_quit "$parameters"
 	else
@@ -51,8 +51,8 @@ module_die_handler_die() {
 
 module_die_handler_restart() {
 	local sender="$1"
-	local parameters="$3"
 	if access_check_owner "$sender"; then
+		local parameters="$3"
 		access_log_action "$sender" "made the bot restart with reason: $parameters"
 		bot_restart "$parameters"
 	else

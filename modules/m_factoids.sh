@@ -349,14 +349,14 @@ module_factoids_handler_forget() {
 
 module_factoids_handler_lock_factoid() {
 	local sender="$1"
-	local sendernick
-	parse_hostmask_nick "$sender" 'sendernick'
-	local channel="$2"
-	if ! [[ $2 =~ ^# ]]; then
-		channel="$sendernick"
-	fi
-	local parameters="$3"
 	if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		local channel="$2"
+		if ! [[ $2 =~ ^# ]]; then
+			channel="$sendernick"
+		fi
+		local parameters="$3"
 		if [[ "$parameters" =~ ^(.+) ]]; then
 			local key="${BASH_REMATCH[1]}"
 			module_factoids_lock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
@@ -371,14 +371,14 @@ module_factoids_handler_lock_factoid() {
 
 module_factoids_handler_unlock_factoid() {
 	local sender="$1"
-	local sendernick
-	parse_hostmask_nick "$sender" 'sendernick'
-	local channel="$2"
-	if ! [[ $2 =~ ^# ]]; then
-		channel="$sendernick"
-	fi
-	local parameters="$3"
 	if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		local channel="$2"
+		if ! [[ $2 =~ ^# ]]; then
+			channel="$sendernick"
+		fi
+		local parameters="$3"
 		if [[ "$parameters" =~ ^(.+) ]]; then
 			local key="${BASH_REMATCH[1]}"
 			module_factoids_unlock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
@@ -423,13 +423,12 @@ module_factoids_handler_factoid_stats() {
 
 module_factoids_on_PRIVMSG() {
 	local sender="$1"
-	local sendernick
-	parse_hostmask_nick "$sender" 'sendernick'
 	local channel="$2"
 	if ! [[ $2 =~ ^# ]]; then
-		channel="$sendernick"
+		parse_hostmask_nick "$sender" 'channel'
 	fi
 	local query="$3"
+	# Answer question in channel if we got a factoid.
 	if [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|was|to|can I find)\ )?([^\?]+)\?? ]]; then
 		local key="${BASH_REMATCH[@]: -1}"
 		local value="$(module_factoids_SELECT "$(tr '[:upper:]' '[:lower:]' <<< "$key")")"

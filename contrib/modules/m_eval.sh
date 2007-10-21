@@ -40,8 +40,8 @@ module_eval_REHASH() {
 module_eval_handler_eval() {
 	# Accept anywhere
 	local sender="$1"
-	local parameters="$3"
 	if access_check_owner "$sender"; then
+		local parameters="$3"
 		access_log_action "$sender" "did eval with: $parameters"
 		eval "$parameters"
 	else

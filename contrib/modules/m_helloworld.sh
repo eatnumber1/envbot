@@ -113,8 +113,8 @@ module_helloworld_handler_hello_world() {
 		# parse_hostmask_nick gets the nick from a hostmask.
 		parse_hostmask_nick "$sender" 'target'
 	fi
-	local parameters="$3"
 
+	local parameters="$3"
 	# Check if the syntax for the parameters is correct!
 	# Lets check for one parameter without spaces
 	if [[ "$parameters" =~ ^([^ ]+) ]]; then
@@ -157,6 +157,7 @@ module_helloworld_handler_hi() {
 		else
 			scope="MSG"
 		fi
+
 		# Lets check for access.
 		# First variable is capability to check for
 		# Second variable is the hostmask of the sender of the message

@@ -78,14 +78,14 @@ module_eix_handler_eix() {
 	local parameters="$3"
 	if [[ "$parameters" =~ ^(.+) ]]; then
 		local pattern="${BASH_REMATCH[1]}"
-			# Simple flood limiting
-			if time_check_interval "$module_eix_last_query" "$config_module_eix_rate"; then
-				module_eix_last_query="$(date -u +%s)"
-				log_info_file eix.log "$sender made the bot run eix on \"$pattern\""
-				send_msg "$channel" "$(ulimit -t 4; EIX_PRINT_IUSE='false' eix -pSCxs --format "$module_eix_format_string" "$pattern" | head -n 1)"
-			else
-				log_error_file eix.log "FLOOD DETECTED in eix module"
-			fi
+		# Simple flood limiting
+		if time_check_interval "$module_eix_last_query" "$config_module_eix_rate"; then
+			module_eix_last_query="$(date -u +%s)"
+			log_info_file eix.log "$sender made the bot run eix on \"$pattern\""
+			send_msg "$channel" "$(ulimit -t 4; EIX_PRINT_IUSE='false' eix -pSCxs --format "$module_eix_format_string" "$pattern" | head -n 1)"
+		else
+			log_error_file eix.log "FLOOD DETECTED in eix module"
+		fi
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'

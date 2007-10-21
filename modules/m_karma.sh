@@ -229,7 +229,6 @@ module_karma_on_PRIVMSG() {
 
 module_karma_handler_karma() {
 	local sender="$1"
-	local query="$3"
 	local sendon_channel
 	if [[ $2 =~ ^# ]]; then
 		sendon_channel="$2"
