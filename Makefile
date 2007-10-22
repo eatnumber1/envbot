@@ -107,7 +107,7 @@ apidocs-upload: checkvars
 	rsync -hhzcrv --progress --delete --stats -e ssh doc/api/ $(ENV_USERNAME)@envbot.org:$(ENV_PATH)/
 
 dist-dir:
-	rm -rf $(DISTDIR)
+	$(RM) -rf $(DISTDIR)
 	bzr export $(DISTDIR)
 
 install: cleandocs all apidocs-public
