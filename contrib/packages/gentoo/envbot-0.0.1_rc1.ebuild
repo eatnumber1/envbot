@@ -2,16 +2,14 @@
 # Distributed under the terms of the GNU General Public License v3
 # $Header$
 
-MY_P=${P/_beta/_b}
-
 DESCRIPTION="An advanced modular IRC bot coded in bash"
 HOMEPAGE="http://envbot.org"
-SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.bz2"
+SRC_URI="mirror://sourceforge/${PN}/${P}.tar.bz2"
 
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
-IUSE="bc bugzilla eix gnutls netcat socat ssl sqlite3 contrib"
+IUSE="bc bugzilla eix gnutls netcat socat openssl sqlite3 contrib"
 
 DEPEND=">=app-shells/bash-3.2"
 RDEPEND="${DEPEND}
