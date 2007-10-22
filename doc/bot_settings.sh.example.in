@@ -23,7 +23,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=14
+config_version=15
 
 ####################
 # General settings #
@@ -89,6 +89,17 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 #config_access_mask[3]='^Someone!whatever@customer-1234\.isp\.com$'
 #config_access_capab[3]='facoid_admin'
 #config_access_scope[3]='GLOBAL'
+
+
+############
+# Feedback #
+############
+
+# (*) How to treat unknown commands:
+#     0 = Ignore them (drop command, do nothing)
+#     1 = Return error to sender.
+#     2 = Pass them on to modules that may handle "generic" PRIVMSG
+config_unknown_commands=1
 
 
 ###########

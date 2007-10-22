@@ -134,7 +134,7 @@ command_line=( "$@" )
 ## @Type API
 ## @Read_only Yes
 #---------------------------------------------------------------------
-declare -r config_current_version=14
+declare -r config_current_version=15
 
 # Some constants used in different places
 
@@ -389,10 +389,21 @@ while true; do
 			sender="${BASH_REMATCH[1]}"
 			target="${BASH_REMATCH[2]}"
 			query="${BASH_REMATCH[3]}"
+			# Check if there is a command.
 			commands_call_command "$sender" "$target" "$query"
-			# Was handled
-			[[ $? -eq 1 ]] && continue
-
+			# Check return code
+			case $? in
+				1)
+					continue
+					;;
+				2)
+					if [[ $config_unknown_commands -eq 0 ]]; then
+						continue
+					elif [[ $config_unknown_commands -eq 1 ]]; then
+						feedback_unknown_command "$sender" "$target" "$query"
+					fi
+					;;
+			esac
 			for module in $modules_on_PRIVMSG; do
 				module_${module}_on_PRIVMSG "$sender" "$target" "$query"
 				if [[ $? -ne 0 ]]; then

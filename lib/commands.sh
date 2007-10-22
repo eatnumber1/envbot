@@ -44,6 +44,9 @@ commands_modules_functions=
 #---------------------------------------------------------------------
 commands_function_commands=
 
+# Just unset dummy variables.
+unset commands_list commands_modules_functions commands_function_commands
+
 #---------------------------------------------------------------------
 ## Register a command.
 ## @Type API
