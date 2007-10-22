@@ -153,34 +153,35 @@ commands_unregister() {
 #---------------------------------------------------------------------
 commands_call_command() {
 	# Check if it is a command.
+	# (${config_listenregex}, followed by an alphanumeric char.)
 	if [[ "$3" =~ ^${config_listenregex}([a-zA-Z0-9].*) ]]; then
 		local data="${BASH_REMATCH[@]: -1}"
+		# Right, get the parts of the command
 		if [[ $data =~ ^([a-zA-Z0-9][^ ]*)( [^ ]+)?( .*)? ]]; then
 			local firstword="${BASH_REMATCH[1]}"
 			local secondword="${BASH_REMATCH[2]}"
 			local parameters="${BASH_REMATCH[3]}"
 
-			local command=
-			# Check for one word commands.
-			hash_get 'commands_list' "$firstword" 'command'
-			if [[ "$command" ]]; then
-				parameters="${secondword}${parameters}"
-
-			# Maybe two words then?
-			else
-				hash_get 'commands_list' "${firstword}${secondword}" 'command'
-				# Check if it was NOT that either
-				if [[ -z "$command" ]]; then
+			local function=
+			# Check for two word commands first.
+			hash_get 'commands_list' "${firstword}${secondword}" 'function'
+			if [[ -z "$function" ]]; then
+				# Maybe one word then?
+				hash_get 'commands_list' "$firstword" 'function'
+				if [[ "$function" ]]; then
+					parameters="${secondword}${parameters}"
+				# No, not that either
+				else
 					return 2
 				fi
 			fi
 
-			# So we got a command, now lets run it.
-			"$command" "$1" "$2" "${parameters# }"
+			# So we got a command, now lets run it
+			# (strip leading whitespaces) from parameters.
+			"$function" "$1" "$2" "${parameters## }"
 			return 1
 		fi
 		return 2
-	else
-		return 0
 	fi
+	return 0
 }
