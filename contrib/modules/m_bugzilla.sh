@@ -53,7 +53,7 @@ module_bugzilla_REHASH() {
 module_bugzilla_after_load() {
 	type -p bugz &> /dev/null
 	if [[ $? -ne 0 ]]; then
-		log_error "Couldn't find bugz command line tool. The bugzilla module depend on that tool (emerge pybugz to get it on gentoo)."
+		log_error "Couldn't find bugz command line tool. The bugzilla module depend on that tool (emerge pybugz to get it on Gentoo)."
 		return 1
 	fi
 	if [[ -z $config_module_bugzilla_url ]]; then

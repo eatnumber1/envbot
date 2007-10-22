@@ -97,7 +97,7 @@ module_faq_handler_faq() {
 			return 1
 		fi
 		local query_time="$(date +%H%M)$line"
-		if [[ "$module_faq_last_query" != "$query_time" ]] ; then # Must be atleast 1 min old or different query...
+		if [[ "$module_faq_last_query" != "$query_time" ]] ; then # Must be at least 1 min old or different query...
 			module_faq_last_query="$query_time"
 			if [[ "$query" =~ ^\ *([0-9]+)\ *$ ]]; then
 				local index="${BASH_REMATCH[1]}"
