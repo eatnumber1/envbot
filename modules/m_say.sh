@@ -25,9 +25,8 @@
 module_say_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" 'say' 'say'
-	commands_register "$1" 'act' 'act'
-
+	commands_register "$1" 'say' || return 1
+	commands_register "$1" 'act' || return 1
 }
 
 module_say_UNLOAD() {

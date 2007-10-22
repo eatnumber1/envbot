@@ -25,10 +25,10 @@
 module_modules_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	commands_register "$1" 'modload'   'modload'
-	commands_register "$1" 'modunload' 'modunload'
-	commands_register "$1" 'modreload' 'modreload'
-	commands_register "$1" 'modlist'   'modlist'
+	commands_register "$1" 'modload'   || return 1
+	commands_register "$1" 'modunload' || return 1
+	commands_register "$1" 'modreload' || return 1
+	commands_register "$1" 'modlist'   || return 1
 }
 
 module_modules_UNLOAD() {
