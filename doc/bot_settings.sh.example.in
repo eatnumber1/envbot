@@ -69,9 +69,9 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 # (*) Access regexes
 #     Without at least one set, the bot won't start
 #     "owner" is a special capab that grants all other access.
-#     The first regex must be an owner.
+#     The first access entry must be an owner.
 #
-#     Scope is a regex of channels where access is effective.
+#     Scope is a regular expression of channels where access is effective.
 #     A /msg (like say to a non channel) will get the scope MSG
 #     Anything affecting global state will have the scope "GLOBAL"
 #
@@ -97,9 +97,11 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 ############
 
 # (*) How to treat unknown commands:
-#     0 = Ignore them (drop command, do nothing)
-#     1 = Return error to sender.
-#     2 = Pass them on to modules that may handle "generic" PRIVMSG
+#     Valid values:
+#       0 = Ignore them (drop command, do nothing).
+#       1 = Return error to sender.
+#       2 = Pass them on to modules that may handle "generic" PRIVMSG.
+#     Note that non-commands always get passed on to "generic" PRIVMSG handling modules.
 config_unknown_commands=1
 
 
@@ -244,7 +246,7 @@ config_module_ctcp_version_reply="envbot $envbot_version"
 #####################################################################
 # Karma module
 #
-# (*) Table name for karma data in SQLite3 databse
+# (*) Table name for karma data in SQLite3 database
 #config_module_karma_table='karma'
 
 
