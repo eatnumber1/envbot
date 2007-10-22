@@ -70,7 +70,7 @@ man:
 	help2man -NS envbot -n 'An advanced modular IRC bot in bash' "/usr/bin/env bash envbot" > doc/envbot.1
 
 clean:
-	$(RM) -vf *~ */*~ */*/*~ bot_settings.sh.example
+	$(RM) -vf *~ */*~ */*/*~ */*/*/*~ bot_settings.sh.example
 
 cleandocs:
 	$(RM) -rf doc/api/private-core
