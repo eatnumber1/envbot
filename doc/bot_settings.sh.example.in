@@ -109,7 +109,7 @@ config_unknown_commands=1
 # Logging #
 ###########
 
-# Directory for logfiles
+# Directory for log files
 config_log_dir="@@logdir@@"
 # (*) Should we log raw data or not?
 #     Can be 1 (log) or 0 (don't log)
@@ -180,7 +180,7 @@ config_modules_dir="@@moddir@@"
 # (*) NickServ password
 config_module_services_nickserv_passwd='nickserv password here'
 # (*) Name of NickServ
-#     Normaly this is correct
+#     Normally this is correct
 config_module_services_nickserv_name='NickServ'
 # (*) Service style. Supported are: anope, atheme
 #     For the default server (irc.kuonet-ng.org) use atheme
