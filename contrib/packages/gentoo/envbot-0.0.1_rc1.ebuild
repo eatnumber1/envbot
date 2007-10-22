@@ -2,11 +2,9 @@
 # Distributed under the terms of the GNU General Public License v3
 # $Header$
 
-MY_P=${P/_beta/_b}
-
 DESCRIPTION="An advanced modular IRC bot coded in bash"
 HOMEPAGE="http://envbot.org"
-SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.bz2"
+SRC_URI="mirror://sourceforge/${PN}/${P}.tar.bz2"
 
 LICENSE="GPL-3"
 SLOT="0"

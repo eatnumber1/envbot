@@ -28,7 +28,7 @@
 #   dist-dir: Generates a clean checkout of current version, ready to be
 #             tared up. Can only be done in a bzr branch/checkout
 
-ENVBOT_VERSION = 0.0.1-beta5
+ENVBOT_VERSION = 0.0.1-rc1
 
 # For make dest-dir, defaults
 DISTDIR ?= dist
@@ -68,7 +68,7 @@ man:
 	help2man -NS envbot -n 'An advanced modular IRC bot in bash' "/usr/bin/env bash envbot" > doc/envbot.1
 
 clean:
-	$(RM) -vf *~ */*~ */*/*~ bot_settings.sh.example
+	$(RM) -vf *~ */*~ */*/*~ */*/*/*~ bot_settings.sh.example
 
 cleanlogs:
 	$(RM) -vrf logs/*

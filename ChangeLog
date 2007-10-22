@@ -6,6 +6,18 @@ done using bzr (does not work in tarballs, you need a development checkout for t
 Example (list changes compared to 0.0.1-beta1)
   bzr log -rtag:0.0.1-beta1.. --short
 
+
+0.0.1-rc1
+-----------
+465        Backported fix to remove eval from various places.
+463-464    Fixed bug in modules/m_kick_ban.sh that made bot loose part of kick reason sometimes.
+462        Fixed bug in modules/m_join.sh that caused it to never send a reason on part.
+459-461    Added Gentoo ebuild for envbot.
+457        Made it work correctly on FreeBSD
+456        Fixed bug 29 (Channels not rejoined after ping timeout) and similar issue in modules/m_services.sh (ghost needed state not reset).
+453        Fixed for one aspect of bug 11.
+
+
 0.0.1-beta5
 -----------
 450        Merged r451 from trunk: Fix broken misc_clean_spaces (was broken after beta4).
@@ -30,7 +42,7 @@ Example (list changes compared to 0.0.1-beta1)
 407        Make error messages in transports more verbose.
 402-406    Make m_calc.sh check it's arguments on IRC better to make it secure.
 401        Fix bug that made modules_load break if a dependency failed to load.
-398        Made main envbot a wrapper script that sanitize the environment and then executes main bot.
+398        Made main envbot a wrapper script that sanitise the environment and then executes main bot.
 395        Some more functions are now internal in lib/log.sh, modules should use the log level versions.
 393        m_autojoin was slowing down rehash more than needed, fixed that.
 392        Fixed: Could not unload rehash, module_rehash_UNLOAD returned 127!
@@ -45,7 +57,7 @@ Example (list changes compared to 0.0.1-beta1)
 376        Fixed potential security problem in SQL cleaning code in module_sqlite3_clean_string (I can't find a way to abuse this so I don't think the risk is very high)
 375        Added access_log_action()
 373-375    Introduced more advanced logging API with several levels (info, warn, error and fatal)
-371        Optimized log_write() in lib/log.sh (something like 20 times as fast now if my testing is correct)
+371        Optimised log_write() in lib/log.sh (something like 20 times as fast now if my testing is correct)
 
 
 0.0.1-beta1
