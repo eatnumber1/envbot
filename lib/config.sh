@@ -65,7 +65,7 @@ config_rehash() {
 			bot_quit "Fatal error in rehash of module"
 		fi
 	done
-	log_info_stdout "Rehash successfull"
+	log_info_stdout "Rehash successful"
 }
 
 
