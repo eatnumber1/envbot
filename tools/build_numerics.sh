@@ -20,7 +20,14 @@
 ###########################################################################
 # Generate list of numerics from the numerics.txt
 # Output to STDOUT.
-# Run this in main dir.
+# Run this using make numerics in the main directory.
+
+# Clean up env, just in case.
+unset LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY
+unset LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS
+unset LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
+export LC_ALL=C
+export LANG=C
 
 cat << EOF
 #!/bin/bash

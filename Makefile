@@ -68,13 +68,13 @@ man:
 	help2man -NS envbot -n 'An advanced modular IRC bot in bash' "/usr/bin/env bash envbot" > doc/envbot.1
 
 clean:
-	rm -vf *~ */*~ */*/*~ bot_settings.sh.example
+	$(RM) -vf *~ */*~ */*/*~ bot_settings.sh.example
 
 cleanlogs:
-	rm -vrf logs/*
+	$(RM) -vrf logs/*
 
 dist-dir:
-	rm -rf $(DISTDIR)
+	$(RM) -rf $(DISTDIR)
 	bzr export $(DISTDIR)
 
 install: all
