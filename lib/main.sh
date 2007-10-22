@@ -81,7 +81,7 @@ shopt -s extquote promptvars
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 # To make set -x more usable
-export PS4='(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
 
 
 # This is needed when we run the bot with env -i as recommended.
@@ -414,6 +414,8 @@ while true; do
 				for module in $modules_on_server_ERROR; do
 					module_${module}_on_server_ERROR "$error"
 				done
+				# If we get an ERROR we can assume we are disconnected.
+				break
 			fi
 		else
 			log_info_file unknown_data.log "Something that didn't match any hook: $line"
