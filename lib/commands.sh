@@ -52,7 +52,7 @@ unset commands_list commands_modules_functions commands_function_commands
 ## @Type API
 ## @param Module name
 ## @param Function name (Part after module_modulename_handler_)
-## @param Command name (on irc, may contain spaces) (optional, defaults to same as function name, that is $2)
+## @param Command name (on IRC, may contain spaces) (optional, defaults to same as function name, that is $2)
 ## @return 0 If successful
 ## @return 1 If failed for other reason
 ## @return 2 If invalid command name
@@ -74,7 +74,7 @@ commands_register() {
 		return 2
 	fi
 	if ! [[ $command_name =~ ^[a-zA-Z0-9][^\ ]*( [^ ]+)?$ ]]; then
-		log_error "commands_register_command: Module \"$module\" gave invalid command name \"$command_name\". A command can be at most 2 words and should have no trailing whitespace."
+		log_error "commands_register_command: Module \"$module\" gave invalid command name \"$command_name\". A command can be at most 2 words and should have no trailing white space."
 		return 2
 	fi
 	# Bail out if command is already registered.
@@ -137,7 +137,7 @@ commands_unregister() {
 		full_function_name="module_${module}_handler_${function_name}"
 		unset "$full_function_name" || return 2
 	done
-	# Finaly unset module -> functions mapping.
+	# Finally unset module -> functions mapping.
 	hash_unset 'commands_modules_functions' "$module" || return 2
 }
 
@@ -177,7 +177,7 @@ commands_call_command() {
 			fi
 
 			# So we got a command, now lets run it
-			# (strip leading whitespaces) from parameters.
+			# (strip leading white spaces) from parameters.
 			"$function" "$1" "$2" "${parameters## }"
 			return 1
 		fi

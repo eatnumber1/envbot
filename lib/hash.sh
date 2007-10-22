@@ -137,7 +137,7 @@ hash_substract() {
 	local varname
 	# Get variable name
 	hash_name_create "$1" "$2" 'varname'
-	# If not empty try to remvoe value
+	# If not empty try to remove value
 	if [[ "${!varname}" ]]; then
 		local sep=${4:-" "}
 		# FIXME: substrings of the entries in the list may match :/
