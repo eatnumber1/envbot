@@ -1,4 +1,5 @@
 #!/bin/bash
+# -*- coding: UTF8 -*-
 ###########################################################################
 #                                                                         #
 #  envbot - an IRC bot in bash                                            #
@@ -92,7 +93,7 @@ shopt -s extquote promptvars
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 # To make set -x more usable
-export PS4='(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]} : '
 
 
 # This is needed when we run the bot with env -i as recommended.

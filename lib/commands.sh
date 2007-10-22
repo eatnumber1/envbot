@@ -68,6 +68,7 @@ commands_register() {
 	if [[ -z $command_name ]]; then
 		command_name="$function_name"
 	fi
+	# Check for valid command name
 	if ! [[ $command_name =~ ^[a-zA-Z0-9] ]]; then
 		log_error "commands_register_command: Module \"$module\" gave invalid command name \"$command_name\". First char of command must be alphanumeric."
 		return 2
@@ -86,7 +87,10 @@ commands_register() {
 		log_error "commands_register_command: Failed to register command from \"$module\": the function is already registered under another command name."
 		return 4
 	fi
-	# Store in module -> commands mapping.
+
+	# So it was valid. Lets add it then.
+
+	# Store in module -> function mapping.
 	hash_append 'commands_modules_functions' "$module" "$function_name" || {
 		log_error "commands_register_command: module -> commands mapping failed: mod=\"$module\" func=\"$function_name\"."
 		return 1
@@ -155,17 +159,23 @@ commands_call_command() {
 			local firstword="${BASH_REMATCH[1]}"
 			local secondword="${BASH_REMATCH[2]}"
 			local parameters="${BASH_REMATCH[3]}"
+
 			local command=
 			# Check for one word commands.
-			if hash_exists 'commands_list' "$firstword"; then
-				hash_get 'commands_list' "$firstword" 'command'
+			hash_get 'commands_list' "$firstword" 'command'
+			if [[ "$command" ]]; then
 				parameters="${secondword}${parameters}"
+
 			# Maybe two words then?
-			elif hash_exists 'commands_list' "${firstword}${secondword}"; then
-				hash_get 'commands_list' "${firstword}${secondword}" 'command'
 			else
-				return 2
+				hash_get 'commands_list' "${firstword}${secondword}" 'command'
+				# Check if it was NOT that either
+				if [[ -z "$command" ]]; then
+					return 2
+				fi
 			fi
+
+			# So we got a command, now lets run it.
 			"$command" "$1" "$2" "${parameters# }"
 			return 1
 		fi
