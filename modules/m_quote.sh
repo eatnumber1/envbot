@@ -43,15 +43,15 @@ module_quote_REHASH() {
 ## @Type Private
 #---------------------------------------------------------------------
 module_quote_load() {
-	local i=0 line oldIFS="$IFS"
+	local i=0 line
 	unset module_quote_quotes
 	if [[ -z "$config_module_quotes_file" ]]; then
 		log_error "quotes module: You need to set config_module_quotes_file in your config!"
 		return 1
 	elif [[ -r "$config_module_quotes_file" ]]; then
-		IFS=$'\n'
+		local IFS=$'\n'
 		module_quote_quotes=( $(<"${config_module_quotes_file}") )
-		IFS="$oldIFS"
+		unset IFS
 		log_info 'Loaded Quotes.'
 		return 0
 	else

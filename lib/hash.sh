@@ -80,10 +80,9 @@ hash_name_create() {
 #---------------------------------------------------------------------
 hash_name_getindex() {
 	local unhexindex tablename indexname
-	local oldIFS="$IFS"
-	IFS="_"
+	local IFS="_"
 	read -r tablename indexname <<< "${1/hsh_//}"
-	IFS="$oldIFS"
+	unset IFS
 	hash_unhexify "$indexname" "$2"
 }
 
