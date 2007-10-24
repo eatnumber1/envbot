@@ -23,12 +23,6 @@
 #---------------------------------------------------------------------
 
 #---------------------------------------------------------------------
-## Logging prefix
-## @Type Private
-#---------------------------------------------------------------------
-log_prefix="---------------"
-
-#---------------------------------------------------------------------
 ## Log a fatal error to the main log file as well as STDOUT.
 ## @Type API
 ## @param The log message to log
@@ -140,12 +134,27 @@ log_info_file() {
 ###########################################################################
 
 #---------------------------------------------------------------------
+## Logging prefix
+## @Type Private
+#---------------------------------------------------------------------
+log_prefix="---------------"
+
+#---------------------------------------------------------------------
+## Get human readable date.
+## @Type Private
+## @Stdout Human readable date
+#---------------------------------------------------------------------
+log_get_date() {
+	date +'%Y-%m-%d %k:%M:%S'
+}
+
+#---------------------------------------------------------------------
 ## Log to main log file.
 ## @Type Private
 ## @param The log message to log
 #---------------------------------------------------------------------
 log() {
-	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@"
+	log_write "$log_prefix $(log_get_date) $@"
 }
 
 #---------------------------------------------------------------------
@@ -155,7 +164,7 @@ log() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_file() {
-	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $2" "0" "$1"
+	log_write "$log_prefix $(log_get_date) $2" "0" "$1"
 }
 
 #---------------------------------------------------------------------
@@ -164,7 +173,7 @@ log_file() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_stdout() {
-	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $@" "1"
+	log_write "$log_prefix $(log_get_date) $@" "1"
 }
 
 #---------------------------------------------------------------------
@@ -174,7 +183,7 @@ log_stdout() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_stdout_file() {
-	log_write "$log_prefix $(date +'%Y-%m-%d %k:%M:%S') $2" "1" "$1"
+	log_write "$log_prefix $(log_get_date) $2" "1" "$1"
 }
 
 #---------------------------------------------------------------------
@@ -183,7 +192,7 @@ log_stdout_file() {
 ## @param Line to log
 #---------------------------------------------------------------------
 log_raw_in() {
-	[[ $config_log_raw = 1 ]] && log_write "< $(date +'%Y-%m-%d %k:%M:%S') $@"
+	[[ $config_log_raw = 1 ]] && log_write "< $(log_get_date) $@"
 }
 #---------------------------------------------------------------------
 ## Used internally in core to log raw line
@@ -191,7 +200,7 @@ log_raw_in() {
 ## @param Line to log
 #---------------------------------------------------------------------
 log_raw_out() {
-	[[ $config_log_raw = 1 ]] && log_write "> $(date +'%Y-%m-%d %k:%M:%S') $@"
+	[[ $config_log_raw = 1 ]] && log_write "> $(log_get_date) $@"
 }
 
 
@@ -216,8 +225,10 @@ log_write() {
 ## @Type Private
 #---------------------------------------------------------------------
 log_init() {
+	local now
+	time_get_current 'now'
 	# This creates log dir for this run:
-	log_dir="${config_log_dir}/$(date -u +%s)"
+	log_dir="${config_log_dir}/${now}"
 	# Security, the log may contain passwords.
 	mkdir -m 700 "$log_dir"
 	if [[ $? -ne 0 ]]; then
