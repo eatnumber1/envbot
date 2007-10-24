@@ -28,21 +28,21 @@
 ## @Note Dummy variable to document the fact that it is a hash.
 ## @Type Private
 #---------------------------------------------------------------------
-commands_list=
+commands_list=''
 
 #---------------------------------------------------------------------
 ## List of functions (by module), a hash
 ## @Note Dummy variable to document the fact that it is a hash.
 ## @Type Private
 #---------------------------------------------------------------------
-commands_modules_functions=
+commands_modules_functions=''
 
 #---------------------------------------------------------------------
 ## List of commands (by function), a hash
 ## @Note Dummy variable to document the fact that it is a hash.
 ## @Type Private
 #---------------------------------------------------------------------
-commands_function_commands=
+commands_function_commands=''
 
 # Just unset dummy variables.
 unset commands_list commands_modules_functions commands_function_commands
