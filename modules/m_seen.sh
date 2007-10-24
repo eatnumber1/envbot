@@ -176,7 +176,9 @@ module_seen_on_PRIVMSG() {
 	local query="$3"
 	# If in channel, store
 	if [[ $channel =~ ^# ]]; then
-		module_seen_store "$sender" "$channel" "$(date -u +%s)" "$query"
+		local now=
+		time_get_current 'now'
+		module_seen_store "$sender" "$channel" "$now" "$query"
 	# If not in channel respond to any commands in /msg
 	else
 		parse_hostmask_nick "$sender" 'channel'

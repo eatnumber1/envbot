@@ -41,10 +41,12 @@ send_last=0
 #---------------------------------------------------------------------
 send_raw() {
 	# Do the flood limiting
-	if [[ "$send_last" == "$(date -u +%s)" ]]; then
+	local now=
+	time_get_current 'now'
+	if [[ "$send_last" == "$now" ]]; then
 		sleep 1
 	fi
-	send_last="$(date -u +%s)"
+	time_get_current 'send_last'
 	send_raw_flood "$@"
 }
 
