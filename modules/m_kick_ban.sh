@@ -71,13 +71,13 @@ module_kick_ban_on_numeric() {
 
 module_kick_ban_periodic() {
 	# We got some ban to process
-	if [[ $module_kick_ban_next_unset ]] && (( $envbot_time >= $module_kick_ban_next_unset )); then
+	if [[ $module_kick_ban_next_unset ]] && (( envbot_time >= module_kick_ban_next_unset )); then
 		local nextban
 		local index time channel mask
 		for index in ${!module_kick_ban_timed_bans[*]}; do
 			read -r time channel mask <<< "${module_kick_ban_timed_bans[${index}]}"
 			# Should we unset?
-			if (( $envbot_time >= $time )); then
+			if (( envbot_time >= time )); then
 				# TODO: Queue them?
 				send_modes "$channel" "-b $mask"
 				# Remove ban from list.
@@ -107,7 +107,7 @@ module_kick_ban_periodic() {
 module_kick_ban_store_ban() {
 	# Calculate unset-time
 	local targettime="$3"
-	(( targettime += $envbot_time ))
+	(( targettime += envbot_time ))
 
 	module_kick_ban_timed_bans+=( "$targettime $1 $2" )
 	if [[ -z $module_kick_ban_next_unset ]] || [[ $module_kick_ban_next_unset -gt $targettime ]]; then

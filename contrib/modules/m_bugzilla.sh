@@ -85,7 +85,7 @@ module_bugzilla_handler_bugs_search() {
 		local pattern="${BASH_REMATCH[@]: -1}"
 			# Simple flood limiting
 			if time_check_interval "$module_bugzilla_last_query" "$config_module_bugzilla_rate"; then
-				module_bugzilla_last_query="$(date -u +%s)"
+				time_get_current 'module_bugzilla_last_query'
 				local bugs_parameters=""
 				if [[ $mode = "all" ]]; then
 					bugs_parameters="-s all"
@@ -134,7 +134,7 @@ module_bugzilla_handler_bug() {
 		local id="${BASH_REMATCH[1]}"
 			# Simple flood limiting
 			if time_check_interval "$module_bugzilla_last_query" "$config_module_bugzilla_rate"; then
-				module_bugzilla_last_query="$(date -u +%s)"
+				time_get_current 'module_bugzilla_last_query'
 				log_info_file bugzilla.log "$sender made the bot check with pybugz for bug \"$id\""
 				local result="$(ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" get -n "$id" | grep -E 'Title|Status|Resolution')"
 				local resultread pretty_result

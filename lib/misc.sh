@@ -173,20 +173,6 @@ bot_restart() {
 
 
 #---------------------------------------------------------------------
-## Check if a set time has passed
-## @Type API
-## @param Unix timestamp to check against
-## @param Number of seconds
-## @return 0 If at least the given number of seconds has passed
-## @return 1 If it hasn't
-#---------------------------------------------------------------------
-time_check_interval() {
-	local newtime="$(date -u +%s)"
-	(( ( $newtime - $1 ) > $2 ))
-}
-
-
-#---------------------------------------------------------------------
 ## Strip leading/trailing spaces.
 ## @Type API
 ## @Note Before this function was deprecated, but it has been recoded

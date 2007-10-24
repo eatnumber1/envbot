@@ -53,7 +53,7 @@ transport_check_support() {
 transport_connect() {
 	exec 3<&-
 	exec 3<> "/dev/tcp/${1}/${2}"
-	transport_lastvalidtime="$(date -u +%s)"
+	time_get_current 'transport_lastvalidtime'
 }
 
 # Called to close connection
@@ -69,8 +69,9 @@ transport_disconnect() {
 #   1 If it isn't.
 transport_alive() {
 	# This is hackish.
-	local newtime="$(date -u +%s)"
-	(( $newtime - $transport_lastvalidtime > 200 )) && return 1
+	local newtime=
+	time_get_current 'newtime'
+	(( newtime - transport_lastvalidtime > 200 )) && return 1
 	return 0
 }
 
@@ -84,7 +85,7 @@ transport_read_line() {
 	if [[ $? -ne 0 ]]; then
 		return 1
 	else
-		transport_lastvalidtime="$(date -u +%s)"
+		time_get_current 'transport_lastvalidtime'
 	fi
 	line=${line//$'\r'/}
 }

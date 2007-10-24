@@ -29,8 +29,8 @@ module_faq_INIT() {
 }
 
 module_faq_UNLOAD() {
-	unset module_faq_array module_faq_last_query
-	unset module_faq_load
+	unset module_faq_array module_faq_last_query_item
+	unset module_faq_load  module_faq_last_query_time
 }
 
 module_faq_REHASH() {
@@ -65,8 +65,8 @@ module_faq_load() {
 
 # Called after module has loaded.
 module_faq_after_load() {
-	unset module_faq_last_query
-	module_faq_last_query='null'
+	module_faq_last_query_item='null'
+	module_faq_last_query_time='null'
 	module_faq_load
 }
 
@@ -83,9 +83,8 @@ module_faq_handler_faq() {
 	if ! [[ $2 =~ ^# ]]; then
 		parse_hostmask_nick "$sender" 'channel'
 	fi
-	local parameters="$3"
-	if [[ "$parameters" =~ ^(.+) ]]; then
-		query="${BASH_REMATCH[1]}"
+	local query="$3"
+	if [[ "$query" ]]; then
 		if [[ "$query" == "reload" ]]; then
 			if access_check_capab "faq_admin" "$sender" "GLOBAL"; then
 				send_msg "$channel" "Reloading FAQ items..."
@@ -94,11 +93,19 @@ module_faq_handler_faq() {
 			else
 				access_fail "$sender" "reload faq items" "faq_admin"
 			fi
-			return 1
+			return 0
 		fi
-		local query_time="$(date +%H%M)$line"
-		if [[ "$module_faq_last_query" != "$query_time" ]] ; then # Must be at least 1 min old or different query...
+		# Is it a flood? Then 1.
+		local ok=0
+		if [[ "$module_faq_last_query_item" == "$line" ]]; then
+			time_check_interval "$module_faq_last_query_time" 60 || ok=1
+		fi
+		if [[ $ok -eq 0 ]] ; then # Must be at least 1 min old or different query...
+			time_get_current 'module_faq_last_query_time'
+			# Update anti-flood variables
+			module_faq_last_query_item="$line"
 			module_faq_last_query="$query_time"
+
 			if [[ "$query" =~ ^\ *([0-9]+)\ *$ ]]; then
 				local index="${BASH_REMATCH[1]}"
 				if [[ "${module_faq_array[$index]}" ]]; then
@@ -122,6 +129,5 @@ module_faq_handler_faq() {
 		else
 			log_error "FLOOD DETECTED in FAQ module"
 		fi
-		return 1
 	fi
 }

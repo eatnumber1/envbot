@@ -293,7 +293,7 @@ fi
 
 echo "Loading library functions"
 # Load library functions.
-libraries="hash log send feedback numerics channels parse \
+libraries="hash time log send feedback numerics channels parse \
            access misc config commands modules server"
 for library in $libraries; do
 	source "${library_dir}/${library}.sh"
@@ -302,6 +302,7 @@ unset library
 
 # Validate other config variables.
 config_validate
+time_init
 log_init
 
 # Now logging functions can be used.
@@ -318,14 +319,15 @@ modules_load_from_config
 ## Used for periodic events later below
 ## @Type Private
 #---------------------------------------------------------------------
-periodic_lastrun="$(date -u +%s)"
+periodic_lastrun=''
+time_get_current 'periodic_lastrun'
 #---------------------------------------------------------------------
 ## This can be used when the code does not need exact time.
 ## It will be updated each time the bot get a new line of
 ## data.
 ## @Type API
 #---------------------------------------------------------------------
-envbot_time="$(date -u +%s)"
+envbot_time=''
 
 while true; do
 	# In progress of quitting? This is used to
@@ -350,12 +352,11 @@ while true; do
 		if ! transport_alive; then
 			break
 		fi
-		envbot_time="$(date -u +%s)"
+		time_get_current 'envbot_time'
 		# Time to run periodic events again?
 		# We run them every $envbot_transport_timeout second.
 		if time_check_interval "$periodic_lastrun" "$envbot_transport_timeout"; then
-			# Do not use $envbot_time here.
-			periodic_lastrun="$(date -u +%s)"
+			time_get_current 'periodic_lastrun'
 			envbot_time="$periodic_lastrun"
 			for module in $modules_periodic; do
 				module_${module}_periodic "${periodic_lastrun}"
