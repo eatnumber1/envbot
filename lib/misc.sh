@@ -152,5 +152,5 @@ list_remove() {
 #   0 If found.
 #   1 If not found.
 list_contains() {
-	grep -wq "$2" <<< "${!1}"
+	grep -Fwq "$2" <<< "${!1}"
 }
