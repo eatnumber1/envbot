@@ -85,9 +85,10 @@ export LANG=C
 # Some of these may be overkill, but better be on
 # safe side.
 set +amu
+set -f
 shopt -u sourcepath hostcomplete progcomp xpg_echo dotglob
 shopt -u nocasematch nocaseglob nullglob
-shopt -s extquote promptvars
+shopt -s extquote promptvars extglob
 
 # If you need some other PATH, override in top of config...
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
