@@ -24,7 +24,9 @@
 #---------------------------------------------------------------------
 
 module_calc_INIT() {
-	echo 'on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS=''
+	commands_register "$1" 'calc' || return 1
 }
 
 module_calc_UNLOAD() {
@@ -35,12 +37,7 @@ module_calc_REHASH() {
 	return 0
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_calc_on_PRIVMSG() {
+module_calc_handler_calc() {
 	local sender="$1"
 	local channel="$2"
 	local sendernick=
@@ -50,21 +47,18 @@ module_calc_on_PRIVMSG() {
 	if ! [[ $2 =~ ^# ]]; then
 		channel="$sendernick"
 	fi
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "calc"; then
-		# Sanity check on parameters
-		parameters="$(tr -d '\n\r\t' <<< "$parameters")"
-		if grep -Eq "scale=|read|while|if|for|break|continue|print|return|define|[e|j] *\(" <<< "$parameters"; then
-			send_msg "$channel" "${sendernick}: Can't calculate that, it contains a potential unsafe/very slow function."
-		elif [[ $parameters =~ \^[0-9]{4,} ]]; then
-			send_msg "$channel" "${sendernick}: Some too large numbers."
-		else
-			# Force some security guards
-			local myresult="$(ulimit -t 4; echo "$parameters" | bc -l 2>&1 | head -n 1)"
-			send_msg "$channel" "${sendernick}: $myresult"
-		fi
-		return 1
+	local parameters="$3"
+
+	# Sanity check on parameters
+	parameters="$(tr -d '\n\r\t' <<< "$parameters")"
+	if grep -Eq "scale=|read|while|if|for|break|continue|print|return|define|[e|j] *\(" <<< "$parameters"; then
+		send_msg "$channel" "${sendernick}: Can't calculate that, it contains a potential unsafe/very slow function."
+	elif [[ $parameters =~ \^[0-9]{4,} ]]; then
+		send_msg "$channel" "${sendernick}: Some too large numbers."
+	else
+		# Force some security guards
+		local myresult="$(ulimit -t 4; echo "$parameters" | bc -l 2>&1 | head -n 1)"
+		send_msg "$channel" "${sendernick}: $myresult"
 	fi
-	return 0
+
 }

@@ -24,7 +24,9 @@
 #---------------------------------------------------------------------
 
 module_quote_INIT() {
-	echo 'after_load on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS='after_load'
+	commands_register "$1" 'quote' || return 1
 }
 
 module_quote_UNLOAD() {
@@ -58,20 +60,13 @@ module_quote_load() {
 	fi
 }
 
-
 module_quote_after_load() {
 	# Return code from last command in a function
 	# will be return code for the function by default.
 	module_quote_load
 }
 
-
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_quote_on_PRIVMSG() {
+module_quote_handler_quote() {
 	local sender="$1"
 	local channel="$2"
 	# If it isn't in a channel send message back to person who send it,
@@ -79,13 +74,7 @@ module_quote_on_PRIVMSG() {
 	if ! [[ $2 =~ ^# ]]; then
 		parse_hostmask_nick "$sender" 'channel'
 	fi
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "quote"; then
-		local number="$RANDOM"
-		(( number %= ${#module_quote_quotes[*]} ))
-		send_msg "$channel" "${module_quote_quotes[$number]}"
-		return 1
-	fi
-	return 0
+	local number="$RANDOM"
+	(( number %= ${#module_quote_quotes[*]} ))
+	send_msg "$channel" "${module_quote_quotes[$number]}"
 }

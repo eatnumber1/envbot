@@ -23,7 +23,9 @@
 #---------------------------------------------------------------------
 
 module_dumpvars_INIT() {
-	echo 'on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS=''
+	commands_register "$1" 'dumpvars' || return 1
 }
 
 module_dumpvars_UNLOAD() {
@@ -34,27 +36,15 @@ module_dumpvars_REHASH() {
 	return 0
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_dumpvars_on_PRIVMSG() {
+module_dumpvars_handler_dumpvars() {
 	local sender="$1"
-	local query="$3"
-	# We don't really care about parameters.
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "dumpvars"; then
-		if access_check_owner "$sender"; then
-			# This is hackish, we only display
-			# lines unique to "file" 1.
-			# Also remove one variable that may fill our scrollback.
-			access_log_action "$sender" "a dump of variables"
-			comm -2 -3 <(declare) <(declare -f) | grep -Ev '^module_quote_quotes'
-		else
-			access_fail "$sender" "dump variables to STDOUT" "owner"
-		fi
-		return 1
+	if access_check_owner "$sender"; then
+		# This is hackish, we only display
+		# lines unique to "file" 1.
+		# Also remove one variable that may fill our scrollback.
+		access_log_action "$sender" "a dump of variables"
+		comm -2 -3 <(declare) <(declare -f) | grep -Ev '^module_quote_quotes'
+	else
+		access_fail "$sender" "dump variables to STDOUT" "owner"
 	fi
-	return 0
 }

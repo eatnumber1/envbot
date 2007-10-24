@@ -24,7 +24,10 @@
 #---------------------------------------------------------------------
 
 module_die_INIT() {
-	echo 'on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS=''
+	commands_register "$1" 'die' || return 1
+	commands_register "$1" 'restart' || return 1
 }
 
 module_die_UNLOAD() {
@@ -35,31 +38,24 @@ module_die_REHASH() {
 	return 0
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_die_on_PRIVMSG() {
+module_die_handler_die() {
 	local sender="$1"
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "die"; then
-		if access_check_owner "$sender"; then
-			access_log_action "$sender" "made the bot die with reason: $parameters"
-			bot_quit "$parameters"
-		else
-			access_fail "$sender" "make the bot die" "owner"
-		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "restart"; then
-		if access_check_owner "$sender"; then
-			access_log_action "$sender" "made the bot restart with reason: $parameters"
-			bot_restart "$parameters"
-		else
-			access_fail "$sender" "make the bot restart" "owner"
-		fi
-		return 1
+	if access_check_owner "$sender"; then
+		local parameters="$3"
+		access_log_action "$sender" "made the bot die with reason: $parameters"
+		bot_quit "$parameters"
+	else
+		access_fail "$sender" "make the bot die" "owner"
 	fi
-	return 0
+}
+
+module_die_handler_restart() {
+	local sender="$1"
+	if access_check_owner "$sender"; then
+		local parameters="$3"
+		access_log_action "$sender" "made the bot restart with reason: $parameters"
+		bot_restart "$parameters"
+	else
+		access_fail "$sender" "make the bot restart" "owner"
+	fi
 }

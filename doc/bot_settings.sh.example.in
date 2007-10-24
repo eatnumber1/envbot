@@ -24,7 +24,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=14
+config_version=15
 
 ####################
 # General settings #
@@ -90,6 +90,19 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 #config_access_mask[3]='^Someone!whatever@customer-1234\.isp\.com$'
 #config_access_capab[3]='facoid_admin'
 #config_access_scope[3]='GLOBAL'
+
+
+############
+# Feedback #
+############
+
+# (*) How to treat unknown commands:
+#     Valid values:
+#       0 = Ignore them (drop command, do nothing).
+#       1 = Return error to sender.
+#       2 = Pass them on to modules that may handle "generic" PRIVMSG.
+#     Note that non-commands always get passed on to "generic" PRIVMSG handling modules.
+config_unknown_commands=1
 
 
 ###########
@@ -233,7 +246,7 @@ config_module_ctcp_version_reply="envbot $envbot_version"
 #####################################################################
 # Karma module
 #
-# (*) Table name for karma data in SQLite3 databse
+# (*) Table name for karma data in SQLite3 database
 #config_module_karma_table='karma'
 
 

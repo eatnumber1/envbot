@@ -23,7 +23,14 @@
 #---------------------------------------------------------------------
 
 module_factoids_INIT() {
-	echo 'after_load on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS='after_load on_PRIVMSG'
+	commands_register "$1" 'learn'                           || return 1
+	commands_register "$1" 'forget'                          || return 1
+	commands_register "$1" 'lock_factoid'   'lock factoid'   || return 1
+	commands_register "$1" 'unlock_factoid' 'unlock factoid' || return 1
+	commands_register "$1" 'whatis'                          || return 1
+	commands_register "$1" 'factoid_stats'  'factoid stats'  || return 1
 }
 
 
@@ -301,13 +308,7 @@ module_factoids_parse_assignment() {
 }
 
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_factoids_on_PRIVMSG() {
-	# Only respond in channel.
+module_factoids_handler_learn() {
 	local sender="$1"
 	local sendernick
 	parse_hostmask_nick "$sender" 'sendernick'
@@ -315,70 +316,120 @@ module_factoids_on_PRIVMSG() {
 	if ! [[ $2 =~ ^# ]]; then
 		channel="$sendernick"
 	fi
+	local parameters="$3"
+	if [[ "$parameters" =~ ^(.+)\ (as|is|are|=)\ (.+) ]]; then
+		# Do the actual parsing elsewhere:
+		module_factoids_parse_assignment "$parameters"
+		local key="${module_factoids_parse_key[*]}"
+		local value="${module_factoids_parse_value[*]}"
+		unset module_factoids_parse_key module_factoids_parse_value
+		module_factoids_set "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$value" "$sender" "$channel"
+	else
+		feedback_bad_syntax "$sendernick" "learn" "key (as|is|are|=) value"
+	fi
+	return 1
+}
+
+module_factoids_handler_forget() {
+	local sender="$1"
+	local sendernick
+	parse_hostmask_nick "$sender" 'sendernick'
+	local channel="$2"
+	if ! [[ $2 =~ ^# ]]; then
+		channel="$sendernick"
+	fi
+	local parameters="$3"
+	if [[ "$parameters" =~ ^(.+) ]]; then
+		local key="${BASH_REMATCH[1]}"
+		module_factoids_remove "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$sender" "$channel"
+	else
+		feedback_bad_syntax "$sendernick" "forget" "key"
+	fi
+}
+
+module_factoids_handler_lock_factoid() {
+	local sender="$1"
+	if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		local channel="$2"
+		if ! [[ $2 =~ ^# ]]; then
+			channel="$sendernick"
+		fi
+		local parameters="$3"
+		if [[ "$parameters" =~ ^(.+) ]]; then
+			local key="${BASH_REMATCH[1]}"
+			module_factoids_lock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
+			send_msg "$channel" "Ok ${sendernick}, the factoid \"$key\" is now protected from changes"
+		else
+			feedback_bad_syntax "$sendernick" "lock" "key"
+		fi
+	else
+		access_fail "$sender" "lock a factoid" "factoid_admin"
+	fi
+}
+
+module_factoids_handler_unlock_factoid() {
+	local sender="$1"
+	if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		local channel="$2"
+		if ! [[ $2 =~ ^# ]]; then
+			channel="$sendernick"
+		fi
+		local parameters="$3"
+		if [[ "$parameters" =~ ^(.+) ]]; then
+			local key="${BASH_REMATCH[1]}"
+			module_factoids_unlock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
+			send_msg "$channel" "Ok ${sendernick}, the factoid \"$key\" is no longer protected from changes"
+		else
+			feedback_bad_syntax "$sendernick" "lock" "key"
+		fi
+	else
+		access_fail "$sender" "lock a factoid" "factoid_admin"
+	fi
+}
+
+module_factoids_handler_whatis() {
+	local sender="$1"
+	local sendernick
+	parse_hostmask_nick "$sender" 'sendernick'
+	local channel="$2"
+	if ! [[ $2 =~ ^# ]]; then
+		channel="$sendernick"
+	fi
+	local parameters="$3"
+	if [[ "$parameters" =~ ^(.+) ]]; then
+		local key="${BASH_REMATCH[1]}"
+		module_factoids_send_factoid "$channel" "$key"
+	else
+		feedback_bad_syntax "$sendernick" "whatis" "key"
+	fi
+}
+
+module_factoids_handler_factoid_stats() {
+	local sender="$1"
+	local channel="$2"
+	if ! [[ $2 =~ ^# ]]; then
+		parse_hostmask_nick "$sender" 'channel'
+	fi
+	local count="$(module_factoids_get_count)"
+	local lockedcount="$(module_factoids_get_locked_count)"
+	if [[ "$count" ]]; then
+		send_msg "$channel" "There are $count items in my factoid database. $lockedcount of the factoids are locked."
+	fi
+}
+
+module_factoids_on_PRIVMSG() {
+	local sender="$1"
+	local channel="$2"
+	if ! [[ $2 =~ ^# ]]; then
+		parse_hostmask_nick "$sender" 'channel'
+	fi
 	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "learn"; then
-		if [[ "$parameters" =~ ^(.+)\ (as|is|are|=)\ (.+) ]]; then
-			# Do the actual parsing elsewhere:
-			module_factoids_parse_assignment "$parameters"
-			local key="${module_factoids_parse_key[*]}"
-			local value="${module_factoids_parse_value[*]}"
-			unset module_factoids_parse_key module_factoids_parse_value
-			module_factoids_set "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$value" "$sender" "$channel"
-		else
-			feedback_bad_syntax "$sendernick" "learn" "key (as|is|are|=) value"
-		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "forget"; then
-		if [[ "$parameters" =~ ^(.+) ]]; then
-			local key="${BASH_REMATCH[1]}"
-			module_factoids_remove "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$sender" "$channel"
-		else
-			feedback_bad_syntax "$sendernick" "forget" "key"
-		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "lock factoid"; then
-		if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
-			if [[ "$parameters" =~ ^(.+) ]]; then
-				local key="${BASH_REMATCH[1]}"
-				module_factoids_lock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
-				send_msg "$channel" "Ok ${sendernick}, the factoid \"$key\" is now protected from changes"
-			else
-				feedback_bad_syntax "$sendernick" "lock" "key"
-			fi
-		else
-			access_fail "$sender" "lock a factoid" "factoid_admin"
-		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "unlock factoid"; then
-		if access_check_capab "factoid_admin" "$sender" "GLOBAL"; then
-			if [[ "$parameters" =~ ^(.+) ]]; then
-				local key="${BASH_REMATCH[1]}"
-				module_factoids_unlock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
-				send_msg "$channel" "Ok ${sendernick}, the factoid \"$key\" is no longer protected from changes"
-			else
-				feedback_bad_syntax "$sendernick" "lock" "key"
-			fi
-		else
-			access_fail "$sender" "lock a factoid" "factoid_admin"
-		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "whatis"; then
-		if [[ "$parameters" =~ ^(.+) ]]; then
-			local key="${BASH_REMATCH[1]}"
-			module_factoids_send_factoid "$channel" "$key"
-		else
-			feedback_bad_syntax "$sendernick" "whatis" "key"
-		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "factoid stats"; then
-		local count="$(module_factoids_get_count)"
-		local lockedcount="$(module_factoids_get_locked_count)"
-		if [[ "$count" ]]; then
-			send_msg "$channel" "There are $count items in my factoid database. $lockedcount of the factoids are locked."
-		fi
-		return 1
-	elif [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|was|to|can I find)\ )?([^\?]+)\?? ]]; then
+	# Answer question in channel if we got a factoid.
+	if [[ "$query" =~ ^((what|where|who|why|how)\ )?((is|are|were|was|to|can I find)\ )?([^\?]+)\?? ]]; then
 		local key="${BASH_REMATCH[@]: -1}"
 		local value="$(module_factoids_SELECT "$(tr '[:upper:]' '[:lower:]' <<< "$key")")"
 		if [[ "$value" ]]; then

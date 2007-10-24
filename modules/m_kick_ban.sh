@@ -24,7 +24,10 @@
 #---------------------------------------------------------------------
 
 module_kick_ban_INIT() {
-	echo 'on_PRIVMSG after_load after_connect after_load on_numeric periodic'
+	modinit_API='2'
+	modinit_HOOKS='after_load after_connect after_load on_numeric periodic'
+	commands_register "$1" 'kick' || return 1
+	commands_register "$1" 'ban' || return 1
 }
 
 module_kick_ban_UNLOAD() {
@@ -112,76 +115,72 @@ module_kick_ban_store_ban() {
 	fi
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel)
-# $3 = nick
-module_kick_ban_on_PRIVMSG() {
+
+module_kick_ban_handler_kick() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local sendon_channel="$2"
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "kick"; then
-		if [[ $parameters =~ ^((#[^ ]+)\ )(.*) ]]; then
-			local channel="${BASH_REMATCH[2]}"
-			parameters="${BASH_REMATCH[3]}"
-		else
-			if ! [[ $channel =~ ^# ]]; then
-				if [[ $sendon_channel =~ ^# ]]; then
-					local channel="$sendon_channel"
-				else
-					local sendernick
-					parse_hostmask_nick "$sender" 'sendernick'
-					feedback_bad_syntax "$sendernick" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
-				fi
-			fi
-		fi
-		if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
-			local nick="${BASH_REMATCH[1]}"
-			local kickmessage="${BASH_REMATCH[2]}"
-			if access_check_capab "kick" "$sender" "$channel"; then
-				send_raw "KICK $channel $nick :$kickmessage"
-				access_log_action "$sender" "kicked $nick from $channel with kick message: $kickmessage"
+	local parameters="$3"
+	if [[ $parameters =~ ^((#[^ ]+)\ )(.*) ]]; then
+		local channel="${BASH_REMATCH[2]}"
+		parameters="${BASH_REMATCH[3]}"
+	else
+		if ! [[ $channel =~ ^# ]]; then
+			if [[ $sendon_channel =~ ^# ]]; then
+				local channel="$sendon_channel"
 			else
-				access_fail "$sender" "make the bot kick somebody" "kick"
+				local sendernick
+				parse_hostmask_nick "$sender" 'sendernick'
+				feedback_bad_syntax "$sendernick" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
+				return 0
 			fi
-		else
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
 		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "ban"; then
-		if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+)(\ ([0-9]+))? ]]; then
-			local channel="${BASH_REMATCH[1]}"
-			local nick="${BASH_REMATCH[2]}"
-			# Optional parameter.
-			local duration="${BASH_REMATCH[4]}"
-			if access_check_capab "ban" "$sender" "$channel"; then
-				if [[ $duration ]]; then
-					# send_modes "$channel" "+b" get_hostmask $nick <-- not implemented yet
-					if [[ $module_kick_ban_TBAN_supported -eq 1 ]]; then
-						send_raw "TBAN $channel $duration $nick"
-					else
-						send_modes "$channel" "+b $nick"
-						module_kick_ban_store_ban "$channel" "$nick" "$duration"
-					fi
-				else
-					send_modes "$channel" "+b $nick"
-				fi
-				access_log_action "$sender" "banned $nick from $channel"
-			else
-				access_fail "$sender" "make the bot ban somebody" "ban"
-			fi
-		else
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "ban" "#channel nick [duration]"
-		fi
-		return 1
 	fi
 
-	return 0
+	if [[ "$parameters" =~ ^([^ ]+)\ (.+) ]]; then
+		local nick="${BASH_REMATCH[1]}"
+		local kickmessage="${BASH_REMATCH[2]}"
+		if access_check_capab "kick" "$sender" "$channel"; then
+			send_raw "KICK $channel $nick :$kickmessage"
+			access_log_action "$sender" "kicked $nick from $channel with kick message: $kickmessage"
+		else
+			access_fail "$sender" "make the bot kick somebody" "kick"
+		fi
+	else
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
+	fi
+}
+
+module_kick_ban_handler_ban() {
+	local sender="$1"
+	local sendon_channel="$2"
+	local parameters="$3"
+	if [[ "$parameters" =~ ^(#[^ ]+)\ ([^ ]+)(\ ([0-9]+))? ]]; then
+		local channel="${BASH_REMATCH[1]}"
+		local nick="${BASH_REMATCH[2]}"
+		# Optional parameter.
+		local duration="${BASH_REMATCH[4]}"
+		if access_check_capab "ban" "$sender" "$channel"; then
+			if [[ $duration ]]; then
+				# send_modes "$channel" "+b" get_hostmask $nick <-- not implemented yet
+				if [[ $module_kick_ban_TBAN_supported -eq 1 ]]; then
+					send_raw "TBAN $channel $duration $nick"
+				else
+					send_modes "$channel" "+b $nick"
+					module_kick_ban_store_ban "$channel" "$nick" "$duration"
+				fi
+			else
+				send_modes "$channel" "+b $nick"
+			fi
+			access_log_action "$sender" "banned $nick from $channel"
+		else
+			access_fail "$sender" "make the bot ban somebody" "ban"
+		fi
+	else
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "ban" "#channel nick [duration]"
+	fi
 }

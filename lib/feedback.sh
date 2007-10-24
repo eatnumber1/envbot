@@ -32,3 +32,16 @@
 feedback_bad_syntax() {
 	send_msg "$1" "Syntax error. Correct syntax for $2 is $2 $3"
 }
+
+#---------------------------------------------------------------------
+## Return a message that a command was unknown.
+## @Type Private
+## @param Sender of message (n!u@h)
+## @param To where (botnick or channel)
+## @param Query
+#---------------------------------------------------------------------
+feedback_unknown_command() {
+	local sendernick
+	parse_hostmask_nick "$sender" 'sendernick'
+	send_msg "$sendernick" "Error: Not able to parse this command: \"$3\". Are you sure you spelled it correctly?"
+}

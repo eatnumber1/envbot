@@ -24,7 +24,10 @@
 #---------------------------------------------------------------------
 
 module_join_INIT() {
-	echo 'on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS=''
+	commands_register "$1" 'join' || return 1
+	commands_register "$1" 'part' || return 1
 }
 
 module_join_UNLOAD() {
@@ -35,56 +38,47 @@ module_join_REHASH() {
 	return 0
 }
 
-
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_join_on_PRIVMSG() {
-	# Accept this anywhere, unless someone can give a good reason not to.
+module_join_handler_part() {
 	local sender="$1"
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "part"; then
-		if [[ "$parameters" =~ ^(#[^ ]+)(\ (.+))? ]]; then
-			local channel="${BASH_REMATCH[1]}"
-			local reason="${BASH_REMATCH[3]}"
-			if access_check_capab "join" "$sender" "$channel"; then
-				if [[ -z "$reason" ]]; then
-					channels_part "$channel"
-				else
-					channels_part "$channel" "$reason"
-				fi
+	local parameters="$3"
+	if [[ "$parameters" =~ ^(#[^ ]+)(\ (.+))? ]]; then
+		local channel="${BASH_REMATCH[1]}"
+		local reason="${BASH_REMATCH[3]}"
+		if access_check_capab "join" "$sender" "$channel"; then
+			if [[ -z "$reason" ]]; then
+				channels_part "$channel"
 			else
-				access_fail "$sender" "make the bot part channel" "join"
+				channels_part "$channel" "$reason"
 			fi
 		else
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "part" "#channel [reason]"
+			access_fail "$sender" "make the bot part channel" "join"
 		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "join"; then
-		if [[ "$parameters" =~ ^(#[^ ]+)(\ .+)? ]]; then
-			local channel="${BASH_REMATCH[1]}"
-			local key="${BASH_REMATCH[2]}"
-			if access_check_capab "join" "$sender" "$channel"; then
-				key="${key/# /}"
-				if [[ -z "$key" ]]; then
-					channels_join "${channel}"
-				else
-					channels_join "${channel}" "$key"
-				fi
-			else
-				access_fail "$sender" "make the join channel" "join"
-			fi
-		else
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "join" "#channel [key]"
-		fi
-		return 1
+	else
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "part" "#channel [reason]"
 	fi
-	return 0
+}
+
+module_join_handler_join() {
+	local sender="$1"
+	local parameters="$3"
+	if [[ "$parameters" =~ ^(#[^ ]+)(\ [^ ]+)? ]]; then
+		local channel="${BASH_REMATCH[1]}"
+		local key="${BASH_REMATCH[2]}"
+		if access_check_capab "join" "$sender" "$channel"; then
+			key="${key## }"
+			if [[ -z "$key" ]]; then
+				channels_join "${channel}"
+			else
+				channels_join "${channel}" "$key"
+			fi
+		else
+			access_fail "$sender" "make the join channel" "join"
+		fi
+	else
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "join" "#channel [key]"
+	fi
 }

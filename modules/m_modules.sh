@@ -23,7 +23,12 @@
 #---------------------------------------------------------------------
 
 module_modules_INIT() {
-	echo 'on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS=''
+	commands_register "$1" 'modload'   || return 1
+	commands_register "$1" 'modunload' || return 1
+	commands_register "$1" 'modreload' || return 1
+	commands_register "$1" 'modlist'   || return 1
 }
 
 module_modules_UNLOAD() {
@@ -82,74 +87,76 @@ module_modules_dounload() {
 	return $status
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_modules_on_PRIVMSG() {
+module_modules_handler_modload() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local sendernick
 	parse_hostmask_nick "$sender" 'sendernick'
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "modload"; then
-		if [[ "$parameters" =~ ^([^ ]+) ]]; then
-			local target_module="${BASH_REMATCH[1]}"
-			if access_check_owner "$sender"; then
-				access_log_action "$sender" "loaded the module $target_module"
+	local parameters="$3"
+	if [[ "$parameters" =~ ^([^ ]+) ]]; then
+		local target_module="${BASH_REMATCH[1]}"
+		if access_check_owner "$sender"; then
+			access_log_action "$sender" "loaded the module $target_module"
+			module_modules_doload "$target_module" "$sendernick"
+		else
+			access_fail "$sender" "load a module" "owner"
+		fi
+	else
+		feedback_bad_syntax "$sendernick" "modload" "modulename"
+	fi
+}
+
+module_modules_handler_modunload() {
+	local sender="$1"
+	local sendernick
+	parse_hostmask_nick "$sender" 'sendernick'
+	local parameters="$3"
+	if [[ "$parameters" =~ ^([^ ]+) ]]; then
+		local target_module="${BASH_REMATCH[1]}"
+		if access_check_owner "$sender"; then
+			access_log_action "$sender" "unloaded the module $target_module"
+			module_modules_dounload "$target_module" "$sendernick"
+		else
+			access_fail "$sender" "unload a module" "owner"
+		fi
+	else
+		feedback_bad_syntax "$sendernick" "modunload" "modulename"
+	fi
+}
+
+module_modules_handler_modreload() {
+	local sender="$1"
+	local sendernick
+	parse_hostmask_nick "$sender" 'sendernick'
+	local parameters="$3"
+	if [[ "$parameters" =~ ^([^ ]+) ]]; then
+		local target_module="${BASH_REMATCH[1]}"
+		if access_check_owner "$sender"; then
+			access_log_action "$sender" "reloaded the module $target_module"
+			module_modules_dounload "$target_module" "$sendernick"
+			if [[ $? = 0 ]]; then
 				module_modules_doload "$target_module" "$sendernick"
 			else
-				access_fail "$sender" "load a module" "owner"
+				send_msg "$sendernick" "Reload of $target_module failed because it could not be unloaded."
 			fi
 		else
-			feedback_bad_syntax "$sendernick" "modload" "modulename"
+			access_fail "$sender" "reload a module" "owner"
 		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "modunload"; then
-		if [[ "$parameters" =~ ^([^ ]+) ]]; then
-			local target_module="${BASH_REMATCH[1]}"
-			if access_check_owner "$sender"; then
-				access_log_action "$sender" "unloaded the module $target_module"
-				module_modules_dounload "$target_module" "$sendernick"
-			else
-				access_fail "$sender" "unload a module" "owner"
-			fi
-		else
-			feedback_bad_syntax "$sendernick" "modunload" "modulename"
-		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "modreload"; then
-		if [[ "$parameters" =~ ^([^ ]+) ]]; then
-			local target_module="${BASH_REMATCH[1]}"
-			if access_check_owner "$sender"; then
-				access_log_action "$sender" "reloaded the module $target_module"
-				module_modules_dounload "$target_module" "$sendernick"
-				if [[ $? = 0 ]]; then
-					module_modules_doload "$target_module" "$sendernick"
-				else
-					send_msg "$sendernick" "Reload of $target_module failed because it could not be unloaded."
-				fi
-			else
-				access_fail "$sender" "reload a module" "owner"
-			fi
-		else
-			feedback_bad_syntax "$sendernick" "modunload" "modulename"
-		fi
-		return 1
-	elif parse_query_is_command 'parameters' "$query" "modlist"; then
-		if [[ $2 =~ ^# ]]; then
-			local target="$2"
-		else
-			local target="$sendernick"
-		fi
-		local modlist
-		for target_module in $modules_loaded; do
-			modlist+=" $target_module"
-		done
-		send_msg "$target" "Modules currently loaded:$modlist"
-		return 1
+	else
+		feedback_bad_syntax "$sendernick" "modunload" "modulename"
 	fi
-	return 0
+}
+
+module_modules_handler_modlist() {
+	local sender="$1"
+	local parameters="$3"
+	local target
+	if [[ $2 =~ ^# ]]; then
+		target="$2"
+	else
+		parse_hostmask_nick "$sender" 'target'
+	fi
+	local modlist="${modules_loaded## }"
+	modlist="${modlist%% }"
+	send_msg "$target" "Modules currently loaded: ${modlist//  / }"
 }

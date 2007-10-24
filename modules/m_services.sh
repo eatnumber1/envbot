@@ -23,7 +23,8 @@
 #---------------------------------------------------------------------
 
 module_services_INIT() {
-	echo 'on_connect after_load after_disconnect'
+	modinit_API='2'
+	modinit_HOOKS='on_connect after_load after_disconnect'
 }
 
 module_services_UNLOAD() {

@@ -23,7 +23,8 @@
 #---------------------------------------------------------------------
 
 module_check_numerics_INIT() {
-	echo 'on_numeric'
+	modinit_API='2'
+	modinit_HOOKS='on_numeric'
 }
 
 module_check_numerics_UNLOAD() {

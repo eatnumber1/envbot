@@ -45,12 +45,19 @@ The hooks
 module_modulename_INIT (REQUIRED)
 	Called directly after loading the module.
 	Parameters:
+		$1 = The module name.
 		None
 	Return status:
 		If return status isn't 0 the module is considered as failed to load.
-	Return on STDOUT:
-		On STDOUT should be returned a space separated list of the optional functions
-		that the module implements. FAQ would return "before_connect on_PRIVMSG"
+	Return on in variables (these will get unset after they have been processed):
+		modinit_HOOKS:
+			In this variable should be returned a space separated list of the optional functions
+			that the module implements. FAQ would return "before_connect on_PRIVMSG"
+		modinit_API:
+			Return 2 if you follow this module API.
+	Notes:
+		Check for dependencies (external commands and other modules) in this function,
+		as well as register any commands.
 
 
 module_modulename_UNLOAD (REQUIRED)

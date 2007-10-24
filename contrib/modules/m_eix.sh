@@ -32,7 +32,10 @@
 #---------------------------------------------------------------------
 
 module_eix_INIT() {
-	echo 'on_PRIVMSG after_load'
+	modinit_API='2'
+	modinit_HOOKS='after_load'
+	commands_register "$1" 'eix' || return 1
+
 }
 
 module_eix_UNLOAD() {
@@ -63,12 +66,7 @@ module_eix_after_load() {
 #---------------------------------------------------------------------
 module_eix_format_string="<category>/${format_bold}<name>${format_bold} \(<availableversionsshort>\) \(${format_bold}<homepage>${format_bold}\): <description>"
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_eix_on_PRIVMSG() {
+module_eix_handler_eix() {
 	# Accept this anywhere, unless someone can give a good reason not to.
 	local sender="$1"
 	local channel="$2"
@@ -77,25 +75,20 @@ module_eix_on_PRIVMSG() {
 	if ! [[ $2 =~ ^# ]]; then
 		parse_hostmask_nick "$sender" 'channel'
 	fi
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "eix"; then
-		if [[ "$parameters" =~ ^(.+) ]]; then
-			local pattern="${BASH_REMATCH[1]}"
-				# Simple flood limiting
-				if time_check_interval "$module_eix_last_query" "$config_module_eix_rate"; then
-					module_eix_last_query="$(date -u +%s)"
-					log_info_file eix.log "$sender made the bot run eix on \"$pattern\""
-					send_msg "$channel" "$(ulimit -t 4; EIX_PRINT_IUSE='false' eix -pSCxs --format "$module_eix_format_string" "$pattern" | head -n 1)"
-				else
-					log_error_file eix.log "FLOOD DETECTED in eix module"
-				fi
+	local parameters="$3"
+	if [[ "$parameters" =~ ^(.+) ]]; then
+		local pattern="${BASH_REMATCH[1]}"
+		# Simple flood limiting
+		if time_check_interval "$module_eix_last_query" "$config_module_eix_rate"; then
+			module_eix_last_query="$(date -u +%s)"
+			log_info_file eix.log "$sender made the bot run eix on \"$pattern\""
+			send_msg "$channel" "$(ulimit -t 4; EIX_PRINT_IUSE='false' eix -pSCxs --format "$module_eix_format_string" "$pattern" | head -n 1)"
 		else
-			local sendernick
-			parse_hostmask_nick "$sender" 'sendernick'
-			feedback_bad_syntax "$sendernick" "eix" "pattern"
+			log_error_file eix.log "FLOOD DETECTED in eix module"
 		fi
-		return 1
+	else
+		local sendernick
+		parse_hostmask_nick "$sender" 'sendernick'
+		feedback_bad_syntax "$sendernick" "eix" "pattern"
 	fi
-	return 0
 }

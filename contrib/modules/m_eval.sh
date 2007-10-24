@@ -24,7 +24,9 @@
 #---------------------------------------------------------------------
 
 module_eval_INIT() {
-	echo 'on_PRIVMSG'
+	modinit_API='2'
+	modinit_HOOKS=''
+	commands_register "$1" 'eval' || return 1
 }
 
 module_eval_UNLOAD() {
@@ -35,24 +37,14 @@ module_eval_REHASH() {
 	return 0
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
-module_eval_on_PRIVMSG() {
+module_eval_handler_eval() {
 	# Accept anywhere
 	local sender="$1"
-	local query="$3"
-	local parameters
-	if parse_query_is_command 'parameters' "$query" "eval"; then
-		if access_check_owner "$sender"; then
-			access_log_action "$sender" "did eval with: $parameters"
-			eval "$parameters"
-		else
-			access_fail "$sender" "eval a command" "owner"
-		fi
-		return 1
+	if access_check_owner "$sender"; then
+		local parameters="$3"
+		access_log_action "$sender" "did eval with: $parameters"
+		eval "$parameters"
+	else
+		access_fail "$sender" "eval a command" "owner"
 	fi
-	return 0
 }

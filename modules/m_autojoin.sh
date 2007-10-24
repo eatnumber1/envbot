@@ -23,7 +23,8 @@
 #---------------------------------------------------------------------
 
 module_autojoin_INIT() {
-	echo 'after_connect'
+	modinit_API='2'
+	modinit_HOOKS='after_connect'
 }
 
 module_autojoin_UNLOAD() {
