@@ -50,6 +50,7 @@ time_get_current() {
 
 #---------------------------------------------------------------------
 ## Returns how long a time interval is in a human readable format.
+## @Type API
 ## @param Time interval
 ## @param Variable to return new list in.
 ## @Note Modified version of function posted by goedel at
