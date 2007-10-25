@@ -1,4 +1,5 @@
 #!/bin/bash
+# -*- coding: UTF8 -*-
 ###########################################################################
 #                                                                         #
 #  envbot - an IRC bot in bash                                            #
@@ -50,10 +51,6 @@ module_seen_after_load() {
 	}
 	if [[ -z $config_module_seen_table ]]; then
 		log_error "\"Seen table\" (config_module_seen_table) must be set in config."
-		return 1
-	fi
-	if ! declare -F | grep -Fq 'declare -f config_module_seen_function'; then
-		log_error "\"Seen date function\" (config_module_seen_function) must be set in config."
 		return 1
 	fi
 	if ! module_sqlite3_table_exists "$config_module_seen_table"; then
@@ -163,7 +160,11 @@ module_seen_find() {
 			if [[ $found_message =~ ^ACTION\ (.*) ]]; then
 				found_message="* $3 ${BASH_REMATCH[1]}"
 			fi
-			send_msg "$channel" "$3 was last seen on $(config_module_seen_function "$found_timestamp") in $found_channel saying \"$found_message\""
+			local difference frmtdiff
+			time_get_current 'difference'
+			(( difference -= found_timestamp ))
+			time_format_difference "$difference" 'frmtdiff'
+			send_msg "$channel" "$3 was last seen $frmtdiff ago in $found_channel saying \"$found_message\""
 		fi
 	else
 		send_msg "$channel" "Sorry, I have not seen $3."

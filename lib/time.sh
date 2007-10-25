@@ -37,6 +37,7 @@ time_check_interval() {
 	(( ( newtime - $1 ) > $2 ))
 }
 
+
 #---------------------------------------------------------------------
 ## Get current time (seconds since 1970-01-01 00:00:00 UTC)
 ## @Type API
@@ -46,10 +47,50 @@ time_get_current() {
 	printf -v "$1" '%s' "$(( time_initial + SECONDS ))"
 }
 
+
+#---------------------------------------------------------------------
+## Returns how long a time interval is in a human readable format.
+## @param Time interval
+## @param Variable to return new list in.
+## @Note Modified version of function posted by goedel at
+## @Note http://forum.bash-hackers.org/index.php?topic=59.0
+#---------------------------------------------------------------------
+time_format_difference() {
+	local tdiv=$1
+	local tmod i
+	local output=""
+
+	for ((i=0; i < ${#time_format_units[@]}; ++i)); do
+		# n means no limit.
+		if [[ ${time_format_unitspan[i]} == n ]]; then
+			tmod=$tdiv
+		else
+			(( tmod = tdiv % time_format_unitspan[i] ))
+			(( tdiv = tdiv / time_format_unitspan[i] ))
+		fi
+		output="$tmod${time_format_units[i]} $output"
+		[[ $tdiv = 0 ]] && break
+	done
+
+	printf -v "$2" '%s' "${output% }"
+}
+
 ###########################################################################
 # Internal functions to core or this file below this line!                #
 # Module authors: go away                                                 #
 ###########################################################################
+
+#---------------------------------------------------------------------
+## Array used for time_format_difference
+## @Type Private
+#---------------------------------------------------------------------
+time_format_units=( s min h d mon )
+#---------------------------------------------------------------------
+## Array used for time_format_difference
+## @Type Private
+## @Note n means no limit.
+#---------------------------------------------------------------------
+time_format_unitspan=( 60 60 24 30 n )
 
 #---------------------------------------------------------------------
 ## Initial timestamp that we use to get current time later on.

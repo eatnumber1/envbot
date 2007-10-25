@@ -255,21 +255,6 @@ config_module_ctcp_version_reply="envbot $envbot_version"
 #
 # (*) Table name for seen data in SQLite3 database
 #config_module_seen_table='seen'
-# A function that outputs date from an Unix timestamp.
-#   There is no standard command for this so we let you
-#   chose one that exists on your system.
-#   Please uncomment the function below and ONE of the
-#   example commands.
-#
-#   Parameter to this function is a timestamp
-#config_module_seen_function() {
-	# Using perl:
-	#perl -le "print scalar localtime $1"
-	# Using recent GNU date:
-	#date -d "@${1}"
-	# Using older GNU date
-	#date -d "1970-01-01 UTC + ${1} seconds"
-#}
 
 #####################################################################
 # For contrib modules please see the contrib module in question
