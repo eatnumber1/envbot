@@ -122,7 +122,7 @@ transport_connect() {
 		addrargs+="${socatnewargs}"
 	fi
 	# If we use SSL check if we should verify.
-	if [[ $3 -eq 1 ]] && [[ $config_server_ssl_accept_invalid -eq 1 ]]; then
+	if [[ $3 -eq 1 && $config_server_ssl_accept_invalid -eq 1 ]]; then
 		addrargs+=",verify=0"
 	fi
 	socat STDIO "$addrargs" < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &

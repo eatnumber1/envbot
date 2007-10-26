@@ -71,7 +71,7 @@ module_kick_ban_on_numeric() {
 
 module_kick_ban_periodic() {
 	# We got some ban to process
-	if [[ $module_kick_ban_next_unset ]] && (( envbot_time >= module_kick_ban_next_unset )); then
+	if [[ $module_kick_ban_next_unset && $envbot_time -ge $module_kick_ban_next_unset ]]; then
 		local nextban
 		local index time channel mask
 		for index in ${!module_kick_ban_timed_bans[*]}; do
