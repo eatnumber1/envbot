@@ -84,7 +84,7 @@ module_kick_ban_periodic() {
 				unset "module_kick_ban_timed_bans[${index}]"
 				continue
 			# Next ban?
-			elif [[ -z $nextban ]] || [[ $nextban -gt $time ]]; then
+			elif [[ -z $nextban || $nextban -gt $time ]]; then
 				nextban="$time"
 			fi
 		done
@@ -110,7 +110,7 @@ module_kick_ban_store_ban() {
 	(( targettime += envbot_time ))
 
 	module_kick_ban_timed_bans+=( "$targettime $1 $2" )
-	if [[ -z $module_kick_ban_next_unset ]] || [[ $module_kick_ban_next_unset -gt $targettime ]]; then
+	if [[ -z $module_kick_ban_next_unset || $module_kick_ban_next_unset -gt $targettime ]]; then
 		module_kick_ban_next_unset="$targettime"
 	fi
 }
