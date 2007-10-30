@@ -298,15 +298,16 @@ function parse_comments()
 			funcName=""
 			read funcLine
 		fi
+		# Is it a (global) variable?
+		# Check before function to catch arrays.
+		if [[ ${funcLine} =~ ^(declare -r +)?([a-zA-Z_][a-zA-Z0-9_]*)=.+$ ]]; then
+			varName="${BASH_REMATCH[@]: -1}"
+			itemtype=2
 		# Is it a function?
-		if [[ ${funcLine%%[[:blank:]]*} == function ]] || [[ ${funcLine} =~ ^[^\ ]+\ *\(\)\ *\{?$ ]]; then
+		elif [[ ${funcLine%%[[:blank:]]*} == function ]] || [[ ${funcLine} =~ ^[^\ ]+\ *\(\)\ *\{?$ ]]; then
 			funcName=$( echo ${funcLine#function} )
 			funcName=$( echo ${funcName%%()*} )
 			itemtype=1
-		# Is it a (global) variable?
-		elif [[ ${funcLine} =~ ^(declare -r +)?([a-zA-Z_][a-zA-Z0-9_]*)=.+$ ]]; then
-			varName="${BASH_REMATCH[@]: -1}"
-			itemtype=2
 		fi
 		if [[ $funcName ]] || [[ $varName ]] || [[ $FIRST_BLOCK ]] ; then
 			# Only bother with this block if it is a function block or
