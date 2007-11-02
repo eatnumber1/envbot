@@ -113,7 +113,7 @@ module_bugzilla_handler_bugs_search() {
 				log_error_file bugzilla.log "FLOOD DETECTED in bugzilla module"
 			fi
 	else
-		feedback_bad_syntax "$sendernick" "bugs search" "pattern"
+		feedback_bad_syntax "$sendernick" "bugs search" "[-(all|closed)] <pattern>"
 	fi
 }
 
@@ -167,6 +167,6 @@ module_bugzilla_handler_bug() {
 				log_error_file bugzilla.log "FLOOD DETECTED in bugzilla module"
 			fi
 	else
-		feedback_bad_syntax "$sendernick" "bug" "id"
+		feedback_bad_syntax "$sendernick" "bug" "<id>"
 	fi
 }

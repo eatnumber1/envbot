@@ -59,7 +59,7 @@ module_say_handler_say() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "say" "target message # Where target is a nick or channel"
+		feedback_bad_syntax "$sendernick" "say" "<target> <message> # Where target is a nick or channel"
 	fi
 }
 
@@ -85,6 +85,6 @@ module_say_handler_act() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "act" "target message # Where target is a nick or channel"
+		feedback_bad_syntax "$sendernick" "act" "<target> <message> # Where target is a nick or channel"
 	fi
 }

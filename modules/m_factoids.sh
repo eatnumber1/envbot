@@ -325,7 +325,7 @@ module_factoids_handler_learn() {
 		unset module_factoids_parse_key module_factoids_parse_value
 		module_factoids_set "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$value" "$sender" "$channel"
 	else
-		feedback_bad_syntax "$sendernick" "learn" "key (as|is|are|=) value"
+		feedback_bad_syntax "$sendernick" "learn" "<key> (as|is|are|=) <value>"
 	fi
 	return 1
 }
@@ -343,7 +343,7 @@ module_factoids_handler_forget() {
 		local key="${BASH_REMATCH[1]}"
 		module_factoids_remove "$(tr '[:upper:]' '[:lower:]' <<< "$key")" "$sender" "$channel"
 	else
-		feedback_bad_syntax "$sendernick" "forget" "key"
+		feedback_bad_syntax "$sendernick" "forget" "<key>"
 	fi
 }
 
@@ -362,7 +362,7 @@ module_factoids_handler_lock_factoid() {
 			module_factoids_lock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
 			send_msg "$channel" "Ok ${sendernick}, the factoid \"$key\" is now protected from changes"
 		else
-			feedback_bad_syntax "$sendernick" "lock" "key"
+			feedback_bad_syntax "$sendernick" "lock" "<key>"
 		fi
 	else
 		access_fail "$sender" "lock a factoid" "factoid_admin"
@@ -384,7 +384,7 @@ module_factoids_handler_unlock_factoid() {
 			module_factoids_unlock "$(tr '[:upper:]' '[:lower:]' <<< "$key")"
 			send_msg "$channel" "Ok ${sendernick}, the factoid \"$key\" is no longer protected from changes"
 		else
-			feedback_bad_syntax "$sendernick" "lock" "key"
+			feedback_bad_syntax "$sendernick" "lock" "<key>"
 		fi
 	else
 		access_fail "$sender" "lock a factoid" "factoid_admin"
@@ -404,7 +404,7 @@ module_factoids_handler_whatis() {
 		local key="${BASH_REMATCH[1]}"
 		module_factoids_send_factoid "$channel" "$key"
 	else
-		feedback_bad_syntax "$sendernick" "whatis" "key"
+		feedback_bad_syntax "$sendernick" "whatis" "<key>"
 	fi
 }
 

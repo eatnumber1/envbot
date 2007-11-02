@@ -200,6 +200,6 @@ module_seen_handler_seen() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "seen" "nick"
+		feedback_bad_syntax "$sendernick" "seen" "<nick>"
 	fi
 }

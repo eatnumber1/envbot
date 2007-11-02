@@ -61,7 +61,7 @@ module_assign_mode_handler_op() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "op" "#channel nick"
+		feedback_bad_syntax "$sendernick" "op" "<#channel> <nick>"
 	fi
 }
 
@@ -80,7 +80,7 @@ module_assign_mode_handler_deop() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "deop" "#channel nick"
+		feedback_bad_syntax "$sendernick" "deop" "<#channel> <nick>"
 	fi
 }
 
@@ -99,7 +99,7 @@ module_assign_mode_handler_halfop() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "halfop" "#channel nick"
+		feedback_bad_syntax "$sendernick" "halfop" "<#channel> <nick>"
 	fi
 }
 
@@ -118,7 +118,7 @@ module_assign_mode_handler_dehalfop() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "dehalfop" "#channel nick"
+		feedback_bad_syntax "$sendernick" "dehalfop" "<#channel> <nick>"
 	fi
 }
 
@@ -137,7 +137,7 @@ module_assign_mode_handler_voice() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "voice" "#channel nick"
+		feedback_bad_syntax "$sendernick" "voice" "<#channel> <nick>"
 	fi
 }
 
@@ -156,7 +156,7 @@ module_assign_mode_handler_devoice() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "devoice" "#channel nick"
+		feedback_bad_syntax "$sendernick" "devoice" "<#channel> <nick>"
 	fi
 }
 
@@ -175,7 +175,7 @@ module_assign_mode_handler_protect() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "protect" "#channel nick"
+		feedback_bad_syntax "$sendernick" "protect" "<#channel> <nick>"
 	fi
 }
 
@@ -194,7 +194,7 @@ module_assign_mode_handler_deprotect() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "deprotect" "#channel nick"
+		feedback_bad_syntax "$sendernick" "deprotect" "<#channel> <nick>"
 	fi
 }
 
@@ -213,6 +213,6 @@ module_assign_mode_handler_topic() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "topic" "#channel topic"
+		feedback_bad_syntax "$sendernick" "topic" "<#channel> <topic>"
 	fi
 }

@@ -56,7 +56,7 @@ module_join_handler_part() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "part" "#channel [reason]"
+		feedback_bad_syntax "$sendernick" "part" "<#channel> [<reason>]"
 	fi
 }
 
@@ -79,6 +79,6 @@ module_join_handler_join() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "join" "#channel [key]"
+		feedback_bad_syntax "$sendernick" "join" "<#channel> [<key>]"
 	fi
 }

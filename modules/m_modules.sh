@@ -102,7 +102,7 @@ module_modules_handler_modload() {
 			access_fail "$sender" "load a module" "owner"
 		fi
 	else
-		feedback_bad_syntax "$sendernick" "modload" "modulename"
+		feedback_bad_syntax "$sendernick" "modload" "<module name>"
 	fi
 }
 
@@ -120,7 +120,7 @@ module_modules_handler_modunload() {
 			access_fail "$sender" "unload a module" "owner"
 		fi
 	else
-		feedback_bad_syntax "$sendernick" "modunload" "modulename"
+		feedback_bad_syntax "$sendernick" "modunload" "<module name>"
 	fi
 }
 
@@ -143,7 +143,7 @@ module_modules_handler_modreload() {
 			access_fail "$sender" "reload a module" "owner"
 		fi
 	else
-		feedback_bad_syntax "$sendernick" "modunload" "modulename"
+		feedback_bad_syntax "$sendernick" "modunload" "<module name>"
 	fi
 }
 

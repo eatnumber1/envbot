@@ -89,6 +89,6 @@ module_eix_handler_eix() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "eix" "pattern"
+		feedback_bad_syntax "$sendernick" "eix" "<pattern>"
 	fi
 }

@@ -131,7 +131,7 @@ module_kick_ban_handler_kick() {
 			else
 				local sendernick
 				parse_hostmask_nick "$sender" 'sendernick'
-				feedback_bad_syntax "$sendernick" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
+				feedback_bad_syntax "$sendernick" "kick" "[<#channel>] <nick> <reason> # Channel must be send when the message is not sent in a channel"
 				return 0
 			fi
 		fi
@@ -149,7 +149,7 @@ module_kick_ban_handler_kick() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "kick" "[#channel] nick reason # Channel must be send when the message is not sent in a channel"
+		feedback_bad_syntax "$sendernick" "kick" "[<#channel>] <nick> <reason> # Channel must be send when the message is not sent in a channel"
 	fi
 }
 
@@ -181,6 +181,6 @@ module_kick_ban_handler_ban() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "ban" "#channel nick [duration]"
+		feedback_bad_syntax "$sendernick" "ban" "<#channel> <nick> [<duration>]"
 	fi
 }

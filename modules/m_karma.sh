@@ -243,6 +243,6 @@ module_karma_handler_karma() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "karma" "item"
+		feedback_bad_syntax "$sendernick" "karma" "<item>"
 	fi
 }

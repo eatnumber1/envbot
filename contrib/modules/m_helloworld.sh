@@ -128,7 +128,7 @@ module_helloworld_handler_hello_world() {
 		# the user with some feedback!
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "hello world" "message # Where message is one word!"
+		feedback_bad_syntax "$sendernick" "hello world" "<message> # Where message is one word!"
 	fi
 }
 
@@ -181,6 +181,6 @@ module_helloworld_handler_hi() {
 		# As above, provide feedback about bad syntax.
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "hi" "target message # Where target is a nick or channel"
+		feedback_bad_syntax "$sendernick" "hi" "<target> <message> # Where target is a nick or channel"
 	fi
 }
