@@ -363,7 +363,7 @@ while true; do
 			for module in $modules_on_NICK; do
 				module_${module}_on_NICK "$sender" "$newnick"
 			done
-		elif [[ "$line" =~ ^:([^ ]*)\ +JOIN\ +:(.*) ]]; then
+		elif [[ "$line" =~ ^:([^ ]*)\ +JOIN\ +:?(.*) ]]; then
 			sender="${BASH_REMATCH[1]}"
 			channel="${BASH_REMATCH[2]}"
 			# Check if it was our own nick that joined
