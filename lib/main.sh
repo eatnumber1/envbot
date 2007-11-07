@@ -148,6 +148,11 @@ declare -r config_current_version=16
 #---------------------------------------------------------------------
 declare -r envbot_transport_timeout=5
 
+# In progress of quitting? This is used to
+# work around the issue in bug 25.
+# -1 means not even in main loop yet.
+envbot_quitting=-1
+
 #---------------------------------------------------------------------
 ## Print help message
 ## @Type Private
@@ -307,8 +312,6 @@ time_init
 log_init
 
 # Now logging functions can be used.
-
-
 
 # Load modules
 

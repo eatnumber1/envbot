@@ -305,42 +305,46 @@ modules_load() {
 		log_warning_file modules.log "Module ${module} is already loaded."
 		return 2
 	fi
+	local modulefilename
 	if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
-		( source "${config_modules_dir}/m_${module}.sh" )
-		if [[ $? -ne 0 ]]; then
-			log_error_file modules.log "Could not load ${module}, failed to source it in safe subshell."
-			return 3
-		fi
-		source "${config_modules_dir}/m_${module}.sh"
-		if [[ $? -eq 0 ]]; then
-			modules_loaded+=" $module"
-			modules_add_hooks "$module" || \
-				{
-					log_error_file modules.log "Hooks failed for $module"
-					# Try to unload.
-					modules_unload "$module" || {
-						log_fatal_file modules.log "Failed Unloading of $module (that failed to load)."
-						bot_quit "Fatal error in module unload of failed module load, please see log"
-					}
-					return 6
-				}
-			if grep -qw "$module" <<< "$modules_after_load"; then
-				module_${module}_after_load
-				if [[ $? -ne 0 ]]; then
-					modules_unload ${module} || {
-						log_fatal_file modules.log "Unloading of $module that failed after_load failed."
-						bot_quit "Fatal error in module unload of failed module load (after_load), please see log"
-					}
-					return 7
-				fi
-			fi
-		else
-			log_error_file modules.log "Could not load ${module}, failed to source it."
-			return 4
-		fi
+		modulefilename="m_${module}.sh"
+	elif [[ -d "${config_modules_dir}/m_${module}" && -f "${config_modules_dir}/m_${module}/__main__.sh" ]]; then
+		modulefilename="m_${module}/__main__.sh"
 	else
 		log_error_file modules.log "No such module as ${module} exists."
 		return 5
+	fi
+	( source "${config_modules_dir}/${modulefilename}" )
+	if [[ $? -ne 0 ]]; then
+		log_error_file modules.log "Could not load ${module}, failed to source it in safe subshell."
+		return 3
+	fi
+	source "${config_modules_dir}/${modulefilename}"
+	if [[ $? -eq 0 ]]; then
+		modules_loaded+=" $module"
+		modules_add_hooks "$module" || \
+			{
+				log_error_file modules.log "Hooks failed for $module"
+				# Try to unload.
+				modules_unload "$module" || {
+					log_fatal_file modules.log "Failed Unloading of $module (that failed to load)."
+					bot_quit "Fatal error in module unload of failed module load, please see log"
+				}
+				return 6
+			}
+		if grep -qw "$module" <<< "$modules_after_load"; then
+			module_${module}_after_load
+			if [[ $? -ne 0 ]]; then
+				modules_unload ${module} || {
+					log_fatal_file modules.log "Unloading of $module that failed after_load failed."
+					bot_quit "Fatal error in module unload of failed module load (after_load), please see log"
+				}
+				return 7
+			fi
+		fi
+	else
+		log_error_file modules.log "Could not load ${module}, failed to source it."
+		return 4
 	fi
 }
 
@@ -350,7 +354,7 @@ modules_load() {
 #---------------------------------------------------------------------
 modules_load_from_config() {
 	for module in $config_modules; do
-		if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
+		if [[ -f "${config_modules_dir}/m_${module}.sh" || -d "${config_modules_dir}/m_${module}" ]]; then
 			if ! list_contains modules_loaded "$module"; then
 				modules_load "$module"
 			fi

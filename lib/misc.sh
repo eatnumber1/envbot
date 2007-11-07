@@ -128,7 +128,9 @@ bot_quit() {
 				transport_disconnect
 				(( envbot_quitting++ ))
 				;;
-			5)
+			# -1 is before main loop entered,
+			# may happen during module loading
+			5|-1)
 				rm -rvf "$tmp_home"
 				if [[ $2 ]]; then
 					exit $2
