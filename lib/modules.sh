@@ -253,6 +253,7 @@ modules_unload() {
 		log_error_file modules.log "Can't unload $module because these module(s) depend(s) on it: $(modules_depends_list_deps "$module")"
 		return 3
 	fi
+
 	# Remove hooks from list first in case unloading fails so we can do quit hooks if something break.
 	for hook in $modules_hooks; do
 		# List so we can unset.
@@ -291,10 +292,11 @@ modules_unload() {
 ## @return 0 Loaded Ok
 ## @return 1 Other errors
 ## @return 2 Module already loaded
-## @return 3 Failed to source it
-## @return 4 No such module
-## @return 5 Getting hooks failed
-## @return 6 after_load failed
+## @return 3 Failed to source it in safe subshell
+## @return 4 Failed to source it
+## @return 5 No such module
+## @return 6 Getting hooks failed
+## @return 7 after_load failed
 ## @Note If the load fails in a fatal way the bot will quit.
 #---------------------------------------------------------------------
 modules_load() {
@@ -304,6 +306,11 @@ modules_load() {
 		return 2
 	fi
 	if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
+		( source "${config_modules_dir}/m_${module}.sh" )
+		if [[ $? -ne 0 ]]; then
+			log_error_file modules.log "Could not load ${module}, failed to source it in safe subshell."
+			return 3
+		fi
 		source "${config_modules_dir}/m_${module}.sh"
 		if [[ $? -eq 0 ]]; then
 			modules_loaded+=" $module"
@@ -315,7 +322,7 @@ modules_load() {
 						log_fatal_file modules.log "Failed Unloading of $module (that failed to load)."
 						bot_quit "Fatal error in module unload of failed module load, please see log"
 					}
-					return 5
+					return 6
 				}
 			if grep -qw "$module" <<< "$modules_after_load"; then
 				module_${module}_after_load
@@ -324,16 +331,16 @@ modules_load() {
 						log_fatal_file modules.log "Unloading of $module that failed after_load failed."
 						bot_quit "Fatal error in module unload of failed module load (after_load), please see log"
 					}
-					return 6
+					return 7
 				fi
 			fi
 		else
 			log_error_file modules.log "Could not load ${module}, failed to source it."
-			return 3
+			return 4
 		fi
 	else
 		log_error_file modules.log "No such module as ${module} exists."
-		return 4
+		return 5
 	fi
 }
 

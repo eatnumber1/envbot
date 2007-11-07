@@ -52,10 +52,11 @@ module_modules_doload() {
 	case $status in
 		0) status_message="Loaded \"$target_module\" successfully" ;;
 		2) status_message="Module \"$target_module\" is already loaded" ;;
-		3) status_message="Failed to source \"$target_module\"" ;;
-		4) status_message="Module \"$target_module\" could not be found" ;;
-		5) status_message="Getting hooks from \"$target_module\" failed" ;;
-		6) status_message="after_load failed for \"$target_module\", see log for details" ;;
+		4) status_message="Failed to source \"$target_module\" in safe subshell." ;;
+		4) status_message="Failed to source \"$target_module\"" ;;
+		5) status_message="Module \"$target_module\" could not be found" ;;
+		6) status_message="Getting hooks from \"$target_module\" failed" ;;
+		7) status_message="after_load failed for \"$target_module\", see log for details" ;;
 		*) status_message="Unknown error (code $status) for \"$target_module\"" ;;
 	esac
 	send_msg "$sendernick" "$status_message"
