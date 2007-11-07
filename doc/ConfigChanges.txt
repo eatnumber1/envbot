@@ -1,0 +1,13 @@
+Any configuration file changes and how to update should be listed here.
+
+Config version 16
+-----------------
+ * Added config_commands_private_always
+ * Renamed config_listenregex to config_commands_listenregex
+ * Renamed config_unknown_commands to config_feedback_unknown_commands.
+
+
+Config version 15
+-----------------
+This file was added at this point. To convert from older versions to this
+one, please read example config and add what is missing.
