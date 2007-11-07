@@ -126,7 +126,7 @@ parse_005() {
 #---------------------------------------------------------------------
 parse_query_is_command() {
 	log_warning "parse_query_is_command is deprecated, please don't use it, use commands_register (with module API 2)" > /dev/tty 2>/dev/null
-	if [[ "$2" =~ ^${config_listenregex}${3}(\ (.*)|$) ]]; then
+	if [[ "$2" =~ ^${config_commands_listenregex}${3}(\ (.*)|$) ]]; then
 		printf -v "$1" '%s' "${BASH_REMATCH[@]: -1}"
 		return 0
 	else
@@ -147,7 +147,7 @@ parse_query_is_command() {
 #---------------------------------------------------------------------
 parse_query_is_command_stdout() {
 	log_warning "parse_query_is_command_stdout is deprecated, please don't use it, use commands_register (with module API 2)" > /dev/tty 2>/dev/null
-	if [[ "$1" =~ ^${config_listenregex}${2}(\ (.*)|$) ]]; then
+	if [[ "$1" =~ ^${config_commands_listenregex}${2}(\ (.*)|$) ]]; then
 		echo "${BASH_REMATCH[@]: -1}"
 		return 0
 	else

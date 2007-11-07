@@ -174,11 +174,15 @@ server_handle_005() {
 ## Respond to PING from server.
 ## @Type Private
 ## @param Raw line
+## @return 0 If it was a PING
+## @return 1 If it was not a PING
 #---------------------------------------------------------------------
 server_handle_ping() {
 	if [[ "$1" =~ ^PING\ *:(.*) ]] ;then
 		send_raw "PONG :${BASH_REMATCH[1]}"
+		return 0
 	fi
+	return 1
 }
 
 #---------------------------------------------------------------------
@@ -329,5 +333,5 @@ server_connect() {
 			send_raw_flood "USER $config_ident 0 * :${config_gecos}"
 		fi
 		server_handle_ping "$line"
-	done;
+	done
 }

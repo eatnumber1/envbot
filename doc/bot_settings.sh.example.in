@@ -24,7 +24,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=15
+config_version=16
 
 ####################
 # General settings #
@@ -63,9 +63,6 @@ config_server_bind=""
 # If this is empty don't use a server password.
 config_server_passwd=""
 
-# (*) A regular expression of prefixes we should listen to.
-config_listenregex="(;|${config_firstnick}[:,] )"
-
 # (*) Access regexes
 #     Without at least one set, the bot won't start
 #     "owner" is a special capab that grants all other access.
@@ -93,6 +90,18 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 
 
 ############
+# Commands #
+############
+
+# (*) A regular expression of prefixes we should listen to.
+config_commands_listenregex="(;|${config_firstnick}[:,] )"
+
+# (*) Should we treat any message in /msg as a command even
+#     if it doesn't have the the listen prefix?
+config_commands_private_always=0
+
+
+############
 # Feedback #
 ############
 
@@ -102,7 +111,7 @@ config_listenregex="(;|${config_firstnick}[:,] )"
 #       1 = Return error to sender.
 #       2 = Pass them on to modules that may handle "generic" PRIVMSG.
 #     Note that non-commands always get passed on to "generic" PRIVMSG handling modules.
-config_unknown_commands=1
+config_feedback_unknown_commands=1
 
 
 ###########

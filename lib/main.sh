@@ -136,7 +136,7 @@ command_line=( "$@" )
 ## @Type API
 ## @Read_only Yes
 #---------------------------------------------------------------------
-declare -r config_current_version=15
+declare -r config_current_version=16
 
 # Some constants used in different places
 
@@ -400,9 +400,9 @@ while true; do
 					continue
 					;;
 				2)
-					if [[ $config_unknown_commands -eq 0 ]]; then
+					if [[ $config_feedback_unknown_commands -eq 0 ]]; then
 						continue
-					elif [[ $config_unknown_commands -eq 1 ]]; then
+					elif [[ $config_feedback_unknown_commands -eq 1 ]]; then
 						feedback_unknown_command "$sender" "$target" "$query"
 					fi
 					;;
@@ -503,7 +503,7 @@ while true; do
 				module_${module}_on_KILL "$sender" "$target" "$path" "$reason"
 			done
 		elif [[ $line =~ ^[^:] ]] ;then
-			server_handle_ping "$line"
+			# ERROR?
 			if [[ "$line" =~ ^ERROR\ :(.*) ]]; then
 				error="${BASH_REMATCH[1]}"
 				log_error "Got ERROR from server: $error"
@@ -512,6 +512,10 @@ while true; do
 				done
 				# If we get an ERROR we can assume we are disconnected.
 				break
+			fi
+			# PING? If not report as unhandled
+			if ! server_handle_ping "$line"; then
+				log_info_file unknown_data.log "A non-sender prefixed line that didn't match any hook: $line"
 			fi
 		else
 			log_info_file unknown_data.log "Something that didn't match any hook: $line"

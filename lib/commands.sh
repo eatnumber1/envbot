@@ -152,9 +152,17 @@ commands_unregister() {
 ## @return 2 A command but that didn't exist.
 #---------------------------------------------------------------------
 commands_call_command() {
+	local regex="${config_commands_listenregex}"
+	# Not on a channel?
+	if [[ ! $2 =~ ^# ]]; then
+		# Should we treat it as a command anyway?
+		if [[ $config_commands_private_always == 1 ]]; then
+			local regex="(${config_commands_listenregex})?"
+		fi
+	fi
 	# Check if it is a command.
-	# (${config_listenregex}, followed by an alphanumeric char.)
-	if [[ "$3" =~ ^${config_listenregex}([a-zA-Z0-9].*) ]]; then
+	# (${config_commands_listenregex}, followed by an alphanumeric char.)
+	if [[ "$3" =~ ^${regex}([a-zA-Z0-9].*) ]]; then
 		local data="${BASH_REMATCH[@]: -1}"
 		# Right, get the parts of the command
 		if [[ $data =~ ^([a-zA-Z0-9][^ ]*)( [^ ]+)?( .*)? ]]; then
