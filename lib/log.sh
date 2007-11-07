@@ -221,6 +221,15 @@ log_write() {
 }
 
 #---------------------------------------------------------------------
+## For debugging in core code.
+## @Type Private
+## @param Should be "$@" at first line of function.
+#---------------------------------------------------------------------
+log_debug_caller() {
+	log_file debug.log "DEBUG: ${FUNCNAME[1]} called with $@ from ${FUNCNAME[2]}"
+}
+
+#---------------------------------------------------------------------
 ## Create log file.
 ## @Type Private
 #---------------------------------------------------------------------
