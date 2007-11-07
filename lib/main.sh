@@ -33,7 +33,7 @@
 # Check bash version. We need at least 3.2.x
 # Lets not use anything like =~ here because
 # that may not work on old bash versions.
-if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 32 ]]; then
+if [[ "${BASH_VERSINFO[0]}${BASH_VERSINFO[1]}" -lt 32 ]]; then
 	echo "Sorry your bash version is too old!"
 	echo "You need at least version 3.2 of bash"
 	echo "Please install a newer version:"
