@@ -218,7 +218,7 @@ module_nicktracking_after_load() {
 			send_raw "NAMES $channel"
 			# We have to send a WHO #channel if servers doesn't support UHNAMES.
 			if [[ $server_UHNAMES -eq 0 ]]; then
-				send_raw "WHO $2"
+				send_raw "WHO $channel"
 			fi
 		done
 	fi
