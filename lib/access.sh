@@ -31,6 +31,7 @@
 ## @return 1 If access was denied.
 #---------------------------------------------------------------------
 access_check_owner() {
+	debug_log_caller "$@"
 	security_assert_argc 1 1 "$@" || {
 		log_error "Aiie! Access denied because of incorrect function call!"
 		return 1
@@ -54,6 +55,7 @@ access_check_owner() {
 ## @return 1 If access was denied.
 #---------------------------------------------------------------------
 access_check_capab() {
+	debug_log_caller "$@"
 	security_assert_argc 3 3 "$@" || {
 		log_error "Aiie! Access denied because of incorrect function call!"
 		return 1

@@ -286,6 +286,22 @@ modules_unload() {
 }
 
 #---------------------------------------------------------------------
+## Generate awk script to validate module functions.
+## @param Module name
+## @Type Private
+#---------------------------------------------------------------------
+modules_check_function() {
+	local module="$1"
+	# This is a one liner. Well mostly. ;)
+	# We check that the needed functions exist.
+	awk "function check_found() { if (init && unload && rehash) exit 0 }
+	/^declare -f module_${module}_INIT$/   { init=1; check_found() }
+	/^declare -f module_${module}_UNLOAD$/ { unload=1; check_found() }
+	/^declare -f module_${module}_REHASH$/ { rehash=1; check_found() }
+	END { if (! (init && unload && rehash)) exit 1 }"
+}
+
+#---------------------------------------------------------------------
 ## Load a module
 ## @Type Private
 ## @param Name of module to load
@@ -317,6 +333,11 @@ modules_load() {
 	( source "${config_modules_dir}/${modulefilename}" )
 	if [[ $? -ne 0 ]]; then
 		log_error_file modules.log "Could not load ${module}, failed to source it in safe subshell."
+		return 3
+	fi
+	( source "${config_modules_dir}/${modulefilename}" && declare -F ) | modules_check_function "$module"
+	if [[ $? -ne 0 ]]; then
+		log_error_file modules.log "Could not load ${module}, it lacks some important functions it should have."
 		return 3
 	fi
 	source "${config_modules_dir}/${modulefilename}"

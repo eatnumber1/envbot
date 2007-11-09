@@ -85,13 +85,13 @@ time_format_difference() {
 ## Array used for time_format_difference
 ## @Type Private
 #---------------------------------------------------------------------
-time_format_units=( s min h d mon )
+declare -r time_format_units=( s min h d mon )
 #---------------------------------------------------------------------
 ## Array used for time_format_difference
 ## @Type Private
 ## @Note n means no limit.
 #---------------------------------------------------------------------
-time_format_unitspan=( 60 60 24 30 n )
+declare -r time_format_unitspan=( 60 60 24 30 n )
 
 #---------------------------------------------------------------------
 ## Initial timestamp that we use to get current time later on.
