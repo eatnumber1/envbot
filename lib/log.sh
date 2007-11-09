@@ -128,6 +128,15 @@ log_info_file() {
 	log_file "$1" "INFO:    $2"
 }
 
+#---------------------------------------------------------------------
+## Log a debug message.
+## @Type API
+## @param The log message to log
+#---------------------------------------------------------------------
+log_debug() {
+	log_file debug.log "DEBUG:   $1"
+}
+
 ###########################################################################
 # Internal functions to core or this file below this line!                #
 # Module authors: go away                                                 #
@@ -212,21 +221,13 @@ log_raw_out() {
 ## @param may be optional extra log file
 #---------------------------------------------------------------------
 log_write() {
+	[[ $log_file ]] || return 0
 	echo "$1" >> "$log_file"
 	[[ $3 ]] && echo "$1" >> "$log_dir/$3"
 	if [[ $config_log_stdout -eq 1 || $2 -eq 1 ]]; then
 		# Get rid of bell chars.
 		echo "${1//$'\007'}"
 	fi
-}
-
-#---------------------------------------------------------------------
-## For debugging in core code.
-## @Type Private
-## @param Should be "$@" at first line of function.
-#---------------------------------------------------------------------
-log_debug_caller() {
-	log_file debug.log "DEBUG: ${FUNCNAME[1]} called from ${BASH_SOURCE[2]}:${BASH_LINENO[1]} ${FUNCNAME[2]} with arguments: $*"
 }
 
 #---------------------------------------------------------------------

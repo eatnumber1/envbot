@@ -148,10 +148,18 @@ declare -r config_current_version=16
 #---------------------------------------------------------------------
 declare -r envbot_transport_timeout=5
 
-# In progress of quitting? This is used to
-# work around the issue in bug 25.
-# -1 means not even in main loop yet.
+#---------------------------------------------------------------------
+## In progress of quitting? This is used to
+## work around the issue in bug 25.<br />
+## -1 means not even in main loop yet.
+## @Type Private
+#---------------------------------------------------------------------
 envbot_quitting=-1
+
+#---------------------------------------------------------------------
+## If empty debugging is turned off. If not emptuy it is on.
+#---------------------------------------------------------------------
+envbot_debugging=''
 
 #---------------------------------------------------------------------
 ## Print help message
@@ -166,6 +174,8 @@ print_cmd_help() {
 	echo '  -c, --config file       Use file instead of the default as config file.'
 	echo '  -l, --libdir directory  Use directory instead of the default as library directory.'
 	echo '  -v, --verbose           Force verbose output even if config_log_stdout is 0.'
+	echo '  -d, --debug             Enable debugging code. Most likely pointless to anyone'
+	echo '                          except envbot developers or module developers.'
 	echo '  -h, --help              Display this help and exit'
 	echo '  -V, --version           Output version information and exit'
 	echo ''
@@ -208,6 +218,10 @@ if [[ $# -gt 0 ]]; then
 			'--config'|'-c')
 				config_file="$2"
 				shift 2
+				;;
+			'--debug'|'-d')
+				envbot_debugging=1
+				shift 1
 				;;
 			'--libdir'|'-l')
 				library_dir="$2"
@@ -300,7 +314,7 @@ fi
 echo "Loading library functions"
 # Load library functions.
 libraries="hash time log send feedback numerics channels parse \
-           access misc config commands modules server"
+           access misc config commands modules server debug"
 for library in $libraries; do
 	source "${library_dir}/${library}.sh"
 done
@@ -310,12 +324,13 @@ unset library
 config_validate
 time_init
 log_init
+debug_init
 
 # Now logging functions can be used.
 
 # Load modules
 
-echo "Loading modules"
+log_info_stdout "Loading modules"
 # Load modules
 modules_load_from_config
 
