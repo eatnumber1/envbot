@@ -29,11 +29,10 @@
 ## @param Higest allowed count of parameters. (Optional, defaults to same as lower)
 #---------------------------------------------------------------------
 debug_assert_argc() {
-	[[ "$envbot_debugging" ]] || return 0
+	[[ $envbot_debugging ]] || return 0
 	if [[ ${BASH_ARGC[1]} -lt $1 || ${BASH_ARGC[1]} -gt ${2:-$1} ]]; then
 		log_debug "${FUNCNAME[1]} should have had $1 parameters but had ${BASH_ARGC[1]} instead"
 		log_debug "${FUNCNAME[1]} was called from ${BASH_SOURCE[2]}:${BASH_LINENO[1]} ${FUNCNAME[2]}."
-		set +x
 		return 1
 	fi
 }
@@ -44,6 +43,7 @@ debug_assert_argc() {
 ## @param Should be "$@" at first line of function.
 #---------------------------------------------------------------------
 debug_log_caller() {
+	[[ $envbot_debugging ]] || return 0
 	log_debug "${FUNCNAME[1]} called from ${BASH_SOURCE[2]}:${BASH_LINENO[1]} ${FUNCNAME[2]} with arguments: $*"
 }
 

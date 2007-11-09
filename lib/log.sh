@@ -218,7 +218,7 @@ log_raw_out() {
 ## @Type Private
 ## @param Message to log
 ## @param If 1 always log to STDOUT as well
-## @param may be optional extra log file
+## @param May be optional extra log file
 #---------------------------------------------------------------------
 log_write() {
 	[[ $log_file ]] || return 0

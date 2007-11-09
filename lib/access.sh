@@ -27,9 +27,14 @@
 ## Check for owner access.
 ## @Type API
 ## @param n!u@h mask
-## @return 0 if access was granted, otherwise 1.
+## @return 0 If access was granted
+## @return 1 If access was denied.
 #---------------------------------------------------------------------
 access_check_owner() {
+	security_assert_argc 1 1 "$@" || {
+		log_error "Aiie! Access denied because of incorrect function call!"
+		return 1
+	}
 	local index
 	for index in ${!config_access_mask[*]}; do
 		if [[ "$1" =~ ${config_access_mask[$index]} ]] && list_contains "config_access_capab[$index]" 'owner'; then
@@ -45,9 +50,14 @@ access_check_owner() {
 ## @param Capability to check for.
 ## @param n!u@h mask
 ## @param What scope
-## @return 0 if access was granted, otherwise 1.
+## @return 0 If access was granted
+## @return 1 If access was denied.
 #---------------------------------------------------------------------
 access_check_capab() {
+	security_assert_argc 3 3 "$@" || {
+		log_error "Aiie! Access denied because of incorrect function call!"
+		return 1
+	}
 	local index
 	for index in ${!config_access_mask[*]}; do
 		if [[ "$2" =~ ${config_access_mask[$index]} ]] && \

@@ -214,3 +214,35 @@ list_remove() {
 list_contains() {
 	[[ " ${!1} " = *" $2 "*  ]]
 }
+
+###########################################################################
+# Internal functions to core or this file below this line!                #
+# Module authors: go away                                                 #
+###########################################################################
+
+#---------------------------------------------------------------------
+## Like debug_assert_argc but works without debugging on.
+## For use in sensitive functions in core.
+## @Type Private
+## @param Minimum count of parameters
+## @param Maximum count of parameters
+## @param All the rest of the parameters as "$@"
+## @Example For example this could be called as:
+## @Example <pre>
+## @Example foo() {
+## @Example   security_assert_argc 2 2 "$@"
+## @Example   ... rest of function ...
+## @Example }
+## @Example </pre>
+#---------------------------------------------------------------------
+security_assert_argc() {
+	local min="$1" max="$2"
+	shift 2
+	if [[ $# -lt $min || $# -gt $max ]]; then
+		log_error "Security sensitive function ${FUNCNAME[1]} should have had between $min and $max parameters but had ${BASH_ARGC[1]} instead."
+		log_error "Security sensitive function ${FUNCNAME[1]} was called from ${BASH_SOURCE[2]}:${BASH_LINENO[1]} ${FUNCNAME[2]} with these parameters: $*"
+		log_error "This should be reported as a bug."
+		return 1
+	fi
+	return 0
+}
