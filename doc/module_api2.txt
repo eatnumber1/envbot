@@ -5,11 +5,26 @@ This file contains info needed to write a module.
 
 File name
 ---------
+There are two ways to store modules: single file and directory.
+Single file:
+	The module is a single file.
+	The file name should follow this pattern:
+		m_modulename.sh
+	Example:
+		m_faq.sh
+Directory:
+	The module is a directory that contains several files.
+	The directory name should follow this pattern:
+		m_modulename
+	Example:
+		m_faq
+	This directory should contain a file called __main__.sh
+	that the bot will load when loading the module. This file
+	may then load other files from the directory as needed.
 
-The module should follow this pattern:
-m_modulename.sh
-Example:
-m_faq.sh
+Other than that there are no differences between the two ways to store
+modules.
+
 
 Variables
 ---------
@@ -62,7 +77,7 @@ module_modulename_INIT (REQUIRED)
 
 module_modulename_UNLOAD (REQUIRED)
 	Called to make the module unload itself.
-	In this function it should clean up after itself and undefine all
+	In this function it should clean up after itself and unset all
 	it's functions and variables except the hook functions.
 	The unload function and other hook functions will be undefined
 	after unload finished.
