@@ -289,6 +289,8 @@ modules_unload() {
 ## Generate awk script to validate module functions.
 ## @param Module name
 ## @Type Private
+## @return 0 If the file is OK
+## @return 1 If the file lacks one of more of the functions.
 #---------------------------------------------------------------------
 modules_check_function() {
 	local module="$1"

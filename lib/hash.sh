@@ -32,8 +32,9 @@ hash_hexify() {
 	# Res will contain full output string, hex current char.
 	local hex i res=
 	for ((i=0;i<${#1};i++)); do
-		# The ' is not documented in bash
+		# The ' is not documented in bash but it works.
 		# See http://www.opengroup.org/onlinepubs/009695399/utilities/printf.html
+		# for documentation of the ' syntax for printf.
 		printf -v hex '%x' "'${1:i:1}"
 		# Add to string
 		res+=$hex
