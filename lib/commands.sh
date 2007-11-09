@@ -58,6 +58,7 @@ unset commands_list commands_modules_functions commands_function_commands
 ## @return 2 If invalid command name
 ## @return 3 If the command already exists (maybe from some other module)
 ## @return 4 If the function already exists for other command.
+## @return 5 If the function in question is not declared.
 #---------------------------------------------------------------------
 commands_register() {
 	# Speed isn't that important here, it is only called at module load after all.
@@ -73,8 +74,8 @@ commands_register() {
 		log_error "commands_register_command: Module \"$module\" gave invalid command name \"$command_name\". First char of command must be alphanumeric."
 		return 2
 	fi
-	if ! [[ $command_name =~ ^[a-zA-Z0-9][^\ ]*( [^ ]+)?$ ]]; then
-		log_error "commands_register_command: Module \"$module\" gave invalid command name \"$command_name\". A command can be at most 2 words and should have no trailing white space."
+	if ! [[ $command_name =~ ^[a-zA-Z0-9][^\ ,]*( [^, ]+)?$ ]]; then
+		log_error "commands_register_command: Module \"$module\" gave invalid command name \"$command_name\". A command can be at most 2 words and should have no trailing white space and may not contain a \",\" (comma)."
 		return 2
 	fi
 	# Bail out if command is already registered.
@@ -88,6 +89,12 @@ commands_register() {
 		return 4
 	fi
 
+	# Does the function itself exist?
+	local full_function_name="module_${module}_handler_${function_name}"
+	if ! declare -F | grep -qe "^declare -f ${full_function_name}$"; then
+		log_error "commands_register_command: Failed to register command from \"$module\": the function $full_function_name does not exist"
+		return 5
+	fi
 	# So it was valid. Lets add it then.
 
 	# Store in module -> function mapping.
@@ -96,7 +103,6 @@ commands_register() {
 		return 1
 	}
 	# Store in command -> function mapping
-	local full_function_name="module_${module}_handler_${function_name}"
 	hash_set 'commands_list' "$command_name" "$full_function_name" || {
 		log_error "commands_register_command: command -> function mapping failed: cmd=\"$command_name\" full_func=\"$full_function_name\"."
 		return 1
@@ -165,7 +171,7 @@ commands_call_command() {
 	if [[ "$3" =~ ^${regex}([a-zA-Z0-9].*) ]]; then
 		local data="${BASH_REMATCH[@]: -1}"
 		# Right, get the parts of the command
-		if [[ $data =~ ^([a-zA-Z0-9][^ ]*)( [^ ]+)?( .*)? ]]; then
+		if [[ $data =~ ^([a-zA-Z0-9][^ ]*)( [^, ]+)?( .*)? ]]; then
 			local firstword="${BASH_REMATCH[1]}"
 			local secondword="${BASH_REMATCH[2]}"
 			local parameters="${BASH_REMATCH[3]}"
