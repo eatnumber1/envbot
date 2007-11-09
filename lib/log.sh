@@ -226,7 +226,7 @@ log_write() {
 ## @param Should be "$@" at first line of function.
 #---------------------------------------------------------------------
 log_debug_caller() {
-	log_file debug.log "DEBUG: ${FUNCNAME[1]} called from ${FUNCNAME[2]} with arguments: $@"
+	log_file debug.log "DEBUG: ${FUNCNAME[1]} called from ${BASH_SOURCE[2]}:${BASH_LINENO[1]} ${FUNCNAME[2]} with arguments: $*"
 }
 
 #---------------------------------------------------------------------

@@ -353,6 +353,7 @@ modules_load() {
 ## @Type Private
 #---------------------------------------------------------------------
 modules_load_from_config() {
+	local module
 	for module in $config_modules; do
 		if [[ -f "${config_modules_dir}/m_${module}.sh" || -d "${config_modules_dir}/m_${module}" ]]; then
 			if ! list_contains modules_loaded "$module"; then
