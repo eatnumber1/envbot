@@ -24,6 +24,12 @@
 #---------------------------------------------------------------------
 
 #---------------------------------------------------------------------
+## List of commands, comma-separated
+## @Type Semi-private
+#---------------------------------------------------------------------
+commands_commands=''
+
+#---------------------------------------------------------------------
 ## List of commands, a hash
 ## @Note Dummy variable to document the fact that it is a hash.
 ## @Type Private
@@ -44,8 +50,21 @@ commands_modules_functions=''
 #---------------------------------------------------------------------
 commands_function_commands=''
 
+#---------------------------------------------------------------------
+## List of commands (by module)
+## @Note Dummy variable to document the fact that it is a hash.
+## @Type Private
+#---------------------------------------------------------------------
+commands_module_commands=''
+
+#---------------------------------------------------------------------
+## Comma separated list of all commands
+## @Type Semi-private
+#---------------------------------------------------------------------
+commands_commands=''
+
 # Just unset dummy variables.
-unset commands_list commands_modules_functions commands_function_commands
+unset commands_list commands_modules_functions commands_function_commands commands_module_commands
 
 #---------------------------------------------------------------------
 ## Register a command.
@@ -112,6 +131,27 @@ commands_register() {
 		log_error "commands_register_command: function -> command mapping failed: func=\"$function_name\" cmd=\"$command_name\"."
 		return 1
 	}
+	# Store in command -> module mapping
+	hash_set 'commands_module_commands' "$command_name" "$module" || {
+		log_error "commands_register_command: command -> module mapping failed: cmd=\"$command_name\" mod=\"$module\"."
+		return 1
+	}
+	# Store in comma-separated command list
+	if [[ $commands_commands ]]; then
+		commands_commands+=",$command_name" || return 1
+	else
+		commands_commands="$command_name" || return 1
+	fi
+}
+
+#---------------------------------------------------------------------
+## Get what module provides a command.
+## @param Command to find.
+## @param Variable to return in
+## @Type Semi-private
+#---------------------------------------------------------------------
+commands_provides() {
+	hash_get "commands_module_commands" "$1" "$2"
 }
 
 #---------------------------------------------------------------------
@@ -139,6 +179,10 @@ commands_unregister() {
 		hash_unset 'commands_function_commands' "$function_name" || return 2
 		# Unset from command -> function hash
 		hash_unset 'commands_list' "$command_name" || return 2
+		# Unset from command -> module mapping
+		hash_unset 'commands_module_commands' "$command_name" || return 2
+		# Remove from command list.
+		list_remove 'commands_commands' "$command_name" 'commands_commands' "," || return 1
 		# Unset function itself.
 		full_function_name="module_${module}_handler_${function_name}"
 		unset "$full_function_name" || return 2
