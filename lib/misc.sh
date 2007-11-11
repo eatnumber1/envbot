@@ -191,16 +191,34 @@ misc_clean_spaces() {
 }
 
 #---------------------------------------------------------------------
-## Remove a value from a space separated list.
+## Strip leading/trailing separator.
+## @Type API
+## @param String to strip
+## @param Variable to return in
+## @param Separator
+#---------------------------------------------------------------------
+misc_clean_delimiter() {
+	local sep="$3" array
+	local IFS="$sep"
+	# Fastest way that is still secure
+	read -ra array <<< "$1"
+	local tmp="${array[*]}"
+	printf -v "$2" '%s' "${tmp#${sep}}"
+}
+
+#---------------------------------------------------------------------
+## Remove a value from a space (or other delimiter) separated list.
 ## @Type API
 ## @param List to remove from.
 ## @param Value to remove.
 ## @param Variable to return new list in.
+## @param Separator (optional, defaults to space)
 #---------------------------------------------------------------------
 list_remove() {
-	local oldlist="${!1}"
-	local newlist="${oldlist//$2}"
-	misc_clean_spaces "$newlist" "$3" # Get rid of the unneeded spaces.
+	local sep=${4:-" "}
+	local oldlist="${sep}${!1}${sep}"
+	local newlist="${oldlist//${sep}${2}${sep}/${sep}}"
+	misc_clean_delimiter "$newlist" "$3" "$sep" # Get rid of the unneeded spaces.
 }
 
 #---------------------------------------------------------------------
