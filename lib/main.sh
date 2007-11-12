@@ -33,9 +33,9 @@
 # Check bash version. We need at least 3.2.x
 # Lets not use anything like =~ here because
 # that may not work on old bash versions.
-if [[ "${BASH_VERSINFO[0]}${BASH_VERSINFO[1]}" -lt 32 ]]; then
+if [[ "${BASH_VERSINFO[0]}${BASH_VERSINFO[1]}${BASH_VERSINFO[2]}" -lt 323 ]]; then
 	echo "Sorry your bash version is too old!"
-	echo "You need at least version 3.2 of bash"
+	echo "You need at least version 3.2.3 of bash"
 	echo "Please install a newer version:"
 	echo " * Either use your distro's packages"
 	echo " * Or see http://www.gnu.org/software/bash/"
