@@ -52,13 +52,20 @@ commands_function_commands=''
 commands_module_commands=''
 
 #---------------------------------------------------------------------
+## List of modules (by command)
+## @Note Dummy variable to document the fact that it is a hash.
+## @Type Private
+#---------------------------------------------------------------------
+commands_commands_module=''
+
+#---------------------------------------------------------------------
 ## Comma separated list of all commands
 ## @Type Semi-private
 #---------------------------------------------------------------------
 commands_commands=''
 
 # Just unset dummy variables.
-unset commands_list commands_modules_functions commands_function_commands commands_module_commands
+unset commands_list commands_modules_functions commands_function_commands commands_module_commands commands_module_commands
 
 #---------------------------------------------------------------------
 ## Register a command.
@@ -126,9 +133,13 @@ commands_register() {
 		return 1
 	}
 	# Store in command -> module mapping
-	hash_set 'commands_module_commands' "$command_name" "$module" || {
+	hash_set 'commands_commands_module' "$command_name" "$module" || {
 		log_error "commands_register_command: command -> module mapping failed: cmd=\"$command_name\" mod=\"$module\"."
 		return 1
+	}
+	# Store in module -> commands mapping (ick!)
+	hash_append 'commands_module_commands' "$module" "$command_name" ',' || {
+		log_error "commands_register_command: module -> command mapping failed: mod=\"$module\" cmd=\"$command_name\"."
 	}
 	# Store in comma-separated command list
 	if [[ $commands_commands ]]; then
@@ -145,6 +156,16 @@ commands_register() {
 ## @Type Semi-private
 #---------------------------------------------------------------------
 commands_provides() {
+	hash_get "commands_commands_module" "$1" "$2"
+}
+
+#---------------------------------------------------------------------
+## Get what commands exist in a module.
+## @param Command to find.
+## @param Variable to return comma separated list in
+## @Type Semi-private
+#---------------------------------------------------------------------
+commands_in_module() {
 	hash_get "commands_module_commands" "$1" "$2"
 }
 
@@ -174,13 +195,15 @@ commands_unregister() {
 		# Unset from command -> function hash
 		hash_unset 'commands_list' "$command_name" || return 2
 		# Unset from command -> module mapping
-		hash_unset 'commands_module_commands' "$command_name" || return 2
+		hash_unset 'commands_commands_module' "$command_name" || return 2
 		# Remove from command list.
 		list_remove 'commands_commands' "$command_name" 'commands_commands' "," || return 1
 		# Unset function itself.
 		full_function_name="module_${module}_handler_${function_name}"
 		unset "$full_function_name" || return 2
 	done
+	# Unset the module -> commands mapping.
+	hash_unset 'commands_module_commands' "$module" || return 2
 	# Finally unset module -> functions mapping.
 	hash_unset 'commands_modules_functions' "$module" || return 2
 }

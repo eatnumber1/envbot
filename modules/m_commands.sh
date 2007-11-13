@@ -65,11 +65,23 @@ module_commands_handler_provides() {
 }
 
 module_commands_handler_commands() {
+	local parameters="$3"
 	local target
 	if [[ $2 =~ ^# ]]; then
 		target="$2"
 	else
 		parse_hostmask_nick "$1" 'target'
 	fi
-	send_msg "$target" "${format_bold}Available commands${format_bold}: $commands_commands"
+	if [[ -z $parameters ]]; then
+		send_msg "$target" "${format_bold}Available commands${format_bold}: $commands_commands"
+	else
+		# So we got a parameter
+		local commands_in_module
+		commands_in_module "$parameters" 'commands_in_module'
+		if [[ -z $commands_in_module ]]; then
+			send_msg "$target" "Module \"$parameters\" does not exist or is not loaded, or provides no commands"
+		else
+			send_msg "$target" "${format_bold}Available commands (in module \"$parameters\")${format_bold}: $commands_in_module"
+		fi
+	fi
 }
