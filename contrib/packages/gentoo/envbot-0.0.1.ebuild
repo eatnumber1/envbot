@@ -11,7 +11,7 @@ SLOT="0"
 KEYWORDS="~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 IUSE="bc bugzilla eix gnutls netcat socat openssl sqlite3 contrib"
 
-DEPEND=">=app-shells/bash-3.2.10"
+DEPEND=">=app-shells/bash-3.2_p10"
 RDEPEND="${DEPEND}
 	openssl? ( dev-libs/openssl )
 	gnutls? ( net-libs/gnutls )
