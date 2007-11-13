@@ -64,7 +64,7 @@ transport_connect() {
 	else
 		myargs="-verify 10"
 	fi
-	[[ $config_server_ssl_verbose -ne 1 ]] && myargs="$myargs -quiet"
+	[[ $config_server_ssl_verbose -ne 1 ]] && myargs+=" -quiet"
 	openssl s_client -connect "$1:$2" $myargs < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
 	transport_pid="$!"
 	echo "$transport_pid" >> "${transport_tmp_dir_file}/pid"

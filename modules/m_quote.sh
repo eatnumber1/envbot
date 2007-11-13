@@ -52,7 +52,6 @@ module_quote_load() {
 	fi
 }
 
-
 module_quote_after_load() {
 	# Return code from last command in a function
 	# will be return code for the function by default.

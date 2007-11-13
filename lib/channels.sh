@@ -54,7 +54,7 @@ channels_part() {
 # Parameters
 #   $1 The channel to add
 channels_add() {
-	channels_current="$channels_current $1"
+	channels_current+=" $1"
 }
 
 # Internal function!

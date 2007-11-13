@@ -217,11 +217,12 @@ modules_unload() {
 		log_error_file modules.log "Can't unload $module because these module(s) depend(s) on it: $(modules_depends_list_deps "$module")"
 		return 3
 	fi
+
 	# Remove hooks from list first in case unloading fails so we can do quit hooks if something break.
 	for hook in $modules_hooks; do
 		# List so we can unset.
 		if list_contains "modules_${hook}" "$module"; then
-			to_unset="$to_unset module_${module}_${hook}"
+			to_unset+=" module_${module}_${hook}"
 		fi
 		newval="$(list_remove "modules_${hook}" "$module")"
 		# Avoid eval
@@ -300,6 +301,7 @@ modules_load() {
 
 # Load modules from the config
 modules_load_from_config() {
+	local module
 	for module in $config_modules; do
 		if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
 			if ! list_contains modules_loaded "$module"; then

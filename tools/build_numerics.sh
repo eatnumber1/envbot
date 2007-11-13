@@ -73,7 +73,7 @@ EOF
 source tools/numerics.txt || { echo 'Failed to source.' >&2; exit 1; }
 
 for index in ${!numeric[*]}; do
-	echo "numeric_${numeric[$index]}='$(printf '%03i' "$index")'"
+	printf "numeric_%s='%03i'\n" "${numeric[$index]}" "$index"
 done
 
 # Same special case as above.

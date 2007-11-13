@@ -75,7 +75,6 @@ module_services_on_connect() {
 	fi
 }
 
-
 module_services_after_disconnect() {
 	# Reset state.
 	module_services_ghost=0
