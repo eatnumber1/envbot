@@ -30,16 +30,23 @@
 #                 #
 ###################
 
-# Check bash version. We need at least 3.2.x
-# Lets not use anything like =~ here because
-# that may not work on old bash versions.
-if [[ "${BASH_VERSINFO[0]}${BASH_VERSINFO[1]}${BASH_VERSINFO[2]}" -lt 323 ]]; then
+# Error to fail with for old bash.
+fail_old_bash() {
 	echo "Sorry your bash version is too old!"
-	echo "You need at least version 3.2.3 of bash"
+	echo "You need at least version 3.2.10 of bash"
 	echo "Please install a newer version:"
 	echo " * Either use your distro's packages"
 	echo " * Or see http://www.gnu.org/software/bash/"
 	exit 2
+}
+
+# Check bash version. We need at least 3.2.10
+# Lets not use anything like =~ here because
+# that may not work on old bash versions.
+if [[ "${BASH_VERSINFO[0]}${BASH_VERSINFO[1]}" -lt 32 ]]; then
+	fail_old_bash
+elif [[ "${BASH_VERSINFO[0]}${BASH_VERSINFO[1]}" -eq 32 && "${BASH_VERSINFO[2]}" -lt 10 ]]; then
+	fail_old_bash
 fi
 
 # We should not run as root.
