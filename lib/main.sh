@@ -60,7 +60,7 @@ fi
 ######################
 
 # Version and url
-declare -r envbot_version='0.0.1-rc1'
+declare -r envbot_version='0.0.1'
 declare -r envbot_homepage='http://envbot.org'
 
 ##############

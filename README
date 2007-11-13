@@ -28,7 +28,7 @@ says it is under GPL-2.
 
 Dependencies
 ------------
-* bash - version 3.2.x should work fine, but not tested on anything below 3.2.17
+* bash - version 3.2.10 or later should work fine, but not tested on anything below 3.2.17
 * Standard POSIX tools. Should be included on any recent and sane Linux
   distro.
 

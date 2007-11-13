@@ -7,8 +7,17 @@ Example (list changes compared to 0.0.1-beta1)
   bzr log -rtag:0.0.1-beta1.. --short
 
 
+0.0.1
+-----
+475        Updated man page.
+472,474    Fixed bash version check.
+471        Fixed an incorrect regular expression in lib/main.sh
+470        Made list_contains use grep -F instead.
+469        Fixed typo in ebuild.
+
+
 0.0.1-rc1
------------
+---------
 465        Backported fix to remove eval from various places.
 463-464    Fixed bug in modules/m_kick_ban.sh that made bot loose part of kick reason sometimes.
 462        Fixed bug in modules/m_join.sh that caused it to never send a reason on part.
