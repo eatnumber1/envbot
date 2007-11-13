@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# -*- coding: UTF8 -*-
+# -*- coding: utf-8 -*-
 #--------------------------
 ##	@Synopsis	Reads specialy formated shell scripts and creates docs
 ##	@Copyright	Copyright 2003, Paul Mahon
