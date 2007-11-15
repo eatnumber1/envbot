@@ -160,5 +160,5 @@ module_modules_handler_modlist() {
 	fi
 	local modlist="${modules_loaded## }"
 	modlist="${modlist%% }"
-	send_msg "$target" "Modules currently loaded: ${modlist//  / }"
+	send_msg "$target" "${format_bold}Modules currently loaded${format_bold}: ${modlist//  / }"
 }
