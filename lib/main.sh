@@ -535,7 +535,6 @@ while true; do
 				for module in $modules_on_PONG; do
 					module_${module}_on_PONG "$sender" "$server2" "$data"
 				done
-			# PING? If not report as unhandled
 		elif [[ $line =~ ^[^:] ]] ;then
 			# ERROR?
 			if [[ "$line" =~ ^ERROR\ +:(.*) ]]; then
@@ -546,6 +545,7 @@ while true; do
 				done
 				# If we get an ERROR we can assume we are disconnected.
 				break
+			# PING? If not report as unhandled
 			elif ! server_handle_ping "$line"; then
 				log_info_file unknown_data.log "A non-sender prefixed line that didn't match any hook: $line"
 			fi
