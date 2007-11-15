@@ -69,10 +69,9 @@ transport_disconnect() {
 #   0 If connection is still alive
 #   1 If it isn't.
 transport_alive() {
-	# This is hackish.
 	local newtime=
 	time_get_current 'newtime'
-	(( newtime - transport_lastvalidtime > 200 )) && return 1
+	(( newtime - transport_lastvalidtime > 300 )) && return 1
 	return 0
 }
 

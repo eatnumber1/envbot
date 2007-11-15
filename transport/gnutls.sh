@@ -71,6 +71,7 @@ transport_connect() {
 	# To be able to wait for error.
 	sleep 2
 	kill -0 "$transport_pid" >/dev/null 2>&1 || return 1
+	time_get_current 'transport_lastvalidtime'
 }
 
 # Called to close connection
@@ -81,13 +82,19 @@ transport_disconnect() {
 	rm -rf "${transport_tmp_dir_file}"
 	exec 3<&-
 	exec 4<&-
+	# To force code to consider this disconnected.
+	transport_lastvalidtime=0
 }
 
 # Return status
 #   0 If connection is still alive
 #   1 If it isn't.
 transport_alive() {
-	kill -0 "$transport_pid" >/dev/null 2>&1
+	kill -0 "$transport_pid" >/dev/null 2>&1 || return 1
+	local newtime=
+	time_get_current 'newtime'
+	(( $newtime - $transport_lastvalidtime > 300 )) && return 1
+	return 0
 }
 
 # Return a line in the variable line.
@@ -97,7 +104,11 @@ transport_alive() {
 transport_read_line() {
 	read -ru 4 -t $envbot_transport_timeout line
 	# Fail.
-	[[ $? -ne 0 ]] && return 1
+	if [[ $? -ne 0 ]]; then
+		return 1
+	else
+		time_get_current 'transport_lastvalidtime'
+	fi
 	line=${line//$'\r'/}
 }
 

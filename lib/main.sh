@@ -372,6 +372,7 @@ while true; do
 	done
 
 	while true ; do
+		line=
 		transport_read_line
 		transport_status="$?"
 		# Still connected?

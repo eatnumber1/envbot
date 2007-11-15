@@ -254,11 +254,12 @@ server_connect() {
 	log_info_stdout "Connecting to \"${config_server}:${config_server_port}\"..."
 	transport_connect "$config_server" "$config_server_port" "$config_server_ssl" "$config_server_bind" || return 1
 	while true; do
+		line=
 		transport_read_line
 		local transport_status="$?"
 		# Still connected?
 		if ! transport_alive; then
-			break
+			return 1
 		fi
 		# Did we timeout waiting for data
 		# or did we get data?
