@@ -26,7 +26,8 @@
 
 module_kick_ban_INIT() {
 	modinit_API='2'
-	modinit_HOOKS='after_load after_connect after_load on_numeric periodic'
+	modinit_HOOKS='after_load after_connect on_numeric periodic'
+	unset module_kick_ban_next_unset module_kick_ban_timed_bans
 	commands_register "$1" 'kick' || return 1
 	commands_register "$1" 'ban' || return 1
 }
@@ -41,9 +42,6 @@ module_kick_ban_REHASH() {
 	return 0
 }
 
-module_kick_ban_after_load() {
-	unset module_kick_ban_next_unset module_kick_ban_timed_bans
-}
 # Lets check if TBAN is supported
 # :photon.kuonet-ng.org 461 envbot TBAN :Not enough parameters.
 # :photon.kuonet-ng.org 304 envbot :SYNTAX TBAN <channel> <duration> <banmask>

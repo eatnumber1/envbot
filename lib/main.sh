@@ -528,9 +528,17 @@ while true; do
 			for module in $modules_on_KILL; do
 				module_${module}_on_KILL "$sender" "$target" "$path" "$reason"
 			done
+		elif [[ "$line" =~ ^:([^ ]*)\ +PONG\ +([^ ]*)\ +:?(.*)$ ]]; then
+				sender="${BASH_REMATCH[1]}"
+				server2="${BASH_REMATCH[2]}"
+				data="${BASH_REMATCH[3]}"
+				for module in $modules_on_PONG; do
+					module_${module}_on_PONG "$sender" "$server2" "$data"
+				done
+			# PING? If not report as unhandled
 		elif [[ $line =~ ^[^:] ]] ;then
 			# ERROR?
-			if [[ "$line" =~ ^ERROR\ :(.*) ]]; then
+			if [[ "$line" =~ ^ERROR\ +:(.*) ]]; then
 				error="${BASH_REMATCH[1]}"
 				log_error "Got ERROR from server: $error"
 				for module in $modules_on_server_ERROR; do
@@ -538,9 +546,7 @@ while true; do
 				done
 				# If we get an ERROR we can assume we are disconnected.
 				break
-			fi
-			# PING? If not report as unhandled
-			if ! server_handle_ping "$line"; then
+			elif ! server_handle_ping "$line"; then
 				log_info_file unknown_data.log "A non-sender prefixed line that didn't match any hook: $line"
 			fi
 		else

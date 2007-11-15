@@ -305,6 +305,16 @@ module_modulename_on_numeric
 		In most cases you DON'T want to return 1 for this. If you do be very very careful.
 
 
+module_modulename_on_PONG
+	Called when bot receives a PONG from server
+	Parameters:
+		$1 = Sender
+		$2 = Second server.
+		$3 = The data.
+	Return status:
+		Not checked.
+
+
 module_modulename_on_server_ERROR
 	# ERROR :Closing link (rfc3092@1.2.3.4) [Killed (AnMaster (testing a kill on inspircd))]
 	# ERROR :Closing Link: [1.2.3.4] (Throttled: Reconnecting too fast) -Email staff@example.com for more information.
