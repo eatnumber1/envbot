@@ -41,7 +41,7 @@ module_ping_REHASH() {
 }
 
 module_ping_periodic() {
-	if [[ $module_ping_counter = 4 ]]; then
+	if [[ $module_ping_counter = 5 ]]; then
 		send_raw "PING :$envbot_time"
 		module_ping_counter=0
 	else
