@@ -34,6 +34,7 @@ export LANG=C
 
 cat << EOF
 #!/bin/bash
+# -*- coding: utf-8 -*-
 ###########################################################################
 #                                                                         #
 #  envbot - an IRC bot in bash                                            #
