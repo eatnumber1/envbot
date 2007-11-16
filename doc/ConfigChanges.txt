@@ -1,5 +1,9 @@
 Any configuration file changes and how to update should be listed here.
 
+Config version 17
+-----------------
+ * Added config_log_colors
+
 Config version 16
 -----------------
  * Added config_commands_private_always

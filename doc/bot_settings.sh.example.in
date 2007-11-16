@@ -24,7 +24,7 @@
 
 # What version this config is at. This is used to check
 # if your config needs updating.
-config_version=16
+config_version=17
 
 ####################
 # General settings #
@@ -124,9 +124,13 @@ config_log_dir="@@logdir@@"
 #     Can be 1 (log) or 0 (don't log)
 config_log_raw=0
 # (*) Should we always log to STDOUT as well?
+#     Note that this doesn't mean it will not log at all if set to 0.
+#     It will still log errors and other important log messages to STDOUT.
 #     This is the same as --verbose.
 #     Can be 1 (log) or 0 (don't log)
 config_log_stdout=0
+# (*) When logging to STDOUT should we use colors?
+config_log_colors=1
 
 
 #############

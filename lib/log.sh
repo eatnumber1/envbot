@@ -29,7 +29,7 @@
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_fatal() {
-	log_stdout "FATAL:   $1"
+	log "FATAL    " "$log_color_fatal" "$1" 1
 }
 
 #---------------------------------------------------------------------
@@ -40,7 +40,7 @@ log_fatal() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_fatal_file() {
-	log_stdout_file "$1" "FATAL:   $2"
+	log "FATAL    " "$log_color_fatal" "$2" 1 "$1"
 }
 
 
@@ -50,7 +50,7 @@ log_fatal_file() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_error() {
-	log_stdout "ERROR:   $1"
+	log "ERROR    " "$log_color_error" "$1" 1
 }
 
 #---------------------------------------------------------------------
@@ -61,7 +61,7 @@ log_error() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_error_file() {
-	log_stdout_file "$1" "ERROR:   $2"
+	log "ERROR    " "$log_color_error" "$2" 1 "$1"
 }
 
 
@@ -71,7 +71,7 @@ log_error_file() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_warning() {
-	log_stdout "WARNING: $1"
+	log "WARNING  " "$log_color_warning" "$1" 1
 }
 
 #---------------------------------------------------------------------
@@ -82,7 +82,7 @@ log_warning() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_warning_file() {
-	log_stdout_file "$1" "WARNING: $2"
+	log "WARNING  " "$log_color_warning" "$2" 1 "$1"
 }
 
 
@@ -92,7 +92,7 @@ log_warning_file() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_info() {
-	log "INFO:    $1"
+	log "INFO     " "$log_color_info" "$1" 0
 }
 
 #---------------------------------------------------------------------
@@ -103,7 +103,7 @@ log_info() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_info_stdout() {
-	log_stdout "INFO:    $1"
+	log "INFO     " "$log_color_info" "$1" 1
 }
 
 #---------------------------------------------------------------------
@@ -116,7 +116,7 @@ log_info_stdout() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_info_stdout_file() {
-	log_stdout_file "$1" "INFO:    $2"
+	log "INFO     " "$log_color_info" "$2" 1 "$1"
 }
 
 #---------------------------------------------------------------------
@@ -126,7 +126,7 @@ log_info_stdout_file() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_info_file() {
-	log_file "$1" "INFO:    $2"
+	log "INFO     " "$log_color_info" "$2" 0 "$1"
 }
 
 #---------------------------------------------------------------------
@@ -135,7 +135,7 @@ log_info_file() {
 ## @param The log message to log
 #---------------------------------------------------------------------
 log_debug() {
-	log_file debug.log "DEBUG:   $1"
+	log "DEBUG    " "" "$1" 0 debug.log
 }
 
 ###########################################################################
@@ -147,7 +147,7 @@ log_debug() {
 ## Logging prefix
 ## @Type Private
 #---------------------------------------------------------------------
-log_prefix="---------------"
+log_prefix="-"
 
 #---------------------------------------------------------------------
 ## Get human readable date.
@@ -159,41 +159,48 @@ log_get_date() {
 }
 
 #---------------------------------------------------------------------
-## Log to main log file.
+## Get escape codes from tput
 ## @Type Private
+## @param capname
+## @param Return variable name
+## @return 0 OK
+## @return 1 Not supported or unknown cap
+## @Note Return variable will be unset if the value is not supported
+#---------------------------------------------------------------------
+log_check_cap() {
+	tput $1 >/dev/null 2>&1
+	if [[ $? -eq 0 ]]; then
+		printf -v "$2" '%s' "$(tput $1)"
+	else
+		printf -v "$2" '%s' ''
+	fi
+}
+
+
+#---------------------------------------------------------------------
+## Log, internal to this file.
+## @Type Private
+## @param Level to log at (ERROR or such, aligned to space)
+## @param Color of level
 ## @param The log message to log
+## @param Force log to stdout (0 or 1)
+## @param Optional extra file to log to.
 #---------------------------------------------------------------------
 log() {
-	log_write "$log_prefix $(log_get_date) $@"
-}
-
-#---------------------------------------------------------------------
-## Log to to a specific log file as well as main log.
-## @Type Private
-## @param The extra log file (relative to the current log dir)
-## @param The log message to log
-#---------------------------------------------------------------------
-log_file() {
-	log_write "$log_prefix $(log_get_date) $2" "0" "$1"
-}
-
-#---------------------------------------------------------------------
-## Always print log message to STDOUT as well
-## @Type Private
-## @param The log message to log
-#---------------------------------------------------------------------
-log_stdout() {
-	log_write "$log_prefix $(log_get_date) $@" "1"
-}
-
-#---------------------------------------------------------------------
-## Log to to a specific log file as well as main log and STDOUT.
-## @Type Private
-## @param The extra log file (relative to the current log dir)
-## @param The log message to log
-#---------------------------------------------------------------------
-log_stdout_file() {
-	log_write "$log_prefix $(log_get_date) $2" "1" "$1"
+	# Log file exists?
+	[[ $log_file ]] || return 0
+	# Log date.
+	local logdate="$(log_get_date)"
+	# ncm = No Color Message
+	local ncm="$log_prefix $logdate ${1}${3}"
+	echo "$ncm" >> "$log_file"
+	# Extra log file?
+	[[ $5 ]] && echo "$ncm" >> "$log_dir/$5"
+	# STDOUT?
+	if [[ $config_log_stdout -eq 1 || $4 -eq 1 ]]; then
+		# Colors and then get rid of bell chars.
+		echo "${log_color_std}${log_prefix}${log_color_none} $logdate ${2}${1}${log_color_none}${3//$'\007'}"
+	fi
 }
 
 #---------------------------------------------------------------------
@@ -202,7 +209,7 @@ log_stdout_file() {
 ## @param Line to log
 #---------------------------------------------------------------------
 log_raw_in() {
-	[[ $config_log_raw = 1 ]] && log_write "< $(log_get_date) $@"
+	[[ $config_log_raw = 1 ]] && log_raw "<" "$log_color_in" "$1"
 }
 #---------------------------------------------------------------------
 ## Used internally in core to log raw line
@@ -210,24 +217,29 @@ log_raw_in() {
 ## @param Line to log
 #---------------------------------------------------------------------
 log_raw_out() {
-	[[ $config_log_raw = 1 ]] && log_write "> $(log_get_date) $@"
+	[[ $config_log_raw = 1 ]] && log_raw ">" "$log_color_out" "$1"
 }
 
 
 #---------------------------------------------------------------------
 ## Internal function to this file.
 ## @Type Private
+## @param Prefix to use
+## @param Color of prefix
 ## @param Message to log
-## @param If 1 always log to STDOUT as well
-## @param May be optional extra log file
 #---------------------------------------------------------------------
-log_write() {
+log_raw() {
+	# Log file exists?
 	[[ $log_file ]] || return 0
-	echo "$1" >> "$log_file"
-	[[ $3 ]] && echo "$1" >> "$log_dir/$3"
-	if [[ $config_log_stdout -eq 1 || $2 -eq 1 ]]; then
+	# No Color Message
+	# Log date.
+	local logdate="$(log_get_date)"
+	# No colors for file
+	echo "$1 $logdate $3" >> "$log_dir/raw.log"
+	# STDOUT?
+	if [[ $config_log_stdout -eq 1 ]]; then
 		# Get rid of bell chars.
-		echo "${1//$'\007'}"
+		echo "${2}${1}${log_color_none} $logdate RAW      ${3//$'\007'}"
 	fi
 }
 
@@ -251,6 +263,22 @@ log_init() {
 	if [[ $? -ne 0 ]]; then
 		echo "Error: couldn't create logfile"
 		envbot_quit 1
+	fi
+
+	# Should there be colors?
+	if [[ $config_log_colors -eq 1 ]]; then
+		local bold
+		# Generate colors
+		log_check_cap sgr0      log_color_none      # No color
+		log_check_cap bold      bold                # Bold local
+		log_check_cap 'setaf 1' log_color_error     # Red
+		log_color_fatal="${log_color_error}${bold}" # Red bold
+		log_check_cap 'setaf 3' log_color_warning   # Yellow
+		log_check_cap 'setaf 2' log_color_info      # Green
+		log_check_cap 'setaf 4' log_color_std       # Blue bold, for standard prefix
+		log_color_std+="${bold}"
+		log_check_cap 'setaf 5' log_color_in        # Magenta, for prefix
+		log_check_cap 'setaf 6' log_color_out       # Cyan, for prefix
 	fi
 
 	echo "Log directory is $log_dir"
