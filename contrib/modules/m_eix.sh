@@ -51,9 +51,8 @@ module_eix_REHASH() {
 # Check for eix
 module_eix_after_load() {
 	# Check (silently) for eix
-	type -p eix &> /dev/null
-	if [[ $? -ne 0 ]]; then
-		log_error "Couldn't find eix command line tool. The eix module depend on that tool."
+	if ! hash eix >/dev/null 2>&1; then
+		log_error "Couldn't find \"eix\" command line tool. The eix module depend on that tool."
 		return 1
 	fi
 	# Flood limiting.
