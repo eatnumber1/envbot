@@ -61,7 +61,7 @@ module_convert_handler_convert() {
 	fi
 	local parameters="$3"
 	# Format: convert <value> <in unit> <out unit>
-	if [[ "$parameters" =~ ^([-0-9]+)\ ([a-zA-Z0-9^/*]+)\ (to\ )?([a-zA-Z0-9^/*]+) ]]; then
+	if [[ "$parameters" =~ ^([-0-9]+)\ +([a-zA-Z0-9^/*]+)\ +(to\ +)?([a-zA-Z0-9^/*]+) ]]; then
 		local value="${BASH_REMATCH[1]}"
 		local inunit="${BASH_REMATCH[2]}"
 		local outunit="${BASH_REMATCH[@]: -1}"
