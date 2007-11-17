@@ -33,7 +33,7 @@ module_convert_INIT() {
 		return 1
 	fi
 	# Is it GNU units?
-	if units --help >/dev/null 2>&1; then
+	if units --help > /dev/null 2>&1; then
 		module_convert_gnu=1
 	else
 		module_convert_gnu=0

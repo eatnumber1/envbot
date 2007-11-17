@@ -32,11 +32,11 @@ transport_supports="ipv4 ipv6 ssl"
 #   0 yes
 #   1 no
 transport_check_support() {
-	type -p gnutls-cli >/dev/null || {
+	hash gnutls-cli >/dev/null 2>&1 || {
 		echo "ERROR: Can't find gnutls-cli (needed for this transport)"
 		return 1
 	}
-	type -p mkfifo >/dev/null || {
+	hash mkfifo >/dev/null 2>&1 || {
 		echo "ERROR: Can't find mkfifo (needed for this transport)"
 		return 1
 	}

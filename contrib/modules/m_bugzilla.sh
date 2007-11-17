@@ -52,8 +52,7 @@ module_bugzilla_REHASH() {
 # Called after module has loaded.
 # Check for bugz
 module_bugzilla_after_load() {
-	type -p bugz &> /dev/null
-	if [[ $? -ne 0 ]]; then
+	if ! hash bugz > /dev/null 2>&1; then
 		log_error "Couldn't find bugz command line tool. The bugzilla module depend on that tool (emerge pybugz to get it on Gentoo)."
 		return 1
 	fi

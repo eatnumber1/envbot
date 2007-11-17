@@ -47,8 +47,7 @@ module_sqlite3_REHASH() {
 # Called after module has loaded.
 module_sqlite3_after_load() {
 	# Check (silently) for sqlite3
-	type -p sqlite3 &> /dev/null
-	if [[ $? -ne 0 ]]; then
+	if ! hash sqlite3 > /dev/null 2>&1; then
 		log_error "Couldn't find sqlite3 command line tool. The sqlite3 module depend on that tool."
 		return 1
 	fi

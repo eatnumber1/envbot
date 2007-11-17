@@ -32,11 +32,11 @@ transport_check_support=''
 #   0 Yes
 #   1 No
 transport_check_support() {
-	type -p socat >/dev/null || {
+	hash socat >/dev/null 2>&1 || {
 		echo "ERROR: Can't find socat (needed for this transport)"
 		return 1
 	}
-	type -p mkfifo >/dev/null || {
+	hash mkfifo >/dev/null 2>&1 || {
 		echo "ERROR: Can't find mkfifo (needed for this transport)"
 		return 1
 	}
