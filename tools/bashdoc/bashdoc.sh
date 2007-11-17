@@ -528,7 +528,7 @@ mkdir -p "$OUT_DIR" || {
 if [[ $NOCSS = 0 ]]; then
 	print_info "Writing CSS"
 	# Copy stylesheet to output directory.
-	cat <<- EOF >> "${OUT_DIR}/style.css"
+	cat <<- EOF > "${OUT_DIR}/style.css"
 	/* Based on Trac CSS */
 	body {
 		background: #fff;
