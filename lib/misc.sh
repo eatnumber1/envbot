@@ -258,7 +258,7 @@ security_assert_argc() {
 	local min="$1" max="$2"
 	shift 2
 	if [[ $# -lt $min || $# -gt $max ]]; then
-		log_error "Security sensitive function ${FUNCNAME[1]} should have had between $min and $max parameters but had ${BASH_ARGC[1]} instead."
+		log_error "Security sensitive function ${FUNCNAME[1]} should have had between $min and $max parameters but had $# instead."
 		log_error "Security sensitive function ${FUNCNAME[1]} was called from ${BASH_SOURCE[2]}:${BASH_LINENO[1]} ${FUNCNAME[2]} with these parameters: $*"
 		log_error "This should be reported as a bug."
 		return 1
