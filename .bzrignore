@@ -1,10 +1,10 @@
 *~
-bot_settings.sh
-./logs/*.log
-./data/faq.txt
-./data/*.db
-./data/quotes.txt
-./logs/*
 ./bot_settings.sh.example
+./data/*.db
+./data/faq.txt
+./data/quotes.txt
 ./doc/api/private-*
 ./doc/api/public-*
+./logs/*
+./logs/*.log
+bot_settings.sh
