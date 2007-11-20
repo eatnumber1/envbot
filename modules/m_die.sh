@@ -48,7 +48,7 @@ module_die_handler_die() {
 		if [[ $parameters ]]; then
 			reason=": $parameters"
 		fi
-		bot_quit "Dying ($1)$reason"
+		bot_quit "Dying ($sender)$reason"
 	else
 		access_fail "$sender" "make the bot die" "owner"
 	fi
@@ -63,7 +63,7 @@ module_die_handler_restart() {
 		if [[ $parameters ]]; then
 			reason=": $parameters"
 		fi
-		bot_restart "Restarting ($1)$reason"
+		bot_restart "Restarting ($sender)$reason"
 	else
 		access_fail "$sender" "make the bot restart" "owner"
 	fi

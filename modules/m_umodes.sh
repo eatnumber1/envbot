@@ -54,8 +54,8 @@ module_umodes_after_connect() {
 }
 
 # Called after bot has connected
-# Same HACK as in m_kick_ban.sh
 module_umodes_after_load() {
+	# Check if connected first
 	if [[ $server_connected -eq 1 ]]; then
 		module_umodes_set_modes
 	fi

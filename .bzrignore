@@ -5,6 +5,5 @@
 ./data/quotes.txt
 ./doc/api/private-*
 ./doc/api/public-*
-/logs/*
-./logs/*.log
+./logs/*
 bot_settings.sh
