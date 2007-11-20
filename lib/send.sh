@@ -48,7 +48,7 @@ send_raw() {
 		sleep 1
 	fi
 	time_get_current 'send_last'
-	send_raw_flood "$@"
+	send_raw_flood "$*"
 }
 
 #---------------------------------------------------------------------
@@ -58,9 +58,9 @@ send_raw() {
 ## @param Message
 #---------------------------------------------------------------------
 send_msg() {
-	local target="$1"
-	shift 1
-	send_raw "PRIVMSG ${target} :${@}"
+	# Don't do anything if no message
+	[[ -z $2 ]] && return 0
+	send_raw "PRIVMSG ${1} :${2}"
 }
 
 #---------------------------------------------------------------------
@@ -70,9 +70,9 @@ send_msg() {
 ## @param Message
 #---------------------------------------------------------------------
 send_notice() {
-	local target="$1"
-	shift 1
-	send_raw "NOTICE ${target} :${@}"
+	# Don't do anything if no message
+	[[ -z $2 ]] && return 0
+	send_raw "NOTICE ${1} :${2}"
 }
 
 #---------------------------------------------------------------------
@@ -82,9 +82,9 @@ send_notice() {
 ## @param Message
 #---------------------------------------------------------------------
 send_ctcp() {
-	local target="$1"
-	shift 1
-	send_msg "${target}" $'\1'"${@}"$'\1'
+	# Don't do anything if no message
+	[[ -z $2 ]] && return 0
+	send_msg "$1" $'\1'"${2}"$'\1'
 }
 
 #---------------------------------------------------------------------
@@ -94,9 +94,9 @@ send_ctcp() {
 ## @param Message
 #---------------------------------------------------------------------
 send_nctcp() {
-	local target="$1"
-	shift 1
-	send_notice "${target}" $'\1'"${@}"$'\1'
+	# Don't do anything if no message
+	[[ -z $2 ]] && return 0
+	send_notice "$1" $'\1'"${2}"$'\1'
 }
 
 #---------------------------------------------------------------------
@@ -105,8 +105,7 @@ send_nctcp() {
 ## @param New nick
 #---------------------------------------------------------------------
 send_nick() {
-	local nick="$1"
-	send_raw "NICK ${nick}"
+	send_raw "NICK ${1}"
 }
 
 #---------------------------------------------------------------------
@@ -158,8 +157,8 @@ send_raw_flood_nolog() {
 ## @Type Semi-private
 #---------------------------------------------------------------------
 send_raw_flood() {
-	log_raw_out "$@"
-	transport_write_line "$@"$'\r'
+	log_raw_out "$*"
+	transport_write_line "$*"$'\r'
 }
 
 ###########################################################################
