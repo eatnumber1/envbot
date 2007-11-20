@@ -130,13 +130,33 @@ config_validate_check_exists() {
 ## @Type Private
 #---------------------------------------------------------------------
 config_validate() {
-	# Logging is not initialized yet at this point, use echo.
+	# Note: normal logging is not initialized yet at this point,
+	# so we use config_dolog_fatal, that calls normal logging in case
+	# logging is loaded (like rehash).
+
+	# General settings
 	config_validate_check_exists config_firstnick
+	config_validate_check_exists config_ident
+	config_validate_check_exists config_gecos
+
+	# Server settings
+	config_validate_check_exists config_server
+	config_validate_check_exists config_server_port
+	config_validate_check_exists config_server_ssl
+
 	# Logging
 	config_validate_check_exists config_log_dir
 	config_validate_check_exists config_log_stdout
 	config_validate_check_exists config_log_raw
 	config_validate_check_exists config_log_colors
+
+	# Commands
+	config_validate_check_exists config_commands_listenregex
+	config_validate_check_exists config_commands_private_always
+
+	# Feedback
+	config_validate_check_exists config_feedback_unknown_commands
+
 	# Access
 	if [[ -z "${config_access_mask[1]}" ]]; then
 		config_dolog_fatal "YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
@@ -148,23 +168,28 @@ config_validate() {
 		config_dolog_fatal "AND THAT OWNER MUST BE THE FIRST ONE (config_access_capab[1] that is)."
 		envbot_quit 1
 	fi
+
+	# Transports
+	config_validate_check_exists "config_transport_dir"
+	if [[ ! -d "${config_transport_dir}" ]]; then
+		config_dolog_fatal "The transport directory ${config_transport_dir} doesn't seem to exist"
+		envbot_quit 2
+	fi
+	config_validate_check_exists "config_transport"
+	if [[ ! -r "${config_transport_dir}/${config_transport}.sh" ]]; then
+		config_dolog_fatal "The transport ${config_transport} doesn't seem to exist"
+		envbot_quit 2
+	fi
+
+	# Modules
+	config_validate_check_exists config_modules_dir
 	if ! [[ -d "$config_modules_dir" ]]; then
 		if ! list_contains transport_supports "bind"; then
 			config_dolog_fatal "$config_modules_dir DOES NOT EXIST OR IS NOT A DIRECTORY."
 			envbot_quit 1
 		fi
 	fi
-	# Transports
-	config_validate_check_exists "config_transport_dir"
-	config_validate_check_exists "config_transport"
-	if [[ ! -d "${config_transport_dir}" ]]; then
-		config_dolog_fatal "The transport directory ${config_transport_dir} doesn't seem to exist"
-		envbot_quit 2
-	fi
-	if [[ ! -r "${config_transport_dir}/${config_transport}.sh" ]]; then
-		config_dolog_fatal "The transport ${config_transport} doesn't seem to exist"
-		envbot_quit 2
-	fi
+	config_validate_check_exists config_modules
 }
 
 #---------------------------------------------------------------------

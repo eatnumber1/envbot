@@ -41,6 +41,10 @@ config_ident='rfc3092'
 config_gecos='ietf.org/rfc/rfc3092'
 
 
+###################
+# Server settings #
+###################
+
 # Server to use
 config_server='irc.kuonet-ng.org'
 # What port to use. Normally 6667 works for non SSL connections.
@@ -62,6 +66,11 @@ config_server_ssl_verbose=0
 config_server_bind=""
 # If this is empty don't use a server password.
 config_server_passwd=""
+
+
+##################
+# Access control #
+##################
 
 # (*) Access regexes
 #     Without at least one set, the bot won't start
