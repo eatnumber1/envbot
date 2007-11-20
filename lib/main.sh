@@ -270,7 +270,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # This is hackish, it should be in config.sh (config_validate)
-# The reason is that we need to load transport before libraries:
+# The reason is that we need to check some things before we can load config.sh
 if [[ -z "$config_version" ]]; then
 	echo "ERROR: YOU MUST SET THE CORRECT config_version IN THE CONFIG"
 	envbot_quit 2
@@ -289,23 +289,6 @@ fi
 
 # Must be checked here and not in validate_config because of
 # loading order.
-if [[ ! -d "${config_transport_dir}" ]]; then
-	echo "ERROR: The transport directory ${config_transport_dir} doesn't seem to exist"
-	envbot_quit 2
-fi
-if [[ ! -r "${config_transport_dir}/${config_transport}.sh" ]]; then
-	echo "ERROR: The transport ${config_transport} doesn't seem to exist"
-	envbot_quit 2
-fi
-echo "Loading transport"
-source "${config_transport_dir}/${config_transport}.sh"
-
-if ! transport_check_support; then
-	echo "ERROR: The transport reported it can't work on this system or with this configuration."
-	echo "Please read any other errors displayed above and consult documentation for the transport module you are using."
-	envbot_quit 2
-fi
-
 if [[ -z "$library_dir" ]]; then
 	echo "ERROR: No library directory set, you probably didn't use the wrapper program to start envbot"
 	envbot_quit 1
@@ -332,6 +315,19 @@ config_validate
 time_init
 log_init
 debug_init
+
+log_info_stdout "Loading transport"
+source "${config_transport_dir}/${config_transport}.sh"
+if [[ $? -ne 0 ]]; then
+	log_fatal "Couldn't load transport. Couldn't load the file..."
+	envbot_quit 2
+fi
+
+if ! transport_check_support; then
+	log_fatal "The transport reported it can't work on this system or with this configuration."
+	log_fatal "Please read any other errors displayed above and consult documentation for the transport module you are using."
+	envbot_quit 2
+fi
 
 # Now logging functions can be used.
 

@@ -29,26 +29,37 @@
 ## @return 0 Success.
 ## @return 2 Not same config version.
 ## @return 3 Failed to source. The bot should not be in an undefined state.
-## @return 4 Failed to source. The bot may be in an undefined state.
+## @return 4 Config validation on faked source failed. The bot should not be in an undefined state.
+## @return 5 Failed to source. The bot may be in an undefined state.
+## @Note If config validation fails at REAL source, the bot may quit. However this should never happen.
 #---------------------------------------------------------------------
 config_rehash() {
 	local new_conf_ver="$(grep -E '^config_version=' "$config_file")"
 	if ! [[ $new_conf_ver =~ ^config_version=$config_current_version ]]; then
-		log_error "REHASH: Not same config version"
+		log_error "REHASH: Not same config version. Rehash aborted."
 		return 2
 	fi
 	# Try sourceing in a subshell first to catch errors
 	# without causing bot to break
 	( source "$config_file" )
 	if [[ $? -ne 0 ]]; then
-		log_error "REHASH: Failed faked source."
+		log_error "REHASH: Failed faked source. Rehash aborted. (TIP: Check for syntax errors in config and any message above this message.)"
 		return 3
+	fi
+	# HACK: Subshell, then unset all but two config_ variables (one is readonly, the other is needed to validate)
+	# Then source config file and run validation on it.
+	( unset -v $(sed 's/ *config_current_version */ /g;s/ *config_file */ /g' <<<"${!config_*}")
+		source "$config_file"
+		config_validate && config_validate_transport )
+	if [[ $? -ne 0 ]]; then
+		log_error "REHASH: Failed config validation on new config. Rehash aborted."
+		return 4
 	fi
 	# Source for real if that worked
 	source "$config_file"
 	if [[ $? -ne 0 ]]; then
-		log_error "REHASH: Failed real source."
-		return 4
+		log_error "REHASH: Failed real source. BOT MAY BE IN UNDEFINED STATE."
+		return 5
 	fi
 	# Lets force command line -v, it may have been overwritten by config.
 	if [[ $force_verbose -eq 1 ]]; then
@@ -79,53 +90,104 @@ config_rehash() {
 # Internal functions to core or this file below this line!                #
 # Module authors: go away                                                 #
 ###########################################################################
+
+#---------------------------------------------------------------------
+## This will call logging if logging is setup,
+## otherwise just print to STDOUT, with prefix
+## @Type Private
+#---------------------------------------------------------------------
+config_dolog_fatal() {
+	if [[ $log_file ]]; then
+		log_fatal "$1"
+	else
+		echo "FATAL ERROR: $1"
+	fi
+}
+
+#---------------------------------------------------------------------
+## Returns an error if the variable in question is empty/not set
+## @Note Works only for non-array variables
+## @Type Private
+## @param Variable name
+## @param Extra error line(s) to append (optional, one parameter for each extra line)
+#---------------------------------------------------------------------
+config_validate_check_exists() {
+	if [[ -z "${!1}" ]]; then
+		config_dolog_fatal "YOU MUST SET $1 IN THE CONFIG"
+		shift
+		# Do the rest of the messages
+		local line=
+		for line in "$@"; do
+			config_dolog_fatal "$line"
+		done
+		envbot_quit 2
+	fi
+}
+
+
 #---------------------------------------------------------------------
 ## Validate config file
 ## @Type Private
 #---------------------------------------------------------------------
 config_validate() {
-	if [[ -z "$config_firstnick" ]]; then
-		echo "ERROR: YOU MUST SET A config_firstnick IN THE CONFIG"
-		envbot_quit 1
-	fi
-	if [[ -z "$config_log_dir" ]]; then
-		echo "ERROR: YOU MUST SET A config_log_dir IN THE CONFIG"
-		envbot_quit 1
-	fi
-	if [[ -z "$config_log_stdout" ]]; then
-		echo "ERROR: YOU MUST SET config_log_stdout IN THE CONFIG"
-		envbot_quit 1
-	fi
+	# Logging is not initialized yet at this point, use echo.
+	config_validate_check_exists config_firstnick
+	# Logging
+	config_validate_check_exists config_log_dir
+	config_validate_check_exists config_log_stdout
+	config_validate_check_exists config_log_raw
+	config_validate_check_exists config_log_colors
+	# Access
 	if [[ -z "${config_access_mask[1]}" ]]; then
-		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
-		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_access_mask[1] that is)."
+		config_dolog_fatal "YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
+		config_dolog_fatal "AND THAT OWNER MUST BE THE FIRST ONE (config_access_mask[1] that is)."
 		envbot_quit 1
 	fi
 	if ! list_contains "config_access_capab[1]" "owner"; then
-		echo "ERROR: YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
-		echo "       AND THAT OWNER MUST BE THE FIRST ONE (config_access_capab[1] that is)."
+		config_dolog_fatal "YOU MUST SET AT LEAST ONE OWNER IN EXAMPLE CONFIG"
+		config_dolog_fatal "AND THAT OWNER MUST BE THE FIRST ONE (config_access_capab[1] that is)."
 		envbot_quit 1
 	fi
+	if ! [[ -d "$config_modules_dir" ]]; then
+		if ! list_contains transport_supports "bind"; then
+			config_dolog_fatal "$config_modules_dir DOES NOT EXIST OR IS NOT A DIRECTORY."
+			envbot_quit 1
+		fi
+	fi
+	# Transports
+	config_validate_check_exists "config_transport_dir"
+	config_validate_check_exists "config_transport"
+	if [[ ! -d "${config_transport_dir}" ]]; then
+		config_dolog_fatal "The transport directory ${config_transport_dir} doesn't seem to exist"
+		envbot_quit 2
+	fi
+	if [[ ! -r "${config_transport_dir}/${config_transport}.sh" ]]; then
+		config_dolog_fatal "The transport ${config_transport} doesn't seem to exist"
+		envbot_quit 2
+	fi
+}
+
+#---------------------------------------------------------------------
+## Validate some settings from config file that can only be done after
+## transport was loaded.
+## @Type Private
+#---------------------------------------------------------------------
+config_validate_transport() {
+	# At this point logging is enabled, we can use it.
 	if [[ $config_server_ssl -ne 0 ]]; then
 		if ! list_contains transport_supports "ssl"; then
-			echo "ERROR: THIS TRANSPORT DOES NOT SUPORT SSL"
+			log_fatal "THIS TRANSPORT DOES NOT SUPORT SSL"
 			envbot_quit 1
 		fi
 	else
 		if ! list_contains transport_supports "nossl"; then
-			echo "ERROR: THIS TRANSPORT REQUIRES SSL"
+			log_fatal "THIS TRANSPORT REQUIRES SSL"
 			envbot_quit 1
 		fi
 	fi
 	if [[ "$config_server_bind" ]]; then
 		if ! list_contains transport_supports "bind"; then
-			echo "ERROR: THIS TRANSPORT DOES NOT SUPORT BINDING AN IP"
-			envbot_quit 1
-		fi
-	fi
-	if ! [[ -d "$config_modules_dir" ]]; then
-		if ! list_contains transport_supports "bind"; then
-			echo "ERROR: $config_modules_dir DOES NOT EXIST OR IS NOT A DIRECTORY."
+			log_fatal "THIS TRANSPORT DOES NOT SUPORT BINDING AN IP"
 			envbot_quit 1
 		fi
 	fi

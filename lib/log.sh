@@ -187,7 +187,7 @@ log_check_cap() {
 ## @param Optional extra file to log to.
 #---------------------------------------------------------------------
 log() {
-	# Log file exists?
+	# Log file is set?
 	[[ $log_file ]] || return 0
 	# Log date.
 	local logdate="$(log_get_date)"
@@ -229,7 +229,7 @@ log_raw_out() {
 ## @param Message to log
 #---------------------------------------------------------------------
 log_raw() {
-	# Log file exists?
+	# Log file is set?
 	[[ $log_file ]] || return 0
 	# No Color Message
 	# Log date.
@@ -281,5 +281,5 @@ log_init() {
 		log_check_cap 'setaf 6' log_color_out       # Cyan, for prefix
 	fi
 
-	echo "Log directory is $log_dir"
+	log_info_stdout "Log directory is $log_dir"
 }

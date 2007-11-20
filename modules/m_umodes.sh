@@ -60,4 +60,3 @@ module_umodes_after_load() {
 		module_umodes_set_modes
 	fi
 }
-

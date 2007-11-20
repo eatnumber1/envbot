@@ -43,14 +43,15 @@ module_rehash_REHASH() {
 ## @param Sender
 #---------------------------------------------------------------------
 module_rehash_dorehash() {
-	local sender="$1"
+	local sender="$1" status_message
 	config_rehash
-	local status_message status=$?
+	local status=$?
 	case $status in
 		0) status_message="Rehash successful" ;;
-		2) status_message="The new config is not the same version as the bot. Rehash won't work" ;;
-		3) status_message="Failed to source it but the bot should not be in an undefined state" ;;
-		4) status_message="Failed to source it and the bot may be in an undefined state" ;;
+		2) status_message="The new config is not the same version as the bot. Rehash won't work." ;;
+		3) status_message="Failed to source it, but the bot should not be in an undefined state." ;;
+		4) status_message="Configuration validation on new config failed, but the bot should not be in an undefined state." ;;
+		5) status_message="Failed to source it and the bot may be in an undefined state." ;;
 		*) status_message="Unknown error (code $status)" ;;
 	esac
 	local sendernick
