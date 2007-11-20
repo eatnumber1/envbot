@@ -40,11 +40,11 @@ transport_supports="ipv4 nossl bind"
 #   1 no
 transport_check_support() {
 	[[ -x "$config_transport_netcat_path" ]] ||  {
-		echo "ERROR: Can't find netcat (needed for this transport)"
+		log_fatal "Can't find netcat (needed for this transport)"
 		return 1
 	}
 	hash mkfifo >/dev/null 2>&1 ||  {
-		echo "ERROR: Can't find mkfifo (needed for this transport)"
+		log_fatal "Can't find mkfifo (needed for this transport)"
 		return 1
 	}
 	return 0
@@ -126,5 +126,5 @@ transport_read_line() {
 #   $* send this
 # Return code not checked.
 transport_write_line() {
-	kill -0 "$transport_pid" >/dev/null 2>&1 && echo "$@" >&3
+	kill -0 "$transport_pid" >/dev/null 2>&1 && echo "$*" >&3
 }

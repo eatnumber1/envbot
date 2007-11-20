@@ -33,11 +33,11 @@ transport_check_support=''
 #   1 No
 transport_check_support() {
 	hash socat >/dev/null 2>&1 || {
-		echo "ERROR: Can't find socat (needed for this transport)"
+		log_fatal "Can't find socat (needed for this transport)"
 		return 1
 	}
 	hash mkfifo >/dev/null 2>&1 || {
-		echo "ERROR: Can't find mkfifo (needed for this transport)"
+		log_fatal "Can't find mkfifo (needed for this transport)"
 		return 1
 	}
 	# Build transport_supports
@@ -54,7 +54,7 @@ transport_check_support() {
 		transport_supports+=" ssl"
 	fi
 	if [[ -z $config_transport_socat_protocol_family ]]; then
-		echo "ERROR: you need to set config_transport_socat_protocol_family in your config to either ipv4 or ipv6."
+		log_fatal "You need to set config_transport_socat_protocol_family in your config to either ipv4 or ipv6."
 		return 1
 	fi
 	# Check for older version
@@ -180,5 +180,5 @@ transport_read_line() {
 #   $* send this
 # Return code not checked.
 transport_write_line() {
-	kill -0 "$transport_pid" >/dev/null 2>&1 && echo "$@" >&3
+	kill -0 "$transport_pid" >/dev/null 2>&1 && echo "$*" >&3
 }
