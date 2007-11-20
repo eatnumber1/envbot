@@ -25,7 +25,7 @@
 
 module_umodes_INIT() {
 	modinit_API='2'
-	modinit_HOOKS='after_connect'
+	modinit_HOOKS='after_connect after_load'
 }
 
 module_umodes_UNLOAD() {
@@ -52,3 +52,12 @@ module_umodes_set_modes() {
 module_umodes_after_connect() {
 	module_umodes_set_modes
 }
+
+# Called after bot has connected
+# Same HACK as in m_kick_ban.sh
+module_umodes_after_load() {
+	if [[ $server_connected -eq 1 ]]; then
+		module_umodes_set_modes
+	fi
+}
+
