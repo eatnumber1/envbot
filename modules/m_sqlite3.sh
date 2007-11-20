@@ -23,14 +23,7 @@
 ## This module allows other modules to access a SQLite3 database in a
 ## "simple" way.
 #---------------------------------------------------------------------
-###########################################
-# WARNING WARNING WARNING WARNING WARNING #
-#                                         #
-#    Use UTF8 when editing this file!!    #
-#      Otherwise the file WILL break      #
-#                                         #
-# WARNING WARNING WARNING WARNING WARNING #
-###########################################
+
 module_sqlite3_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load'
@@ -63,14 +56,15 @@ module_sqlite3_after_load() {
 }
 
 #---------------------------------------------------------------------
-## Make string safe for SQL.
+## Make string safe for SQLite3.
 ## @Type API
 ## @param String to clean
-## @FIXME We just discard double quotes at the moment.
+## @Note IMPORTANT FOR SECURITY!: Only use the result inside single
+## @Note quotes ('), NEVER inside double quotes (").
+## @Note The output isn't safe for that.
 #---------------------------------------------------------------------
 module_sqlite3_clean_string() {
-	# \055 = -, yes hackish workaround.
-	tr -Cd 'A-Za-z0-9\055 ,;.:_<>*|~^!"#%&/()=?+\@${}[]+ÅÄÖåäö'\' <<< "$1" | sed 's/\\/\\\\/g'";s/'/''/g"
+	sed "s/'/''/g" <<< "$1"
 }
 
 #---------------------------------------------------------------------
