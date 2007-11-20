@@ -44,7 +44,11 @@ module_die_handler_die() {
 	if access_check_owner "$sender"; then
 		local parameters="$3"
 		access_log_action "$sender" "made the bot die with reason: $parameters"
-		bot_quit "$parameters"
+		local reason=
+		if [[ $parameters ]]; then
+			reason=": $parameters"
+		fi
+		bot_quit "Dying ($1)$reason"
 	else
 		access_fail "$sender" "make the bot die" "owner"
 	fi
@@ -55,7 +59,11 @@ module_die_handler_restart() {
 	if access_check_owner "$sender"; then
 		local parameters="$3"
 		access_log_action "$sender" "made the bot restart with reason: $parameters"
-		bot_restart "$parameters"
+		local reason=
+		if [[ $parameters ]]; then
+			reason=": $parameters"
+		fi
+		bot_restart "Restarting ($1)$reason"
 	else
 		access_fail "$sender" "make the bot restart" "owner"
 	fi
