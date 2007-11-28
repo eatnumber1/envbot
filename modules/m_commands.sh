@@ -24,6 +24,9 @@
 ## Command-related utility commands
 #---------------------------------------------------------------------
 
+helpentry_commands_provides_syntax='<command>'
+helpentry_commands_provides_description='Shows which module provides command <command>'
+
 module_commands_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
