@@ -24,7 +24,7 @@
 #---------------------------------------------------------------------
 
 #---------------------------------------------------------------------
-## List of commands, a hash
+## List of commands (maps to function for the command), a hash
 ## @Note Dummy variable to document the fact that it is a hash.
 ## @Type Private
 #---------------------------------------------------------------------

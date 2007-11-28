@@ -358,16 +358,33 @@ while true; do
 	for module in $modules_before_connect; do
 		module_${module}_before_connect
 	done
-	server_connect || {
-		log_error "Connection failed"
-		envbot_quit 1
-	}
+
+	if [[ $server_connected -ne 0 ]]; then
+		# We got here by being connected before and
+		# loosing connection, keep retrying
+		while true; do
+			if server_connect; then
+				break
+			else
+				log_error "Failed to reconnect, trying again in 20 seconds"
+				sleep 20
+			fi
+		done
+	else
+		# In this case abort on failure to connect, likely bad config.
+		# and most likely the user is present to fix it.
+		# If someone disagrees I may change it.
+		server_connect || {
+			log_error "Connection failed"
+			envbot_quit 1
+		}
+	fi
 	trap 'bot_quit "ctrl-C"' TERM INT
 	for module in $modules_after_connect; do
 		module_${module}_after_connect
 	done
 
-	while true ; do
+	while true; do
 		line=
 		transport_read_line
 		transport_status="$?"
