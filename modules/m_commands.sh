@@ -32,11 +32,15 @@ module_commands_INIT() {
 
 	helpentry_commands_provides_syntax='<command>'
 	helpentry_commands_provides_description='Shows which module provides command <command>'
+
+	helpentry_commands_commands_syntax='[<module>]'
+	helpentry_commands_commands_description='Lists commands available in <module>. If module name is not given, lists all commands'
 }
 
 module_commands_UNLOAD() {
 	return 0
 	unset helpentry_commands_provides_syntax helpentry_commands_provides_description
+	unset helpentry_commands_commands_syntax helpentry_commands_commands_description
 }
 
 module_commands_REHASH() {
