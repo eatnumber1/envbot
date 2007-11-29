@@ -54,25 +54,26 @@ module_help_handler_help() {
 	local parameters="$3"
 	if [[ $parameters =~ ^([a-zA-Z0-9][^ ]*)( [^ ]+)? ]]; then
 		local command_name="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
+		# Look where we will reply to. We will not reply in the channel, even if the request was made in a channel
 		local target
-		if [[ $2 =~ ^# ]]; then
-			target="$2"
-		else
-			parse_hostmask_nick "$sender" 'target'
-		fi
+		parse_hostmask_nick "$sender" 'target'
+		# Get the module name the command belongs to.
 		local module_name=
 		commands_provides "$command_name" 'module_name'
+		# Extract the function name.
 		local function_name=
 		hash_get 'commands_list' "$command_name" 'function_name'
 		if [[ $function_name =~ ^module_${module_name}_handler_(.+)$ ]]; then
 			function_name="${BASH_REMATCH[1]}"
 		fi
+		# Finally get the data for a specific function in specific module.
 		local syntax=
 		local description=
 		fetch_module_data "$module_name" "$function_name" syntax description || {
 			send_msg "$target" "Sorry, no help for ${format_bold}${command_name}${format_bold}"
 			return
 		}
+		# And send it back to the user.
 		send_msg "$target" "${format_bold}${command_name}${format_bold} $syntax"
 		send_msg "$target" "$description"
 	else
