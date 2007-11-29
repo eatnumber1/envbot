@@ -58,6 +58,6 @@ module_help_handler_help() {
 	else
 		local sendernick=
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "data" "<commandname>"
+		feedback_bad_syntax "$sendernick" "help" "<command>"
 	fi
 }
