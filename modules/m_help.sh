@@ -1,6 +1,28 @@
+#!/bin/bash
+# -*- coding: utf-8 -*-
+###########################################################################
+#                                                                         #
+#  envbot - an IRC bot in bash                                            #
+#  Copyright (C) 2007  Arvid Norlander                                    #
+#  Copyright (C) 2007  Vsevolod Kozlov                                    #
+#                                                                         #
+#  This program is free software: you can redistribute it and/or modify   #
+#  it under the terms of the GNU General Public License as published by   #
+#  the Free Software Foundation, either version 3 of the License, or      #
+#  (at your option) any later version.                                    #
+#                                                                         #
+#  This program is distributed in the hope that it will be useful,        #
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of         #
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          #
+#  GNU General Public License for more details.                           #
+#                                                                         #
+#  You should have received a copy of the GNU General Public License      #
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
+#                                                                         #
+###########################################################################
+
 module_help_INIT() {
 	modinit_API='2'
-#	commands_register "$1" 'data' || return 1
 	commands_register "$1" 'help' || return 1
 }
 
@@ -30,7 +52,6 @@ fetch_module_data() {
 module_help_handler_help() {
 	local sender="$1"
 	local parameters="$3"
-	# Icky part here...
 	if [[ $parameters =~ ^([a-zA-Z0-9][^ ]*)( [^ ]+)? ]]; then
 		local command_name="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
 		local target
@@ -49,10 +70,9 @@ module_help_handler_help() {
 		local syntax=
 		local description=
 		fetch_module_data "$module_name" "$function_name" syntax description || {
-			send_msg "$target" "Sorry, no help for $command_name"
+			send_msg "$target" "Sorry, no help for ${format_bold}${command_name}${format_bold}"
 			return
 		}
-#		send_msg "$target" "$data"
 		send_msg "$target" "${format_bold}${command_name}${format_bold} $syntax"
 		send_msg "$target" "$description"
 	else
