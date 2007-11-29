@@ -214,6 +214,6 @@ module_assign_mode_handler_topic() {
 	else
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "topic" "<#channel> <topic>"
+		feedback_bad_syntax "$sendernick" "topic" "<#channel> <new topic>"
 	fi
 }
