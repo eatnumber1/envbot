@@ -379,7 +379,8 @@ while true; do
 			envbot_quit 1
 		}
 	fi
-	trap 'bot_quit "ctrl-C"' TERM INT
+	trap 'bot_quit "Interrupted (Ctrl-C)"' INT
+	trap 'bot_quit "Terminated (SIGTERM)"' TERM
 	for module in $modules_after_connect; do
 		module_${module}_after_connect
 	done
