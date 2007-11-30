@@ -38,7 +38,6 @@ module_commands_INIT() {
 }
 
 module_commands_UNLOAD() {
-	return 0
 	unset helpentry_commands_provides_syntax helpentry_commands_provides_description
 	unset helpentry_commands_commands_syntax helpentry_commands_commands_description
 }
