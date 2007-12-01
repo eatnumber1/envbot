@@ -24,6 +24,8 @@
 module_help_INIT() {
 	modinit_API='2'
 	commands_register "$1" 'help' || return 1
+	helpentry_help_help_syntax='<command>'
+	helpentry_help_help_description='Displays help for <command>'
 }
 
 module_help_UNLOAD() {
