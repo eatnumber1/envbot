@@ -29,7 +29,8 @@ module_help_INIT() {
 }
 
 module_help_UNLOAD() {
-	unset read_module_data fetch_module_data
+	unset fetch_module_data
+	unset helpentry_help_help_syntax helpentry_help_help_description
 }
 
 module_help_REHASH() {
