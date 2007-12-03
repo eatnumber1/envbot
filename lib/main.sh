@@ -265,7 +265,7 @@ fi
 echo "Loading config"
 source "$config_file"
 if [[ $? -ne 0 ]]; then
-	echo "Error: couldn't load config from bot_settings.sh"
+	echo "Error: couldn't load config from $config_file"
 	envbot_quit 1
 fi
 
