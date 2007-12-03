@@ -59,7 +59,15 @@ module_help_handler_help() {
 		local command_name="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
 		# Look where we will reply to. We will not reply in the channel, even if the request was made in a channel
 		local target
-		parse_hostmask_nick "$sender" 'target'
+		if [[ $2 =~ ^# ]]; then
+			if [[ $config_module_help_reply_in_channel == 1 ]]; then
+				target=$2
+			else
+				parse_hostmask_nick "$sender" 'target'
+			fi
+		else
+			parse_hostmask_nick "$sender" 'target'
+		fi
 		# Get the module name the command belongs to.
 		local module_name=
 		commands_provides "$command_name" 'module_name'
@@ -73,15 +81,19 @@ module_help_handler_help() {
 		local syntax=
 		local description=
 		fetch_module_data "$module_name" "$function_name" syntax description || {
-			send_msg "$target" "Sorry, no help for ${format_bold}${command_name}${format_bold}"
-			return
-		}
-		# And send it back to the user.
+		send_msg "$target" "Sorry, no help for ${format_bold}${command_name}${format_bold}"
+		return
+	}
+	# And send it back to the user.
+	if [[ $config_module_help_reply_in_one_line == 1 ]]; then
+		send_msg "$target" "${format_bold}${command_name}${format_bold} $syntax -- $description"
+	else
 		send_msg "$target" "${format_bold}${command_name}${format_bold} $syntax"
 		send_msg "$target" "$description"
-	else
-		local sendernick=
-		parse_hostmask_nick "$sender" 'sendernick'
-		feedback_bad_syntax "$sendernick" "help" "<command>"
 	fi
+else
+	local sendernick=
+	parse_hostmask_nick "$sender" 'sendernick'
+	feedback_bad_syntax "$sendernick" "help" "<command>"
+fi
 }
