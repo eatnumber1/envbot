@@ -57,14 +57,10 @@ module_help_handler_help() {
 	local parameters="$3"
 	if [[ $parameters =~ ^([a-zA-Z0-9][^ ]*)( [^ ]+)? ]]; then
 		local command_name="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
-		# Look where we will reply to. We will not reply in the channel, even if the request was made in a channel
+		# Look where we will reply to. We will not reply in the channel, even if the request was made in a channel, unless appropriate option is set
 		local target
-		if [[ $2 =~ ^# ]]; then
-			if [[ $config_module_help_reply_in_channel == 1 ]]; then
-				target=$2
-			else
-				parse_hostmask_nick "$sender" 'target'
-			fi
+		if [[ $2 =~ ^# && $config_module_help_reply_in_channel == 1 ]]; then
+			target="$2"
 		else
 			parse_hostmask_nick "$sender" 'target'
 		fi
