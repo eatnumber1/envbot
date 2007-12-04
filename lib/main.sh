@@ -164,7 +164,7 @@ declare -r envbot_transport_timeout=5
 envbot_quitting=-1
 
 #---------------------------------------------------------------------
-## If empty debugging is turned off. If not emptuy it is on.
+## If empty debugging is turned off. If not empty it is on.
 #---------------------------------------------------------------------
 envbot_debugging=''
 

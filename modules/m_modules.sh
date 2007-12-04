@@ -145,7 +145,7 @@ module_modules_handler_modreload() {
 			access_fail "$sender" "reload a module" "owner"
 		fi
 	else
-		feedback_bad_syntax "$sendernick" "modunload" "<module name>"
+		feedback_bad_syntax "$sendernick" "modreload" "<module name>"
 	fi
 }
 
