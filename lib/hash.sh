@@ -204,11 +204,12 @@ hash_get() {
 }
 
 #---------------------------------------------------------------------
-## Check if a space separated hash entry contains a specific value.
+## Check if a list style hash entry contains a specific value.
 ## @Type API
 ## @param Table name
 ## @param Index
 ## @param Value to check for
+## @param Separator (optional, defaults to space)
 ## @return 0 Found
 ## @return 1 Not found (or hash doesn't exist).
 #---------------------------------------------------------------------
@@ -216,8 +217,9 @@ hash_contains() {
 	local varname
 	# Get variable name
 	hash_name_create "$1" "$2" 'varname'
-	# Append to end, or if empty just set.
-	if [[ "${!varname}" =~ (^| )${3}( |$) ]]; then
+
+	local sep=${4:-" "}
+	if [[ "${sep}${!varname}${sep}" =~ ${sep}${3}${sep} ]]; then
 		return 0
 	else
 		return 1

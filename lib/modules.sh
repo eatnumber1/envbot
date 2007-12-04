@@ -74,6 +74,35 @@ modules_depends_register() {
 }
 
 #---------------------------------------------------------------------
+## Call from after_load or INIT with a list of modules that you
+## depend on optionally.
+## @Type API
+## @param What module you are calling from.
+## @param The module you want to depend on optionally.
+## @return 0 Success, module loaded
+## @return 1 User didn't list it as loaded, don't use the features in question
+## @return 2 Other error. You should return 1 from after_load.
+## @return 3 One or several of the dependencies could found. You should return 1 from after_load.
+## @return 4 Not all of the dependencies could be loaded (modules exist but did not load correctly). You should return 1 from after_load.
+#---------------------------------------------------------------------
+modules_depends_register_optional() {
+	local callermodule="$1"
+	local dep="$2"
+	if ! list_contains "modules_loaded" "$dep"; then
+		# So not loaded, now we need to find out if we should load it or not
+		# We use $config_modules for it
+		if ! list_contains 'config_modules' "$dep"; then
+			log_info_file modules.log "Optional dependency of $callermodule ($dep) not loaded."
+			return 1
+		fi
+		log_info_file modules.log "Loading optional dependency of $callermodule: ($dep)"
+	fi
+	# Ah we should load it then? Call modules_depends_register
+	modules_depends_register "$@"
+}
+
+
+#---------------------------------------------------------------------
 ## Semi internal!
 ## List modules that depend on another module.
 ## @Type Semi-private
@@ -175,6 +204,9 @@ modules_add_hooks() {
 			"periodic")
 				modules_periodic+=" $module"
 				;;
+			"on_module_UNLOAD")
+				modules_on_module_UNLOAD+=" $module"
+				;;
 			"on_server_ERROR")
 				modules_on_server_ERROR+=" $module"
 				;;
@@ -235,7 +267,7 @@ modules_add_hooks() {
 ## List of all the optional hooks.
 ## @Type Private
 #---------------------------------------------------------------------
-modules_hooks="FINALISE after_load before_connect on_connect after_connect before_disconnect after_disconnect periodic on_server_ERROR on_NOTICE on_PRIVMSG on_TOPIC on_channel_MODE on_user_MODE on_INVITE on_JOIN on_PART on_KICK on_QUIT on_KILL on_NICK on_numeric on_PONG on_raw"
+modules_hooks="FINALISE after_load before_connect on_connect after_connect before_disconnect after_disconnect periodic on_module_UNLOAD on_server_ERROR on_NOTICE on_PRIVMSG on_TOPIC on_channel_MODE on_user_MODE on_INVITE on_JOIN on_PART on_KICK on_QUIT on_KILL on_NICK on_numeric on_PONG on_raw"
 
 #---------------------------------------------------------------------
 ## Unload a module
@@ -286,6 +318,13 @@ modules_unload() {
 	done
 	modules_depends_unregister "$module"
 	list_remove "modules_loaded" "$module" "modules_loaded"
+
+	# Call any hooks for unloading modules.
+	local othermodule
+	for othermodule in $modules_on_module_UNLOAD; do
+		module_${othermodule}_on_module_UNLOAD "$module"
+	done
+
 	return 0
 }
 

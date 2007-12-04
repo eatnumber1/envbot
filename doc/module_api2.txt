@@ -166,6 +166,15 @@ module_modulename_periodic
 		this hook does not get called within the bounds given above.
 
 
+module_modulename_on_module_UNLOAD
+	Called when *ANOTHER* module is got unloaded.
+	This is meant for a provider module that must unregister some entry
+	at unload. For example m_help.sh would be such a module.
+	Parameters:
+		$1 = The module that got unloaded.
+	Return code:
+		Not checked.
+
 module_modulename_on_PRIVMSG
 	Called when bot gets a PRIVMSG
 	Parameters:

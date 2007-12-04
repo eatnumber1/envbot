@@ -179,7 +179,7 @@ commands_in_module() {
 #---------------------------------------------------------------------
 commands_unregister() {
 	local module="$1"
-	# Are there any commands?
+	# Are there any commands for the module?
 	hash_exists 'commands_modules_functions' "$module" || {
 		return 0
 	}
