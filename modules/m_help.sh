@@ -45,11 +45,15 @@ fetch_module_data() {
 
 	local varname_syntax="helpentry_${module_name}_${function_name}_syntax"
 	local varname_description="helpentry_${module_name}_${function_name}_description"
-	if [[ -z ${!varname_syntax} || -z ${!varname_description} ]]; then
+	if [[ -z ${!varname_description} ]]; then
 		return 1
+	else
+		printf -v "$target_description" '%s' "${!varname_description}"
 	fi
-	printf -v "$target_syntax" '%s' "${!varname_syntax}" 
-	printf -v "$target_description" '%s' "${!varname_description}"
+
+	if [[ ${!varname_syntax} ]]; then
+		printf -v "$target_syntax" '%s' " ${!varname_syntax}"
+	fi
 }
 
 module_help_handler_help() {
@@ -82,9 +86,9 @@ module_help_handler_help() {
 		}
 		# And send it back to the user.
 		if [[ $config_module_help_reply_in_one_line == 1 ]]; then
-			send_msg "$target" "${format_bold}${command_name}${format_bold} $syntax -- $description"
+			send_msg "$target" "${format_bold}${command_name}${format_bold}$syntax -- $description"
 		else
-			send_msg "$target" "${format_bold}${command_name}${format_bold} $syntax"
+			send_msg "$target" "${format_bold}${command_name}${format_bold}$syntax"
 			send_msg "$target" "$description"
 		fi
 	else
