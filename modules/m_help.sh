@@ -28,10 +28,10 @@ module_help_INIT() {
 	helpentry_module_help_description="Provides help and information for commands and modules."
 
 	helpentry_help_help_syntax='<command>'
-	helpentry_help_help_description='Displays help for <command>'
+	helpentry_help_help_description='Displays help for command <command>'
 
 	helpentry_help_modinfo_syntax='<module>'
-	helpentry_help_modinfo_description='Displays comprehensible information for <module>'
+	helpentry_help_modinfo_description='Displays a description for module <module>'
 }
 
 module_help_UNLOAD() {

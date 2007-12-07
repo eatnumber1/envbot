@@ -29,6 +29,7 @@ module_commands_INIT() {
 	modinit_HOOKS=''
 	commands_register "$1" 'provides' || return 1
 	commands_register "$1" 'commands' || return 1
+	helpentry_module_commands_description="Provides a set of command-related commands."
 
 	helpentry_commands_provides_syntax='<command>'
 	helpentry_commands_provides_description='Shows which module provides command <command>'
