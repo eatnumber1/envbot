@@ -79,6 +79,10 @@ module_eix_handler_eix() {
 	if [[ "$parameters" =~ ^(.+) ]]; then
 		local pattern="${BASH_REMATCH[1]}"
 		# Simple flood limiting
+		if [[ -z $config_module_eix_rate ]]; then
+			log_error_file eix.log "YOU MUST SET config_module_eix_rate IN YOUR CONFIG IN ORDER TO USE THE EIX MODULE"
+			return
+		fi
 		if time_check_interval "$module_eix_last_query" "$config_module_eix_rate"; then
 			time_get_current 'module_eix_last_query'
 			log_info_file eix.log "$sender made the bot run eix on \"$pattern\""
