@@ -263,9 +263,9 @@ module_factoids_send_factoid() {
 	local key="$2"
 	local value="$(module_factoids_SELECT "$(tr '[:upper:]' '[:lower:]' <<< "$key")")"
 	if [[ "$value" ]]; then
-		if [[ $value =~ ^\<REPLY\>(.*) ]]; then
+		if [[ $value =~ ^\<REPLY\>\ *(.*) ]]; then
 			send_msg "$channel" "${BASH_REMATCH[1]}"
-		elif [[ $value =~ ^\<ACTION\>(.*) ]]; then
+		elif [[ $value =~ ^\<ACTION\>\ *(.*) ]]; then
 			send_ctcp "$channel" "ACTION ${BASH_REMATCH[1]}"
 		else
 			send_msg "$channel" "$key is $value"
