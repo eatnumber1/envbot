@@ -24,12 +24,20 @@
 module_help_INIT() {
 	modinit_API='2'
 	commands_register "$1" 'help' || return 1
+	commands_register "$1" 'modinfo' || return 1
+	helpentry_module_help_description="Provides help and information for commands and modules."
+
 	helpentry_help_help_syntax='<command>'
 	helpentry_help_help_description='Displays help for <command>'
+
+	helpentry_help_modinfo_syntax='<module>'
+	helpentry_help_modinfo_description='Displays comprehensible information for <module>'
 }
 
 module_help_UNLOAD() {
+	unset fetch_module_function_data
 	unset fetch_module_data
+	unset helpentry_module_help_description
 	unset helpentry_help_help_syntax helpentry_help_help_description
 }
 
@@ -37,7 +45,7 @@ module_help_REHASH() {
 	return 0
 }
 
-fetch_module_data() {
+fetch_module_function_data() {
 	local module_name="$1"
 	local function_name="$2"
 	local target_syntax="$3"
@@ -47,13 +55,25 @@ fetch_module_data() {
 	local varname_description="helpentry_${module_name}_${function_name}_description"
 	if [[ -z ${!varname_description} ]]; then
 		return 1
-	else
-		printf -v "$target_description" '%s' "${!varname_description}"
 	fi
+
+	printf -v "$target_description" '%s' "${!varname_description}"
 
 	if [[ ${!varname_syntax} ]]; then
 		printf -v "$target_syntax" '%s' " ${!varname_syntax}"
 	fi
+}
+
+fetch_module_data() {
+	local module_name="$1"
+	local target_description="$2"
+
+	local varname_description="helpentry_module_${module_name}_description"
+	if [[ -z ${!varname_description} ]]; then
+		return 1
+	fi
+
+	printf -v "$target_description" '%s' "${!varname_description}"
 }
 
 module_help_handler_help() {
@@ -80,7 +100,7 @@ module_help_handler_help() {
 		# Finally get the data for a specific function in specific module.
 		local syntax=
 		local description=
-		fetch_module_data "$module_name" "$function_name" syntax description || {
+		fetch_module_function_data "$module_name" "$function_name" syntax description || {
 			send_msg "$target" "Sorry, no help for ${format_bold}${command_name}${format_bold}"
 			return
 		}
@@ -95,5 +115,35 @@ module_help_handler_help() {
 		local sendernick=
 		parse_hostmask_nick "$sender" 'sendernick'
 		feedback_bad_syntax "$sendernick" "help" "<command>"
+	fi
+}
+
+module_help_handler_modinfo() {
+	local sender="$1"
+	local parameters="$3"
+	if [[ $parameters =~ ^([^ ]+) ]]; then
+		local module_name="${BASH_REMATCH[1]}"
+		# See module_help_handler_help
+		local target
+		if [[ $2 =~ ^# && $config_module_help_reply_in_channel == 1 ]]; then
+			target="$2"
+		else
+			parse_hostmask_nick "$sender" 'target'
+		fi
+		local description=
+		fetch_module_data "$module_name" description || {
+			send_msg "$target" "Sorry, no information for module ${format_bold}${module_name}${format_bold}"
+			return
+		}
+		if [[ $config_module_help_reply_in_one_line == 1 ]]; then
+			send_msg "$target" "${format_bold}${module_name}${format_bold} -- $description"
+		else
+			send_msg "$target" "${format_bold}${module_name}${format_bold}"
+			send_msg "$target" "$description"
+		fi
+	else
+		local sendernick=
+		parse_hostmask_nick "$sender" sendernick
+		feedback_bad_syntax "$sendernick" "modinfo" "<module>"
 	fi
 }
