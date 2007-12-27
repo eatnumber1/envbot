@@ -29,7 +29,7 @@
 module_calc_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
-	if ! hash units > /dev/null 2>&1; then
+	if ! hash bc > /dev/null 2>&1; then
 		log_error "Couldn't find \"bc\" command line tool. The calc module depend on that tool."
 		return 1
 	fi
