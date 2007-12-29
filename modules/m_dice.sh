@@ -69,14 +69,13 @@ module_dice_handler_roll() {
 		local total=0
 		for (( i=0; $i < $how_much_times; i+=1 )); do
 			local rolled=$(( ($RANDOM % $how_much_sides) + 1 ))
-			result+="$rolled"
+			result+="$rolled, "
 			((total += $rolled))
-			if [[ $(( $how_much_times - 1 )) != $i ]]; then
-				result+=", "
-			fi
 		done
 		if [[ $how_much_times != 1 ]]; then
-			result+=" with the grand total of $total"
+			result+="with the grand total of $total"
+		else
+			result="$total" # Yes, this could still probably be done better, since here we remove all the result we were generating so long..
 		fi
 		send_msg "$target" "You rolled ${result}."
 	else
