@@ -420,6 +420,13 @@ modules_load() {
 #---------------------------------------------------------------------
 modules_load_from_config() {
 	local module
+	IFS=" "
+	for module in $modules_loaded; do
+		if ! list_contains config_modules "$module"; then
+			modules_unload "$module"
+		fi
+	done
+	unset IFS
 	for module in $config_modules; do
 		if [[ -f "${config_modules_dir}/m_${module}.sh" || -d "${config_modules_dir}/m_${module}" ]]; then
 			if ! list_contains modules_loaded "$module"; then
