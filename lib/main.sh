@@ -43,7 +43,7 @@ fail_old_bash() {
 # Check bash version. We need at least 3.2.10
 # Lets not use anything like =~ here because
 # that may not work on old bash versions.
-if [[ "${BASH_VERSINFO[0]}" -lt 32 ]]; then
+if [[ "${BASH_VERSINFO[0]}${BASH_VERSINFO[1]}" -lt 32 ]]; then
 	fail_old_bash
 elif [[ "${BASH_VERSINFO[0]}${BASH_VERSINFO[1]}" -eq 32 && "${BASH_VERSINFO[2]}" -lt 10 ]]; then
 	fail_old_bash
