@@ -3,8 +3,8 @@
 ###########################################################################
 #                                                                         #
 #  envbot - an IRC bot in bash                                            #
-#  Copyright (C) 2007  EmErgE <halt.system@gmail.com>                     #
-#  Copyright (C) 2007  Arvid Norlander                                    #
+#  Copyright (C) 2007-2008  EmErgE <halt.system@gmail.com>                #
+#  Copyright (C) 2007-2008  Arvid Norlander                               #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
