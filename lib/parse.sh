@@ -3,7 +3,7 @@
 ###########################################################################
 #                                                                         #
 #  envbot - an IRC bot in bash                                            #
-#  Copyright (C) 2007  Arvid Norlander                                    #
+#  Copyright (C) 2007-2008  Arvid Norlander                               #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -55,21 +55,6 @@ parse_hostmask_nick() {
 	fi
 }
 
-
-#---------------------------------------------------------------------
-## Get nick from hostmask
-## @Type API
-## @Deprecated This is deprecated, please use <@function parse_hostmask_nick> instead.
-## @param n!u@h mask
-## @Stdout Nick
-#---------------------------------------------------------------------
-parse_hostmask_nick_stdout() {
-	log_warning "parse_hostmask_nick_stdout is deprecated, please don't use it" > /dev/tty 2>/dev/null
-	if [[ $1 =~ ^([^ !]+)! ]]; then
-		echo "${BASH_REMATCH[1]}"
-	fi
-}
-
 #---------------------------------------------------------------------
 ## Get ident from hostmask
 ## @Type API
@@ -112,46 +97,4 @@ parse_005() {
 		return 0
 	fi
 	return 1
-}
-
-#---------------------------------------------------------------------
-## Check if a query matches a command. If it matches extract the
-## parameters.
-## @Type API
-## @Deprecated This is deprecated, please use commands_register system instead.
-## @param Variable to return result (if any result) in
-## @param The query to check, this should be the part after the : in PRIVMSG.
-## @param What command to look for.
-## @return 0 If the query matches
-## @return 1 If the query doesn't match
-#---------------------------------------------------------------------
-parse_query_is_command() {
-	log_warning "parse_query_is_command is deprecated, please don't use it, use commands_register (with module API 2)" > /dev/tty 2>/dev/null
-	if [[ "$2" =~ ^${config_commands_listenregex}${3}(\ (.*)|$) ]]; then
-		printf -v "$1" '%s' "${BASH_REMATCH[@]: -1}"
-		return 0
-	else
-		return 1
-	fi
-}
-
-#---------------------------------------------------------------------
-## Check if a query matches a command. If it matches extract the
-## parameters.
-## @Type API
-## @Deprecated This is deprecated, please use commands_register system instead.
-## @param The query to check, this should be the part after the : in PRIVMSG.
-## @param What command to look for.
-## @return 0 If the query matches
-## @return 1 If the query doesn't match
-## @Stdout If matches: The parameters (if any)
-#---------------------------------------------------------------------
-parse_query_is_command_stdout() {
-	log_warning "parse_query_is_command_stdout is deprecated, please don't use it, use commands_register (with module API 2)" > /dev/tty 2>/dev/null
-	if [[ "$1" =~ ^${config_commands_listenregex}${2}(\ (.*)|$) ]]; then
-		echo "${BASH_REMATCH[@]: -1}"
-		return 0
-	else
-		return 1
-	fi
 }

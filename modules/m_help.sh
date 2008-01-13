@@ -3,8 +3,8 @@
 ###########################################################################
 #                                                                         #
 #  envbot - an IRC bot in bash                                            #
-#  Copyright (C) 2007  Arvid Norlander                                    #
-#  Copyright (C) 2007  Vsevolod Kozlov                                    #
+#  Copyright (C) 2007-2008  Arvid Norlander                               #
+#  Copyright (C) 2007-2008  Vsevolod Kozlov                               #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -20,6 +20,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+#---------------------------------------------------------------------
+## Provides help command.
+#---------------------------------------------------------------------
 
 module_help_INIT() {
 	modinit_API='2'
@@ -35,8 +38,8 @@ module_help_INIT() {
 }
 
 module_help_UNLOAD() {
-	unset fetch_module_function_data
-	unset fetch_module_data
+	unset module_help_fetch_module_function_data
+	unset module_help_fetch_module_data
 	unset helpentry_module_help_description
 	unset helpentry_help_help_syntax helpentry_help_help_description
 }
@@ -45,7 +48,7 @@ module_help_REHASH() {
 	return 0
 }
 
-fetch_module_function_data() {
+module_help_fetch_module_function_data() {
 	local module_name="$1"
 	local function_name="$2"
 	local target_syntax="$3"
@@ -64,7 +67,7 @@ fetch_module_function_data() {
 	fi
 }
 
-fetch_module_data() {
+module_help_fetch_module_data() {
 	local module_name="$1"
 	local target_description="$2"
 
@@ -100,7 +103,7 @@ module_help_handler_help() {
 		# Finally get the data for a specific function in specific module.
 		local syntax=
 		local description=
-		fetch_module_function_data "$module_name" "$function_name" syntax description || {
+		module_help_fetch_module_function_data "$module_name" "$function_name" syntax description || {
 			send_msg "$target" "Sorry, no help for ${format_bold}${command_name}${format_bold}"
 			return
 		}
@@ -131,7 +134,7 @@ module_help_handler_modinfo() {
 			parse_hostmask_nick "$sender" 'target'
 		fi
 		local description=
-		fetch_module_data "$module_name" description || {
+		module_help_fetch_module_data "$module_name" description || {
 			send_msg "$target" "Sorry, no information for module ${format_bold}${module_name}${format_bold}"
 			return
 		}

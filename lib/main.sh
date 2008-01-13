@@ -3,7 +3,7 @@
 ###########################################################################
 #                                                                         #
 #  envbot - an IRC bot in bash                                            #
-#  Copyright (C) 2007  Arvid Norlander                                    #
+#  Copyright (C) 2007-2008  Arvid Norlander                               #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -206,8 +206,8 @@ print_cmd_help() {
 print_version() {
 	echo "envbot $envbot_version - An advanced modular IRC bot in bash."
 	echo ''
-	echo 'Copyright (C) 2007 Arvid Norlander'
-	echo 'Copyright (C) 2007 EmErgE'
+	echo 'Copyright (C) 2007-2008 Arvid Norlander'
+	echo 'Copyright (C) 2007-2008 EmErgE'
 	echo 'This is free software; see the source for copying conditions.  There is NO'
 	echo 'warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.'
 	echo ''
