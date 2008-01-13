@@ -35,54 +35,17 @@ module_perl_INIT() {
 		log_error "Couldn't find \"perl\" binary. The perl module depends on it."
 		return 1
 	fi
-	module_perl_write_perl_script
-
+	module_perl_working_dir="$MODULE_BASE_PATH"
 	commands_register "$1" 'perl' || return 1
-	module_perl_tempdir="$(mktemp -dt envbot.perl.XXXXXXXXXX)"
 }
 
 module_perl_UNLOAD() {
-	if [[ -e $module_perl_tempdir ]]; then
-		rm -rf "$module_perl_tempdir"
-	fi
-	unset module_perl_tempdir
-	unset module_perl_write_perl_script
+	unset module_perl_working_dir
 	return 0
-}
-
-module_perl_FINALISE() {
-	if [[ -e $module_perl_tempdir ]]; then
-		rm -rf "$module_perl_tempdir"
-	fi
 }
 
 module_perl_REHASH() {
-	module_perl_write_perl_script
 	return 0
-}
-
-module_perl_write_perl_script() {
-	cat > "$module_perl_tempdir/safe_eval.pl" << EOF
-#!/usr/bin/perl
-use strict;
-use Safe;
-
-my \$expr = shift;
-
-my \$cpt = new Safe;
-
-#Basic variable IO and traversal
-
-\$cpt->permit(':base_core');
-
-my(\$ret) = \$cpt->reval(\$expr);
-
-if(\$@){
-	print \$@;
-}else{
-	print \$ret;
-}
-EOF
 }
 
 module_perl_handler_perl() {
@@ -98,6 +61,6 @@ module_perl_handler_perl() {
 	local parameters="$3"
 
 	# Extremely Safe Perl Evaluation
-	local myresult="$(ulimit -t 4; perl "$module_perl_tempdir/safe_eval.pl" "$parameters")"
+	local myresult="$(ulimit -t 4; perl "${module_perl_working_dir}/safe_eval.pl" "$parameters")"
 	send_msg "$channel" "${sendernick}: $myresult"
 }
