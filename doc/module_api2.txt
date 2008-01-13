@@ -62,6 +62,10 @@ module_modulename_INIT (REQUIRED)
 	Parameters:
 		$1 = The module name.
 		None
+	Exported variables to this function:
+		MODULE_BASE_PATH
+			Useful for multifile modules, then it is the path to the base directory of
+			the module. If the module consists of a single file it is the path to the module file.
 	Return status:
 		If return status isn't 0 the module is considered as failed to load.
 	Return on in variables (these will get unset after they have been processed):
