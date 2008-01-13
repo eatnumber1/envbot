@@ -368,17 +368,17 @@ modules_load() {
 		log_warning_file modules.log "Module ${module} is already loaded."
 		return 2
 	fi
-	# MODULE_BASE_PATH is exported to init function,
-	# useful for multi-file modules, but available
-	# for other modules too.
-	local modulefilename MODULE_BASE_PATH
+	# modulebase is exported as MODULE_BASE_PATH
+	# with ${config_modules_dir} prepended to the
+	# INIT function, useful for multi-file
+	# modules, but available for other modules too.
+	local modulefilename modulebase
 	if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
 		modulefilename="m_${module}.sh"
-		# FIXME: Not clean using config_modules_dir here yet.
-		MODULE_BASE_PATH="${config_modules_dir}/${modulefilename}"
+		modulebase="${modulefilename}"
 	elif [[ -d "${config_modules_dir}/m_${module}" && -f "${config_modules_dir}/m_${module}/__main__.sh" ]]; then
 		modulefilename="m_${module}/__main__.sh"
-		MODULE_BASE_PATH="${config_modules_dir}/m_${module}"
+		modulebase="m_${module}"
 	else
 		log_error_file modules.log "No such module as ${module} exists."
 		return 5
@@ -396,7 +396,7 @@ modules_load() {
 	source "${config_modules_dir}/${modulefilename}"
 	if [[ $? -eq 0 ]]; then
 		modules_loaded+=" $module"
-		modules_add_hooks "$module" "$MODULE_BASE_PATH" || \
+		modules_add_hooks "$module" "${config_modules_dir}/${modulebase}" || \
 			{
 				log_error_file modules.log "Hooks failed for $module"
 				# Try to unload.
