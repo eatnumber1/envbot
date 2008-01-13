@@ -30,7 +30,7 @@
 
 module_perl_INIT() {
 	modinit_API='2'
-	modinit_HOOKS='FINALISE'
+	modinit_HOOKS=''
 	if ! hash perl > /dev/null 2>&1; then
 		log_error "Couldn't find \"perl\" binary. The perl module depends on it."
 		return 1
@@ -41,6 +41,7 @@ module_perl_INIT() {
 
 module_perl_UNLOAD() {
 	unset module_perl_working_dir
+	unset module_perl_handler_perl
 	return 0
 }
 
@@ -53,14 +54,17 @@ module_perl_handler_perl() {
 	local channel="$2"
 	local sendernick=
 	parse_hostmask_nick "$sender" 'sendernick'
-	# If it isn't in a channel send message back to person who send it,
-	# otherwise send in channel
-	if ! [[ $2 =~ ^# ]]; then
-		channel="$sendernick"
+	if access_check_capab "perl_eval" "$sender" "$channel"; then
+		# If it isn't in a channel send message back to person who send it,
+		# otherwise send in channel
+		if ! [[ $2 =~ ^# ]]; then
+			channel="$sendernick"
+		fi
+		local parameters="$3"
+		# Extremely Safe Perl Evaluation
+		local myresult="$(perl "${module_perl_working_dir}/safe_eval.pl" "$parameters")"
+		send_msg "$channel" "${sendernick}: $myresult"
+	else
+		access_fail "$sender" "make the bot evalute perl expressions" "perl_eval"
 	fi
-	local parameters="$3"
-
-	# Extremely Safe Perl Evaluation
-	local myresult="$(ulimit -t 4; perl "${module_perl_working_dir}/safe_eval.pl" "$parameters")"
-	send_msg "$channel" "${sendernick}: $myresult"
 }
