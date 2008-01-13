@@ -1,0 +1,100 @@
+Coding standards
+================
+This document describe the coding standards used in envbot.
+
+Indention
+---------
+Indention is done with tabs, one tab char for each indention level.
+Do adjust the code with spaces if you need to break a long line.
+Example:
+	thisFunctionGotLotsOfParameters foo bar quux loooooooooooooooooooooooooooongParameter
+	                                some more parameters
+That is, first indent with tabs to base indention level, then use spaces
+to adjust.
+
+
+Spaces
+------
+Trailing spaces
+	Forbidden.
+Spaces around operators:
+	Depend on situation.
+	Examples:
+		myvar="this is a value"
+		if [[ "$myvar" = "something" ]]; then
+	As you can see it depends on where it is used.
+	Generally it should be used everywhere except assignment like
+	"=" and "=+".
+
+
+Newlines
+--------
+There should not be newlines before a { or other block separator.
+For example this is correct:
+	if [[ $a = $b ]]; then
+		runStuff
+	fi
+But this is incorrect:
+	if [[ $a = $b ]]
+	then
+		runStuff
+	fi
+
+Trailing newlines: There should be a single
+ending newline at the end of the file, no
+trailing newlines.
+
+
+Functions
+---------
+Functions should be declared without the function keyword
+and with the () following the name of the function, without
+space between the function name and the (). After the () there
+should be one space and then the opening bracket.
+Example:
+myNiceFunction() {
+	runStuff
+}
+
+
+Functions: Returning values
+---------------------------
+Return values using "printf -v" construct. Avoid subshells (for
+performance reasons). One exception to this is the case of the
+function only calling an external program, then just subshell
+the function let the external programs output go to STDOUT of the
+function.
+Example of printf -v construct (first parameter for this function
+is the name of the variable to return in):
+	myfunction() {
+		printf -v "$1" '%s' "something we computed"
+	}
+Using return code should only be used when returned value is
+an error code. Example:
+	otherfunction() {
+		if [[ "$1" = "foo" ]]; then
+			# Success!
+			return 0
+		else
+			# Fail
+			return 1
+		fi
+	}
+
+
+Comments
+--------
+Comments are free form inside function, function comment should
+be coded in bashdoc style.
+(TODO: add description of that or link to that)
+
+Comments should be indented to same level as surrounding code,
+unless the comment is commented out code. Commented out code
+should be avoided in committed code, but if it is needed, the
+comment should be at the start of the line.
+
+
+if
+--
+When testing in if use the [[ ]] construct. Do NOT under ANY
+circumstances use the [ ] construct.
