@@ -158,6 +158,7 @@ modules_depends_can_unload() {
 ## Add hooks for a module
 ## @Type Private
 ## @param Module name
+## @param MODULE_BASE_PATH, exported to INIT as a part of the API
 ## @return 0 Success
 ## @return 1 module_modulename_INIT returned non-zero
 ## @return 2 Module wanted to register an unknown hook.
@@ -166,6 +167,7 @@ modules_add_hooks() {
 	local module="$1"
 	local modinit_HOOKS
 	local modinit_API
+	local MODULE_BASE_PATH="$2"
 	module_${module}_INIT "$module"
 	[[ $? -ne 0 ]] && { log_error_file modules.log "Failed to get initialize module \"$module\""; return 1; }
 	# Check if it didn't set any modinit_API, in that case it is a API 1 module.
@@ -366,11 +368,17 @@ modules_load() {
 		log_warning_file modules.log "Module ${module} is already loaded."
 		return 2
 	fi
-	local modulefilename
+	# MODULE_BASE_PATH is exported to init function,
+	# useful for multi-file modules, but available
+	# for other modules too.
+	local modulefilename MODULE_BASE_PATH
 	if [[ -f "${config_modules_dir}/m_${module}.sh" ]]; then
 		modulefilename="m_${module}.sh"
+		# FIXME: Not clean using config_modules_dir here yet.
+		MODULE_BASE_PATH="${config_modules_dir}/${modulefilename}"
 	elif [[ -d "${config_modules_dir}/m_${module}" && -f "${config_modules_dir}/m_${module}/__main__.sh" ]]; then
 		modulefilename="m_${module}/__main__.sh"
+		MODULE_BASE_PATH="${config_modules_dir}/m_${module}"
 	else
 		log_error_file modules.log "No such module as ${module} exists."
 		return 5
@@ -388,7 +396,7 @@ modules_load() {
 	source "${config_modules_dir}/${modulefilename}"
 	if [[ $? -eq 0 ]]; then
 		modules_loaded+=" $module"
-		modules_add_hooks "$module" || \
+		modules_add_hooks "$module" "$MODULE_BASE_PATH" || \
 			{
 				log_error_file modules.log "Hooks failed for $module"
 				# Try to unload.
