@@ -93,7 +93,8 @@ module_bugzilla_handler_bugs_search() {
 					bugs_parameters="-s CLOSED -s RESOLVED"
 				fi
 				log_info_file bugzilla.log "$sender made the bot run pybugz search on \"$pattern\""
-				local result="$(ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
+				# We unset TERM because otherwise bugz output some control codes
+				local result="$(unset TERM; ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
 				local lines="$(wc -l <<< "$result")"
 				local header footer
 				# Some odd formatting chars are always returned (in some versions of pybugz), so we can't check for empty string.
@@ -136,7 +137,8 @@ module_bugzilla_handler_bug() {
 			if time_check_interval "$module_bugzilla_last_query" "$config_module_bugzilla_rate"; then
 				time_get_current 'module_bugzilla_last_query'
 				log_info_file bugzilla.log "$sender made the bot check with pybugz for bug \"$id\""
-				local result="$(ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" get -n "$id" | grep -E 'Title|Status|Resolution')"
+				# We unset TERM because otherwise bugz output some control codes
+				local result="$(unset TERM; ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" get -n "$id" | grep -E 'Title|Status|Resolution')"
 				local resultread pretty_result
 				local title status resolution
 				# Read the data out of the multiline result.
