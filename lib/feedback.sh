@@ -27,11 +27,22 @@
 ## Return a message that syntax was bad and what the correct syntax is.
 ## @Type API
 ## @param To who (nick or channel)
-## @param To what function
+## @param From what command
 ## @param Syntax help
 #---------------------------------------------------------------------
 feedback_bad_syntax() {
 	send_msg "$1" "Syntax error. Correct syntax for $2 is $2 $3"
+}
+
+#---------------------------------------------------------------------
+## Return a message that something else was wrong in the command.
+## @Type API
+## @param To who (nick or channel)
+## @param From what function
+## @param Error message.
+#---------------------------------------------------------------------
+feedback_generic_error() {
+	send_msg "$1" "$2: Error: $3"
 }
 
 #---------------------------------------------------------------------
