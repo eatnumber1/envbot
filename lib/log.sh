@@ -269,7 +269,7 @@ log_init() {
 	if [[ $config_log_colors -eq 1 ]]; then
 		local bold
 		# Generate colors
-		log_check_cap sgr0      log_color_none      # No color
+		log_check_cap sgr0      log_color_none      # No colour
 		log_check_cap bold      bold                # Bold local
 		log_check_cap 'setaf 1' log_color_error     # Red
 		log_color_fatal="${log_color_error}${bold}" # Red bold

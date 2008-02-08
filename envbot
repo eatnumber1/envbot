@@ -39,4 +39,4 @@ bash="$(type -p bash)"
 # env -i:       Clean environment
 # TERM="$TERM": But keep TERM
 # bash --norc:  Don't read profile/bashrc
-exec env -i TERM="$TERM" "$bash" --norc "${library_dir}/main.sh" --config "$config_file" --libdir "$library_dir" "$@"
+exec env -i TERM="$TERM" REALHOME="$HOME" "$bash" --norc "${library_dir}/main.sh" --config "$config_file" --libdir "$library_dir" "$@"
