@@ -27,8 +27,9 @@
 ## @Dependencies This module therefore depends on:<br />
 ## @Dependencies   pybugz
 ## @Config_variables To set bugzilla to use something like this in config:<br />
-## @Config_variables <tt>config_module_bugzilla_url='https://bugs.gentoo.org/'</tt><br />
-## @Config_variables Must end in trailing slash!<br />
+## @Config_variables <pre>config_module_bugzilla_tracker_name[0]='gentoo'
+## @Config_variables  config_module_bugzilla_tracker_url[0]='https://bugs.gentoo.org/'</pre>
+## @Config_variables Must end in trailing slash! Also the first entry will be the default.<br />
 ## @Config_variables You also need to specify flood limiting<br />
 ## @Config_variables (how often in seconds)<br />
 ## @Config_variables <tt>config_module_bugzilla_rate='10'</tt>
@@ -42,11 +43,51 @@ module_bugzilla_INIT() {
 }
 
 module_bugzilla_UNLOAD() {
-	unset module_bugzilla_last_query
+	unset module_bugzilla_last_query module_bugzilla_default_bugtracker
+	unset module_bugzilla_parse_config module_bugzilla_find_tracker
+	hash_reset 'bugzilla_tracker'
 }
 
 module_bugzilla_REHASH() {
-	return 0
+	module_bugzilla_parse_config
+}
+
+#---------------------------------------------------------------------
+## Initialize the hash of name -> url mapping
+## @Type Private
+#---------------------------------------------------------------------
+module_bugzilla_parse_config() {
+	hash_reset 'bugzilla_tracker'
+	local index
+	for index in "${!config_module_bugzilla_tracker_name[@]}"; do
+		hash_set 'bugzilla_tracker' \
+			"${config_module_bugzilla_tracker_name[index]}" \
+			"${config_module_bugzilla_tracker_url[index]}"
+	done
+	module_bugzilla_default_bugtracker="${config_module_bugzilla_tracker_url[0]}"
+}
+
+#---------------------------------------------------------------------
+## Find what tracker to use from the parameters.
+## @param Name of parameter variable.
+## @param Name of bugtracker variable.
+## @Type Private
+#---------------------------------------------------------------------
+module_bugzilla_find_tracker() {
+	if [[ "${!1}" =~ ^(-(tracker|t)\ +([A-Za-z0-9]+)\ +)(.+) ]]; then
+		local tindex="${BASH_REMATCH[3]}"
+		# Store result back in variable.
+		printf -v "$1" '%s' "${BASH_REMATCH[4]}"
+		local turl
+		hash_get 'bugzilla_tracker' "$tindex" 'turl'
+		if [[ $turl ]]; then
+			printf -v "$2" '%s' "$turl"
+		else
+			feedback_generic_error "$sendernick" "bugs search" "No such bug tracker found."
+		fi
+	else
+		printf -v "$2" '%s' "${module_bugzilla_default_bugtracker}"
+	fi
 }
 
 # Called after module has loaded.
@@ -56,14 +97,19 @@ module_bugzilla_after_load() {
 		log_error "Couldn't find bugz command line tool. The bugzilla module depend on that tool (emerge pybugz to get it on Gentoo)."
 		return 1
 	fi
-	if [[ -z $config_module_bugzilla_url ]]; then
-		log_error "Please set config_module_bugzilla_url in config."
+	if [[ -z ${config_module_bugzilla_tracker_url[0]} ]]; then
+		log_error "Please set at least config_module_bugzilla_url[0] in config."
 		return 1
 	fi
-	if [[ -z $config_module_bugzilla_url ]]; then
+	if [[ -z ${config_module_bugzilla_tracker_name[0]} ]]; then
+		log_error "Please set at least config_module_bugzilla_name[0] in config."
+		return 1
+	fi
+	if [[ -z $config_module_bugzilla_rate ]]; then
 		log_error "Please set config_module_bugzilla_rate in config."
 		return 1
 	fi
+	module_bugzilla_parse_config
 	unset module_bugzilla_last_query
 	module_bugzilla_last_query='0'
 }
@@ -80,7 +126,9 @@ module_bugzilla_handler_bugs_search() {
 		channel="$sendernick"
 	fi
 	local parameters="$3"
-	if [[ "$parameters" =~ ^(-(all|closed)\ )?(.+) ]]; then
+	local bugtracker
+	module_bugzilla_find_tracker 'parameters' 'bugtracker'
+	if [[ "$parameters" =~ ^(-(all|closed)\ +)?(.+) ]]; then
 		local mode="${BASH_REMATCH[2]}"
 		local pattern="${BASH_REMATCH[@]: -1}"
 			# Simple flood limiting
@@ -94,7 +142,7 @@ module_bugzilla_handler_bugs_search() {
 				fi
 				log_info_file bugzilla.log "$sender made the bot run pybugz search on \"$pattern\""
 				# We unset TERM because otherwise bugz output some control codes
-				local result="$(unset TERM; ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" search $bugs_parameters "$pattern")"
+				local result="$(unset TERM; ulimit -t 4; bugz -fqb "$bugtracker" search $bugs_parameters "$pattern")"
 				local lines="$(wc -l <<< "$result")"
 				local header footer
 				# Some odd formatting chars are always returned (in some versions of pybugz), so we can't check for empty string.
@@ -107,14 +155,14 @@ module_bugzilla_handler_bugs_search() {
 					header="One bug matching \"$pattern\" found: "
 				fi
 				if [[ $(head -n 1 <<< "$result") =~ \ ([0-9]+)\ +([^ ]+)\ +(.*)$ ]]; then
-					local pretty_result="${format_bold}${config_module_bugzilla_url}${BASH_REMATCH[1]}${format_bold}  ${format_bold}Description${format_bold}: ${BASH_REMATCH[3]}  ${format_bold}Assigned To${format_bold}: ${BASH_REMATCH[2]}"
+					local pretty_result="${format_bold}${bugtracker}${BASH_REMATCH[1]}${format_bold}  ${format_bold}Description${format_bold}: ${BASH_REMATCH[3]}  ${format_bold}Assigned To${format_bold}: ${BASH_REMATCH[2]}"
 				fi
 				send_msg "$channel" "${header}${pretty_result}${footer}"
 			else
 				log_error_file bugzilla.log "FLOOD DETECTED in bugzilla module"
 			fi
 	else
-		feedback_bad_syntax "$sendernick" "bugs search" "[-(all|closed)] <pattern>"
+		feedback_bad_syntax "$sendernick" "bugs search" "[-t tracker] [-(all|closed)] <pattern>"
 	fi
 }
 
@@ -130,6 +178,8 @@ module_bugzilla_handler_bug() {
 		channel="$sendernick"
 	fi
 	local parameters="$3"
+	local bugtracker
+	module_bugzilla_find_tracker 'parameters' 'bugtracker'
 	# Extract bug ID
 	if [[ "$parameters" =~ ^([0-9]+) ]]; then
 		local id="${BASH_REMATCH[1]}"
@@ -138,7 +188,7 @@ module_bugzilla_handler_bug() {
 				time_get_current 'module_bugzilla_last_query'
 				log_info_file bugzilla.log "$sender made the bot check with pybugz for bug \"$id\""
 				# We unset TERM because otherwise bugz output some control codes
-				local result="$(unset TERM; ulimit -t 4; bugz -fqb "$config_module_bugzilla_url" get -n "$id" | grep -E 'Title|Status|Resolution')"
+				local result="$(unset TERM; ulimit -t 4; bugz -fqb "$bugtracker" get -n "$id" | grep -E 'Title|Status|Resolution')"
 				local resultread pretty_result
 				local title status resolution
 				# Read the data out of the multiline result.
@@ -160,7 +210,7 @@ module_bugzilla_handler_bug() {
 						pretty_result+=", ${format_bold}Resolution${format_bold} $resolution"
 					fi
 					# And add the title in. Does not depend on if resolution exist.
-					pretty_result+="): $title (${config_module_bugzilla_url}${id})"
+					pretty_result+="): $title (${bugtracker}${id})"
 				else
 					pretty_result="Bug $id not found"
 				fi
@@ -169,6 +219,6 @@ module_bugzilla_handler_bug() {
 				log_error_file bugzilla.log "FLOOD DETECTED in bugzilla module"
 			fi
 	else
-		feedback_bad_syntax "$sendernick" "bug" "<id>"
+		feedback_bad_syntax "$sendernick" "bug" "[-t tracker] <id>"
 	fi
 }
