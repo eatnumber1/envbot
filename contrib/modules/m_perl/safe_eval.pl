@@ -10,10 +10,16 @@ my $cpt = new Safe;
 
 $cpt->permit(':base_core');
 
-my($ret) = $cpt->reval($expr);
+$SIG{ALRM} = sub {
+	die "Alarm";
+};
 
-if($@){
+alarm(4);
+
+my $ret = $cpt->reval($expr);
+
+if ($@) {
 	print $@;
-}else{
+} else {
 	print $ret;
 }
