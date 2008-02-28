@@ -350,7 +350,7 @@ time_get_current 'periodic_lastrun'
 ## @Type API
 #---------------------------------------------------------------------
 envbot_time=''
-
+server_connected_before=0
 while true; do
 	# In progress of quitting? This is used to
 	# work around the issue in bug 25.
@@ -359,11 +359,12 @@ while true; do
 		module_${module}_before_connect
 	done
 
-	if [[ $server_connected -ne 0 ]]; then
+	if [[ $server_connected_before -ne 0 ]]; then
 		# We got here by being connected before and
 		# loosing connection, keep retrying
 		while true; do
 			if server_connect; then
+				server_connected_before=1
 				break
 			else
 				log_error "Failed to reconnect, trying again in 20 seconds"
