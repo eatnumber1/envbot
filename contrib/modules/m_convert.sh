@@ -61,7 +61,7 @@ module_convert_handler_convert() {
 	fi
 	local parameters="$3"
 	# Format: convert <value> <in unit> <out unit>
-	if [[ "$parameters" =~ ^([-0-9]+)\ +([a-zA-Z0-9^/*]+)\ +(to\ +)?([a-zA-Z0-9^/*]+) ]]; then
+	if [[ "$parameters" =~ ^([-0-9.]+)\ +([a-zA-Z0-9^/*]+)\ +(to\ +)?([a-zA-Z0-9^/*]+) ]]; then
 		local value="${BASH_REMATCH[1]}"
 		local inunit="${BASH_REMATCH[2]}"
 		local outunit="${BASH_REMATCH[@]: -1}"
@@ -102,7 +102,7 @@ module_convert_handler_convert() {
 		# We can't use -t, that doesn't work on *BSD units...
 		# so we use awk to get interesting lines.
 		# Then check pipestatus to give nice return code
-		myresult="$(ulimit -t 4; units -q "$inexpr" "$outexpr" 2>&1 | awk '/\*/ {print $2} /[Ee]rror|[Uu]nknown/'; [[ ${PIPESTATUS[0]} -eq 0 ]] || exit 1)"
+		myresult="$(ulimit -t 4; units -q "$inexpr" "$outexpr" 2>&1 | awk '/^\t[0-9]+/ {print $1} /\*/ {print $2} /[Ee]rror|[Uu]nknown/'; [[ ${PIPESTATUS[0]} -eq 0 ]] || exit 1)"
 		if [[ $? -eq 0 ]]; then
 			send_msg "$channel" "${sendernick}: $myresult $outunit"
 		else
