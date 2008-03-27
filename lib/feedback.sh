@@ -31,7 +31,7 @@
 ## @param Syntax help
 #---------------------------------------------------------------------
 feedback_bad_syntax() {
-	send_msg "$1" "Syntax error. Correct syntax for $2 is $2 $3"
+	send_notice "$1" "Syntax error. Correct syntax for $2 is $2 $3"
 }
 
 #---------------------------------------------------------------------
@@ -42,7 +42,7 @@ feedback_bad_syntax() {
 ## @param Error message.
 #---------------------------------------------------------------------
 feedback_generic_error() {
-	send_msg "$1" "$2: Error: $3"
+	send_notice "$1" "$2: Error: $3"
 }
 
 #---------------------------------------------------------------------
@@ -55,5 +55,5 @@ feedback_generic_error() {
 feedback_unknown_command() {
 	local sendernick
 	parse_hostmask_nick "$sender" 'sendernick'
-	send_msg "$sendernick" "Error: Not able to parse this command: \"$3\". Are you sure you spelled it correctly?"
+	send_notice "$sendernick" "Error: Not able to parse this command: \"$3\". Are you sure you spelled it correctly?"
 }
