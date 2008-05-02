@@ -221,7 +221,7 @@ module_karma_on_PRIVMSG() {
 		parse_hostmask_nick "$sender" 'sendon_channel'
 		# Karma is only possible in channels
 		if [[ "$query" =~ ^[a-zA-Z0-9].*(--|\+\+)$ ]]; then
-			send_msg "$sendon_channel" "You can only change karma in channels."
+			send_notice "$sendon_channel" "You can only change karma in channels."
 			return 1
 		fi
 	fi

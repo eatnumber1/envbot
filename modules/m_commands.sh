@@ -89,7 +89,7 @@ module_commands_handler_commands() {
 		if [[ $parameters =~ ^([^ ]+)\ *$ ]]; then
 			module_name="${BASH_REMATCH[1]}"
 		else
-			send_msg "$target" "\"$parameters\" is not a valid module name"
+			send_notice "$target" "\"$parameters\" is not a valid module name"
 			return 1
 		fi
 		local commands_in_module
@@ -97,9 +97,9 @@ module_commands_handler_commands() {
 		if [[ $commands_in_module ]]; then
 			send_msg "$target" "${format_bold}Available commands (in module \"$module_name\")${format_bold}: ${commands_in_module//,/, }"
 		elif list_contains "modules_loaded" "$module_name"; then
-			send_msg "$target" "Module \"$module_name\" provides no commands"
+			send_notice "$target" "Module \"$module_name\" provides no commands"
 		else
-			send_msg "$target" "Module \"$module_name\" is not loaded"
+			send_notice "$target" "Module \"$module_name\" is not loaded"
 		fi
 	fi
 }

@@ -60,7 +60,7 @@ module_modules_doload() {
 		7) status_message="after_load failed for \"$target_module\", see log for details" ;;
 		*) status_message="Unknown error (code $status) for \"$target_module\"" ;;
 	esac
-	send_msg "$sendernick" "$status_message"
+	send_notice "$sendernick" "$status_message"
 	return $status
 }
 
@@ -85,7 +85,7 @@ module_modules_dounload() {
 		3) status_message="Module \"$target_module\" can't be unloaded, some these module(s) depend(s) on it: $(modules_depends_list_deps "$target_module")" ;;
 		*) status_message="Unknown error (code $status) for \"$target_module\"" ;;
 	esac
-	send_msg "$sendernick" "$status_message"
+	send_notice "$sendernick" "$status_message"
 	return $status
 }
 
@@ -139,7 +139,7 @@ module_modules_handler_modreload() {
 			if [[ $? = 0 ]]; then
 				module_modules_doload "$target_module" "$sendernick"
 			else
-				send_msg "$sendernick" "Reload of $target_module failed because it could not be unloaded."
+				send_notice "$sendernick" "Reload of $target_module failed because it could not be unloaded."
 			fi
 		else
 			access_fail "$sender" "reload a module" "owner"

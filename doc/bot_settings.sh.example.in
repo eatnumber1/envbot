@@ -279,6 +279,18 @@ config_module_ctcp_version_reply="envbot $envbot_version"
 # (*) Table name for seen data in SQLite3 database
 #config_module_seen_table='seen'
 
+
+#####################################################################
+# Vote module.
+#
+# (*) The channel where vote mode will work.
+#     Note that this is a regular expression that will be
+#     surronded by ^ and $ when matching.
+#config_module_vote_channel='#mychannel'
+# (*) How long a vote is open before it is closed (in seconds).
+#config_module_vote_timeout='900'
+
+
 #####################################################################
 # For contrib modules please see the contrib module in question
 # for information on what variables it uses.

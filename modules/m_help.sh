@@ -104,15 +104,15 @@ module_help_handler_help() {
 		local syntax=
 		local description=
 		module_help_fetch_module_function_data "$module_name" "$function_name" syntax description || {
-			send_msg "$target" "Sorry, no help for ${format_bold}${command_name}${format_bold}"
+			send_notice "$target" "Sorry, no help for ${format_bold}${command_name}${format_bold}"
 			return
 		}
 		# And send it back to the user.
 		if [[ $config_module_help_reply_in_one_line == 1 ]]; then
-			send_msg "$target" "${format_bold}${command_name}${format_bold}$syntax -- $description"
+			send_notice "$target" "${format_bold}${command_name}${format_bold}$syntax -- $description"
 		else
-			send_msg "$target" "${format_bold}${command_name}${format_bold}$syntax"
-			send_msg "$target" "$description"
+			send_notice "$target" "${format_bold}${command_name}${format_bold}$syntax"
+			send_notice "$target" "$description"
 		fi
 	else
 		local sendernick=
@@ -135,14 +135,14 @@ module_help_handler_modinfo() {
 		fi
 		local description=
 		module_help_fetch_module_data "$module_name" description || {
-			send_msg "$target" "Sorry, no information for module ${format_bold}${module_name}${format_bold}"
+			send_notice "$target" "Sorry, no information for module ${format_bold}${module_name}${format_bold}"
 			return
 		}
 		if [[ $config_module_help_reply_in_one_line == 1 ]]; then
-			send_msg "$target" "${format_bold}${module_name}${format_bold} -- $description"
+			send_notice "$target" "${format_bold}${module_name}${format_bold} -- $description"
 		else
-			send_msg "$target" "${format_bold}${module_name}${format_bold}"
-			send_msg "$target" "$description"
+			send_notice "$target" "${format_bold}${module_name}${format_bold}"
+			send_notice "$target" "$description"
 		fi
 	else
 		local sendernick=
