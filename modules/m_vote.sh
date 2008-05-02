@@ -29,6 +29,8 @@
 
 module_vote_INIT() {
 	modinit_API='2'
+	modinit_HOOKS='periodic on_PRIVMSG'
+
 	if [[ -z "$config_module_vote_channel" ]]; then
 		log_error "vote module: You need to set config_module_vote_channel in your config!"
 		return 1
@@ -37,38 +39,49 @@ module_vote_INIT() {
 		log_error "vote module: You need to set config_module_vote_timeout in your config!"
 		return 1
 	fi
-	modinit_HOOKS='periodic'
 	commands_register "$1" 'PROPOSE' || return 1
-	commands_register "$1" 'FOR' || return 1
+	commands_register "$1" 'FOR'     || return 1
 	commands_register "$1" 'AGAINST' || return 1
 	commands_register "$1" 'ABSTAIN' || return 1
-	commands_register "$1" 'LIST' || return 1
-	commands_register "$1" 'INFO' || return 1
+	commands_register "$1" 'LIST'    || return 1
+	commands_register "$1" 'INFO'    || return 1
+	helpentry_module_vote_description="Provides a simple voting system."
+
+	helpentry_vote_PROPOSE_syntax='<proposal name> <text of proposal>'
+	helpentry_vote_PROPOSE_description='Propose a Proposal.'
+
+	helpentry_vote_FOR_syntax='<proposal name>'
+	helpentry_vote_FOR_description='Vote FOR a Proposal.'
+	helpentry_vote_AGAINST_syntax='<proposal name>'
+	helpentry_vote_AGAINST_description='Vote AGAINST a Proposal.'
+	helpentry_vote_ABSTAIN_syntax='<proposal name>'
+	helpentry_vote_ABSTAIN_description='ABSTAIN vote on a Proposal.'
 }
 
 module_vote_UNLOAD() {
-	hash_reset module_vote_descs
-	hash_reset module_vote_votes
-	hash_reset module_vote_submitter
-	hash_reset module_vote_timestamps
-	hash_reset module_vote_votes_count
-	hash_reset module_vote_votes_for
-	hash_reset module_vote_votes_against
-	hash_reset module_vote_votes_abstain
-	unset module_vote_array_names
-
-	unset module_vote_add_proposal
-	unset module_vote_votes_count
+	unset helpentry_module_vote_description
+# 	hash_reset module_vote_descs
+# 	hash_reset module_vote_votes
+# 	hash_reset module_vote_submitter
+# 	hash_reset module_vote_timestamps
+# 	hash_reset module_vote_votes_count
+# 	hash_reset module_vote_votes_for
+# 	hash_reset module_vote_votes_against
+# 	hash_reset module_vote_votes_abstain
+# 	unset module_vote_array_names
+# 
+# 	unset module_vote_add_proposal
+# 	unset module_vote_votes_count
 }
 
 module_vote_REHASH() {
-	:
+	return 0
 }
-
 
 
 module_vote_periodic() {
 	# Check if we got some proposals to process
+	# TODO: Store time of next proposal to expire in order to speed this up.
 	local propname index exptime
 	for index in ${!module_vote_array_names[*]}; do
 		propname="${module_vote_array_names[${index}]}"
@@ -77,7 +90,7 @@ module_vote_periodic() {
 			local votes desc
 			module_vote_votes_count "$propname" 'votes'
 			hash_get module_vote_descs "$propname" 'desc'
-			send_msg "${config_module_vote_channel}" "$votename closes with $votes:"
+			send_msg "${config_module_vote_channel}" "$propname closes with $votes:"
 			send_msg "${config_module_vote_channel}" "$desc"
 			hash_unset module_vote_timestamps     "$votename"
 			hash_unset module_vote_submitter      "$votename"
@@ -92,10 +105,14 @@ module_vote_periodic() {
 }
 
 
-# $1 Name
-# $2 timestamp
-# $3 Submitter
-# $4 Text
+#---------------------------------------------------------------------
+## Add a proposal.
+## @Type Private
+## @param Name of proposal.
+## @param Timestamp when proposal expires.
+## @param Submitter of proposal.
+## @param Text of proposal.
+#---------------------------------------------------------------------
 module_vote_add_proposal() {
 	module_vote_array_names+=("$1")
 	hash_set module_vote_timestamps     "$1" "$2"
@@ -107,8 +124,12 @@ module_vote_add_proposal() {
 	hash_set module_vote_votes_abstain  "$1" ""
 }
 
-# $1 Name
-# $2 Outvariable (formatted)
+#---------------------------------------------------------------------
+## Format the vote result on a proposal.
+## @Type Private
+## @param Name of proposal.
+## @param Outvariable with formatted string.
+#---------------------------------------------------------------------
 module_vote_votes_count() {
 	local vEntry
 	local vTotal vFor vAgainst vAbstain
@@ -117,11 +138,6 @@ module_vote_votes_count() {
 	printf -v "$2" "FOR: %s AGAINST: %s ABSTAIN: %s" "$vFor" "$vAgainst" "$vAbstain"
 }
 
-# Called on a PRIVMSG
-#
-# $1 = from who (n!u@h)
-# $2 = to who (channel or botnick)
-# $3 = the message
 module_vote_handler_PROPOSE() {
 	local sender="$1"
 	local channel="$2"
@@ -132,7 +148,7 @@ module_vote_handler_PROPOSE() {
 		send_msg "$sendernick" "This must be done in the channel ${config_module_vote_channel}."
 		return
 	fi
-	if [[ "$3" =~ ^([a-zA-Z0-9][-_a-zA-Z0-9]+)\ (.+)$ ]]; then
+	if [[ "$3" =~ ^([-_a-zA-Z0-9]+)\ (.+)$ ]]; then
 		local propname="${BASH_REMATCH[1]}"
 		local proptext="${BASH_REMATCH[2]}"
 		if [[ " ${module_vote_array_names[*]} " = *" $propname "* ]]; then
@@ -141,14 +157,13 @@ module_vote_handler_PROPOSE() {
 			local exptime
 			time_get_current 'exptime'
 			(( exptime += $config_module_vote_timeout ))
-			send_msg "$channel" "Created proposal $propname: $proptext"
+			send_msg "$channel" "Created proposal $propname"
 			module_vote_add_proposal "$propname" "$exptime" "$sendernick" "$proptext"
 		fi
 	else
 		feedback_bad_syntax "$sendernick" "PROPOSE" "<proposal name> <text of proposal>"
 	fi
 }
-
 
 module_vote_handler_FOR() {
 	local sender="$1"
@@ -161,7 +176,7 @@ module_vote_handler_FOR() {
 		return
 	fi
 
-	if [[ "$3" =~ ^([a-zA-Z0-9][-_a-zA-Z0-9]+)$ ]]; then
+	if [[ "$3" =~ ^([-_a-zA-Z0-9]+)$ ]]; then
 		local propname="${BASH_REMATCH[1]}"
 		if [[ " ${module_vote_array_names[*]} " = *" $propname "* ]]; then
 			local exptime
@@ -206,7 +221,7 @@ module_vote_handler_AGAINST() {
 		return
 	fi
 
-	if [[ "$3" =~ ^([a-zA-Z0-9][-_a-zA-Z0-9]+)$ ]]; then
+	if [[ "$3" =~ ^([-_a-zA-Z0-9]+)$ ]]; then
 		local propname="${BASH_REMATCH[1]}"
 		if [[ " ${module_vote_array_names[*]} " = *" $propname "* ]]; then
 			local exptime
@@ -240,7 +255,6 @@ module_vote_handler_AGAINST() {
 	fi
 }
 
-
 module_vote_handler_ABSTAIN() {
 	local sender="$1"
 	local channel="$2"
@@ -252,7 +266,7 @@ module_vote_handler_ABSTAIN() {
 		return
 	fi
 
-	if [[ "$3" =~ ^([a-zA-Z0-9][-_a-zA-Z0-9]+)$ ]]; then
+	if [[ "$3" =~ ^([-_a-zA-Z0-9]+)$ ]]; then
 		local propname="${BASH_REMATCH[1]}"
 		if [[ " ${module_vote_array_names[*]} " = *" $propname "* ]]; then
 			local exptime
@@ -320,7 +334,7 @@ module_vote_handler_INFO() {
 		send_msg "$sendernick" "This must be done in the channel ${config_module_vote_channel}."
 		return
 	fi
-	if [[ "$3" =~ ^([a-zA-Z0-9][-_a-zA-Z0-9]+)$ ]]; then
+	if [[ "$3" =~ ^([-_a-zA-Z0-9]+)$ ]]; then
 		local propname="${BASH_REMATCH[1]}"
 		if [[ " ${module_vote_array_names[*]} " = *" $propname "* ]]; then
 			local exptime desc submitter diff votes
@@ -337,4 +351,31 @@ module_vote_handler_INFO() {
 	else
 		feedback_bad_syntax "$sendernick" "INFO" "<proposal name>"
 	fi
+}
+
+
+# Called on a PRIVMSG
+#
+# $1 = from who (n!u@h)
+# $2 = to who (channel or botnick)
+# $3 = the message
+module_vote_on_PRIVMSG() {
+	# If it isn't in a channel, ignore
+	if [[ $2 =~ ^${config_module_vote_channel}$ ]]; then
+		# An item must begin with an alphanumeric char.
+		if [[ "$query" =~ ^(PROPOSE|FOR|AGAINST|ABSTAIN|INFO)\ +(.+)$ ]]; then
+			local command="${BASH_REMATCH[1]}"
+			local data="${BASH_REMATCH[2]}"
+			case $command in
+				PROPOSE) module_vote_handler_PROPOSE "$1" "$2" "$data" ;;
+				FOR)     module_vote_handler_FOR     "$1" "$2" "$data" ;;
+				AGAINST) module_vote_handler_ABSTAIN "$1" "$2" "$data" ;;
+				ABSTAIN) module_vote_handler_AGAINST "$1" "$2" "$data" ;;
+				INFO)    module_vote_handler_INFO    "$1" "$2" "$data" ;;
+			esac
+		elif [[ "$query" =~ ^LIST($| ) ]]; then
+			module_vote_handler_LIST "$1" "$2" ""
+		fi
+	fi
+	return 0
 }
