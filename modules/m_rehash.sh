@@ -56,7 +56,7 @@ module_rehash_dorehash() {
 	esac
 	local sendernick
 	parse_hostmask_nick "$sender" 'sendernick'
-	send_msg "$sendernick" "$status_message"
+	send_notice "$sendernick" "$status_message"
 }
 
 module_rehash_handler_rehash() {

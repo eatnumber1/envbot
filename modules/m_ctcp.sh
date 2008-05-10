@@ -62,14 +62,20 @@ module_ctcp_on_PRIVMSG() {
 		local sendernick
 		parse_hostmask_nick "$sender" 'sendernick'
 		case "$ctcp_command" in
-			"VERSION")
-				send_nctcp "$sendernick" "VERSION $config_module_ctcp_version_reply"
+			"CLIENTINFO")
+				send_nctcp "$sendernick" "CLIENTINFO CLIENTINFO PING SOURCE TIME VERSION"
+				;;
+			"PING")
+				send_nctcp "$sendernick" "PING $ctcp_parameters"
+				;;
+			"SOURCE")
+				send_nctcp "$sendernick" "SOURCE http://envbot.org"
 				;;
 			"TIME")
 				send_nctcp "$sendernick" "TIME $(date +'%Y-%m-%d %k:%M:%S')"
 				;;
-			"PING")
-				send_nctcp "$sendernick" "PING $ctcp_parameters"
+			"VERSION")
+				send_nctcp "$sendernick" "VERSION $config_module_ctcp_version_reply"
 				;;
 			*)
 				# So we didn't handle this CTCP? Return 0 then, someone else may want it.
