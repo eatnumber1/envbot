@@ -56,6 +56,12 @@ module_vote_INIT() {
 	helpentry_vote_AGAINST_description='Vote AGAINST a Proposal.'
 	helpentry_vote_ABSTAIN_syntax='<proposal name>'
 	helpentry_vote_ABSTAIN_description='ABSTAIN vote on a Proposal.'
+
+	helpentry_vote_LIST_syntax=''
+	helpentry_vote_LIST_description='List Proposals.'
+
+	helpentry_vote_INFO_syntax='<proposal name>'
+	helpentry_vote_INFO_description='Show information about Proposal.'
 }
 
 module_vote_UNLOAD() {
@@ -87,11 +93,17 @@ module_vote_periodic() {
 		propname="${module_vote_array_names[${index}]}"
 		hash_get module_vote_timestamps "$propname" 'exptime'
 		if [[ $envbot_time -gt "$exptime" ]]; then
-			local votes desc
+			local votes desc submitter
 			module_vote_votes_count "$propname" 'votes'
 			hash_get module_vote_descs "$propname" 'desc'
-			send_msg "${config_module_vote_channel}" "$propname closes with $votes:"
-			send_msg "${config_module_vote_channel}" "$desc"
+			hash_get module_vote_submitter "$propname" 'submitter'
+			if [[ "$desc" ]]; then
+				send_notice "${config_module_vote_channel}" "$propname (by $submitter) closed with $votes:"
+				send_notice "${config_module_vote_channel}" "$desc"
+			else
+				send_notice "${config_module_vote_channel}" "$propname (by $submitter) closed with $votes (No proposal text)"
+			fi
+			log_info_file vote.log "$propname closed with ${votes}: $proptext"
 			hash_unset module_vote_timestamps     "$votename"
 			hash_unset module_vote_submitter      "$votename"
 			hash_unset module_vote_descs          "$votename"
@@ -148,17 +160,23 @@ module_vote_handler_PROPOSE() {
 		send_msg "$sendernick" "This must be done in the channel ${config_module_vote_channel}."
 		return
 	fi
-	if [[ "$3" =~ ^([-_a-zA-Z0-9]+)\ (.+)$ ]]; then
+	if [[ "$3" =~ ^([^ ]+)(\ +(.+))?$ ]]; then
 		local propname="${BASH_REMATCH[1]}"
-		local proptext="${BASH_REMATCH[2]}"
+		local proptext="${BASH_REMATCH[3]}"
 		if [[ " ${module_vote_array_names[*]} " = *" $propname "* ]]; then
 			send_msg "${config_module_vote_channel}" "A proposal called $propname already exists."
 		else
 			local exptime
 			time_get_current 'exptime'
 			(( exptime += $config_module_vote_timeout ))
-			send_msg "$channel" "Created proposal $propname"
-			module_vote_add_proposal "$propname" "$exptime" "$sendernick" "$proptext"
+			send_notice "$channel" "Created proposal $propname"
+			if [[ "$proptext" ]]; then
+				log_info_file vote.log "$sendernick created proposal $propname to expire at $exptime with text $proptext."
+				module_vote_add_proposal "$propname" "$exptime" "$sendernick" "$proptext"
+			else
+				log_info_file vote.log "$sendernick created proposal $propname to expire at $exptime with no text."
+				module_vote_add_proposal "$propname" "$exptime" "$sendernick" ""
+			fi
 		fi
 	else
 		feedback_bad_syntax "$sendernick" "PROPOSE" "<proposal name> <text of proposal>"
@@ -176,7 +194,7 @@ module_vote_handler_FOR() {
 		return
 	fi
 
-	if [[ "$3" =~ ^([-_a-zA-Z0-9]+)$ ]]; then
+	if [[ "$3" =~ ^([^ ]+)$ ]]; then
 		local propname="${BASH_REMATCH[1]}"
 		if [[ " ${module_vote_array_names[*]} " = *" $propname "* ]]; then
 			local exptime
@@ -221,7 +239,7 @@ module_vote_handler_AGAINST() {
 		return
 	fi
 
-	if [[ "$3" =~ ^([-_a-zA-Z0-9]+)$ ]]; then
+	if [[ "$3" =~ ^([^ ]+)$ ]]; then
 		local propname="${BASH_REMATCH[1]}"
 		if [[ " ${module_vote_array_names[*]} " = *" $propname "* ]]; then
 			local exptime
@@ -266,7 +284,7 @@ module_vote_handler_ABSTAIN() {
 		return
 	fi
 
-	if [[ "$3" =~ ^([-_a-zA-Z0-9]+)$ ]]; then
+	if [[ "$3" =~ ^([^ ]+)$ ]]; then
 		local propname="${BASH_REMATCH[1]}"
 		if [[ " ${module_vote_array_names[*]} " = *" $propname "* ]]; then
 			local exptime
@@ -334,7 +352,7 @@ module_vote_handler_INFO() {
 		send_msg "$sendernick" "This must be done in the channel ${config_module_vote_channel}."
 		return
 	fi
-	if [[ "$3" =~ ^([-_a-zA-Z0-9]+)$ ]]; then
+	if [[ "$3" =~ ^([^ ]+)$ ]]; then
 		local propname="${BASH_REMATCH[1]}"
 		if [[ " ${module_vote_array_names[*]} " = *" $propname "* ]]; then
 			local exptime desc submitter diff votes
@@ -344,7 +362,11 @@ module_vote_handler_INFO() {
 			hash_get module_vote_submitter "$propname" 'submitter'
 			module_vote_votes_count "$propname" 'votes'
 			send_msg "${config_module_vote_channel}" "$propname (by $submitter) closes in $diff ($votes)"
-			send_msg "${config_module_vote_channel}" "Description: $desc"
+			if [[ "$desc" ]]; then
+				send_msg "${config_module_vote_channel}" "Description: $desc"
+			else
+				send_msg "${config_module_vote_channel}" "No Description."
+			fi
 		else
 			send_msg "${config_module_vote_channel}" "That proposal doesn't exist."
 		fi
@@ -369,13 +391,19 @@ module_vote_on_PRIVMSG() {
 			case $command in
 				PROPOSE) module_vote_handler_PROPOSE "$1" "$2" "$data" ;;
 				FOR)     module_vote_handler_FOR     "$1" "$2" "$data" ;;
-				AGAINST) module_vote_handler_ABSTAIN "$1" "$2" "$data" ;;
-				ABSTAIN) module_vote_handler_AGAINST "$1" "$2" "$data" ;;
+				AGAINST) module_vote_handler_AGAINST "$1" "$2" "$data" ;;
+				ABSTAIN) module_vote_handler_ABSTAIN "$1" "$2" "$data" ;;
 				INFO)    module_vote_handler_INFO    "$1" "$2" "$data" ;;
 			esac
 		elif [[ "$query" =~ ^LIST($| ) ]]; then
 			module_vote_handler_LIST "$1" "$2" ""
+		elif [[ ( "${config_module_vote_questionmark}" == 1 ) && ( "$query" =~ ^([^ ]+)\?$ ) ]]; then
+			local prop=${BASH_REMATCH[1]}
+			if [[ " ${module_vote_array_names[*]} " = *" $prop "* ]]; then
+				module_vote_handler_INFO "$1" "$2" "$prop"
+			fi
 		fi
+		return 1
 	fi
 	return 0
 }
