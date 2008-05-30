@@ -205,9 +205,9 @@ config_module_services_nickserv_passwd='nickserv password here'
 # (*) Name of NickServ
 #     Normally this is correct.
 config_module_services_nickserv_name='NickServ'
-# (*) Service style. Supported are: anope, atheme
+# (*) Service style. Supported are: generic, atheme
 #     For the default server (irc.kuonet-ng.org) use atheme
-#     Otherwise try anope, that will work with atheme too but
+#     Otherwise try generic, that will work with atheme too but
 #     some features will be disabled.
 config_module_services_style='atheme'
 # (*) Use server side aliases

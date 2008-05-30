@@ -95,5 +95,5 @@ access_fail() {
 	log_error_file access.log "$1 tried to \"$2\" but lacks access."
 	local nick=
 	parse_hostmask_nick "$sender" 'nick'
-	send_msg "$nick" "Permission denied. You need the capability \"$3\" to do this action."
+	send_notice "$nick" "Permission denied. You need the capability \"$3\" to do this action."
 }
