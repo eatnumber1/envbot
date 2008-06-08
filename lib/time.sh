@@ -52,7 +52,7 @@ time_get_current() {
 ## Returns how long a time interval is in a human readable format.
 ## @Type API
 ## @param Time interval
-## @param Variable to return new list in.
+## @param Variable to return result in.
 ## @Note Modified version of function posted by goedel at
 ## @Note http://forum.bash-hackers.org/index.php?topic=59.0
 #---------------------------------------------------------------------
