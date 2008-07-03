@@ -85,7 +85,7 @@ transport_read_line()
 	Return a line in the variable $line.
 	Return status:
 		0 = Success
-		1 = Connection has failed or no data was received in $envbot_transport_timeout seconds.
+		1 = Connection has failed (timeout or whatever)
 	Notes:
 		The transport module should remove any trailing \r and/or \n (CR and/or LF)
 		from the string before it returns it.
