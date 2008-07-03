@@ -31,7 +31,7 @@
 #   dist-dir:     Generates a clean checkout of current version, ready to be
 #                 tared up. Can only be done in a bzr branch/checkout
 
-ENVBOT_VERSION = 0.0.1-trunk+bzr
+ENVBOT_VERSION = 0.1-beta1
 
 # For make dest-dir, defaults
 DISTDIR ?= dist

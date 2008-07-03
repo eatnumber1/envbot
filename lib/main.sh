@@ -67,7 +67,7 @@ fi
 ## @Type API
 ## @Read_only Yes
 #---------------------------------------------------------------------
-declare -r envbot_version='0.1-pre0'
+declare -r envbot_version='0.1-beta1'
 #---------------------------------------------------------------------
 ## Homepage of envbot.
 ## @Type API

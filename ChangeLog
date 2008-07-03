@@ -3,8 +3,53 @@ ChangeLog
 This is a overview of changes users may care about. Detailed changelog can be
 done using bzr (does not work in tarballs, you need a development checkout for this):
   bzr log -rtag:tag.. --short
-Example (list changes compared to 0.0.1-beta1)
-  bzr log -rtag:0.0.1-beta1.. --short
+Example (list changes compared to 0.1-beta1)
+  bzr log -rtag:0.1-beta1.. --short
+
+
+0.1-beta1
+---------
+A lot is new in this release. Some of the highlights include:
+ * Help command.
+ * Coloured log output.
+ * Modules that is split over several files in a subdirectory.
+   See contrib/modules/m_perl for an example.
+ * Lots of speed improvements by avoiding subshells when possible and such.
+ * Checks in subshells that module loading will work before actually loading it.
+   This is to avoid crashes on syntax errors in modules and such.
+ * A new centralised bot command dispatching system that is easier to use
+   than the old on_PRIVMSG and having every module parse it by itself.
+ * API documentation is now auto generated from source code using bashdoc.
+ * Extended and reworked internal API.
+ * New more flexible module API.
+ * Many new modules.
+   * Core:
+     * commands     - List commands from each module.
+     * ctcp         - Responds to CTCPs send to the bot.
+     * dice         - Roll a dice.
+     * help         - Help command.
+     * karma        - Karma module (the common ++/-- stuff)
+     * nicktracking - tracks nicks <-> host mapping for channels the bot is in.
+     * ping         - Provide some latency info and such.
+     * uptime       - Tell the uptime of the bot.
+   * Contrib (these either need extra deps or are not supported by the developers):
+     * convert      - Convert between different units (needs GNU or BSD units installed).
+     * perl         - Run perl code (not supported because it may not be safe).
+ * Lots of bugfixes.
+
+The rest of this change log entry is mainly for developers wanting to port their
+code from 0.0.1 to 0.1:
+ * 0.0.1 modules won't work without change, the both the module and core APIs
+   have changed a lot. For example on_PRIVMSG should not be used now most of the
+   time, instead see commands_register function.
+   See doc/module_api2.txt and the auto generated API docs for details.
+ * Quite a few Core API functions have changed parameter format:
+   A lot now take "out parameters" instead of using $() construct. This is
+   because subshells (caused by the $() construct) are slow.
+ * Sadly one feature from trunk were too unstable to make it into 0.1, it will
+   hopefully be in the next version. This feature was periodic events. This is
+   the reason for some odd code related to transports status in this version
+   ($transport_status and transport_alive to be specific).
 
 
 0.0.1
