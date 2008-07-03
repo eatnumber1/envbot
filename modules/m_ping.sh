@@ -23,11 +23,11 @@
 ## Keeps track of latency
 #---------------------------------------------------------------------
 
+# TODO: Redo with stored "on pong info".
+
 module_ping_INIT() {
 	modinit_API='2'
-	modinit_HOOKS='periodic on_PONG'
-	module_ping_counter=0
-	module_ping_latency=0
+	modinit_HOOKS='on_PONG'
 	commands_register "$1" 'ping' || return 1
 	commands_register "$1" 'latency' || return 1
 	helpentry_module_ping_description="Provides latency tracking."
@@ -40,26 +40,27 @@ module_ping_INIT() {
 }
 
 module_ping_UNLOAD() {
-	unset module_ping_counter module_ping_latency
+	return 0
 }
 
 module_ping_REHASH() {
 	return 0
 }
 
-module_ping_periodic() {
-	if [[ $module_ping_counter = 5 ]]; then
-		send_raw "PING :$envbot_time"
-		module_ping_counter=0
-	else
-		(( module_ping_counter++ ))
-	fi
-}
-
 module_ping_on_PONG() {
-	# Is data numbers only?
-	if ! [[ $3 = *[^0-9]* ]]; then
-		(( module_ping_latency = envbot_time - $3 ))
+	# Is data time_sender?
+	if [[ $3 =~ ([0-9]+)_(#?[A-Za-z0-9][^ ]+)  ]]; then
+		local time="${BASH_REMATCH[1]}"
+		local target="${BASH_REMATCH[2]}"
+		local latency
+		(( latency = envbot_time - $time ))
+		local msg=
+		case $latency in
+			0) msg="less than one second" ;;
+			1) msg="1 second" ;;
+			*) msg="$latency seconds" ;;
+		esac
+		send_msg "$target" "Latency is $msg"
 	fi
 }
 
@@ -82,13 +83,5 @@ module_ping_handler_latency() {
 	else
 		parse_hostmask_nick "$1" 'target'
 	fi
-	local msg=
-	if [[ $module_ping_latency = 0 ]]; then
-		msg="less than one second"
-	elif [[ $module_ping_latency = 1 ]]; then
-		msg="1 second"
-	else
-		msg="$module_ping_latency seconds"
-	fi
-	send_msg "$target" "Latency is $msg"
+	send_raw "PING :${envbot_time}_${target}"
 }
