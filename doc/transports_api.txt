@@ -83,8 +83,6 @@ transport_alive()
 
 transport_read_line()
 	Return a line in the variable $line.
-	The function should time out after $envbot_transport_timeout seconds (to allow for
-	periodic events).
 	Return status:
 		0 = Success
 		1 = Connection has failed or no data was received in $envbot_transport_timeout seconds.

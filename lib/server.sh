@@ -271,7 +271,6 @@ server_connect() {
 		fi
 		# Did we timeout waiting for data
 		# or did we get data?
-		# We don't care about periodic events here.
 		if [[ $transport_status -ne 0 ]]; then
 			continue
 		fi

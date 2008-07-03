@@ -154,23 +154,6 @@ module_modulename_after_connect
 		Not checked.
 
 
-module_modulename_periodic
-	Called regularly for periodic events.
-	Parameters:
-		$1 = Timestamp when calling of hook started. This is to prevent
-		     functions from having to do a slow call to date themself.
-	Return code:
-		Not checked.
-	Notes:
-		This function should be low overhead, it gets called quite often.
-		Lower limit of time (during normal operation) between running hook:
-			$envbot_transport_timeout seconds
-		Upper limit of time (during normal operation) between running hook:
-			2 * $envbot_transport_timeout seconds
-		If there is some slow hook or code elsewhere this may result in that
-		this hook does not get called within the bounds given above.
-
-
 module_modulename_on_module_UNLOAD
 	Called when *ANOTHER* module is got unloaded.
 	This is meant for a provider module that must unregister some entry
@@ -179,6 +162,7 @@ module_modulename_on_module_UNLOAD
 		$1 = The module that got unloaded.
 	Return code:
 		Not checked.
+
 
 module_modulename_on_PRIVMSG
 	Called when bot gets a PRIVMSG

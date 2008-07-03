@@ -111,7 +111,7 @@ transport_alive() {
 #   0 If Ok
 #   1 If connection failed
 transport_read_line() {
-	read -ru 4 -t $envbot_transport_timeout line
+	read -ru 4 line
 	# Fail.
 	if [[ $? -ne 0 ]]; then
 		return 1

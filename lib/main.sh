@@ -67,7 +67,7 @@ fi
 ## @Type API
 ## @Read_only Yes
 #---------------------------------------------------------------------
-declare -r envbot_version='0.0.1-trunk+bzr'
+declare -r envbot_version='0.1-pre0'
 #---------------------------------------------------------------------
 ## Homepage of envbot.
 ## @Type API
@@ -138,22 +138,14 @@ force_verbose=0
 #---------------------------------------------------------------------
 command_line=( "$@" )
 
+# Some constants used in different places
+
 #---------------------------------------------------------------------
 ## Current config version.
 ## @Type API
 ## @Read_only Yes
 #---------------------------------------------------------------------
 declare -r config_current_version=17
-
-# Some constants used in different places
-
-#---------------------------------------------------------------------
-## Transport modules will wait $envbot_transport_timeout seconds
-## before returning control to main loop (to allow periodic events).
-## @Type API
-## @Read_only Yes
-#---------------------------------------------------------------------
-declare -r envbot_transport_timeout=5
 
 #---------------------------------------------------------------------
 ## In progress of quitting? This is used to
@@ -338,12 +330,6 @@ log_info_stdout "Loading modules"
 modules_load_from_config
 
 #---------------------------------------------------------------------
-## Used for periodic events later below
-## @Type Private
-#---------------------------------------------------------------------
-periodic_lastrun=''
-time_get_current 'periodic_lastrun'
-#---------------------------------------------------------------------
 ## This can be used when the code does not need exact time.
 ## It will be updated each time the bot get a new line of
 ## data.
@@ -379,6 +365,7 @@ while true; do
 			log_error "Connection failed"
 			envbot_quit 1
 		}
+		server_connected_before=1
 	fi
 	trap 'bot_quit "Interrupted (Ctrl-C)"' INT
 	trap 'bot_quit "Terminated (SIGTERM)"' TERM
@@ -395,15 +382,7 @@ while true; do
 			break
 		fi
 		time_get_current 'envbot_time'
-		# Time to run periodic events again?
-		# We run them every $envbot_transport_timeout second.
-		if time_check_interval "$periodic_lastrun" "$envbot_transport_timeout"; then
-			time_get_current 'periodic_lastrun'
-			envbot_time="$periodic_lastrun"
-			for module in $modules_periodic; do
-				module_${module}_periodic "${periodic_lastrun}"
-			done
-		fi
+
 		# Did we timeout waiting for data
 		# or did we get data?
 		if [[ $transport_status -ne 0 ]]; then
