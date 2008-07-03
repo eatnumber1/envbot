@@ -67,7 +67,7 @@ fi
 ## @Type API
 ## @Read_only Yes
 #---------------------------------------------------------------------
-declare -r envbot_version='0.0.1-trunk+bzr'
+declare -r envbot_version='0.1-trunk+bzr'
 #---------------------------------------------------------------------
 ## Homepage of envbot.
 ## @Type API
@@ -379,6 +379,7 @@ while true; do
 			log_error "Connection failed"
 			envbot_quit 1
 		}
+		server_connected_before=1
 	fi
 	trap 'bot_quit "Interrupted (Ctrl-C)"' INT
 	trap 'bot_quit "Terminated (SIGTERM)"' TERM

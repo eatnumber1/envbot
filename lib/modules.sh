@@ -172,8 +172,8 @@ modules_add_hooks() {
 	[[ $? -ne 0 ]] && { log_error_file modules.log "Failed to get initialize module \"$module\""; return 1; }
 	# Check if it didn't set any modinit_API, in that case it is a API 1 module.
 	if [[ -z $modinit_API ]]; then
-		log_warning "Please upgrade \"$module\" to new module API $modules_current_API. This old API is deprecated."
-		modinit_HOOKS="$(module_${module}_INIT)"
+		log_error "Please upgrade \"$module\" to new module API $modules_current_API. This old API is obsolete and no longer supported."
+		return 1
 	elif [[ $modinit_API -ne $modules_current_API ]]; then
 		log_error "Current module API version is $modules_current_API, but the API version of \"$module\" is $module_API."
 		return 1
