@@ -35,7 +35,8 @@ module_calc_INIT() {
 	fi
 	commands_register "$1" 'calc' || return 1
 	helpentry_module_calc_description="Simple calculator module."
-
+	helpentry_calc_calc_syntax='<expression>'
+	helpentry_calc_calc_description='Try to calculate <expression> using bc.'
 }
 
 module_calc_UNLOAD() {
