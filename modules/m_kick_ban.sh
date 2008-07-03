@@ -26,7 +26,7 @@
 
 module_kick_ban_INIT() {
 	modinit_API='2'
-	modinit_HOOKS='after_load after_connect on_numeric periodic'
+	modinit_HOOKS='after_load after_connect on_numeric'
 	unset module_kick_ban_next_unset module_kick_ban_timed_bans
 	commands_register "$1" 'kick' || return 1
 	commands_register "$1" 'ban' || return 1
@@ -40,9 +40,7 @@ module_kick_ban_INIT() {
 }
 
 module_kick_ban_UNLOAD() {
-	unset module_kick_ban_TBAN_supported module_kick_ban_timed_bans
-	unset module_kick_ban_next_unset module_kick_ban_store_ban
-
+	unset module_kick_ban_TBAN_supported
 }
 
 module_kick_ban_REHASH() {
@@ -74,53 +72,6 @@ module_kick_ban_on_numeric() {
 		fi
 	fi
 }
-
-module_kick_ban_periodic() {
-	# We got some ban to process
-	if [[ $module_kick_ban_next_unset && $envbot_time -ge $module_kick_ban_next_unset ]]; then
-		local nextban
-		local index time channel mask
-		for index in ${!module_kick_ban_timed_bans[*]}; do
-			read -r time channel mask <<< "${module_kick_ban_timed_bans[${index}]}"
-			# Should we unset?
-			if (( envbot_time >= time )); then
-				# TODO: Queue them?
-				send_modes "$channel" "-b $mask"
-				# Remove ban from list.
-				unset "module_kick_ban_timed_bans[${index}]"
-				continue
-			# Next ban?
-			elif [[ -z $nextban || $nextban -gt $time ]]; then
-				nextban="$time"
-			fi
-		done
-		# Note time for next ban (if any)
-		if [[ $nextban ]]; then
-			module_kick_ban_next_unset="$nextban"
-		else
-			unset module_kick_ban_next_unset
-		fi
-	fi
-}
-
-#---------------------------------------------------------------------
-## Store a ban
-## @Type Private
-## @param Channel
-## @param Banmask
-## @param Duration
-#---------------------------------------------------------------------
-module_kick_ban_store_ban() {
-	# Calculate unset-time
-	local targettime="$3"
-	(( targettime += envbot_time ))
-
-	module_kick_ban_timed_bans+=( "$targettime $1 $2" )
-	if [[ -z $module_kick_ban_next_unset || $module_kick_ban_next_unset -gt $targettime ]]; then
-		module_kick_ban_next_unset="$targettime"
-	fi
-}
-
 
 module_kick_ban_handler_kick() {
 	# Accept this anywhere, unless someone can give a good reason not to.
@@ -175,7 +126,9 @@ module_kick_ban_handler_ban() {
 					send_raw "TBAN $channel $duration $nick"
 				else
 					send_modes "$channel" "+b $nick"
-					module_kick_ban_store_ban "$channel" "$nick" "$duration"
+					local sendernick
+					parse_hostmask_nick "$sender" 'sendernick'
+					send_notice "$sendernick" "Sorry ban will not be timed, this IRCd didn't support TBAN command when I checked before."
 				fi
 			else
 				send_modes "$channel" "+b $nick"
