@@ -42,7 +42,7 @@ module_sqlite3_REHASH() {
 module_sqlite3_after_load() {
 	# Check (silently) for sqlite3
 	if ! hash sqlite3 > /dev/null 2>&1; then
-		log_error "Couldn't find sqlite3 command line tool. The sqlite3 module depend on that tool."
+		log_error "Couldn't find sqlite3 command line tool. The sqlite3 module depends on that tool."
 		return 1
 	fi
 	if [[ -z $config_module_sqlite3_database ]]; then
