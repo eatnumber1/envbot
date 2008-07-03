@@ -37,6 +37,10 @@ module_perl_INIT() {
 	fi
 	module_perl_working_dir="$MODULE_BASE_PATH"
 	commands_register "$1" 'perl' || return 1
+	helpentry_module_perl_description="Execute perl code."
+
+	helpentry_perl_perl_syntax='<code>'
+	helpentry_perl_perl_description='Execute perl code.'
 }
 
 module_perl_UNLOAD() {
