@@ -33,6 +33,24 @@ module_factoids_INIT() {
 	commands_register "$1" 'whatis'                          || return 1
 	commands_register "$1" 'factoid_stats'  'factoid stats'  || return 1
 	helpentry_module_factoids_description="Provides a factoid database."
+
+	helpentry_factoids_learn_syntax='<key> (as|is|are|=) <value>'
+	helpentry_factoids_learn_description='Teach the bot a new factoid.'
+
+	helpentry_factoids_forget_syntax='<key>'
+	helpentry_factoids_forget_description='Make the bot forget the factoid <key>.'
+
+	helpentry_factoids_lock_factoid_syntax='<key>'
+	helpentry_factoids_lock_factoid_description='Prevent normal users from changing the factoid <key>.'
+
+	helpentry_factoids_unlock_factoid_syntax='<key>'
+	helpentry_factoids_unlock_factoid_description='Allow changes to a previously locked factoid <key>.'
+
+	helpentry_factoids_whatis_syntax='<key>'
+	helpentry_factoids_whatis_description='Look up the factoid <key>.'
+
+	helpentry_factoids_factoid_stats_syntax=''
+	helpentry_factoids_factoid_stats_description='Report some statistics on the factoid database.'
 }
 
 
