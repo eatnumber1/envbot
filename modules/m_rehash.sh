@@ -51,7 +51,7 @@ module_rehash_dorehash() {
 	config_rehash
 	local status=$?
 	case $status in
-		0) status_message="Rehash successful" ;;
+		0) status_message="Rehash successful. (Also any loaded modules not listed in config have been unloaded.)" ;;
 		2) status_message="The new config is not the same version as the bot. Rehash won't work." ;;
 		3) status_message="Failed to source it, but the bot should not be in an undefined state." ;;
 		4) status_message="Configuration validation on new config failed, but the bot should not be in an undefined state." ;;
