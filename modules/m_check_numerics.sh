@@ -26,6 +26,7 @@
 module_check_numerics_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='on_numeric'
+	helpentry_module_check_numerics_description="Debugging module to check if any numeric we get is unknown."
 }
 
 module_check_numerics_UNLOAD() {

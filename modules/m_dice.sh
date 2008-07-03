@@ -35,8 +35,7 @@ module_dice_INIT() {
 }
 
 module_dice_UNLOAD() {
-	unset helpentry_module_dice_description
-	unset helpentry_dice_roll_syntax helpentry_dice_roll_description
+	return 0
 }
 
 module_dice_REHASH() {

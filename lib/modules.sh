@@ -327,6 +327,9 @@ modules_unload() {
 		module_${othermodule}_on_module_UNLOAD "$module"
 	done
 
+	# Unset help string
+	unset helpentry_module_${module}_description
+
 	return 0
 }
 

@@ -26,6 +26,7 @@
 module_umodes_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_connect after_load'
+	helpentry_module_umodes_description="Provides support for setting umodes on connect."
 }
 
 module_umodes_UNLOAD() {

@@ -26,6 +26,7 @@
 
 module_help_INIT() {
 	modinit_API='2'
+	modinit_HOOKS=''
 	commands_register "$1" 'help' || return 1
 	commands_register "$1" 'modinfo' || return 1
 	helpentry_module_help_description="Provides help and information for commands and modules."
@@ -40,8 +41,6 @@ module_help_INIT() {
 module_help_UNLOAD() {
 	unset module_help_fetch_module_function_data
 	unset module_help_fetch_module_data
-	unset helpentry_module_help_description
-	unset helpentry_help_help_syntax helpentry_help_help_description
 }
 
 module_help_REHASH() {

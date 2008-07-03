@@ -27,6 +27,7 @@
 module_sqlite3_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load'
+	helpentry_module_sqlite3_description="Provides sqlite3 database backend for other modules."
 }
 
 module_sqlite3_UNLOAD() {

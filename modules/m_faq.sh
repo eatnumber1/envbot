@@ -27,6 +27,7 @@ module_faq_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load'
 	commands_register "$1" 'faq' || return 1
+	helpentry_module_faq_description="FAQ from a file."
 }
 
 module_faq_UNLOAD() {

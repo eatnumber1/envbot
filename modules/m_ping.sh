@@ -30,6 +30,7 @@ module_ping_INIT() {
 	module_ping_latency=0
 	commands_register "$1" 'ping' || return 1
 	commands_register "$1" 'latency' || return 1
+	helpentry_module_ping_description="Provides latency tracking."
 }
 
 module_ping_UNLOAD() {

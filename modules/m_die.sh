@@ -29,6 +29,7 @@ module_die_INIT() {
 	modinit_HOOKS=''
 	commands_register "$1" 'die' || return 1
 	commands_register "$1" 'restart' || return 1
+	helpentry_module_die_description="Commands to shut down and restart bot."
 }
 
 module_die_UNLOAD() {

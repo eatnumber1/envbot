@@ -28,6 +28,8 @@ module_sendraw_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
 	commands_register "$1" 'raw' || return 1
+	helpentry_module_sendraw_description="Provides raw command to send raw data."
+
 }
 
 module_sendraw_UNLOAD() {

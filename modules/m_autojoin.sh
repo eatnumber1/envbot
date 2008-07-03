@@ -26,6 +26,7 @@
 module_autojoin_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_connect'
+	helpentry_module_autojoin_description="Provides support for autojoining channels."
 }
 
 module_autojoin_UNLOAD() {

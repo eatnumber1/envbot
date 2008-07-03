@@ -27,6 +27,7 @@ module_karma_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load on_PRIVMSG'
 	commands_register "$1" 'karma' || return 1
+	helpentry_module_karma_description="Provides karma support."
 }
 
 module_karma_UNLOAD() {

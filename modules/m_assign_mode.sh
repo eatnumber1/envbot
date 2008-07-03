@@ -36,6 +36,7 @@ module_assign_mode_INIT() {
 	commands_register "$1" 'protect'   || return 1
 	commands_register "$1" 'deprotect' || return 1
 	commands_register "$1" 'topic'     || return 1
+	helpentry_module_assign_mode_description="Provides op, deop and related commands."
 
 }
 

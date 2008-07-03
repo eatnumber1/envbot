@@ -32,6 +32,7 @@ module_factoids_INIT() {
 	commands_register "$1" 'unlock_factoid' 'unlock factoid' || return 1
 	commands_register "$1" 'whatis'                          || return 1
 	commands_register "$1" 'factoid_stats'  'factoid stats'  || return 1
+	helpentry_module_factoids_description="Provides a factoid database."
 }
 
 

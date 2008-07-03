@@ -28,6 +28,8 @@ module_quote_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load'
 	commands_register "$1" 'quote' || return 1
+	helpentry_module_quote_description="Provides command for random quotes from a file."
+
 }
 
 module_quote_UNLOAD() {

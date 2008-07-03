@@ -43,7 +43,7 @@ module_helloworld_INIT() {
 	# as the command name got space in it. Note that a command can
 	# be at most two words.
 	commands_register "$1" 'hello_world' 'hello world' || return 1
-
+	helpentry_module_helloworld_description="This is an example module."
 }
 
 #---------------------------------------------------------------------

@@ -29,6 +29,8 @@ module_join_INIT() {
 	modinit_HOOKS=''
 	commands_register "$1" 'join' || return 1
 	commands_register "$1" 'part' || return 1
+	helpentry_module_join_description="Join/part commands."
+
 }
 
 module_join_UNLOAD() {

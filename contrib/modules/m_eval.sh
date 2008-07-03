@@ -28,6 +28,8 @@ module_eval_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
 	commands_register "$1" 'eval' || return 1
+	helpentry_module_eval_description="Eval command for developers debugging the bot. Don't use if you don't know what you are doing."
+
 }
 
 module_eval_UNLOAD() {

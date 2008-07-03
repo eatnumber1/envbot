@@ -35,8 +35,7 @@ module_uptime_INIT() {
 }
 
 module_uptime_UNLOAD() {
-	unset helpentry_module_uptime_description
-	unset helpentry_uptime_uptime_syntax helpentry_uptime_uptime_description
+	return 0
 }
 
 module_uptime_REHASH() {

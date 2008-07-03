@@ -27,6 +27,8 @@ module_rehash_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
 	commands_register "$1" 'rehash' || return 1
+	helpentry_module_rehash_description="Exposes the internal rehash support to bot owners."
+
 }
 
 module_rehash_UNLOAD() {

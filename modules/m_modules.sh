@@ -30,6 +30,7 @@ module_modules_INIT() {
 	commands_register "$1" 'modunload' || return 1
 	commands_register "$1" 'modreload' || return 1
 	commands_register "$1" 'modlist'   || return 1
+	helpentry_module_modules_description="Exposes the internal module loading and unloading support to owners."
 }
 
 module_modules_UNLOAD() {

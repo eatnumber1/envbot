@@ -39,6 +39,7 @@ module_convert_INIT() {
 		module_convert_gnu=0
 	fi
 	commands_register "$1" 'convert' || return 1
+	helpentry_module_convert_description="Convert between different units."
 }
 
 module_convert_UNLOAD() {

@@ -36,7 +36,7 @@ module_eix_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load'
 	commands_register "$1" 'eix' || return 1
-
+	helpentry_module_eix_description="Search in Gentoo package database."
 }
 
 module_eix_UNLOAD() {

@@ -30,7 +30,7 @@ module_kick_ban_INIT() {
 	unset module_kick_ban_next_unset module_kick_ban_timed_bans
 	commands_register "$1" 'kick' || return 1
 	commands_register "$1" 'ban' || return 1
-	helpentry_module_kick_ban_description="Provides help and information for commands and modules."
+	helpentry_module_kick_ban_description="Provides kick and ban commands."
 
 	helpentry_kick_ban_kick_syntax='[<#channel>] <nick> <reason>'
 	helpentry_kick_ban_kick_description='Kick someone from a channel. Channel parameter only needed if not sent in a channel.'

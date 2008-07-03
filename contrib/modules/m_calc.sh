@@ -34,6 +34,8 @@ module_calc_INIT() {
 		return 1
 	fi
 	commands_register "$1" 'calc' || return 1
+	helpentry_module_calc_description="Simple calculator module."
+
 }
 
 module_calc_UNLOAD() {

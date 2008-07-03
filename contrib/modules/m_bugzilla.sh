@@ -40,6 +40,7 @@ module_bugzilla_INIT() {
 	modinit_HOOKS='after_load'
 	commands_register "$1" 'bugs_search' 'bugs search' || return 1
 	commands_register "$1" 'bug' || return 1
+	helpentry_module_bugzilla_description="Search in bugzilla bug trackers."
 }
 
 module_bugzilla_UNLOAD() {

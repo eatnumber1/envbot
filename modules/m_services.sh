@@ -26,6 +26,7 @@
 module_services_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='on_connect after_load after_disconnect'
+	helpentry_module_services_description="Provides support for identifying with services."
 }
 
 module_services_UNLOAD() {

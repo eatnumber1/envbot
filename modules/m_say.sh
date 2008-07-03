@@ -28,6 +28,8 @@ module_say_INIT() {
 	modinit_HOOKS=''
 	commands_register "$1" 'say' || return 1
 	commands_register "$1" 'act' || return 1
+	helpentry_module_say_description="Provides say and act commands."
+
 }
 
 module_say_UNLOAD() {

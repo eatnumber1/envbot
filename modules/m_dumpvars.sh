@@ -27,6 +27,7 @@ module_dumpvars_INIT() {
 	modinit_API='2'
 	modinit_HOOKS=''
 	commands_register "$1" 'dumpvars' || return 1
+	helpentry_module_dumpvars_description="Debugging module to dump all variables in the bot."
 }
 
 module_dumpvars_UNLOAD() {

@@ -26,6 +26,7 @@
 module_ctcp_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load on_PRIVMSG'
+	helpentry_module_ctcp_description="Answers CTCP requests."
 }
 
 module_ctcp_UNLOAD() {

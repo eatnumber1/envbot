@@ -27,6 +27,8 @@ module_seen_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load on_PRIVMSG'
 	commands_register "$1" 'seen' || return 1
+	helpentry_module_seen_description="Provides support for seen."
+
 }
 
 module_seen_UNLOAD() {

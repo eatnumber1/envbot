@@ -26,6 +26,7 @@
 module_nicktracking_INIT() {
 	modinit_API='2'
 	modinit_HOOKS='after_load before_connect on_numeric on_NICK on_QUIT on_KICK on_PART on_JOIN'
+	helpentry_module_nicktracking_description="Provides nicktracking backend for other modules."
 }
 
 module_nicktracking_UNLOAD() {
