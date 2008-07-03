@@ -29,6 +29,8 @@ module_seen_INIT() {
 	commands_register "$1" 'seen' || return 1
 	helpentry_module_seen_description="Provides last seen information."
 
+	helpentry_seen_seen_syntax='<nick>'
+	helpentry_seen_seen_description='Report when the bot last saw <nick>.'
 }
 
 module_seen_UNLOAD() {

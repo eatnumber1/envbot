@@ -30,6 +30,8 @@ module_quote_INIT() {
 	commands_register "$1" 'quote' || return 1
 	helpentry_module_quote_description="Provides command for random quotes from a file."
 
+	helpentry_quote_quote_syntax=''
+	helpentry_quote_quote_description='Return a random quote.'
 }
 
 module_quote_UNLOAD() {

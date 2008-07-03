@@ -74,7 +74,7 @@ module_vote_UNLOAD() {
 # 	hash_reset module_vote_votes_against
 # 	hash_reset module_vote_votes_abstain
 # 	unset module_vote_array_names
-# 
+#
 # 	unset module_vote_add_proposal
 # 	unset module_vote_votes_count
 	return 0

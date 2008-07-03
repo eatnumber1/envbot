@@ -31,6 +31,11 @@ module_join_INIT() {
 	commands_register "$1" 'part' || return 1
 	helpentry_module_join_description="Join/part commands."
 
+	helpentry_join_join_syntax='<#channel> [<key>]'
+	helpentry_join_join_description='Join a <#channel>, with an optional channel <key>.'
+
+	helpentry_join_part_syntax='<#channel> [<reason>]"'
+	helpentry_join_part_description='Part a <#channel> with an optional <reason>.'
 }
 
 module_join_UNLOAD() {

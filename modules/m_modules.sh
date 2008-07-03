@@ -31,6 +31,19 @@ module_modules_INIT() {
 	commands_register "$1" 'modreload' || return 1
 	commands_register "$1" 'modlist'   || return 1
 	helpentry_module_modules_description="Exposes the internal module loading and unloading support to owners."
+
+	helpentry_modules_modload_syntax='<module name>'
+	helpentry_modules_modload_description='Try to load a module.'
+
+	helpentry_modules_modunload_syntax='<module name>'
+	helpentry_modules_modunload_description='Try to unload a module.'
+
+	helpentry_modules_modreload_syntax='<module name>'
+	helpentry_modules_modreload_description='Try to unload and reload a module.'
+
+	helpentry_modules_modlist_syntax=''
+	helpentry_modules_modlist_description='List currently loaded moudules.'
+
 }
 
 module_modules_UNLOAD() {

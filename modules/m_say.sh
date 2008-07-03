@@ -30,6 +30,11 @@ module_say_INIT() {
 	commands_register "$1" 'act' || return 1
 	helpentry_module_say_description="Provides say and act commands."
 
+	helpentry_say_act_syntax='<target> <message>'
+	helpentry_say_act_description='Send a <message> to <target> (nick or channel).'
+
+	helpentry_say_act_syntax='<target> <message>'
+	helpentry_say_act_description='Peform the <message> as a /me to <target> (nick or channel).'
 }
 
 module_say_UNLOAD() {
