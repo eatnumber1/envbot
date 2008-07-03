@@ -29,7 +29,8 @@ module_sendraw_INIT() {
 	modinit_HOOKS=''
 	commands_register "$1" 'raw' || return 1
 	helpentry_module_sendraw_description="Provides raw command to send raw data."
-
+	helpentry_sendraw_raw_syntax='<line>'
+	helpentry_sendraw_raw_description='Send the <line> to the IRC server.'
 }
 
 module_sendraw_UNLOAD() {

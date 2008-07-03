@@ -40,6 +40,8 @@ module_convert_INIT() {
 	fi
 	commands_register "$1" 'convert' || return 1
 	helpentry_module_convert_description="Convert between different units."
+	helpentry_convert_convert_syntax='<value> <unit> [to] <unit>'
+	helpentry_convert_convert_description='Convert the value from one unit to another.'
 }
 
 module_convert_UNLOAD() {

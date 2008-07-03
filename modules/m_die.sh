@@ -30,6 +30,10 @@ module_die_INIT() {
 	commands_register "$1" 'die' || return 1
 	commands_register "$1" 'restart' || return 1
 	helpentry_module_die_description="Commands to shut down and restart bot."
+	helpentry_die_die_syntax='[reason]'
+	helpentry_die_die_description='Quit with an optional quit reason.'
+	helpentry_die_restart_syntax='[reason]'
+	helpentry_die_restart_description='Disconnect the bot with an optional quit reason, then rerun itself.'
 }
 
 module_die_UNLOAD() {

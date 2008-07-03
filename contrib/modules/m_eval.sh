@@ -30,6 +30,8 @@ module_eval_INIT() {
 	commands_register "$1" 'eval' || return 1
 	helpentry_module_eval_description="Eval command for developers debugging the bot. Don't use if you don't know what you are doing."
 
+	helpentry_eval_eval_syntax='<expression>'
+	helpentry_eval_eval_description='Evaluate <expression> in global scope.'
 }
 
 module_eval_UNLOAD() {

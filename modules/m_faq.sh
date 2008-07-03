@@ -28,6 +28,9 @@ module_faq_INIT() {
 	modinit_HOOKS='after_load'
 	commands_register "$1" 'faq' || return 1
 	helpentry_module_faq_description="FAQ from a file."
+
+	helpentry_faq_faq_syntax='[number|string]'
+	helpentry_faq_faq_description='Show the <number>th faq item or search for a <string> in all the faq items.'
 }
 
 module_faq_UNLOAD() {

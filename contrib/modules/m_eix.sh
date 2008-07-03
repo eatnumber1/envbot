@@ -37,6 +37,9 @@ module_eix_INIT() {
 	modinit_HOOKS='after_load'
 	commands_register "$1" 'eix' || return 1
 	helpentry_module_eix_description="Search in Gentoo package database."
+
+	helpentry_eix_eix_syntax='<pattern>'
+	helpentry_eix_eix_description='Search for wildcard pattern in the local copy of the Gentoo package database.'
 }
 
 module_eix_UNLOAD() {
@@ -48,11 +51,15 @@ module_eix_REHASH() {
 }
 
 # Called after module has loaded.
-# Check for eix
+# Check for eix and config being sane.
 module_eix_after_load() {
 	# Check (silently) for eix
 	if ! hash eix >/dev/null 2>&1; then
 		log_error "Couldn't find \"eix\" command line tool. The eix module depend on that tool."
+		return 1
+	fi
+	if [[ -z $config_module_eix_rate ]]; then
+		log_error_file eix.log "YOU MUST SET config_module_eix_rate IN YOUR CONFIG IN ORDER TO USE THE EIX MODULE"
 		return 1
 	fi
 	# Flood limiting.
@@ -79,10 +86,6 @@ module_eix_handler_eix() {
 	if [[ "$parameters" =~ ^(.+) ]]; then
 		local pattern="${BASH_REMATCH[1]}"
 		# Simple flood limiting
-		if [[ -z $config_module_eix_rate ]]; then
-			log_error_file eix.log "YOU MUST SET config_module_eix_rate IN YOUR CONFIG IN ORDER TO USE THE EIX MODULE"
-			return
-		fi
 		if time_check_interval "$module_eix_last_query" "$config_module_eix_rate"; then
 			time_get_current 'module_eix_last_query'
 			log_info_file eix.log "$sender made the bot run eix on \"$pattern\""

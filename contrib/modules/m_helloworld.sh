@@ -44,6 +44,12 @@ module_helloworld_INIT() {
 	# be at most two words.
 	commands_register "$1" 'hello_world' 'hello world' || return 1
 	helpentry_module_helloworld_description="This is an example module."
+
+	helpentry_helloworld_hi_syntax='<target> <message>'
+	helpentry_helloworld_hi_description='Send a greeting to <target> (nick or channel) with the <message>.'
+
+	helpentry_helloworld_helloworld_syntax='<message>'
+	helpentry_helloworld_helloworld_description='Send a greeting to the current scope with the one word <message>.'
 }
 
 #---------------------------------------------------------------------
