@@ -89,11 +89,13 @@ transport_check_support() {
 #   0 if Ok
 #   1 if connection failed
 transport_connect() {
-	transport_tmp_dir_file="$(mktemp -dt envbot.socat.XXXXXXXXXX)" || return 1
+	transport_tmp_dir_file="$tmp_home"
 	# To keep this simple, from client perspective.
 	# We WRITE to out and READ from in
-	mkfifo "${transport_tmp_dir_file}/in"
-	mkfifo "${transport_tmp_dir_file}/out"
+	[[ -e "${transport_tmp_dir_file}/transport-in" ]] && rm "${transport_tmp_dir_file}/transport-in"
+	[[ -e "${transport_tmp_dir_file}/transport-out" ]] && rm "${transport_tmp_dir_file}/transport-out"
+	mkfifo "${transport_tmp_dir_file}/transport-in"
+	mkfifo "${transport_tmp_dir_file}/transport-out"
 	exec 3<&-
 	exec 4<&-
 	local addrargs socatnewargs
@@ -126,11 +128,11 @@ transport_connect() {
 	if [[ $3 -eq 1 && $config_server_ssl_accept_invalid -eq 1 ]]; then
 		addrargs+=",verify=0"
 	fi
-	socat STDIO "$addrargs" < "${transport_tmp_dir_file}/out" > "${transport_tmp_dir_file}/in" &
+	socat STDIO "$addrargs" < "${transport_tmp_dir_file}/transport-out" > "${transport_tmp_dir_file}/transport-in" &
 	transport_pid="$!"
-	echo "$transport_pid" >> "${transport_tmp_dir_file}/pid"
-	exec 3>"${transport_tmp_dir_file}/out"
-	exec 4<"${transport_tmp_dir_file}/in"
+	echo "$transport_pid" >> "${transport_tmp_dir_file}/transport-pid"
+	exec 3>"${transport_tmp_dir_file}/transport-out"
+	exec 4<"${transport_tmp_dir_file}/transport-in"
 	# To be able to wait for error.
 	sleep 2
 	kill -0 "$transport_pid" >/dev/null 2>&1 || return 1
@@ -141,8 +143,7 @@ transport_connect() {
 # No parameters, no return code check
 transport_disconnect() {
 	# It might not be running.
-	kill "$(< "${transport_tmp_dir_file}/pid")" >/dev/null 2>&1
-	rm -rf "${transport_tmp_dir_file}"
+	kill "$(< "${transport_tmp_dir_file}/transport-pid")" >/dev/null 2>&1
 	exec 3<&-
 	exec 4<&-
 	# To force code to consider this disconnected.
