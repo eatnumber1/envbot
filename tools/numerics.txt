@@ -46,6 +46,8 @@ numeric[6]=RPL_MAP       # Not from any RFC
 numeric[7]=RPL_MAPEND    # Not from any RFC
 numeric[8]=RPL_SNOMASK   # Not from any RFC, used on Unreal
 
+numeric[42]=RPL_YOURID   # Not from any RFC, used by inspircd for showing UUID.
+
 # Command replies.
 numeric[205]=RPL_TRACEUSER
 numeric[213]=RPL_STATSCLINE
@@ -143,6 +145,7 @@ numeric[422]=ERR_NOMOTD
 numeric[432]=ERR_ERRONEUSNICKNAME     # Bad/forbidden nickname
 numeric[433]=ERR_NICKNAMEINUSE        # Nick in use
 numeric[438]=ERR_NICKTOOFAST          # Not from any RFC. Used on ircu and Unreal (at least).
+numeric[439]=ERR_TARGETTOOFAST        # Not from any RFC(?). InspIRCd sends this on connect from a module to block a specific type of spambots.
 numeric[441]=ERR_USERNOTINCHANNEL
 numeric[442]=ERR_NOTONCHANNEL
 numeric[443]=ERR_USERONCHANNEL
@@ -198,6 +201,8 @@ numeric[900]=RPL_MODULES
 numeric[901]=RPL_ENDOFMODULES
 numeric[902]=RPL_COMMANDS              # 902 <nick> :<command> <module name> <minimum parameters>
 numeric[903]=RPL_ENDOFCOMMANDS         # 903 <nick> :End of COMMANDS list
+numeric[931]=RPL_NOSPAM                # 931 <nick> :Malicious bots, spammers, and other automated systems of dubious origin are NOT welcome here.
+                                       # Sent during connect from a module to block a specific type of spambots.
 numeric[936]=ERR_CENSORED              # 936 <nick> <channel> <word> :Your message contained a censored word, and was blocked
 numeric[937]=ERR_ALREDYCENSORED        # 937 <nick> <channel> :The word %s is already on the spamfilter list
 numeric[938]=ERR_NOTCENSORED           # 938 <nick> <channel> :No such spamfilter word is set
